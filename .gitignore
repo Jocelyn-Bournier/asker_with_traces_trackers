@@ -1,5 +1,5 @@
 /web/bundles/
-/web/uploads/
+/web/uploads/claire_exercise/*
 !web/uploads/claire_exercise/ids
 /app/bootstrap.php.cache
 /app/cache/*
