@@ -1,0 +1,183 @@
+<div class="panel-group">
+    <div class="panel panel-info"
+         data-ng-repeat="metadata_constraint in metadata_constraints track by $index">
+        <div class="panel-heading">
+            <ng-switch on="metadata_constraint.comparator">
+                <div ng-switch-when="exists" class="row">
+                    <div class="col-xs-10">
+                        <h5>Teste l'existence de la clé de métadonnées</h5>
+                        <input type="text" ng-model="metadata_constraint.key" class="form-control" placeholder="Clé"
+                               ui-on-Drop="onDropMetadataKey($event,$data,metadata_constraint,'key')">
+                    </div>
+                    <div class="col-xs-2">
+                            <span data-ng-click="modelRemoveField(metadata_constraints, $index)"
+                                  class="glyphicon glyphicon-remove col-centered pull-right"></span>
+                    </div>
+                </div>
+                <div ng-switch-when="between" class="row">
+                    <div class="col-xs-10">
+                        <h5>Indiquez une clé de métadonnées</h5>
+                        <input type="text" ng-model="metadata_constraint.key" class="form-control" placeholder="Clé"
+                               ui-on-Drop="onDropMetadataKey($event,$data,metadata_constraint,'key')">
+                    </div>
+                    <div class="col-xs-2">
+                            <span data-ng-click="modelRemoveField(metadata_constraints, $index)"
+                                  class="glyphicon glyphicon-remove col-centered pull-right"></span>
+                    </div>
+                    <div class="col-xs-12">
+                        <h5>Indiquez une valeur inférieure à la valeur de la clé</h5>
+                        <input type="text" ng-model="metadata_constraint.values[0]" class="form-control"
+                               placeholder="borne inférieur">
+                        <h5>Indiquez une valeur supérieure à la valeur de la clé</h5>
+                        <input type="text" ng-model="metadata_constraint.values[1]" class="form-control"
+                               placeholder="borne supérieur">
+                    </div>
+                </div>
+                <div ng-switch-when="in" class="row">
+                    <div class="col-xs-10">
+                        <h5>Indiquez une clé de métadonnées</h5>
+                        <input type="text" ng-model="metadata_constraint.key" class="form-control" placeholder="Clé"
+                               ui-on-Drop="onDropMetadataKey($event,$data,metadata_constraint,'key')">
+                    </div>
+                    <div class="col-xs-2">
+                            <span data-ng-click="modelRemoveField(metadata_constraints, $index)"
+                                  class="glyphicon glyphicon-remove col-centered pull-right"></span>
+                    </div>
+                    <div class="col-xs-12">
+                        <h5>La valeur de la clé doit correspondre à l'une des valeurs indiquées ici</h5>
+                    </div>
+                    <div data-ng-repeat="value in metadata_constraint.values track by $index">
+                        <div class="col-xs-5">
+                            <div class="constraint-value">
+                                {{ value }}
+                            </div>
+                        </div>
+                        <div class="col-xs-1">
+                            <span data-ng-click="modelRemoveField(metadata_constraint.values, $index)"
+                                  class="glyphicon glyphicon-remove"></span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="col-xs-5">
+                            <input type="text" ng-model="newValue" class="form-control"
+                                   placeholder="nouvelle valeur">
+                        </div>
+                        <div class="col-xs-1">
+                            <span data-ng-click="metadata_constraint.values.push(newValue); newValue = ''"
+                                  class="glyphicon glyphicon-ok"></span>
+                        </div>
+                    </div>
+                </div>
+                <div ng-switch-when="gt" class="row">
+                    <div class="col-xs-10">
+                        <h5>Indiquez une clé de métadonnées</h5>
+                        <input type="text" ng-model="metadata_constraint.key" class="form-control" placeholder="Clé"
+                               ui-on-Drop="onDropMetadataKey($event,$data,metadata_constraint,'key')">
+                    </div>
+                    <div class="col-xs-2">
+                            <span data-ng-click="modelRemoveField(metadata_constraints, $index)"
+                                  class="glyphicon glyphicon-remove col-centered pull-right"></span>
+                    </div>
+                    <div class="col-xs-12">
+                        <h5>La valeur de la clé doit être supérieure à la valeur indiquée ici</h5>
+                        <input type="text" ng-model="metadata_constraint.values[0]" class="form-control"
+                               placeholder="borne inférieur">
+                    </div>
+                </div>
+                <div ng-switch-when="gte" class="row">
+                    <div class="col-xs-10">
+                        <h5>Indiquez une clé de métadonnées</h5>
+                        <input type="text" ng-model="metadata_constraint.key" class="form-control" placeholder="Clé"
+                               ui-on-Drop="onDropMetadataKey($event,$data,metadata_constraint,'key')">
+                    </div>
+                    <div class="col-xs-2">
+                            <span data-ng-click="modelRemoveField(metadata_constraints, $index)"
+                                  class="glyphicon glyphicon-remove col-centered pull-right"></span>
+                    </div>
+                    <div class="col-xs-12">
+                        <h5>La valeur de la clé doit être supérieure ou égale à la valeur indiquée ici</h5>
+                        <input type="text" ng-model="metadata_constraint.values[0]" class="form-control"
+                               placeholder="borne inférieur">
+                    </div>
+                </div>
+                <div ng-switch-when="lt" class="row">
+                    <div class="col-xs-10">
+                        <h5>Indiquez une clé de métadonnées</h5>
+                        <input type="text" ng-model="metadata_constraint.key" class="form-control" placeholder="Clé"
+                               ui-on-Drop="onDropMetadataKey($event,$data,metadata_constraint,'key')">
+                    </div>
+                    <div class="col-xs-2">
+                            <span data-ng-click="modelRemoveField(metadata_constraints, $index)"
+                                  class="glyphicon glyphicon-remove col-centered pull-right"></span>
+                    </div>
+                    <div class="col-xs-12">
+                        <h5>La valeur de la clé doit être inférieure à la valeur indiquée ici</h5>
+                        <input type="text" ng-model="metadata_constraint.values[0]" class="form-control"
+                               placeholder="borne supérieur">
+                    </div>
+                </div>
+                <div ng-switch-when="lte" class="row">
+                    <div class="col-xs-10">
+                        <h5>Indiquez une clé de métadonnées</h5>
+                        <input type="text" ng-model="metadata_constraint.key" class="form-control" placeholder="Clé"
+                               ui-on-Drop="onDropMetadataKey($event,$data,metadata_constraint,'key')">
+                    </div>
+                    <div class="col-xs-2">
+                            <span data-ng-click="modelRemoveField(metadata_constraints, $index)"
+                                  class="glyphicon glyphicon-remove col-centered pull-right"></span>
+                    </div>
+                    <div class="col-xs-12">
+                        <h5>La valeur de la clé doit être inférieure ou égale à la valeur indiquée ici</h5>
+                        <input type="text" ng-model="metadata_constraint.values[0]" class="form-control"
+                               placeholder="borne supérieur">
+                    </div>
+                </div>
+            </ng-switch>
+        </div>
+    </div>
+    <div class="panel-group">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-plus"
+                      title="Choisissez le type de contrainte à ajouter"></span>&nbsp;
+                <div class="btn-group">
+                    <button class="btn btn-info"
+                            title="La clé de métadonnée existe"
+                            data-ng-click="modelAddBlockResourceConstraint(metadata_constraints, 'exists')">
+                        &exist;
+                    </button>
+                    <button class="btn btn-info"
+                            title="La métadonnée prend pour valeur..."
+                            data-ng-click="modelAddBlockResourceConstraint(metadata_constraints, 'in')">
+                        &isin;
+                    </button>
+                    <button class="btn btn-info"
+                            title="La métadonnée est plus grand que..."
+                            data-ng-click="modelAddBlockResourceConstraint(metadata_constraints, 'gt')">
+                        &gt;
+                    </button>
+                    <button class="btn btn-info"
+                            title="La métadonnée est plus grand ou égale à..."
+                            data-ng-click="modelAddBlockResourceConstraint(metadata_constraints, 'gte')">
+                        &ge;
+                    </button>
+                    <button class="btn btn-info"
+                            title="La métadonnée est plus petite que..."
+                            data-ng-click="modelAddBlockResourceConstraint(metadata_constraints, 'lt')">
+                        &lt;
+                    </button>
+                    <button class="btn btn-info"
+                            title="La métadonnée est plus petite ou égale à..."
+                            data-ng-click="modelAddBlockResourceConstraint(metadata_constraints, 'lte')">
+                        &le;
+                    </button>
+                    <button class="btn btn-info"
+                            title="La métadonnée est comprise entre..."
+                            data-ng-click="modelAddBlockResourceConstraint(metadata_constraints, 'between')">
+                        &lt;..&lt;
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

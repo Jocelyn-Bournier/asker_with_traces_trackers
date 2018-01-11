@@ -1,0 +1,53 @@
+api_test_model_list:
+    pattern:  /
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Test/TestModel:list }
+    methods: [GET]
+    requirements:
+        _format: json
+
+api_test_model_view:
+    pattern:  /{testModelId}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Test/TestModel:view }
+    methods: [GET]
+    requirements:
+        _format: json
+        testModelId: \d+
+
+api_test_model_create:
+    pattern:  /
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Test/TestModel:create }
+    methods: [POST]
+    requirements:
+        _format: json
+
+api_test_model_edit:
+    pattern:  /{testModelId}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Test/TestModel:edit }
+    methods: [PUT]
+    requirements:
+        _format: json
+        testModelId: \d+
+
+api_test_model_delete:
+    pattern:  /{testModelId}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Test/TestModel:delete }
+    methods: [DELETE]
+    requirements:
+        _format: json
+        testModelId: \d+
+
+api_test_generate:
+    pattern:  /{testModelId}/tests/
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Test/TestByTestModel:create }
+    methods: [POST]
+    requirements:
+        _format: json
+        testModelId: \d+
+
+api_test_list_by_test_model:
+    pattern:  /{testModelId}/tests/
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Test/TestByTestModel:list }
+    methods: [GET]
+    requirements:
+        _format: json
+        testModelId: \d+

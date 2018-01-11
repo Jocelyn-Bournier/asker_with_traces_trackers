@@ -1,0 +1,18 @@
+#app:
+#    resource: "@AppBundle/Controller/"
+#    type:     annotation
+asker:
+     resource: "@SimpleITClaireExerciseBundle/Resources/config/routing.yml"
+     prefix: /
+logout:
+    pattern: /front/logout
+login:
+    pattern: /
+    defaults : {_controller: SimpleITClaireExerciseBundle:Frontend\Frontend:login}
+login_t:
+    pattern: /front/dashboard
+    defaults : {_controller: SimpleITClaireExerciseBundle:Frontend\Frontend:test}
+login_check:
+    pattern: /front/login_check
+
+

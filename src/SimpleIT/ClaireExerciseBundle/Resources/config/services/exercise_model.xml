@@ -1,0 +1,73 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="simple_it.exercise.exercise_model.class">SimpleIT\ClaireExerciseBundle\Service\Exercise\ExerciseModel\ExerciseModelService</parameter>
+        <parameter key="simple_it.exercise.entity.exercise_model.class">SimpleIT\ClaireExerciseBundle\Entity\ExerciseModel\ExerciseModel</parameter>
+        <parameter key="simple_it.exercise.repository.exercise_model.class">SimpleIT\ClaireExerciseBundle\Repository\Exercise\ExerciseModel\ExerciseModelRepository</parameter>
+
+        <parameter key="simple_it.exercise.exercise_model_metadata.class">SimpleIT\ClaireExerciseBundle\Service\Exercise\ExerciseModel\MetadataService</parameter>
+        <parameter key="simple_it.exercise.entity.exercise_model_metadata.class">SimpleIT\ClaireExerciseBundle\Entity\ExerciseModel\Metadata</parameter>
+        <parameter key="simple_it.exercise.repository.exercise_model_metadata.class">SimpleIT\ClaireExerciseBundle\Repository\Exercise\ExerciseModel\MetadataRepository</parameter>
+    </parameters>
+
+    <services>
+        <!-- Repositories -->
+        <service id="simple_it.exercise.repository.exercise_model" factory-service="doctrine.orm.entity_manager" factory-method="getRepository" class="%simple_it.exercise.repository.exercise_model.class%">
+            <argument>%simple_it.exercise.entity.exercise_model.class%</argument>
+        </service>
+
+        <service id="simple_it.exercise.repository.exercise_model_metadata" factory-service="doctrine.orm.entity_manager" factory-method="getRepository" class="%simple_it.exercise.repository.exercise_model_metadata.class%">
+            <argument>%simple_it.exercise.entity.exercise_model_metadata.class%</argument>
+        </service>
+
+        <!-- Services -->
+
+        <service
+                id="simple_it.manager.resource_manager"
+                class="SimpleIT\ClaireExerciseBundle\Service\Manager\ResourceManager"
+         >
+                <argument type="service" id="doctrine.orm.entity_manager"/>
+         </service>
+
+        <service id="simple_it.exercise.exercise_model" class="%simple_it.exercise.exercise_model.class%">
+            <call method="setEntityManager">
+                <argument type="service" id="doctrine.orm.entity_manager"/>
+            </call>
+            <call method="setEntityRepository">
+                <argument type="service" id="simple_it.exercise.repository.exercise_model"/>
+            </call>
+            <call method="setSerializer">
+                <argument type="service" id="simple_it.api.serializer"/>
+            </call>
+            <call method="setUserService">
+                <argument type="service" id="simple_it.exercise.user"/>
+            </call>
+            <call method="setExerciseResourceService">
+                <argument type="service" id="simple_it.exercise.exercise_resource"/>
+            </call>
+            <call method="setMetadataService">
+                <argument type="service" id="simple_it.exercise.exercise_model_metadata"/>
+            </call>
+            <call method="setKnowledgeService">
+                <argument type="service" id="simple_it.exercise.knowledge"/>
+            </call>
+            <call method="setResourceManager">
+                <argument type="service" id="simple_it.manager.resource_manager"/>
+            </call>
+        </service>
+
+        <service id="simple_it.exercise.exercise_model_metadata" class="%simple_it.exercise.exercise_model_metadata.class%">
+            <call method="setEntityManager">
+                <argument type="service" id="doctrine.orm.entity_manager"/>
+            </call>
+            <call method="setMetadataRepository">
+                <argument type="service" id="simple_it.exercise.repository.exercise_model_metadata"/>
+            </call>
+            <call method="setEntityService">
+                <argument type="service" id="simple_it.exercise.exercise_model"/>
+            </call>
+        </service>
+    </services>
+</container>

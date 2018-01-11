@@ -1,0 +1,119 @@
+.etiquette {
+    border: 1px solid #428bca;
+    border-radius: 4px;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, .05);
+    margin: 5px;
+}
+
+.txt-etiquette {
+    min-height: 34px;
+    padding: 6px;
+    border: 1px solid #428bca;
+}
+
+.img-etiquette {
+    height: 100px;
+    width: auto;
+    padding: 0;
+}
+
+.etiquette-wrong {
+    border: 5px solid #e1000a;
+    opacity: 0.5;
+}
+
+.etiquette-right {
+    border: 5px solid #009d0a;
+}
+
+.etiquette-empty {
+    border: 1px dotted #948a91;
+    min-width: 100px;
+}
+
+.wrong-answer,
+.wrong-answer label {
+    color: #e1000a;
+}
+
+.good-answer,
+.good-answer label {
+    color: #009d0a;
+}
+
+.wrong-prop,
+.wrong-prop label {
+    font-weight: normal;
+}
+
+.good-prop,
+.good-prop label {
+    font-weight: normal;
+}
+
+.solution {
+    color: #428bca;
+}
+
+.checkbox-exo {
+    display: block;
+    min-height: 20px;
+    padding-left: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    vertical-align: middle;
+}
+
+.checkbox-exo-question label {
+    font-weight: normal;
+}
+
+.checkbox-exo label {
+    display: inline;
+    margin-bottom: 0;
+    cursor: pointer;
+}
+
+.checkbox-exo input[type="checkbox"],
+.checkbox-inline input[type="checkbox"] {
+    float: left;
+    margin-left: -20px;
+}
+
+.checkbox-exo + .checkbox-exo {
+    margin-top: -5px;
+}
+
+.checkbox-exo[disabled] {
+    cursor: not-allowed;
+}
+
+.btn-active {
+    font-size: larger;
+    font-weight: bold;
+}
+
+.exercise-doc {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.object-list {
+    background-color: #f4f4f4
+}
+
+.on-drag-hover {
+    background-color: #89d1ff;
+}
+
+.modelMD {
+    color: #428bca;
+}
+
+.fixPanel {
+    position: fixed;
+    right:20px;
+    overflow: auto;
+    padding-left: 0;
+    padding-right: 0
+}

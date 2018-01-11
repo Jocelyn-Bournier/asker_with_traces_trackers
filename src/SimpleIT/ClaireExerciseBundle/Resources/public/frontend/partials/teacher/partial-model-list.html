@@ -1,0 +1,166 @@
+<div data-ng-controller="modelController">
+<div class="panel-body" data-ng-controller="modelListController">
+
+<accordion>
+    <accordion-group class="panel panel-primary">
+        <accordion-heading class="panel-heading" style="padding-bottom: 0">
+            <div class="col-centered">
+                <span class="glyphicon glyphicon-filter"></span>&nbsp;Filtrer mes modèles d'exercices&nbsp;<span class="caret"></span>
+            </div>
+        </accordion-heading>
+        <div class="col-centered research">
+            <div>
+                <h5>Métadonnées</h5>
+
+                <div class="row">
+                    <div class="panel panel-primary"
+                         title="Recherche sur des métédonnées : saisir le couple clé/valeur recherché, ou seulement la clé ou seulement la valeur">
+                        <br>
+
+                        <div ng-repeat="meta in filters.metadata track by $index">
+                            <div class="col-xs-5">
+                                <input type="text" ng-model="meta.key" class="form-control" disabled>
+                            </div>
+                            <div class="col-xs-6">
+                                <input type="text" ng-model="meta.value" class="form-control" disabled>
+                            </div>
+                            <div class="col-xs-1"><span data-ng-click="modelRemoveField(filters.metadata, $index)"
+                                                        class="glyphicon glyphicon-remove"
+                                                        title="Supprimer ce filtre"></span>
+                            </div>
+                        </div>
+                        <div class="">
+                            <div class="col-xs-5">
+                                <input id="modelAddMetadataKey" type="text" value=""
+                                       placeholder="nouvelle clé" class="form-control"></div>
+                            <div class="col-xs-6">
+                                <input id="modelAddMetadataValue" type="text" value=""
+                                       placeholder="nouvelle valeur" class="form-control"></div>
+                            <div class="col-xs-1"><span data-ng-click="modelAddMetadataField(filters.metadata)"
+                                                        class="glyphicon glyphicon-ok"
+                                                        title="Ajouter ce filtre"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="col-centered">
+                    <h5>Filtrer par type</h5>
+
+                    <div class="btn-group">
+                        <button class="btn" ng-model="$parent.$parent.filters.type.pair_items" btn-checkbox-true="'pair-items'" btn-checkbox-false="''" btn-checkbox>
+                            <span title="Exercice d'appariement" class="glyphicon glyphicon-random"></span>
+                        </button>
+                        <button class="btn" ng-model="$parent.$parent.filters.type.order_items" btn-checkbox-true="'order-items'" btn-checkbox-false="''" btn-checkbox>
+                            <span title="Exercice d'ordonnancement" class="glyphicon glyphicon-sort"></span>
+                        </button>
+                        <button class="btn" ng-model="$parent.$parent.filters.type.group_items" btn-checkbox-true="'group-items'" btn-checkbox-false="''" btn-checkbox>
+                            <span title="Exercice de groupement" class="glyphicon glyphicon-link"></span>
+                        </button>
+                        <button class="btn" ng-model="$parent.$parent.filters.type.multiple_choice" btn-checkbox-true="'multiple-choice'" btn-checkbox-false="''" btn-checkbox>
+                            <span title="QCM" class="glyphicon glyphicon-check"></span>
+                        </button>
+                        <button class="btn" ng-model="$parent.$parent.filters.type.open_ended_question" btn-checkbox-true="'open-ended-question'" btn-checkbox-false="''" btn-checkbox>
+                            <span title="Question à réponse courte ouverte" class="glyphicon glyphicon-question-sign"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-centered research">
+            <div>
+                <h5>Mots-clés</h5>
+
+                <div class="row"
+                     title="Recherche sur les mots-clés">
+                    <div class="panel panel-primary" title="Recherche sur des mots-clés">
+                        <br>
+
+                        <div ng-repeat="keyword in filters.keywords track by $index">
+                            <div class="col-xs-10">
+                                <input type="text" ng-model="keyword" class="form-control" disabled>
+                            </div>
+                            <div class="col-xs-2"><span data-ng-click="modelRemoveField(filters.keywords, $index)"
+                                                        class="glyphicon glyphicon-remove"
+                                                        title="Supprimer ce filtre"></span>
+                            </div>
+                        </div>
+                        <div class="col-xs-10"><input id="modelAddKeyword" type="text" value=""
+                                                      placeholder="nouveau mot-clé" class="form-control">
+                        </div>
+                        <div class="col-xs-2"><span data-ng-click="modelAddKeywordsField(filters.keywords)"
+                                                    class="glyphicon glyphicon-ok"
+                                                    title="Ajouter ce filtre"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <h5>Recherche</h5>
+
+                <div class="row">
+                    <div class="panel panel-primary">
+                        <br>
+
+                        <div class="col-xs-10">
+                            <input type="text" placeholder="rechercher" ng-model="$parent.$parent.filters.search"
+                                   title="Rechercher dans le titre, les métadonnées et les mots-clés du modèle">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </accordion-group>
+
+    <div class="btn-group pull-right" style="margin-left: 4px; margin-top: 4px">
+        <label class="btn"
+               ng-model="filters.public"
+               data-ng-class="{'active': !filters.public, '': filters.public}"
+               ng-click="filters.public = !filters.public">Privés</label>
+        <label class="btn"
+               ng-model="filters.public"
+               data-ng-class="{'active': filters.public, '': !filters.public}"
+               ng-click="filters.public = !filters.public">Publics</label>
+        <label class="btn"
+               data-ng-class="{'active': filters.archived, '': !filters.archived}"
+               ng-model="filters.archived"
+               ng-click="filters.archived = !filters.archived">Archivés</label>
+    </div>
+
+    <accordion-group class="panel panel-primary">
+        <accordion-heading class="panel-heading">
+            <div class="col-centered">
+                <span class="glyphicon glyphicon-plus"></span>&nbsp;Créer un modèle d'exercices&nbsp;<span class="caret"></span>
+            </div>
+        </accordion-heading>
+        <div class="list-group">
+            <div><a href data-ng-click="createModel('pair-items')" class="list-group-item"><span title="Exercice d'appariement" class="glyphicon glyphicon-random"></span>&nbsp;Créer un modèle d'exercices d'appariement</a></div>
+            <div><a href data-ng-click="createModel('order-items')" class="list-group-item"><span title="Exercice d'ordonnancement" class="glyphicon glyphicon-sort"></span>&nbsp;Créer un exercice d'ordonancement</a></div>
+            <div><a href data-ng-click="createModel('group-items')" class="list-group-item"><span title="Exercice de groupement" class="glyphicon glyphicon-link"></span>&nbsp;Créer un exercice de groupement</a></div>
+            <div><a href data-ng-click="createModel('multiple-choice')" class="list-group-item"><span title="QCM" class="glyphicon glyphicon-check"></span>&nbsp;Créer un questionaire à choix multiple</a></div>
+            <div><a href data-ng-click="createModel('open-ended-question')" class="list-group-item"><span title="Question à réponse courte ouverte" class="glyphicon glyphicon-question-sign"></span>&nbsp;Créer un questionaire à réponse courte</a></div>
+        </div>
+    </accordion-group>
+</accordion>
+
+<accordion close-others="true">
+    <!--
+        The ng-repeat directive iterates on each item in a collection.
+        This collection is dynamically updated by filters. It works basically like unix pipes :)
+        Let's explains basically this directive value : << (1: model in models) | (2: filter:filters.search) | (3: myFilters:filters) >>
+        Each step are (1,2,3,..) are sequentially processed. Step 1 outputs will be step 2 inputs, and so on.
+            1.  Step 1 : The collection contains all models retrieved from the backend. The "models" object must be declared in the modelController scope first.
+            2.  Step 2 keeps models that contains as a key or as value the string present in the object filters.search field.
+                If this field is empty all models are given to step 3.
+            3. Step 3 give the current collection to a custom filtering function.
+    -->
+    <accordion-group class="panel"
+                     ng-repeat="model in models | filter:filters.search | myFilters:filters"
+                     data-ng-class="{'panel-primary': model.parent == null, 'panel-model-subscribe': model.parent != null, 'archived': model.archived}">
+                <div ng-include src="BASE_CONFIG.urls.partials.teacher+'/fragment-model-panel.html'"></div>
+    </accordion-group>
+</accordion>
+</div>
+</div>

@@ -1,0 +1,12 @@
+plugin:
+    has_options: false
+    icon: res_exo.png
+
+    resources:
+        - class: SimpleIT\ClaireExerciseBundle\Entity\ExerciseModel\ExerciseModel
+          name: claire_exercise_model
+          is_exportable: false
+          icon: res_exo.png
+          actions:
+            - name: edition
+              menu_name: edit

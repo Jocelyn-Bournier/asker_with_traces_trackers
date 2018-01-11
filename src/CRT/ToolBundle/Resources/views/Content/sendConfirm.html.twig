@@ -1,0 +1,35 @@
+{% extends "CRTToolBundle::template.html.twig" %}
+
+{% block contenu %}
+  <div class='container'>
+    <div class='row'>
+      <div class='col-lg-6 col-lg-offset-3'>
+        {% if error == 1 %}
+          <div class='alert alert-danger' role='alert'>
+            <h3>
+              <center>
+              Un problème est survenu
+              </center>
+            </h3>
+            <br>
+            Il y a eu un problème lors de la génération de la confirmation
+            par e-mail ({{email}}). Nous vous invitons à contacter le
+            CRT-RSO.
+          </div>
+        {% else %}
+          <div class='alert alert-warning' role='alert'>
+            <h3>
+              <center>
+                Vérification de votre adresse e-mail
+              </center>
+            </h3>
+            <br>
+            Nous venons d'envoyer un e-mail à l'adresse ({{email}}).<br>
+            Merci d'utiliser le lien de confirmation dans les {{duration}}
+            pour valider votre demande.
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

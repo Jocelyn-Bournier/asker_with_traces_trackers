@@ -1,0 +1,15 @@
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                          http://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="SimpleIT\ClaireExerciseBundle\Entity\DomainKnowledge\Metadata" table="claire_exercise_knowledge_metadata" repository-class="SimpleIT\ClaireExerciseBundle\Repository\Exercise\DomainKnowledge\MetadataRepository">
+
+        <id name="knowledge" association-key="true"/>
+        <id name="key" type="string" column="meta_key"/>
+        <field name="value" column="meta_value" type="string" nullable="false"/>
+
+        <many-to-one target-entity="Knowledge" field="knowledge" inversed-by="metadata">
+            <join-column name="knowledge_id" referenced-column-name="id"/>
+        </many-to-one>
+
+    </entity>
+</doctrine-mapping>
+

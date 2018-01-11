@@ -1,0 +1,99 @@
+<div data-ng-controller="directoryController">
+  <div class="panel-body" data-ng-controller="directoryListController">
+  <div style="margin-bottom:15px;">
+      <a data-ng-click="createDirectory()" href class="list-group-item"><span class="glyphicon glyphicon-picture"></span>&nbsp;Créer un répertoire</a>
+  </div>
+    <accordion>
+      <accordion-group  class='panel panel-default'
+      ng-repeat="directory in directories track by directory.id"
+      ng-if="directory.idp === undefined">
+        <accordion-heading class="panel-heading">
+          <div class='row'>
+            <div class="col-xs-1">
+              <span
+                class="glyphicon glyphicon-folder-open"
+                style="font-size:320%;"
+                title="Répertoire">
+              </span>
+            </div>
+            <div class="col-xs-9">
+              <div class="col-centered">
+                {{directory.name}}&nbsp;<span class="caret"></span>
+              </div>
+            </div>
+            <div class="col-xs-2">
+              <div class="col-centered pull-right">
+                <h4>
+                  <span
+                    class="glyphicon glyphicon-plus"
+                    ng-click="$event.stopPropagation();createDirectory(directory.id)"
+                    title="Création d'un sous dossier">
+                  </span>
+                  <span
+                    class="glyphicon glyphicon-remove"
+                    ng-click="$event.stopPropagation();deleteDirectory(directory)"
+                    title="Supprimer le sous dossier">
+                  </span>
+                  <span
+                    class="glyphicon glyphicon-edit"
+                    ng-click="$event.stopPropagation();editDirectory(directory)"
+                    title="Editer le répertoire">
+                  </span>
+                </h4>
+              </div>
+            </div>
+          </div>
+        </accordion-heading>
+        <div class="row">
+          <div class="col-centered">
+              <label>Nombre de modèles&nbsp;:&nbsp;</label> {{directory.models}}
+          </div>
+          <div class="col-centered">
+              <label>Nombre de sous-répertoires&nbsp;:&nbsp;</label> {{directory.subs}}
+          </div>
+          <div class="col-centered">
+              <label>Code apogee &nbsp;:&nbsp;</label> {{directory.code}}
+          </div>
+        </div>
+        <div class='row'>
+          <div class="col-xs-11">
+            <accordion ng-repeat="sub in directories track by sub.id"
+            ng-if="sub.idp === directory.id">
+              <accordion-group class="panel">
+                <accordion-heading  class="panel panel-heading">
+                  <div class="row">
+                    <div class="col-xs-2">
+                      {{sub.name}}
+                    </div>
+                    <div class="col-xs-10">
+                      <div class="col-centered pull-right">
+                        <h4>
+                          <span
+                            class="glyphicon glyphicon-remove"
+                            ng-click="$event.stopPropagation();
+                            deleteDirectory(sub)"
+                            title="Supprimer le sous dossier">
+                          </span>
+                          <span
+                            class="glyphicon glyphicon-edit"
+                            ng-click="$event.stopPropagation();editDirectory(sub)"
+                            title="Editer le répertoire">
+                          </span>
+                        </h4>
+                      </div>
+                    </div>
+                  </div>
+                </accordion-heading>
+                <div class="row">
+                  <div class="col-centered">
+                      <label>Nombre de modèles&nbsp;:&nbsp;</label> {{sub.models}}
+                  </div>
+                </div>
+              </accordion-group>
+            </accordion>
+          </div>
+        </div>
+      </accordion-group>
+    </accordion>
+  </div>
+</div>

@@ -1,0 +1,6 @@
+frontend_index:
+    pattern: /
+    defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Frontend:index }
+frontend_password:
+    pattern: /update/mypassword
+    defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Frontend:updatePassword }

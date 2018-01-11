@@ -1,0 +1,21 @@
+crt_tool_password_update:
+    path:     /member/password/update
+    defaults: { _controller: CRTToolBundle:Tool:passwordUpdate }
+
+crt_tool_dashboard:
+    path:   /member/dashboard
+    defaults: { _controller: CRTToolBundle:Tool:dashBoard }
+
+crt_tool_admin_ldap_request:
+    path: /admin/ldap/request
+    defaults: { _controller: CRTToolBundle:Tool:showRequest }
+crt_tool_admin_user_attributs:
+    path: /admin/ldap/attributs/{user}
+    defaults: { _controller: CRTToolBundle:Tool:showUserAttributs, user : null }
+
+crt_tool_account_form:
+    path:   /askaccount
+    defaults: { _controller: CRTToolBundle:Tool:accountRequest }
+crt_tool_confirm_token:
+    path:   /visitor/confirm/{token}
+    defaults: { _controller: CRTToolBundle:Tool:requestConfirm }

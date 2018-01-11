@@ -1,0 +1,139 @@
+<?php
+
+namespace CRT\ToolBundle\Form;
+
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+
+class AccountType extends AbstractType
+{
+    public function BuildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('firstname', 'text',
+                array(
+                    'label' => 'Prénom :',
+                    'attr' => array(
+                        'placeholder' => 'Votre prénom',
+                    )
+                )
+            )
+            ->add('lastname', 'text',
+                array(
+                    'label' => 'Nom :',
+                    'attr' => array(
+                        'placeholder' => 'Votre prénom',
+                    )
+                )
+            )
+            ->add('email', 'email',
+                array(
+                    'label' => 'Adresse e-mail :',
+                    'attr' => array(
+                        'placeholder' => 'Votre adrese e-mail',
+                    )
+                )
+            )
+            ->add('academy', 'choice',
+                array(
+                    'label' => 'Académie de rattachement',
+                    'choices' => array(
+                        "Aix-Marseille" => "Aix-Marseille",
+                        "Amiens" => "Amiens",
+                        "Arcueil" => "Arcueil",
+                        "Besançon" => "Besançon",
+                        "Bordeaux" => "Bordeaux",
+                        "Caen" => "Caen",
+                        "Centrale" => "Centrale",
+                        "Clermont-Ferrand" => "Clermont-Ferrand",
+                        "Corse" => "Corse",
+                        "Créteil" => "Créteil",
+                        "Dijon" => "Dijon",
+                        "Grenoble" => "Grenoble",
+                        "Guadeloupe" => "Guadeloupe",
+                        "Guyane" => "Guyane",
+                        "Centrale" => "La Centrale",
+                        "Lille" => "Lille",
+                        "Limoges" => "Limoges",
+                        "Lyon" => "Lyon",
+                        "Martinique" => "Martinique",
+                        "Mayotte" => "Mayotte",
+                        "Montpellier" => "Montpellier",
+                        "Nancy-Metz" => "Nancy-Metz",
+                        "Nantes" => "Nantes",
+                        "Nice" => "Nice",
+                        "Nouvelle-Calédonie" => "Nouvelle-Calédonie",
+                        "Orleans-Tours" => "Orleans-Tours",
+                        "Paris" => "Paris",
+                        "Poitiers" => "Poitiers",
+                        "Polynesie" => "Polynesie",
+                        "Reims" => "Reims",
+                        "Rennes" => "Rennes",
+                        "Réunion" => "Réunion",
+                        "Rouen" => "Rouen",
+                        "Strasbourg" => "Strasbourg",
+                        "Toulouse" => "Toulouse",
+                        "Versailles" => "Versailles",
+                        "Wallis et Futuna" => "Wallis et Futuna",
+                        "Prestataire" => "Prestataire hébergé en dehors d'une entité",
+                    )
+                )
+            )
+            ->add('entity', 'choice',
+                array(
+                    'label' => 'Entité du CNS',
+                    'choices' => array(
+                        'CES CHOREGIE' => 'CES CHOREGIE',
+                        'CES DECISIONNEL' => 'CES DECISIONNEL',
+                        'CES FOAD' => 'CES FOAD',
+                        'CES GOSPEL' => 'CES GOSPEL',
+                        'CES SIRHEN' => 'CES SIRHEN',
+                        'CNS DIR' => 'CNS DIR',
+                        'CNS UC' => 'CNS UC',
+                        'CRT ECD' => 'CRT ECD',
+                        'CRT FIM' => 'CRT FIM',
+                        'CRT HEB' => 'CRT HEB',
+                        'CRT ITIL' => 'CRT ITIL',
+                        'CRT RSO' => 'CRT RSO',
+                        'CRT SUP' => 'CRT SUP',
+                        'ITP' => 'ITP',
+                        'SIRHEN INTEGRATION' => 'SIRHEN INTEGRATION',
+                    )
+                )
+            )
+            ->add('title', 'text',
+                array(
+                    'label' => 'Titre :',
+                    'required' => false,
+                )
+            )
+            ->add('deskPhone', 'text',
+                array(
+                    'label' => 'Numéro de téléphone de bureau :',
+                    'required' => false,
+                )
+            )
+            ->add('mobiPhone', 'text',
+                array(
+                    'label' => 'Numéro de téléphone portable :',
+                    'required' => false,
+                )
+            )
+            ->add('save', 'submit',
+                array(
+                    'label'=> 'Soumettre ma demande',
+                    'attr' => array(
+                        'class' => 'btn btn-lg btn-success btn-block',
+                        'style' => 'margin-top:15px;'
+                    )
+                )
+            )
+        ;
+    }
+
+    public function getName()
+    {
+        return 'crt_tool_account';
+    }
+}

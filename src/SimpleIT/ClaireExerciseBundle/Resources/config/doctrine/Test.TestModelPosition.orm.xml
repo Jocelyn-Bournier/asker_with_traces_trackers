@@ -1,0 +1,19 @@
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                          http://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="SimpleIT\ClaireExerciseBundle\Entity\Test\TestModelPosition" table="claire_exercise_test_model_position" repository-class="SimpleIT\ClaireExerciseBundle\Repository\Exercise\Test\TestModelPositionRepository">
+
+        <id name="testModel" association-key="true"/>
+        <id name="exerciseModel" association-key="true"/>
+
+        <field name="position" column="position" type="integer" nullable="false"/>
+
+        <many-to-one target-entity="SimpleIT\ClaireExerciseBundle\Entity\Test\TestModel" field="testModel" inversed-by="testModelPositions">
+            <join-column name="test_model_id" referenced-column-name="id" on-delete="CASCADE"/>
+        </many-to-one>
+
+        <many-to-one target-entity="SimpleIT\ClaireExerciseBundle\Entity\ExerciseModel\ExerciseModel" field="exerciseModel">
+            <join-column name="exercise_model_id" referenced-column-name="id" on-delete="CASCADE"/>
+        </many-to-one>
+
+    </entity>
+</doctrine-mapping>

@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="simple_it.paramConverter.resource.class">SimpleIT\ClaireExerciseBundle\ParamConverter\ApiResourceParamConverter</parameter>
+        <parameter key="simple_it.paramConverter.collection.class">SimpleIT\ClaireExerciseBundle\ParamConverter\ApiCollectionParamConverter</parameter>
+    </parameters>
+
+    <services>
+        <service id="simple_it.converter.resource" class="%simple_it.paramConverter.resource.class%">
+            <call method="setSerializer">
+                <argument type="service" id="simple_it.api.serializer"/>
+            </call>
+            <tag name="request.param_converter" converter="resource" priority="0" />
+        </service>
+        <service id="simple_it.converter.collection" class="%simple_it.paramConverter.collection.class%">
+            <tag name="request.param_converter" converter="collection" priority="1" />
+        </service>
+    </services>
+</container>

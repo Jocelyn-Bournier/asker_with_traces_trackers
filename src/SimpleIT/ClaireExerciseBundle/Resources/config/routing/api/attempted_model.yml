@@ -1,0 +1,14 @@
+api_exercise_attempted_model_view:
+    pattern:  /{exerciseModelId}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/ExerciseModel/ExerciseModelAttempted:view }
+    methods: [GET]
+    requirements:
+        _format: json
+        exerciseModelId: \d+
+
+api_exercise_attempted_model_list:
+    pattern:  /
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/ExerciseModel/ExerciseModelAttempted:list }
+    methods: [GET]
+    requirements:
+        _format: json

@@ -1,0 +1,358 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <imports>
+        <import resource="services/exercise_model.xml"/>
+        <import resource="services/resource.xml"/>
+        <import resource="services/knowledge.xml"/>
+        <import resource="services/user.xml"/>
+        <import resource="services/directory.xml"/>
+        <import resource="services/role.xml"/>
+        <import resource="services/listeners.xml"/>
+        <import resource="services/converters.xml"/>
+    </imports>
+
+    <parameters>
+        <parameter key="simple_it.exercise.exercise.class">SimpleIT\ClaireExerciseBundle\Service\Exercise\ExerciseCreation\ExerciseService</parameter>
+
+        <parameter key="simple_it.exercise.multiple_choice.class">SimpleIT\ClaireExerciseBundle\Service\Exercise\ExerciseCreation\MultipleChoiceService</parameter>
+        <parameter key="simple_it.exercise.pair_items.class">SimpleIT\ClaireExerciseBundle\Service\Exercise\ExerciseCreation\PairItemsService</parameter>
+        <parameter key="simple_it.exercise.group_items.class">SimpleIT\ClaireExerciseBundle\Service\Exercise\ExerciseCreation\GroupItemsService</parameter>
+        <parameter key="simple_it.exercise.order_items.class">SimpleIT\ClaireExerciseBundle\Service\Exercise\ExerciseCreation\OrderItemsService</parameter>
+        <parameter key="simple_it.exercise.open_ended_question.class">SimpleIT\ClaireExerciseBundle\Service\Exercise\ExerciseCreation\OpenEndedQuestionService</parameter>
+
+        <parameter key="simple_it.exercise.stored_exercise.class">SimpleIT\ClaireExerciseBundle\Service\Exercise\CreatedExercise\StoredExerciseService</parameter>
+        <parameter key="simple_it.exercise.entity.stored_exercise.class">SimpleIT\ClaireExerciseBundle\Entity\CreatedExercise\StoredExercise</parameter>
+        <parameter key="simple_it.exercise.repository.stored_exercise.class">SimpleIT\ClaireExerciseBundle\Repository\Exercise\CreatedExercise\AnswerRepository</parameter>
+
+        <parameter key="simple_it.exercise.answer.class">SimpleIT\ClaireExerciseBundle\Service\Exercise\CreatedExercise\AnswerService</parameter>
+        <parameter key="simple_it.exercise.entity.answer.class">SimpleIT\ClaireExerciseBundle\Entity\CreatedExercise\Answer</parameter>
+        <parameter key="simple_it.exercise.repository.answer.class">SimpleIT\ClaireExerciseBundle\Repository\Exercise\CreatedExercise\AnswerRepository</parameter>
+
+        <parameter key="simple_it.exercise.directory.class">SimpleIT\ClaireExerciseBundle\Service\Directory\DirectoryService</parameter>
+        <parameter key="simple_it.exercise.attempt.class">SimpleIT\ClaireExerciseBundle\Service\Exercise\CreatedExercise\AttemptService</parameter>
+        <parameter key="simple_it.exercise.entity.attempt.class">SimpleIT\ClaireExerciseBundle\Entity\CreatedExercise\Attempt</parameter>
+        <parameter key="simple_it.exercise.repository.attempt.class">SimpleIT\ClaireExerciseBundle\Repository\Exercise\CreatedExercise\AttemptRepository</parameter>
+
+        <parameter key="simple_it.exercise.item.class">SimpleIT\ClaireExerciseBundle\Service\Exercise\CreatedExercise\ItemService</parameter>
+        <parameter key="simple_it.exercise.entity.item.class">SimpleIT\ClaireExerciseBundle\Entity\CreatedExercise\Item</parameter>
+        <parameter key="simple_it.exercise.repository.item.class">SimpleIT\ClaireExerciseBundle\Repository\Exercise\CreatedExercise\ItemRepository</parameter>
+
+        <parameter key="simple_it.exercise.test.class">SimpleIT\ClaireExerciseBundle\Service\Exercise\Test\TestService</parameter>
+        <parameter key="simple_it.exercise.entity.test.class">SimpleIT\ClaireExerciseBundle\Entity\Test\Test</parameter>
+        <parameter key="simple_it.exercise.repository.test.class">SimpleIT\ClaireExerciseBundle\Repository\Exercise\Test\TestRepository</parameter>
+
+        <parameter key="simple_it.exercise.test_model.class">SimpleIT\ClaireExerciseBundle\Service\Exercise\Test\TestModelService</parameter>
+        <parameter key="simple_it.exercise.entity.test_model.class">SimpleIT\ClaireExerciseBundle\Entity\Test\TestModel</parameter>
+        <parameter key="simple_it.exercise.repository.test_model.class">SimpleIT\ClaireExerciseBundle\Repository\Exercise\Test\TestModelRepository</parameter>
+
+        <parameter key="simple_it.exercise.entity.test_model_position.class">SimpleIT\ClaireExerciseBundle\Entity\Test\TestModelPosition</parameter>
+        <parameter key="simple_it.exercise.repository.test_model_position.class">SimpleIT\ClaireExerciseBundle\Repository\Exercise\Test\TestModelPositionRepository</parameter>
+
+        <parameter key="simple_it.exercise.test_attempt.class">SimpleIT\ClaireExerciseBundle\Service\Exercise\Test\TestAttemptService</parameter>
+        <parameter key="simple_it.exercise.entity.test_attempt.class">SimpleIT\ClaireExerciseBundle\Entity\Test\TestAttempt</parameter>
+        <parameter key="simple_it.exercise.repository.test_attempt.class">SimpleIT\ClaireExerciseBundle\Repository\Exercise\Test\TestAttemptRepository</parameter>
+
+        <parameter key="simple_it.exercise.resource_metadata.class">SimpleIT\ClaireExerciseBundle\Service\Exercise\ExerciseResource\MetadataService</parameter>
+        <parameter key="simple_it.exercise.entity.resource_metadata.class">SimpleIT\ClaireExerciseBundle\Entity\ExerciseResource\Metadata</parameter>
+        <parameter key="simple_it.exercise.repository.resource_metadata.class">SimpleIT\ClaireExerciseBundle\Repository\Exercise\ExerciseResource\MetadataRepository</parameter>
+
+        <parameter key="simple_it.exercise.serializer.class">SimpleIT\ClaireExerciseBundle\Service\Serializer\Serializer</parameter>
+    </parameters>
+
+    <services>
+        <!-- REPOSITORIES -->
+
+        <!-- Stored exercise Repository -->
+        <service id="simple_it.exercise.repository.stored_exercise" factory-service="doctrine.orm.entity_manager" factory-method="getRepository" class="%simple_it.exercise.repository.stored_exercise.class%">
+            <argument>%simple_it.exercise.entity.stored_exercise.class%</argument>
+        </service>
+
+        <!-- Answer Repository -->
+        <service id="simple_it.exercise.repository.answer" factory-service="doctrine.orm.entity_manager" factory-method="getRepository" class="%simple_it.exercise.repository.answer.class%">
+            <argument>%simple_it.exercise.entity.answer.class%</argument>
+        </service>
+
+        <!-- Attempt Repository -->
+        <service id="simple_it.exercise.repository.attempt" factory-service="doctrine.orm.entity_manager" factory-method="getRepository" class="%simple_it.exercise.repository.attempt.class%">
+            <argument>%simple_it.exercise.entity.attempt.class%</argument>
+        </service>
+
+        <!-- Exercise Item Repository -->
+        <service id="simple_it.exercise.repository.item" factory-service="doctrine.orm.entity_manager" factory-method="getRepository" class="%simple_it.exercise.repository.item.class%">
+            <argument>%simple_it.exercise.entity.item.class%</argument>
+        </service>
+
+        <!-- Test Repository -->
+        <service id="simple_it.exercise.repository.test" factory-service="doctrine.orm.entity_manager" factory-method="getRepository" class="%simple_it.exercise.repository.test.class%">
+            <argument>%simple_it.exercise.entity.test.class%</argument>
+        </service>
+
+        <!-- Test Model Repository -->
+        <service id="simple_it.exercise.repository.test_model" factory-service="doctrine.orm.entity_manager" factory-method="getRepository" class="%simple_it.exercise.repository.test_model.class%">
+            <argument>%simple_it.exercise.entity.test_model.class%</argument>
+        </service>
+
+        <!-- Test Model Position Repository -->
+        <service id="simple_it.exercise.repository.test_model_position"
+                 factory-service="doctrine.orm.entity_manager" factory-method="getRepository"
+                 class="%simple_it.exercise.repository.test_model_position.class%">
+            <argument>%simple_it.exercise.entity.test_model_position.class%</argument>
+        </service>
+
+        <!-- Test Attempt Repository -->
+        <service id="simple_it.exercise.repository.test_attempt" factory-service="doctrine.orm.entity_manager" factory-method="getRepository" class="%simple_it.exercise.repository.test_attempt.class%">
+            <argument>%simple_it.exercise.entity.test_attempt.class%</argument>
+        </service>
+
+        <!-- General Exercise Service -->
+        <service id="simple_it.exercise.exercise" class="%simple_it.exercise.exercise.class%">
+            <call method="setMultipleChoiceService">
+                <argument type="service" id="simple_it.exercise.multiple_choice"/>
+            </call>
+            <call method="setPairItemsService">
+                <argument type="service" id="simple_it.exercise.pair_items"/>
+            </call>
+            <call method="setGroupItemsService">
+                <argument type="service" id="simple_it.exercise.group_items"/>
+            </call>
+            <call method="setOrderItemsService">
+                <argument type="service" id="simple_it.exercise.order_items"/>
+            </call>
+            <call method="setOpenEndedQuestionService">
+                <argument type="service" id="simple_it.exercise.open_ended_question"/>
+            </call>
+            <call method="setExerciseModelService">
+                <argument type="service" id="simple_it.exercise.exercise_model"/>
+            </call>
+            <call method="setEntityManager">
+                <argument type="service" id="doctrine.orm.entity_manager"/>
+            </call>
+        </service>
+
+        <!-- Generators of specific types of exercises -->
+        <service id="simple_it.exercise.multiple_choice" class="%simple_it.exercise.multiple_choice.class%">
+            <call method="setExerciseResourceService">
+                <argument type="service" id="simple_it.exercise.exercise_resource"/>
+            </call>
+            <call method="setFormulaService">
+                <argument type="service" id="simple_it.exercise.knowledge.formula"/>
+            </call>
+            <call method="setKnowledgeService">
+                <argument type="service" id="simple_it.exercise.knowledge"/>
+            </call>
+            <call method="setSerializer">
+                <argument type="service" id="simple_it.api.serializer"/>
+            </call>
+        </service>
+
+        <service id="simple_it.exercise.pair_items" class="%simple_it.exercise.pair_items.class%">
+            <call method="setExerciseResourceService">
+                <argument type="service" id="simple_it.exercise.exercise_resource"/>
+            </call>
+            <call method="setFormulaService">
+                <argument type="service" id="simple_it.exercise.knowledge.formula"/>
+            </call>
+            <call method="setKnowledgeService">
+                <argument type="service" id="simple_it.exercise.knowledge"/>
+            </call>
+            <call method="setSerializer">
+                <argument type="service" id="simple_it.api.serializer"/>
+            </call>
+        </service>
+
+        <service id="simple_it.exercise.group_items" class="%simple_it.exercise.group_items.class%">
+            <call method="setExerciseResourceService">
+                <argument type="service" id="simple_it.exercise.exercise_resource"/>
+            </call>
+            <call method="setFormulaService">
+                <argument type="service" id="simple_it.exercise.knowledge.formula"/>
+            </call>
+            <call method="setKnowledgeService">
+                <argument type="service" id="simple_it.exercise.knowledge"/>
+            </call>
+            <call method="setSerializer">
+                <argument type="service" id="simple_it.api.serializer"/>
+            </call>
+        </service>
+
+        <service id="simple_it.exercise.order_items" class="%simple_it.exercise.order_items.class%">
+            <call method="setExerciseResourceService">
+                <argument type="service" id="simple_it.exercise.exercise_resource"/>
+            </call>
+            <call method="setFormulaService">
+                <argument type="service" id="simple_it.exercise.knowledge.formula"/>
+            </call>
+            <call method="setKnowledgeService">
+                <argument type="service" id="simple_it.exercise.knowledge"/>
+            </call>
+            <call method="setSerializer">
+                <argument type="service" id="simple_it.api.serializer"/>
+            </call>
+        </service>
+
+        <service id="simple_it.exercise.open_ended_question" class="%simple_it.exercise.open_ended_question.class%">
+            <call method="setExerciseResourceService">
+                <argument type="service" id="simple_it.exercise.exercise_resource"/>
+            </call>
+            <call method="setFormulaService">
+                <argument type="service" id="simple_it.exercise.knowledge.formula"/>
+            </call>
+            <call method="setKnowledgeService">
+                <argument type="service" id="simple_it.exercise.knowledge"/>
+            </call>
+            <call method="setSerializer">
+                <argument type="service" id="simple_it.api.serializer"/>
+            </call>
+        </service>
+
+        <!-- Stored Exercise -->
+        <service id="simple_it.exercise.stored_exercise" class="%simple_it.exercise.stored_exercise.class%">
+            <call method="setEntityManager">
+                <argument type="service" id="doctrine.orm.entity_manager"/>
+            </call>
+            <call method="setStoredExerciseRepository">
+                <argument type="service" id="simple_it.exercise.repository.stored_exercise"/>
+            </call>
+            <call method="setItemRepository">
+                <argument type="service" id="simple_it.exercise.repository.item"/>
+            </call>
+            <call method="setExerciseService">
+                <argument type="service" id="simple_it.exercise.exercise"/>
+            </call>
+            <call method="setExerciseModelService">
+                <argument type="service" id="simple_it.exercise.exercise_model"/>
+            </call>
+            <call method="setTestAttemptService">
+                <argument type="service" id="simple_it.exercise.test_attempt"/>
+            </call>
+        </service>
+
+        <service id="simple_it.exercise.item" class="%simple_it.exercise.item.class%">
+            <call method="setEntityManager">
+                <argument type="service" id="doctrine.orm.entity_manager"/>
+            </call>
+            <call method="setExerciseService">
+                <argument type="service" id="simple_it.exercise.exercise"/>
+            </call>
+            <call method="setItemRepository">
+                <argument type="service" id="simple_it.exercise.repository.item"/>
+            </call>
+            <call method="setAnswerRepository">
+                <argument type="service" id="simple_it.exercise.repository.answer"/>
+            </call>
+            <call method="setStoredExerciseService">
+                <argument type="service" id="simple_it.exercise.stored_exercise"/>
+            </call>
+            <call method="setAttemptService">
+                <argument type="service" id="simple_it.exercise.attempt"/>
+            </call>
+        </service>
+
+        <service id="simple_it.exercise.answer" class="%simple_it.exercise.answer.class%">
+            <call method="setEntityManager">
+                <argument type="service" id="doctrine.orm.entity_manager"/>
+            </call>
+            <call method="setExerciseService">
+                <argument type="service" id="simple_it.exercise.exercise"/>
+            </call>
+            <call method="setItemService">
+                <argument type="service" id="simple_it.exercise.item"/>
+            </call>
+            <call method="setAttemptService">
+                <argument type="service" id="simple_it.exercise.attempt"/>
+            </call>
+            <call method="setAnswerRepository">
+                <argument type="service" id="simple_it.exercise.repository.answer"/>
+            </call>
+            <call method="setSerializer">
+                <argument type="service" id="simple_it.api.serializer"/>
+            </call>
+        </service>
+
+        <!--
+        <service id="simple_it.exercise.directory" class="%simple_it.exercise.directory.class%">
+            <call method="setEntityManager">
+                <argument type="service" id="doctrine.orm.entity_manager"/>
+            </call>
+            <call method="setUserService">
+                <argument type="service" id="simple_it.exercise.user"/>
+            </call>
+        </service>
+        -->
+        <service id="simple_it.exercise.attempt" class="%simple_it.exercise.attempt.class%">
+            <call method="setEntityManager">
+                <argument type="service" id="doctrine.orm.entity_manager"/>
+            </call>
+            <call method="setAttemptRepository">
+                <argument type="service" id="simple_it.exercise.repository.attempt"/>
+            </call>
+            <call method="setStoredExerciseService">
+                <argument type="service" id="simple_it.exercise.stored_exercise"/>
+            </call>
+            <call method="setTestAttemptService">
+                <argument type="service" id="simple_it.exercise.test_attempt"/>
+            </call>
+            <call method="setUserService">
+                <argument type="service" id="simple_it.exercise.user"/>
+            </call>
+        </service>
+
+        <!-- Test -->
+        <service id="simple_it.exercise.test" class="%simple_it.exercise.test.class%">
+            <call method="setEntityManager">
+                <argument type="service" id="doctrine.orm.entity_manager"/>
+            </call>
+            <call method="setTestRepository">
+                <argument type="service" id="simple_it.exercise.repository.test"/>
+            </call>
+            <call method="setTestModelService">
+                <argument type="service" id="simple_it.exercise.test_model"/>
+            </call>
+            <call method="setStoredExerciseService">
+                <argument type="service" id="simple_it.exercise.stored_exercise"/>
+            </call>
+        </service>
+
+        <service id="simple_it.exercise.test_model" class="%simple_it.exercise.test_model.class%">
+            <call method="setEntityManager">
+                <argument type="service" id="doctrine.orm.entity_manager"/>
+            </call>
+            <call method="setTestModelRepository">
+                <argument type="service" id="simple_it.exercise.repository.test_model"/>
+            </call>
+            <call method="setTestModelPositionRepository">
+                <argument type="service" id="simple_it.exercise.repository.test_model_position"/>
+            </call>
+            <call method="setUserService">
+                <argument type="service" id="simple_it.exercise.user"/>
+            </call>
+            <call method="setExerciseModelService">
+                <argument type="service" id="simple_it.exercise.exercise_model"/>
+            </call>
+        </service>
+
+        <service id="simple_it.exercise.test_attempt" class="%simple_it.exercise.test_attempt.class%">
+            <call method="setEntityManager">
+                <argument type="service" id="doctrine.orm.entity_manager"/>
+            </call>
+            <call method="setTestAttemptRepository">
+                <argument type="service" id="simple_it.exercise.repository.test_attempt"/>
+            </call>
+            <call method="setAttemptService">
+                <argument type="service" id="simple_it.exercise.attempt"/>
+            </call>
+            <call method="setTestService">
+                <argument type="service" id="simple_it.exercise.test"/>
+            </call>
+            <call method="setUserService">
+                <argument type="service" id="simple_it.exercise.user"/>
+            </call>
+        </service>
+
+        <!-- Other services simple_it.api.serializer-->
+        <service id="simple_it.api.serializer" class="%simple_it.exercise.serializer.class%"/>
+    </services>
+
+</container>

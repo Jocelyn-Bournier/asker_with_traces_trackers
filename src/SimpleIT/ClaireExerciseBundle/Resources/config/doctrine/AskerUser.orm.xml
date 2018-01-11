@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity repository-class="SimpleIT\ClaireExerciseBundle\Repository\AskerUserRepository" name="SimpleIT\ClaireExerciseBundle\Entity\AskerUser">
+    <id name="id" type="integer" column="id">
+      <generator strategy="AUTO"/>
+    </id>
+    <field name="username" type="string" column="username" length="50"/>
+    <field name="firstName" type="string" column="firstName" length="50"/>
+    <field name="lastName" type="string" column="lastName" length="50"/>
+    <field name="password" type="string" column="password" length="70"/>
+    <field name="salt" type="string" column="salt" length="70"/>
+    <field name="ldapEmployeeId" type="integer" column="ldapEmployeeId"/>
+    <field name="isLdap" type="boolean" column="isLdap"/>
+    <field name="isEnable" type="boolean" column="isEnable"/>
+    <field name="ldapDn" type="string" column="ldapDn" length="255"/>
+    <one-to-many field="workspaces" target-entity="SimpleIT\ClaireExerciseBundle\Entity\Workspace" mapped-by="owner" />
+    <many-to-many field="directories" mapped-by="users"
+    target-entity="SimpleIT\ClaireExerciseBundle\Entity\Directory">
+            <cascade>
+                <cascade-persist/>
+            </cascade>
+    </many-to-many>
+    <many-to-many field="roles"
+    target-entity="SimpleIT\ClaireExerciseBundle\Entity\Role">
+            <cascade>
+                <cascade-persist/>
+            </cascade>
+    </many-to-many>
+    <unique-constraints>
+      <unique-constraint columns="username" />
+    </unique-constraints>
+  </entity>
+</doctrine-mapping>

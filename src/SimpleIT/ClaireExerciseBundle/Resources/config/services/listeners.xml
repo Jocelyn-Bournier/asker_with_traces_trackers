@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="simple_it.listener.response.class">SimpleIT\ClaireExerciseBundle\Listener\ApiResponseListener</parameter>
+        <parameter key="simple_it.listener.exercise_model.class">SimpleIT\ClaireExerciseBundle\Listener\ExerciseModelListener</parameter>
+    </parameters>
+
+    <services>
+        <service id="simple_it.listener.response" class="%simple_it.listener.response.class%">
+            <call method="setSerializer">
+                <argument type="service" id="simple_it.api.serializer"/>
+            </call>
+            <tag name="kernel.event_listener" event="kernel.response" method="onKernelResponse" priority="0"/>
+        </service>
+        <service id="simple_it.listener.exercise_model" class="%simple_it.listener.exercise_model.class%">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+            <tag name="kernel.event_listener" event="edit_claire_exercise_model" method="onEdit" priority="0"/>
+            <tag name="kernel.event_listener" event="create_form_claire_exercise_model" method="onCreateForm" priority="0"/>
+            <tag name="kernel.event_listener" event="open_claire_exercise_model" method="onOpen" priority="0"/>
+            <tag name="kernel.event_listener" event="delete_claire_exercise_model" method="onDelete" priority="0"/>
+            <tag name="kernel.event_listener" event="copy_claire_exercise_model" method="onCopy" priority="0"/>
+            <tag name="kernel.event_listener" event="rename_claire_exercise_model" method="onRename" priority="0"/>
+        </service>
+    </services>
+</container>

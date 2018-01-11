@@ -1,0 +1,152 @@
+<div data-ng-controller="groupItemsController">
+
+    <div class="panel object-list"
+         ng-if="!item.corrected"
+         ui-on-Drop="onDropList($event,$data,item.content.objects)"
+         title="Déposez ces objets dans les cases ci dessous afin de les regrouper.">
+        <div class="panel-heading">
+            Objets à glisser-déposer :
+        </div>
+        <div class="panel-body row">
+            <div class="col-xs-4" ng-if="item.content.objects.length == 0">
+                <div ng-if="drop[0].object_type == 'text'"
+                      class="etiquette txt-etiquette etiquette-empty">
+                </div>
+                <div ng-if="drop[0].object_type == 'picture'"
+                      class="etiquette img-etiquette etiquette-empty">
+                </div>
+            </div>
+            <div class="col-xs-4"
+                  ng-if="!item.corrected" style="margin: 6px"
+                  ng-repeat="object in item.content.objects track by $index"
+                  ui-draggable="true" drag="object"
+                  on-drop-success="dropSuccessHandler($event,$index,item.content.objects)"
+                >
+                <div ng-if="object.object_type == 'text'"
+                      class="etiquette txt-etiquette">
+                    <div ng-bind-html="to_trusted(object.text)"></div>
+                </div>
+                <div ng-if="object.object_type == 'picture'">
+                    <a href="{{ imageUrl }}{{ object.source }}"
+                       data-lightbox="mobile" data-title="Image à placer">
+                        <img ng-src="{{ imageUrl }}{{ object.source }}"
+                             class="etiquette img-etiquette"/>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <div class="row">
+
+            <!--drop zone-->
+            <div class="col-xs-{{ 12 / groups.length | number:0}} panel etiquette"
+                 style="margin: 0; text-align: center"
+                 ng-repeat="group in groups track by $index"
+                 ui-on-Drop="onDropList($event,$data,group.objects)">
+
+                <div class="panel-heading">
+
+                    <!--group name-->
+                    <div ng-if="dgn == 'show'">
+                        <strong>{{ item.content.groups[$index] }}</strong>
+                    </div>
+                    <div ng-if="dgn == 'hide'">
+                        Groupe {{ $index + 1 }}
+                    </div>
+                    <div ng-if="dgn == 'ask' && !item.corrected">
+                        Groupe :
+                        <input type="text" ng-model="group.name"
+                               style="width: 100px;height: 30px;margin-top: 7px">
+                    </div>
+                    <div ng-if="dgn == 'ask' && item.corrected">
+                        <span class="etiquette txt-etiquette"
+                              data-ng-class="{'etiquette-wrong': group.name != group.goodName, 'etiquette-right': group.name == group.goodName}">
+                            {{ group.name }}
+                        </span>
+                        <span class="etiquette txt-etiquette"
+                              ng-if="group.name != group.goodName">
+                            {{ group.goodName }}
+                        </span>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div ng-if="group.objects.length == 0" title="Déposez les objets ici">
+                        <div class="etiquette txt-etiquette etiquette-empty">
+                        </div>
+                    </div>
+
+                    <!--when exercise-->
+                    <div ng-if="!item.corrected"
+                          ng-repeat="object in group.objects track by $index"
+                          ui-draggable="true" drag="object"
+                          on-drop-success="dropSuccessHandler($event,$index,group.objects)"
+                          title="Déposez les objets ici">
+                        <div ng-if="object.object_type == 'text'"
+                              class="etiquette txt-etiquette">
+                            <div ng-bind-html="to_trusted(object.text)"></div>
+                        </div>
+                        <div ng-if="object.object_type == 'picture'">
+                            <a href="{{ imageUrl }}{{ object.source }}"
+                               data-lightbox="placed" data-title="Image placée">
+                                <img ng-src="{{ imageUrl }}{{ object.source }}"
+                                     class="etiquette img-etiquette"/>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!--when correction-->
+                    <div ng-repeat="object in group.objects track by $index"
+                          ng-if="item.corrected"
+                          title="Ce que vous avez répondu">
+                        <div ng-if="object.object_type == 'text'"
+                              class="etiquette txt-etiquette"
+                              data-ng-class="{'etiquette-wrong': !object.right, 'etiquette-right': object.right}">
+                            <div ng-bind-html="to_trusted(object.text)"></div>
+                        </div>
+                        <div ng-if="object.object_type == 'picture'">
+                            <a href="{{ imageUrl }}{{ object.source }}"
+                               data-lightbox="placed" data-title="Image placée">
+                                <img ng-src="{{ imageUrl }}{{ object.source }}"
+                                     class="etiquette img-etiquette"
+                                     data-ng-class="{'etiquette-wrong': !object.right, 'etiquette-right': object.right}"/>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!--solution-->
+                <div class="panel-body">
+                    <div ng-if="solutions[$index].obj.length > 0"
+                         class="solution">Solution
+                    </div>
+                    <div ng-repeat="object in solutions[$index].obj track by $index">
+                        <div ng-if="object.object_type == 'text'"
+                              class="etiquette txt-etiquette"
+                              title="Cet objet aurait du être placé dans ce groupe">
+                            <div ng-bind-html="to_trusted(object.text)"></div>
+                        </div>
+                        <div ng-if="object.object_type == 'picture'">
+                            <a href="{{ imageUrl }}{{ object.source }}"
+                               data-lightbox="correction" data-title="Correction">
+                                <img ng-src="{{ imageUrl }}{{ object.source }}"
+                                     class="etiquette img-etiquette"/>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div ng-hide="!item.corrected">
+            <strong>Votre score :</strong> {{ item.content.mark | number:0 }}%
+        </div>
+    </div>
+
+    <ng-include src="navBarUrl"></ng-include>
+
+</div>

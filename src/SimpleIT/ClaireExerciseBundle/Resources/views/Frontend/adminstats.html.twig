@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en" ng-app="mainApp">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>Asker</title>
+
+    <!-- included styles -->
+    <link rel="stylesheet" href="{{ asset('bundles/simpleitclaireexercise/frontend/css/bootstrap-combined.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/simpleitclaireexercise/frontend/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/simpleitclaireexercise/frontend/css/custom-style.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/simpleitclaireexercise/frontend/css/loading-bar.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/simpleitclaireexercise/frontend/css/exercise.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/simpleitclaireexercise/frontend/css/lightbox.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/simpleitclaireexercise/frontend/css/font-awesome.min.css') }}">
+
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li>
+              <a href="{{path('admin_index')}}">
+                Administration
+              </a>
+            </li>
+            <li>
+              <a href="{{path('admin_list_users')}}">
+                Gestion des utilisateurs
+              </a>
+            </li>
+            <li>
+              <a href="{{path('admin_list_disable')}}">Comptes non activés</a>
+            </li>
+            <li>
+              <a href="{{path('frontend_index')}}">Retour sur Asker</a>
+            </li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+      {% block content %}
+        <div class='col-xs-12'>
+          <table class="table table-bordered">
+            <thead>
+              <th>Modèle</th>
+              <th>Inscrits</th>
+              <th>Utilisateurs ayant généré au moins un exo</th>
+              <th>Moyenne exercices générés</th>
+              <th>Utilisateurs ayant soumis au moins une réponse</th>
+              <th>Moyenne exercices répondus</th>
+              <th>Moyenne des notes</th>
+            </thead>
+            {% for directory, models in directories %}
+              {% if models is not empty %}
+                <tr class="active">
+                  <td colspan=7><b>{{directory}}</b></td>
+                </tr>
+              {% endif %}
+              {% for model in models %}
+                <tr>
+                  <td>{{model.title}}</td>
+                  <td>{{model.users}}</td>
+                  <td>
+                    {{model.userNoAnswer}}
+                    ({{((model.userNoAnswer*100)/model.users)|number_format(0)}}%)
+                  </td>
+                  <td>{{model.avgAttempt|number_format(2)}}</td>
+                  <td>
+                    {{model.userAnswer}}
+                    ({{((model.userAnswer*100)/model.users)|number_format(0)}}%)
+                  </td>
+                  <td>{{model.avgAnswer|number_format(2)}}</td>
+                  <td>{{model.avgMark|number_format(2)}}%</td>
+                </tr>
+              {% endfor %}
+            {% endfor %}
+          </table>
+        </div>
+      {% endblock %}
+    </div><!-- /.container -->
+  </body>
+</html>

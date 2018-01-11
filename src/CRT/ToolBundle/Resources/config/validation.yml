@@ -1,0 +1,5 @@
+CRT\ToolBundle\Entity\Request:
+    properties:
+        email:
+            - Email : ~
+            - CRT\ToolBundle\Validator\Constraints\UserNotExist: ~

@@ -1,0 +1,293 @@
+<tabset>
+<tab>
+    <tab-heading
+        title="Lister explicitement les ressources. Pensez à cocher la case si c'est le choix que vous retenez. Vous pouvez tout de même sauvegarder des informations dans l'autre onglet.">
+        Liste
+    </tab-heading>
+    <div class="panel-body panel panel-primary"
+         ui-on-Drop="onDropResourceToBlock($event,$data,block.resources)">
+        <accordion close-others="true">
+            <accordion-group class="panel panel-success"
+                             data-ng-class="{'panel-danger': (model.type === 'pair-items' && getMobilePart(resources[blockResourceId.id], block.pair_meta_key) === '') || (model.type === 'order-items' && getOrderValue(resources[blockResourceId.id], block.meta_key) === '')}"
+                             data-ng-repeat="blockResourceId in block.resources track by $index" class="row">
+                <accordion-heading class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-2"
+                             ng-switch="resources[blockResourceId.id].type">
+                            <div ng-switch-when="text">
+                                <span title="Texte" class="glyphicon glyphicon-font" style="font-size: 260%"></span>
+                            </div>
+                            <div ng-switch-when="picture">
+                                <img ng-src="{{BASE_CONFIG.urls.images.uploads}}{{resources[blockResourceId.id].content.source}}"
+                                     style="width: 40px; height: 40px;"/>
+                            </div>
+                            <div ng-switch-when="multiple-choice-question">
+                                <span title="QCM" class="glyphicon glyphicon-check" style="font-size: 260%"></span>
+                            </div>
+                            <div ng-switch-when="open-ended-question">
+                                <span class="glyphicon glyphicon-question-sign"
+                                      title="Question à réponse courte ouverte"
+                                      style="font-size: 260%"></span>
+                            </div>
+                            <div ng-switch-when="sequence">
+                                <span class="glyphicon glyphicon-sort-by-order" style="font-size: 260%"></span>
+                            </div>
+                        </div>
+                        <div class="col-xs-8">
+                            <ng-switch on="model.type">
+                                <h4 ng-switch-when="pair-items">
+                                    {{ resources[blockResourceId.id].title }}
+                                    ({{ getMobilePart(resources[blockResourceId.id],block.pair_meta_key) }})&nbsp;<span class="caret"></span>
+                                </h4>
+                                <h4 ng-switch-when="order-items">
+                                    {{ resources[blockResourceId.id].title }}
+                                    ({{ getOrderValue(resources[blockResourceId.id],block.meta_key) }})&nbsp;<span class="caret"></span>
+                                </h4>
+                                <h4 ng-switch-when="multiple-choice">
+                                    {{ resources[blockResourceId.id].title }}&nbsp;<span class="caret"></span>
+                                </h4>
+                                <h4 ng-switch-when="group-items">
+                                    <!--{{ resources[blockResourceId.id].title }}&nbsp;<span class="caret"></span>-->
+                                    {{ resources[blockResourceId.id].title }}
+                                    ({{ findGroup(resources[blockResourceId.id]) }})
+                                    &nbsp;<span class="caret"></span>
+                                </h4>
+                                <h4 ng-switch-when="open-ended-question">
+                                    {{ resources[blockResourceId.id].title }}&nbsp;<span class="caret"></span>
+                                </h4>
+                            </ng-switch>
+                        </div>
+                        <div class="col-xs-1">
+
+                        </div>
+                        <div class="col-xs-1">
+                                <span data-ng-click="$event.stopPropagation();modelRemoveField(block.resources, $index)"
+                                      class="glyphicon glyphicon-remove"></span>
+                        </div>
+                    </div>
+                </accordion-heading>
+                <div class="col-centered">
+                    <label>ID&nbsp;:&nbsp;</label>{{
+                    resources[blockResourceId.id].id }}
+                </div>
+                <div class="col-centered">
+                    <label>Auteur&nbsp;:&nbsp;</label>{{ users[resources[blockResourceId.id].author].user_name }}
+                </div>
+                <div class="col-centered">
+                    <label>Propriétaire&nbsp;:&nbsp;</label>{{ users[resources[blockResourceId.id].owner].user_name }}
+                </div>
+                <div class="col-centered">
+                    <label>Partagé&nbsp;:&nbsp;</label>
+                    <ng-switch on="resources[blockResourceId.id].public">
+                        <span ng-switch-when="true">Oui</span>
+                        <span ng-switch-when="false">Non</span>
+                    </ng-switch>
+                </div>
+                <div class="col-centered">
+                    <label>Complet&nbsp;:&nbsp;</label>
+                    <ng-switch on="resources[blockResourceId.id].complete">
+                        <span ng-switch-when="true">Oui</span>
+                        <span ng-switch-when="false">Non</span>
+                    </ng-switch>
+                </div>
+                <div class="col-centered"
+                     ng-switch="resources[blockResourceId.id].type">
+                    <div ng-switch-when="text">
+                        <label>Contenu&nbsp;:&nbsp;</label>{{
+                        resources[blockResourceId.id].content.text }}
+                    </div>
+                    <div ng-switch-when="picture">
+                        <label>Contenu&nbsp;:&nbsp;</label>
+                        <a href="{{BASE_CONFIG.urls.images.uploads}}{{resources[blockResourceId.id].content.source}}"
+                           data-lightbox="res" data-title="La ressource">
+                            <img ng-src="{{BASE_CONFIG.urls.images.uploads}}{{resources[blockResourceId.id].content.source}}"/>
+                        </a>
+                    </div>
+                    <div ng-switch-when="multiple-choice-question">
+                        <label>Question&nbsp;:&nbsp;</label>{{
+                        resources[blockResourceId.id].content.question }}
+                    </div>
+                    <div ng-switch-when="open-ended-question">
+                        <label>Question&nbsp;:&nbsp;</label>{{
+                        resources[blockResourceId.id].content.question }}
+                    </div>
+                </div>
+                <div class="col-centered"
+                     ng-switch="resources[blockResourceId.id].type">
+                    <div ng-switch-when="multiple-choice-question">
+                        <label>Commentaire&nbsp;:&nbsp;</label>{{
+                        resources[blockResourceId.id].content.comment }}
+                    </div>
+                    <div ng-switch-when="open-ended-question">
+                        <label>Commentaire&nbsp;:&nbsp;</label>{{
+                        resources[blockResourceId.id].content.comment }}
+                    </div>
+                </div>
+            </accordion-group>
+        </accordion>
+    </div>
+</tab>
+<tab>
+    <tab-heading
+        title="Sélectionner les ressources par contraintes. Pensez à cocher la case si c'est le choix que vous retenez. Vous pouvez tout de même sauvegarder des informations dans l'autre onglet.">
+        Contraintes
+    </tab-heading>
+    <div class="panel-body panel panel-primary" data-ng-init="initResourceConstraints(block)">
+        <div ng-if="blockTypes.length > 0">
+            <label>Type de ressource</label><br>
+
+            <div class="btn-group">
+                <!--<button class="btn btn-info"-->
+                        <!--ng-model="block.resource_constraint.type"-->
+                        <!--btn-radio="null"-->
+                        <!--title="N'importe">-->
+                    <!--&forall;-->
+                <!--</button>-->
+                <button ng-if="blockTypes.indexOf('text') !== -1"
+                        class="btn btn"
+                        ng-model="block.resource_constraint.type"
+                        btn-radio="'text'"
+                        title="Texte"
+                        uncheckable>
+                    <span class="glyphicon glyphicon-font"></span>
+                </button>
+                <button ng-if="blockTypes.indexOf('picture') !== -1"
+                        class="btn btn"
+                        ng-model="block.resource_constraint.type"
+                        btn-radio="'picture'"
+                        title="Image"
+                        uncheckable>
+                    <span class="glyphicon glyphicon-picture"></span>
+                </button>
+            </div>
+            <br/>
+        </div>
+
+        <div>
+            <label>Liste des containtes</label><br>
+
+            <div ng-include src="BASE_CONFIG.urls.partials.teacher+'/fragment-constraint-list.html'"></div>
+        </div>
+        <div>
+            <label>Ressources exclues</label>
+
+            <div class="panel-body panel panel-primary"
+                 ui-on-Drop="onDropResourceToBlock($event,$data,block.resource_constraint.excluded)">
+                <accordion close-others="true">
+                    <accordion-group class="panel panel-success"
+                                     data-ng-repeat="blockResourceId in block.resource_constraint.excluded track by $index"
+                                     class="row">
+                        <accordion-heading class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-2"
+                                     ng-switch="resources[blockResourceId.id].type">
+                                    <div ng-switch-when="text">
+                                        <span title="Texte" class="glyphicon glyphicon-font" style="font-size: 260%"></span>
+                                    </div>
+                                    <div ng-switch-when="picture">
+                                        <img ng-src="{{BASE_CONFIG.urls.images.uploads}}{{resources[blockResourceId.id].content.source}}"
+                                             style="width: 40px; height: 40px;"/>
+                                    </div>
+                                    <div ng-switch-when="multiple-choice-question">
+                                        <span title="QCM" class="glyphicon glyphicon-check" style="font-size: 260%"></span>
+                                    </div>
+                                    <div ng-switch-when="open-ended-question">
+                                <span class="glyphicon glyphicon-question-sign"
+                                      title="Question à réponse courte ouverte" style="font-size: 260%"></span>
+                                    </div>
+                                    <div ng-switch-when="sequence">
+                                        <span class="glyphicon glyphicon-sort-by-order" style="font-size: 260%"></span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-8">
+                                    <h4>{{ resources[blockResourceId.id].title }}&nbsp;<span class="caret"></span>
+                                    </h4>
+                                </div>
+                                <div class="col-xs-1">
+
+                                </div>
+                                <div class="col-xs-1">
+                            <span data-ng-click="$event.stopPropagation();modelRemoveField(block.resource_constraint.excluded, $index)"
+                                  class="glyphicon glyphicon-remove"></span>
+                                </div>
+                            </div>
+                        </accordion-heading>
+                        <div class="col-centered">
+                            <label>ID&nbsp;:&nbsp;</label>{{
+                            resources[blockResourceId.id].id }}
+                        </div>
+                        <div class="col-centered">
+                            <label>Auteur&nbsp;:&nbsp;</label>{{
+                            users[resources[blockResourceId.id].author] }}
+                        </div>
+                        <div class="col-centered">
+                            <label>Propriétaire&nbsp;:&nbsp;</label>{{
+                            users[resources[blockResourceId.id].owner] }}
+                        </div>
+                        <div class="col-centered">
+                            <label>Partagé&nbsp;:&nbsp;</label>
+                            <ng-switch on="resources[blockResourceId.id].public">
+                                <span ng-switch-when="true">Oui</span>
+                                <span ng-switch-when="false">Non</span>
+                            </ng-switch>
+                        </div>
+                        <div class="col-centered">
+                            <label>Complet&nbsp;:&nbsp;</label>
+                            <ng-switch on="resources[blockResourceId.id].complete">
+                                <span ng-switch-when="true">Oui</span>
+                                <span ng-switch-when="false">Non</span>
+                            </ng-switch>
+                        </div>
+                        <div class="col-centered"
+                             ng-switch="resources[blockResourceId.id].type">
+                            <div ng-switch-when="text">
+                                <label>Contenu&nbsp;:&nbsp;</label>{{
+                                resources[blockResourceId.id].content.text }}
+                            </div>
+                            <div ng-switch-when="picture">
+                                <label>Contenu&nbsp;:&nbsp;</label>
+                                <a href="{{BASE_CONFIG.urls.images.uploads}}{{resources[blockResourceId.id].content.source}}"
+                                   data-lightbox="res" data-title="La ressource">
+                                    <img ng-src="{{BASE_CONFIG.urls.images.uploads}}{{resources[blockResourceId.id].content.source}}"/>
+                                </a>
+                            </div>
+                            <div ng-switch-when="multiple-choice-question">
+                                <label>Question&nbsp;:&nbsp;</label>{{
+                                resources[blockResourceId.id].content.question }}
+                            </div>
+                            <div ng-switch-when="open-ended-question">
+                                <label>Question&nbsp;:&nbsp;</label>{{
+                                resources[blockResourceId.id].content.question }}
+                            </div>
+                        </div>
+                        <div class="col-centered"
+                             ng-switch="resources[blockResourceId.id].type">
+                            <div ng-switch-when="multiple-choice-question">
+                                <label>Commentaire&nbsp;:&nbsp;</label>{{
+                                resources[blockResourceId.id].content.comment }}
+                            </div>
+                            <div ng-switch-when="open-ended-question">
+                                <label>Commentaire&nbsp;:&nbsp;</label>{{
+                                resources[blockResourceId.id].content.comment }}
+                            </div>
+                        </div>
+                    </accordion-group>
+                </accordion>
+            </div>
+        </div>
+    </div>
+</tab>
+</tabset>
+<br>
+<span data-ng-click="block.is_list=!block.is_list">
+    <span class="glyphicon"
+          ng-class="{'glyphicon-check': block.is_list, 'glyphicon-unchecked': !block.is_list}"></span>
+    Sélection des ressources par liste
+</span>
+
+&nbsp;&nbsp;
+<span data-ng-click="block.is_list=!block.is_list">
+    <span class="glyphicon"
+          ng-class="{'glyphicon-unchecked': block.is_list, 'glyphicon-check': !block.is_list}"></span>
+Sélection par contraintes
+</span>

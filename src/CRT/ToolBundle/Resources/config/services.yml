@@ -1,0 +1,12 @@
+services:
+#    crt_tool.example:
+#        class: CRT\ToolBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]
+    validator.unique.user_not_exist:
+        class: CRT\ToolBundle\Validator\Constraints\UserNotExistValidator
+        arguments: ["@ldap_server"]
+        tags:
+            - { name: validator.constraint_validator, alias : user_not_exist}
+
+    crt_tool.definitions:
+        class: CRT\ToolBundle\Definitions\Definitions

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en" ng-app="mainApp">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>Asker</title>
+
+    <!-- included styles -->
+    <link rel="stylesheet" href="{{ asset('bundles/simpleitclaireexercise/frontend/css/bootstrap-combined.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/simpleitclaireexercise/frontend/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/simpleitclaireexercise/frontend/css/custom-style.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/simpleitclaireexercise/frontend/css/loading-bar.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/simpleitclaireexercise/frontend/css/exercise.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/simpleitclaireexercise/frontend/css/lightbox.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/simpleitclaireexercise/frontend/css/font-awesome.min.css') }}">
+
+  </head>
+  <body>
+    <div class="container">
+      <div class='row'>
+        <div class='mainbox col-md-6 col-md-offset-3'>
+          <div class='panel panel-primary'>
+            <div class='panel-heading'>
+              <div class='panel-title'>
+                Création d'un compte Asker
+              </div>
+            </div>
+            <div style='padding-top:30px' class='panel-body'>
+              <div style="display:none" id="login-alert"
+              class="alert alert-danger col-sm-12">
+              </div>
+              <form action="{{ path('sign') }}" method="post"
+              class='form-horizontal'>
+                <div class='form-group col-sm-10'>
+                  <label for="lastName">
+                    Votre futur identifiant :
+                  </label>
+                  <input type="text" class="form-control" name="username"
+                  id="username" readonly>
+                </div>
+                <div class='form-group col-sm-10'>
+                  <label for="firstName">
+                    Prénom :
+                  </label>
+                  <input type="text" class="form-control" name="firstName"
+                  onkeyup="check()"
+                  id="firstName" placeholder="Votre prénom" required>
+                </div>
+                <div class='form-group col-sm-10'>
+                  <label for="lastName">
+                    Nom :
+                  </label>
+                  <input type="text" class="form-control" name="lastName"
+                  onkeyup="check()"
+                  id="lastName" placeholder="Votre nom de famille" required>
+                </div>
+                <div class='form-group col-sm-10'>
+                  <label for="lastName">
+                    Mot de passe :
+                  </label>
+                  <input type="password" class="form-control" name="password"
+                  onkeyup="check()"
+                  id="password" placeholder="Votre mot de passe" required>
+                </div>
+                <div class='form-group col-sm-10'>
+                  <label for="lastName">
+                    Confirmation mot de passe :
+                  </label>
+                  <input type="password" class="form-control" name="confirm"
+                  onkeyup="check()"
+                  id="confirm" placeholder="Confirmer votre mot de passe" required>
+                </div>
+                <div class='col-sm-10 alert alert-danger' id='message'
+                style='display:none;'>
+
+                </div>
+                <button class="btn btn-lg btn-primary btn-block"
+                type="submit" disabled id='button'>
+                  Inscription
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      function check(){
+        var first = document.getElementById('firstName').value;
+        var last = document.getElementById('lastName').value;
+        var password = document.getElementById('password').value;
+        var pwd = document.getElementById('confirm').value;
+        var error = "";
+        document.getElementById('username').value = "ext_"+first+"."+last;
+        if (!Boolean(first)){
+          error += "Le prénom est vide<br>";
+        }
+        if (!Boolean(last)){
+          error += "Le nom est vide<br>";
+        }
+        if ( pwd !== password){
+          error += "Les mots de passe ne correspondent pas!";
+        }
+        if (error !== ""){
+          document.getElementById('message').innerHTML = error;
+          document.getElementById('button').disabled = true;
+          document.getElementById('message').style.display="inline";
+        }else{
+          document.getElementById('message').innerHTML = error;
+          document.getElementById('button').disabled = false;
+          document.getElementById('message').style.display="none";
+        }
+        
+      }
+    </script>
+  </body>
+</html>

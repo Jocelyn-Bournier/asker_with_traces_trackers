@@ -1,0 +1,62 @@
+api_directory_new_list:
+    pattern:  /new/{user}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Directory/Directory:newInDirectory }
+    methods: [GET]
+    requirements:
+        _format: json
+api_directory_delete:
+    pattern:  /{directoryId}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Directory/Directory:delete }
+    methods: [DELETE]
+    requirements:
+        _format: json
+        resourceId: \d+
+api_directory_list:
+    pattern:  /
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Directory/Directory:list }
+    methods: [GET]
+    requirements:
+        _format: json
+api_directory_create:
+    pattern:  /{id}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Directory/Directory:create,id:0 }
+    methods: [POST]
+    requirements:
+        _format: json
+api_directory_mine:
+    pattern:  /mine/
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Directory/Directory:mine }
+    methods: [GET]
+    requirements:
+        _format: json
+api_directory_edit:
+    pattern:  /{directoryId}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Directory/Directory:edit }
+    methods: [PUT]
+    requirements:
+        _format: json
+        exercise_modelId: \d+
+api_directory_view:
+    pattern:  /mine/{directoryId}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Directory/Directory:view }
+    methods: [GET]
+    requirements:
+        _format: json
+        exerciseModelId: \d+
+api_directory_view_exercises:
+    pattern:  /{directoryId}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Directory/Directory:viewExercises }
+    methods: [GET]
+api_directory_model:
+    pattern:  /model/{model}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Directory/Directory:model}
+    methods: [GET]
+    requirements:
+        _format: json
+api_directory_model_save:
+    pattern:  /model/{model}/{directory}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Directory/Directory:modelDirectory}
+    methods: [POST]
+    requirements:
+        _format: json
+

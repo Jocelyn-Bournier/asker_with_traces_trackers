@@ -1,0 +1,181 @@
+<div data-ng-controller="resourceController">
+    <div class="panel-body" data-ng-controller="resourceListController">
+
+        <accordion>
+            <accordion-group class="panel panel-success">
+                <accordion-heading class="panel-heading" style="padding-bottom: 0">
+                    <div class="col-centered">
+                        <span class="glyphicon glyphicon-filter"></span>&nbsp;Filtrer mes ressources&nbsp;<span class="caret"></span>
+
+                    </div>
+                </accordion-heading>
+                <div class="col-centered research">
+                    <div>
+                        <h5>Métadonnées</h5>
+
+                        <div class="row"
+                             title="Recherche sur des métadonnées : saisir le couple clé/valeur recherché, ou seulement la clé ou seulement la valeur">
+                            <div class="panel panel-success">
+                                <br>
+
+                                <div ng-repeat="meta in filters.metadata track by $index">
+                                    <div class="col-xs-5">
+                                        <input type="text" ng-model="meta.key" class="form-control" disabled>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <input type="text" ng-model="meta.value" class="form-control" disabled>
+                                    </div>
+                                    <div class="col-xs-1"><span data-ng-click="resourceRemoveField(filters.metadata, $index)"
+                                                                class="glyphicon glyphicon-remove"
+                                                                title="Supprimer ce filtre"></span>
+                                    </div>
+                                </div>
+                                <div class="">
+                                    <div class="col-xs-5">
+                                        <input id="resourceAddMetadataKey" type="text" value=""
+                                               placeholder="nouvelle clé" class="form-control">
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <input id="resourceAddMetadataValue" type="text" value=""
+                                               placeholder="nouvelle valeur" class="form-control">
+                                    </div>
+                                    <div class="col-xs-1"><span data-ng-click="resourceAddMetadataField(filters.metadata)"
+                                                                class="glyphicon glyphicon-ok"
+                                                                title="Ajouter ce filtre"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="col-centered">
+                            <h5>Filtrer par type</h5>
+
+                            <div class="btn-group">
+                                <button class="btn" title="Image" ng-model="$parent.$parent.filters.type.picture" btn-checkbox-true="'picture'" btn-checkbox-false="''" btn-checkbox>
+                                    <span class="glyphicon glyphicon-picture"></span>
+                                </button>
+                                <button class="btn" title="Texte" ng-model="$parent.$parent.filters.type.text" btn-checkbox-true="'text'" btn-checkbox-false="''" btn-checkbox>
+                                    <span class="glyphicon glyphicon-font"></span>
+                                </button>
+                                <button class="btn" title="Question de QCM" ng-model="$parent.$parent.filters.type.multiple_choice_question" btn-checkbox-true="'multiple-choice-question'" btn-checkbox-false="''" btn-checkbox>
+                                    <span class="glyphicon glyphicon-check"></span>
+                                </button>
+                                <button class="btn" title="Question à réponse courte ouverte" ng-model="$parent.$parent.filters.type.open_ended_question" btn-checkbox-true="'open-ended-question'" btn-checkbox-false="''" btn-checkbox>
+                                    <span class="glyphicon glyphicon-question-sign"></span>
+                                </button>
+                                <!--<button class="btn" title="sequence" ng-model="$parent.$parent.filters.type.sequence" btn-checkbox-true="'sequence'" btn-checkbox-false="''" btn-checkbox>-->
+                                    <!--<span class="glyphicon glyphicon-sort-by-order"></span>-->
+                                <!--</button>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-centered research">
+                    <div>
+                        <h5>Mots-clés</h5>
+
+                        <div class="row" title="Recherche sur les mots-clés">
+                            <div class="panel panel-success">
+                                <br>
+
+                                <div ng-repeat="keyword in filters.keywords track by $index">
+                                    <div class="col-xs-10">
+                                        <input type="text" ng-model="keyword" class="form-control" disabled>
+                                    </div>
+                                    <div class="col-xs-2"><span data-ng-click="resourceRemoveField(filters.keywords, $index)"
+                                                                class="glyphicon glyphicon-remove"
+                                                                title="Supprimer ce filtre"></span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-10">
+                                    <input id="resourceAddKeyword" type="text" value=""
+                                           placeholder="nouveau mot-clé" class="form-control"></div>
+                                <div class="col-xs-2"><span data-ng-click="resourceAddKeywordsField(filters.keywords)"
+                                                            class="glyphicon glyphicon-ok"
+                                                            title="Ajouter ce filtre"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h5>Recherche</h5>
+
+                        <div class="row">
+                            <div class="panel panel-success">
+                                <br>
+
+                                <div class="col-xs-10">
+                                    <input type="text" placeholder="rechercher" ng-model="$parent.$parent.filters.search"
+                                           title="Rechercher dans le titre, les métadonnées et les mots-clés de la ressource">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </accordion-group>
+
+            <div class="btn-group" style="margin-left: 4px; margin-top: 4px"
+                 data-ng-class="{'pull-right': !isSelectResource}">
+                <label ng-if="!isSelectResource"
+                       class="btn"
+                       ng-model="filters.public"
+                       data-ng-class="{'active': !filters.public, '': filters.public}"
+                       ng-click="filters.public = !filters.public">Privées</label>
+                <label ng-if="!isSelectResource"
+                       class="btn"
+                       ng-model="filters.public"
+                       data-ng-class="{'active': filters.public, '': !filters.public}"
+                       ng-click="filters.public = !filters.public">Publiques</label>
+                <label class="btn"
+                       data-ng-class="{'active': filters.archived, '': !filters.archived}"
+                       ng-model="filters.archived"
+                       ng-click="filters.archived = !filters.archived">Archivées</label>
+            </div>
+
+            <accordion-group ng-if="!isSelectResource"
+                             class="panel panel-success">
+                <accordion-heading class="panel-heading">
+                    <div class="col-centered">
+                        <span class="glyphicon glyphicon-plus"></span>&nbsp;Créer une ressource&nbsp;<span class="caret"></span>
+                    </div>
+                </accordion-heading>
+                <div class="list-group">
+                    <div>
+                        <a data-ng-click="createResource('picture')" href class="list-group-item"><span class="glyphicon glyphicon-picture"></span>&nbsp;Créer une image</a>
+                    </div>
+                    <div>
+                        <a data-ng-click="createResource('text')" href class="list-group-item"><span title="Texte" class="glyphicon glyphicon-font"></span>&nbsp;Créer un texte</a>
+                    </div>
+                    <div>
+                        <a data-ng-click="createResource('multiple-choice-question')" href class="list-group-item"><span title="Question de QCM" class="glyphicon glyphicon-check"></span>&nbsp;Créer une question à choix multiple</a>
+                    </div>
+                    <div>
+                        <a data-ng-click="createResource('open-ended-question')" href class="list-group-item"><span title="Question à réponse courte ouverte" class="glyphicon glyphicon-question-sign"></span>&nbsp;Créer une question à réponse courte</a>
+                    </div>
+                    <!--<div><a href class="list-group-item"><span class="glyphicon glyphicon-sort-by-order"></span>&nbsp;Créer une séquence</a></div>-->
+                </div>
+            </accordion-group>
+        </accordion>
+
+        <accordion close-others="true">
+            <!--
+                The ng-repeat directive iterates on each item in a collection.
+                This collection is dynamically updated by filters. It works basically like unix pipes :)
+                Let's explains basically this directive value : << (1: resource in resources) | (2: filter:filters.search) | (3: myFilters:filters) >>
+                Each step are (1,2,3,..) are sequentially processed. Step 1 outputs will be step 2 inputs, and so on.
+                    1.  Step 1 : The collection contains all resources retrieved from the backend. The "resources" object must be declared in the resourceController scope first.
+                    2.  Step 2 keeps resources that contains as a key or as value the string present in the object filters.search field.
+                        If this field is empty all models are given to step 3.
+                    3. Step 3 give the current collection to a custom filtering function.
+            -->
+            <accordion-group class="panel"
+                             ng-repeat="resource in resources | filter:filters.search | myFilters:filters"
+                             data-ng-class="{'panel-success': resource.parent == null, 'panel-resource-subscribe': resource.parent != null, 'archived': resource.archived}">
+                <div ng-include src="BASE_CONFIG.urls.partials.teacher+'/fragment-resource-panel.html'"></div>
+            </accordion-group>
+        </accordion>
+    </div>
+</div>

@@ -1,0 +1,50 @@
+{% extends "CRTToolBundle::template.html.twig" %}
+{% block contenu %}
+  <div class='container'>
+    <div clas='row'>
+    <div class='header clearfix'>
+      <nav>
+        <ul class='navbar navbar-right'>
+            <a href='{{path('crt_tool_dashboard')}}' class='btn btn-primary' role='button'>
+              Retour
+            </a>
+        </ul>
+      </nav>
+    </div>
+      <div class='col-lg-12'>
+        <table class='table table-bordered'>
+          <thead>
+            <tr>
+              <th>Prénom</th>
+              <th>Nom</th>
+              <th>Adresse</th>
+              <th>Academie</th>
+              <th>Entité du CNS</th>
+              <th>Date de la demande</th>
+              <th>Statut</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for request in requests %}
+              {% if request.status.label == def.confirmed %}
+                <tr class='success'>
+              {% elseif request.status.label == def.waiting %}
+                <tr class='warning'>
+              {% else %}
+                <tr class='danger'>
+              {% endif %}
+                <td>{{request.firstName}}</td>
+                <td>{{request.lastName}}</td>
+                <td>{{request.email}}</td>
+                <td>{{request.academy.label}}</td>
+                <td>{{request.corporate.label}}</td>
+                <td>{{request.createDate|date("d/m/Y H:i")}}</td>
+                <td>{{request.status.label}}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock %}

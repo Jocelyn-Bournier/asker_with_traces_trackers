@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en" ng-app="mainApp">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>Asker</title>
+
+    <!-- included styles -->
+    <link rel="stylesheet" href="{{ asset('bundles/simpleitclaireexercise/frontend/css/bootstrap-combined.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/simpleitclaireexercise/frontend/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/simpleitclaireexercise/frontend/css/custom-style.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/simpleitclaireexercise/frontend/css/loading-bar.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/simpleitclaireexercise/frontend/css/exercise.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/simpleitclaireexercise/frontend/css/lightbox.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/simpleitclaireexercise/frontend/css/font-awesome.min.css') }}">
+
+  </head>
+  <body>
+    <div class="container">
+      <div class='row'>
+        <div class='mainbox col-md-6 col-md-offset-3'>
+          <div class='panel panel-primary'>
+            <div class='panel-heading'>
+              <div class='panel-title'>
+                Merci de vous authentifier
+              </div>
+            </div>
+            <div style='padding-top:30px' class='panel-body'>
+              <div style="display:none" id="login-alert"
+              class="alert alert-danger col-sm-12">
+              </div>
+              <form action="{{ path('login_check') }}" method="post"
+              class='form-horizontal'>
+                <div style="margin-bottom: 25px" class="input-group">
+                  <span class="input-group-addon">
+                    <i class="glyphicon glyphicon-user"></i>
+                  </span>
+                  <input type="text" id="username" name="_username"
+                  placeholder="Ex: p1234567 ou prenom.nom"
+                  class='form-control' required autofocus style='height:32px;'/>
+                </div>
+                <div style="margin-bottom: 25px" class="input-group">
+                  <span class="input-group-addon">
+                    <i class="glyphicon glyphicon-lock"></i>
+                  </span>
+                  <input type="password" id="password" name="_password" required
+                  placeholder="Votre mot de passe" class='form-control'
+                  style='height:32px;'/>
+                </div>
+                <div class='input-group' style='margin-bottom: 25px'>
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" value="remember-me"> Remember me
+                    </label>
+                  </div>
+                </div>
+                <button class="btn btn-lg btn-primary btn-block"
+                type="submit">
+                  Authentification
+                </button>
+              </form>
+            </div>
+          </div>
+          {% if app.session.flashBag.has('success') %}
+            <div class="alert alert-success">
+              {% for msg in app.session.flashBag.get('success') %}
+                {{ msg }}
+              {% endfor %}
+            </div>
+          {% elseif app.session.flashBag.has('error') %}
+            <div class="alert alert-error">
+              {% for msg in app.session.flashBag.get('error') %}
+                {{ msg }}
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

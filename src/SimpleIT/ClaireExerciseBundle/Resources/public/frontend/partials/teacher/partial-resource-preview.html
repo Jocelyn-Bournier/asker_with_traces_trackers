@@ -1,0 +1,6 @@
+<accordion>
+    <accordion-group class="panel" is-open="true"
+                     data-ng-class="{'panel-success': resource.parent == null, 'panel-resource-subscribe': resource.parent != null, 'archived': resource.archived}">
+        <div ng-include src="BASE_CONFIG.urls.partials.teacher+'/fragment-resource-panel.html'"></div>
+    </accordion-group>
+</accordion>

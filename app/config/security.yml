@@ -1,0 +1,44 @@
+# To get started with security, check out the documentation:
+# http://symfony.com/doc/current/book/security.html
+security:
+    # http://symfony.com/doc/current/book/security.html#where-do-users-come-from-user-providers
+    encoders:
+            SimpleIT\ClaireExerciseBundle\Entity\AskerUser:
+                algorithm: bcrypt
+    providers:
+        chain_provider:
+            chain:
+                providers: [ldap_provider, db_provider]
+        db_provider:
+            entity:
+                class: SimpleIT\ClaireExerciseBundle\Entity\AskerUser
+                property: username
+        ldap_provider:
+            id: ldap_user_provider
+
+    access_control:
+        - { path : ^/admin, roles: "ROLE_ADMIN" }
+
+    firewalls:
+        # disables authentication for assets and the profiler, adapt it according to your needs
+        login:
+            pattern: ^/$
+            security: false
+        sign:
+            pattern: ^/sign/$
+            security: false
+        secure:
+            pattern: ^/(front|api|admin)/
+            anonymous: false
+            #provider: ldap_provider
+            ldap_login:
+                login_path: /
+                check_path: /front/login_check
+                always_use_default_target_path: true
+                default_target_path: /front/
+            logout:
+                path: /front/logout
+                target : /
+
+
+

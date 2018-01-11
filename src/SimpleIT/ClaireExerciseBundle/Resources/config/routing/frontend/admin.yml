@@ -1,0 +1,21 @@
+admin_index:
+    pattern: /
+    defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Admin:index }
+admin_list_disable:
+    pattern: /users/disable
+    defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Admin:listDisable }
+admin_list_users:
+    pattern: /users/all
+    defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Admin:all }
+admin_change:
+    pattern: /users/change
+    defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Admin:change }
+admin_edit:
+    pattern: /users/change/{user}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Admin:edit }
+admin_update_password:
+    pattern: /users/password/{user}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Admin:updatePassword }
+admin_stats_directory:
+    pattern: /stats/directory/{directory}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Admin:statsDirectory }

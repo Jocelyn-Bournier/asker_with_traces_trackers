@@ -1,0 +1,10 @@
+parameters:
+    adminAddresses:
+        -   'crt-rso-accreditation@in.phm.education.gouv.fr'
+        #-   'romain.chanu@ac-clermont.fr'
+    requestValidity: "P3D"
+    #requestValidity: "PT30S"
+    request.duration: "3 jours"
+    email.subject.confirm : "Valider votre demande de création de compte LDAP"
+    email.subject.request : "Demande de création de compte LDAP"
+    email.subject.danger : "[Alerte] Tentative de confirmation d'un token inexistant"

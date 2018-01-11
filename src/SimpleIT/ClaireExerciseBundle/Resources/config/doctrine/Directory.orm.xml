@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity repository-class="SimpleIT\ClaireExerciseBundle\Repository\DirectoryRepository" name="SimpleIT\ClaireExerciseBundle\Entity\Directory">
+    <id name="id" type="integer" column="id">
+      <generator strategy="AUTO"/>
+    </id>
+    <field name="name" type="string" column="name" length="50"/>
+    <field name="code" type="string" column="code" length="50" nullable="true"/>
+    <many-to-many field="models" inversed-by="directories"
+         target-entity="SimpleIT\ClaireExerciseBundle\Entity\ExerciseModel\ExerciseModel">
+        <join-table name="directories_models">
+            <join-columns>
+                <join-column name="directory_id" referenced-column-name="id" />
+            </join-columns>
+            <inverse-join-columns>
+                <join-column name="model_id" referenced-column-name="id" />
+            </inverse-join-columns>
+        </join-table>
+        <cascade>
+            <cascade-persist/>
+        </cascade>
+    </many-to-many>
+    <many-to-many field="users" inversed-by="directories"
+         target-entity="SimpleIT\ClaireExerciseBundle\Entity\AskerUser">
+        <join-table name="directories_users">
+            <join-columns>
+                <join-column name="directory_id" referenced-column-name="id" />
+            </join-columns>
+            <inverse-join-columns>
+                <join-column name="user_id" referenced-column-name="id" />
+            </inverse-join-columns>
+        </join-table>
+                    <cascade>
+                <cascade-persist />
+            </cascade>
+    </many-to-many>
+    <one-to-many field="subs" mapped-by="parent" 
+    target-entity="SimpleIT\ClaireExerciseBundle\Entity\Directory"/>
+    <many-to-one field="parent" inversed-by="subs"
+    target-entity="SimpleIT\ClaireExerciseBundle\Entity\Directory"/>
+  </entity>
+</doctrine-mapping>

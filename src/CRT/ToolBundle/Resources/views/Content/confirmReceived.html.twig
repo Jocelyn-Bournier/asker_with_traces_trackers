@@ -1,0 +1,64 @@
+{% extends "CRTToolBundle::template.html.twig" %}
+
+{% block contenu %}
+  <div class='container'>
+    <div class='row'>
+      <div class='col-lg-6 col-lg-offset-3'>
+        {% if error == 0 %}
+          <div class='alert alert-success' role='alert'>
+            <h3>
+              <center>
+                Confirmation de l'envoi de la demande
+              </center>
+            </h3>
+            <br>
+            Vous avez confirmé votre demande de création de compte LDAP dans le
+            but de vous connecter à des ressources se situant à la PHM.<br><br>
+            L'équipe du CRT-RSO vous fera parvenir vos identifiants par e-mail
+            dés que possible.
+          </div>
+        {% elseif error == 3 %}
+          <div class='alert alert-warning' role='alert'>
+            <h3>
+              <center>
+                Cette demande est déjà confirmée
+              </center>
+            </h3>
+            <br>
+            Vous avez  déjà confirmé votre demande de création de compte LDAP.
+            <br><br>
+            L'équipe du CRT-RSO vous fera parvenir vos identifiants par e-mail
+            dés que possible.
+          </div>
+        {% elseif error == 1 %}
+          <div class='alert alert-danger' role='alert'>
+            <h3>
+              <center>
+                Votre demande a expiré
+              </center>
+            </h3>
+            <br>
+            Vous n'avez pas confirmé votre demande de création de
+            compte LDAP PHM dans le délai autorisé.<br>
+            Nous vous invitions à réaliser une nouvelle demande à l'adresse
+            suivante : <br>
+            <a href='{{url('crt_tool_account_form')}}'>
+              {{url('crt_tool_account_form')}}
+            </a>
+          </div>
+        {% else %}
+          <div class='alert alert-danger' role='alert'>
+            <h3>
+              <center>
+              Un problème est survenu
+              </center>
+            </h3>
+            <br>
+            Il y a eu un problème lors du processus de confirmation.
+            Nous vous invitons à contacter le CRT-RSO.
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

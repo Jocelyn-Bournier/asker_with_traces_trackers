@@ -1,0 +1,34 @@
+imports:
+    - { resource: ldap.yml }
+
+parameters:
+    ldap_user_provider.class: CRT\LdapBundle\Security\User\LdapUserProvider
+services:
+    ldap_server:
+        class: CRT\LdapBundle\Security\Server\LdapServer
+        arguments:
+            - "%ldap_server.address%"
+            - "%ldap_server.port%"
+            - "%ldap_server.bindUser%"
+            - "%ldap_server.bindPassword%"
+            - "%ldap_server.baseUser%"
+            - "%ldap_server.userFilter%"
+            - "%ldap_server.roleMethod%"
+            - "%ldap_server.baseGroup%"
+            - "%ldap_server.groupFilter%"
+            - "%ldap_server.roleAttributs%"
+    ldap_user_provider:
+        class: "%ldap_user_provider.class%"
+        arguments:
+            - "@ldap_server"
+            - "@doctrine.orm.entity_manager"
+    ldap.security.check.provider:
+        class: CRT\LdapBundle\Security\Authentication\LdapAuthenticationProvider
+        arguments:
+            - ""
+            - "@security.user_checker"
+            - ""
+            - "@security.encoder_factory"
+            - "%security.authentication.hide_user_not_found%"
+            - "@ldap_server"
+            - "@doctrine.orm.entity_manager"

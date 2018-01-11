@@ -1,0 +1,14 @@
+api_user_list:
+    pattern:  /
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/User/User:list }
+    methods: [GET]
+    requirements:
+        _format: json
+
+api_user_view:
+    pattern:  /{userId}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/User/User:view }
+    methods: [GET]
+    requirements:
+        _format: json
+        userId: \d+

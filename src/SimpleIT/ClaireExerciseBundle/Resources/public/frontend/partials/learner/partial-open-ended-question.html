@@ -1,0 +1,63 @@
+<div data-ng-controller="openEndedQuestionController">
+
+    <div class="panel">
+        <div class="panel-heading row">
+            <div class="col-xs-6">
+                <strong>{{ item.content.question }}</strong>
+
+                <div ng-if="item.content.answer_format.length > 1">
+                    <div>Formats de réponse attendus :</div>
+                    <ul>
+                        <li ng-repeat="format in item.content.answer_format track by $index">
+                            {{ format }}
+                        </li>
+                    </ul>
+                </div>
+                <div ng-if="item.content.answer_format.length == 1">
+                    Formats de réponse attendus : {{ item.content.answer_format[0] }}
+                </div>
+            </div>
+            <div class="col-xs-6 solution" ng-if="item.corrected">
+                <strong ng-if="solutions.length == 1">Solution</strong>
+                <strong ng-if="solutions.length > 1">Solutions possibles</strong>
+            </div>
+        </div>
+
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-xs-6">
+                    <input ng-if="!item.corrected"
+                           type="text" class="form-control" ng-model="item.content.answer">
+
+                    <div ng-if="item.corrected" class="etiquette txt-etiquette"
+                         data-ng-class="{'good-answer etiquette-right': right,'wrong-answer etiquette-wrong': !right}">
+                        {{ item.content.answer }}
+                    </div>
+                </div>
+
+                <div class="col-xs-6" ng-if="item.corrected">
+                    <div ng-repeat="sol in solutions track by $index"
+                         class="etiquette txt-etiquette">
+                        {{ sol }}
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="panel-body">
+                <div ng-hide="!item.corrected || item.content.comment == null"
+                     class="MCComment">
+                    <strong>Commentaire :</strong> {{ item.content.comment }}
+                </div>
+            </div>
+
+            <div class="panel-body">
+                <div ng-hide="!item.corrected">
+                    <strong>Votre score :</strong> {{ item.content.mark | number:0 }}%
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <ng-include src="navBarUrl"></ng-include>
+</div>

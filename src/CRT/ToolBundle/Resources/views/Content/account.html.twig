@@ -1,0 +1,20 @@
+{% extends "CRTToolBundle::template.html.twig" %}
+
+{% block contenu %}
+  <div class='container'>
+    <div class='form-signin'>
+      <h2 class='form-signin-heading'>
+        <center>
+          Création de compte
+        </center>
+      </h2>
+      {{form(form)}}
+      <a class='btn btn-lg btn-info btn-block'
+      href='{{path('crt_tool_password_update')}}'
+      role='button'
+      style='margin-top:10px;'>
+        Retour
+      </a>
+    </div>
+  </div>
+{% endblock %}

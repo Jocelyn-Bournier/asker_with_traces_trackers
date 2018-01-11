@@ -1,0 +1,37 @@
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                          http://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="SimpleIT\ClaireExerciseBundle\Entity\CreatedExercise\StoredExercise" table="claire_exercise_stored_exercise" repository-class="SimpleIT\ClaireExerciseBundle\Repository\Exercise\CreatedExercise\StoredExerciseRepository">
+
+        <id name="id" type="integer" column="id">
+            <generator strategy="AUTO"/>
+        </id>
+
+        <field name="content" column="content" type="text" nullable="false"/>
+
+        <one-to-many target-entity="SimpleIT\ClaireExerciseBundle\Entity\CreatedExercise\Item" mapped-by="storedExercise" field="items">
+            <cascade>
+                <cascade-persist/>
+                <cascade-remove/>
+            </cascade>
+        </one-to-many>
+
+        <one-to-many target-entity="SimpleIT\ClaireExerciseBundle\Entity\CreatedExercise\Attempt" mapped-by="exercise" field="attempts">
+            <cascade>
+                <cascade-persist/>
+                <cascade-remove/>
+            </cascade>
+        </one-to-many>
+
+        <one-to-many target-entity="SimpleIT\ClaireExerciseBundle\Entity\Test\TestPosition" mapped-by="exercise" field="testPositions">
+            <cascade>
+                <cascade-persist/>
+                <cascade-remove/>
+            </cascade>
+        </one-to-many>
+
+        <many-to-one target-entity="SimpleIT\ClaireExerciseBundle\Entity\ExerciseModel\ExerciseModel" field="exerciseModel" inversed-by="exercises">
+            <join-column name="exercise_model_id" referenced-column-name="id" on-delete="CASCADE"/>
+        </many-to-one>
+
+    </entity>
+</doctrine-mapping>

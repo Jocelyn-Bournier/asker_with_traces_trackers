@@ -1,0 +1,30 @@
+api_test_attempt_list:
+    pattern:  /
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Test/TestAttempt:list }
+    methods: [GET]
+    requirements:
+        _format: json
+
+api_test_attempt_view:
+    pattern:  /{testAttemptId}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Test/TestAttempt:view }
+    methods: [GET]
+    requirements:
+        _format: json
+        testAttemptId: \d+
+
+api_exercise_list_by_test_attempt:
+    pattern:  /{testAttemptId}/exercises/
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/CreatedExercise/ExerciseByTestAttempt:list }
+    methods: [GET]
+    requirements:
+        _format: json
+        testAttemptId: \d+
+
+api_attempt_list_by_test_attempt:
+    pattern:  /{testAttemptId}/attempts/
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/CreatedExercise/AttemptByTestAttempt:list }
+    methods: [GET]
+    requirements:
+        _format: json
+        testAttemptId: \d+

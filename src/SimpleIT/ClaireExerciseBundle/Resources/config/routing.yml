@@ -1,0 +1,64 @@
+api_exercise_models:
+    resource: "@SimpleITClaireExerciseBundle/Resources/config/routing/api/exercise_model.yml"
+    prefix:   /api/exercise-models/
+
+api_attempted_exercise_models:
+    resource: "@SimpleITClaireExerciseBundle/Resources/config/routing/api/attempted_model.yml"
+    prefix:   /api/attempted-models/
+
+api_exercises:
+    resource: "@SimpleITClaireExerciseBundle/Resources/config/routing/api/exercise.yml"
+    prefix:   /api/exercises/
+
+api_items:
+    resource: "@SimpleITClaireExerciseBundle/Resources/config/routing/api/item.yml"
+    prefix:   /api/items/
+
+api_resources:
+    resource: "@SimpleITClaireExerciseBundle/Resources/config/routing/api/resource.yml"
+    prefix:   /api/resources/
+
+api_test_models:
+    resource: "@SimpleITClaireExerciseBundle/Resources/config/routing/api/test_model.yml"
+    prefix:   /api/test-models/
+
+api_tests:
+    resource: "@SimpleITClaireExerciseBundle/Resources/config/routing/api/test.yml"
+    prefix:   /api/tests/
+
+api_test_attempts:
+    resource: "@SimpleITClaireExerciseBundle/Resources/config/routing/api/test_attempt.yml"
+    prefix:   /api/test-attempts/
+
+api_attempts:
+    resource: "@SimpleITClaireExerciseBundle/Resources/config/routing/api/attempt.yml"
+    prefix:   /api/attempts/
+
+api_domain_knowledges:
+    resource: "@SimpleITClaireExerciseBundle/Resources/config/routing/api/knowledge.yml"
+    prefix:   /api/knowledges/
+
+
+api_domain_users:
+    resource: "@SimpleITClaireExerciseBundle/Resources/config/routing/api/user.yml"
+    prefix:   /api/users/
+
+api_directories:
+    resource: "@SimpleITClaireExerciseBundle/Resources/config/routing/api/directory.yml"
+    prefix:   /api/directories/
+
+
+frontend:
+    resource: "@SimpleITClaireExerciseBundle/Resources/config/routing/frontend/frontend.yml"
+    prefix:   /front/
+
+sign:
+    pattern: /sign/
+    defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Frontend:sign }
+admin:
+    resource: "@SimpleITClaireExerciseBundle/Resources/config/routing/frontend/admin.yml"
+    prefix:   /admin/
+
+api_upload:
+    resource: "@SimpleITClaireExerciseBundle/Resources/config/routing/api/upload.yml"
+    prefix:   /api/

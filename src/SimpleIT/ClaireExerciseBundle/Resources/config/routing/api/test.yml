@@ -1,0 +1,30 @@
+api_test_list:
+    pattern:  /
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Test/Test:list }
+    methods: [GET]
+    requirements:
+        _format: json
+
+api_test_view:
+    pattern:  /{testId}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Test/Test:view }
+    methods: [GET]
+    requirements:
+        _format: json
+        testId: \d+
+
+api_test_attempt_list_by_test:
+    pattern:  /{testId}/test-attempts/
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Test/TestAttemptByTest:list }
+    methods: [GET]
+    requirements:
+        _format: json
+        testId: \d+
+
+api_test_attempt_create:
+    pattern:  /{testId}/test-attempts/
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Test/TestAttemptByTest:create }
+    methods: [POST]
+    requirements:
+        _format: json
+        testId: \d+

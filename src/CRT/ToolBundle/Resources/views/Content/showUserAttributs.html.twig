@@ -1,0 +1,120 @@
+{% extends "CRTToolBundle::template.html.twig" %}
+{% block contenu %}
+  <div class='container'>
+    <div clas='row'>
+      <div class='header clearfix'>
+        <nav>
+          <ul class='navbar navbar-right'>
+              <a href='{{path('crt_tool_dashboard')}}' class='btn btn-primary' role='button'>
+                Retour
+              </a>
+          </ul>
+        </nav>
+      </div>
+      <div class='page-header'>
+        <h1>
+          Saisir l'uid
+        </h1>
+      </div>
+      <div class='row'>
+        <div class='col-lg-4' style='background-color:#FCFCFC;padding-top:10px;padding-bottom:10px;'>
+          <div class='form-inline'>
+            <div class='input-group'>
+              <span class='input-group-addon'>
+                <span class='glyphicon glyphicon-search' aria-hidden='true'></span>
+              </span>
+              <input id='input-uid' type='text' placeholder="uid de l'utilisateur" class='form-control' />
+              <span class='input-group-btn'>
+                <a id='button-uid' class='btn btn-success' type='button'>
+                  Rechercher
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% if error == 1 %}
+        <div class='row'>
+          <div class='col-lg-4'>
+            <div class="alert alert-danger alert-dismissible" role="alert">
+              <button type="button" class="close" data-dismiss="alert"
+              aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+                Cet uid ne retourne aucun résultat
+            </div>
+          </div>
+        </div>
+      {% elseif error == 2 %}
+        <div class='row'>
+          <div class='col-lg-4'>
+            <div class="alert alert-danger alert-dismissible" role="alert">
+              <button type="button" class="close" data-dismiss="alert"
+              aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <strong>
+                Normalement impossible !<br>
+              </strong>
+              Cet uid retourne plusieurs résultats!
+            </div>
+          </div>
+        </div>
+      {% endif %}
+      {% if values is not null %}
+        <div class='row'>
+          <div class='page-header'>
+            <h1>
+              Informations de l'utilisateur {{user}}
+            </h1>
+          </div>
+          <div class='col-lg-9' style='background-color:#FCFCFC;padding-top:10px;padding-bottom:10px;'>
+            <table class='table table-bordered'>
+              <thead>
+                <tr>
+                  <th>Attribut</th>
+                  <th>Valeur</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    dn
+                  </td>
+                  <td>
+                    {{values.0.dn}}
+                  </td>
+                </tr>
+                {% for key1 , val1 in values %}
+                  {% if key1 matches '/^\\d+$/' %}
+                    {% for k, v in val1 %}
+                      {% for kk, vv in v %}
+                        {% if kk matches '/^\\d+$/' %}
+                          <tr>
+                            <td>
+                              {{k}}
+                            </td>
+                            <td>
+                              {{vv}}
+                            </td>
+                          </tr>
+                        {% endif %}
+                      {% endfor %}
+                    {% endfor %}
+                  {% endif %}
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  <script>
+    var road = '{{path("crt_tool_admin_user_attributs")}}';
+    $('#button-uid').click(function(){
+      user = $('#input-uid').val();
+      window.location =  road +'/' + user;
+    });
+  </script>
+{% endblock %}

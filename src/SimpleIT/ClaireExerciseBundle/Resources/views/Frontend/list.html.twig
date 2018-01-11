@@ -1,0 +1,110 @@
+{% extends "SimpleITClaireExerciseBundle:Frontend:admin.html.twig" %}
+
+
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <br>
+      <form method='post' action="{{path('admin_change')}}">
+        <input type='hidden' name='current' value="{{app.request.get('_route')}}">
+        <div class="col-xs-12">
+          <table class='table table-bordered'>
+            <thead>
+              <th>
+                <input type="checkbox" name='toggleAll' onClick="toggle(this)"> Tous
+              </th>
+              <th>Username</th>
+              <th>Statut</th>
+              <th>LDAP</th>
+              <th>Répertoires</th>
+              <th>Roles</th>
+              <th>Actions</th>
+            </thead>
+            <tbody>
+              {% for user in users %}
+                <tr>
+                  <td>
+                     <input type="checkbox" name="usersCheck[]" value="{{user.id}}">
+                  </td>
+                  <td>{{user.username}}</td>
+                  <td>
+                    {% if user.isEnable %}
+                      <span class="label label-success">Actif</span>
+                    {% else %}
+                      <span class="label label-danger">Inactif</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if user.isLdap %}
+                      <span class="label label-success">Oui</span>
+                    {% else %}
+                      <span class="label label-danger">Non</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% for dir in user.directories %}
+                      <span class="label label-primary">{{dir.name}}</span>
+                    {% endfor %}
+                  </td>
+                  <td>
+                    {% for role in user.roles %}
+                      <span class="label label-default">{{role.public}}</span>
+                    {% endfor %}
+                  </td>
+                  <td>
+                    <a class='btn btn-warning' href="{{path('admin_edit',
+                    {'user':user.id})}}">
+                      <span class="glyphicon glyphicon glyphicon-edit btn-xs"
+                      title='Edition du profil utilisateur'>
+                      </span>
+                    </a>
+                    {% if not user.isLdap %}
+                      <a class='btn btn-primary' href="{{path('admin_update_password',
+                      {'user':user.id})}}">
+                        <span class="glyphicon glyphicon glyphicon-lock btn-xs"
+                        title='Changement du mot de passe'>
+                        </span>
+                      </a>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <div class='col-xs-4'>
+            <h2>Activation</h2>
+            <p>
+              Activation des comptes sélectionnés.<br>
+              Ajout d'un répertoire par défaut.
+            </p>
+            <div>
+              <select name='directory'>
+                {% for dir in dirs %}
+                  <option value="{{dir.id}}">{{dir.name}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div style='margin-top:10px;'>
+              <button class='btn btn-success'>Activer</button>
+            </div>
+          </div>
+          <div class='col-xs-4'>
+            <h2>Suppression</h2>
+            <p>
+              Suppression des comptes sélectionnés.
+            </p>
+            <button class='btn btn-danger' name='delete'>Supprimer</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <script>
+    function toggle(source) {
+      checkboxes = document.getElementsByName('usersCheck[]');
+      for(var i=0, n=checkboxes.length;i<n;i++) {
+        checkboxes[i].checked = source.checked;
+      }
+    }
+  </script>
+{% endblock %}

@@ -1,0 +1,52 @@
+{
+    "wording": "Pour chacune des questions suivantes, indiquez toutes les réponses justes (une ou plusieurs).",
+    "documents": [],
+    "question_blocks": [
+        {
+            "number_of_occurrences": 2,
+            "max_number_of_propositions": 0,
+            "max_number_of_right_propositions": 1,
+            "resources": [
+                {
+                    "id": 1
+                },
+                {
+                    "id": 2
+                },
+                {
+                    "id": 3
+                },
+                {
+                    "id": 4
+                }
+            ]
+        },
+        {
+            "number_of_occurrences": 1,
+            "max_number_of_propositions": 0,
+            "max_number_of_right_propositions": 1,
+            "resources": [
+                {
+                    "id": 5
+                },
+                {
+                    "id": 6
+                }
+            ]
+        },
+        {
+            "number_of_occurrences": 2,
+            "max_number_of_propositions": 0,
+            "max_number_of_right_propositions": 1,
+            "resources": [
+                {
+                    "id": 7
+                },
+                {
+                    "id": 8
+                }
+            ]
+        }
+    ],
+    "shuffle_questions_order": true
+}

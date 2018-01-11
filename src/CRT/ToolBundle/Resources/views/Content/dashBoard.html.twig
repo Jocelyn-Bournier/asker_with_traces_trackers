@@ -1,0 +1,74 @@
+{% extends "CRTToolBundle::template.html.twig" %}
+{% block contenu %}
+  <div class='container'>
+    <div class='header clearfix'>
+      <nav>
+        <ul class='navbar navbar-right'>
+            <a href='{{path('logout')}}' class='btn btn-primary' role='button'>
+              Déconnexion
+            </a>
+        </ul>
+      </nav>
+      <h3 class='text-muted'>
+        Boite à outils du CRT-RSO
+      </h3>
+    </div>
+    <div class='jumbotron'>
+      <h1>
+        Les outils
+      </h1>
+      <p class='lead'>
+        Ci-dessous les différents outils du CRT-RSO afin de gerer au mieux les ressources.
+      </p>
+    </div>
+    <div class='row'>
+      <div class='col-lg-4 tools'>
+        <h2>
+          Votre mot de passe
+        </h2>
+        <p align='justify'>
+          Formulaire vous permettant de réaliser le changement de votre de mot
+          passe sur le LDAP de la PHM. Vous devrez vous identifier à nouveau
+          et respecter les critrères de sécurité.
+        </p>
+        <p class="use">
+          <a class='btn btn-primary' role='button'
+          href='{{path('crt_tool_password_update')}}'>
+            Utiliser »
+          </a>
+        </p>
+      </div>
+      <div class='col-lg-4 tools'>
+        <h2>
+          Demande de compte
+        </h2>
+        <p align='justify' >
+          Liste les demandes de création de compte LDAP. Vous pourrez
+          trouver des informations sur les demandeurs ainsi que le statut
+          de la requête.
+        </p>
+        <p class="use">
+          <a class='btn btn-primary' role='button'
+          href='{{path('crt_tool_admin_ldap_request')}}'>
+            Utiliser »
+          </a>
+        </p>
+      </div>
+      <div class='col-lg-4 tools'>
+        <h2>
+          Attributs utilisateur
+        </h2>
+        <p align='justify' >
+          Permet d'afficher tous les attributs LDAP
+          d'un utilisateur.
+        </p>
+        <p class="use">
+          <a class='btn btn-primary' role='button'
+          href='{{path('crt_tool_admin_user_attributs')}}'>
+            Utiliser »
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+{% endblock %}

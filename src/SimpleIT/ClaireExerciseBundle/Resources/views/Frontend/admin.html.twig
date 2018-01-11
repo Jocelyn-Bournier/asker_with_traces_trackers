@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en" ng-app="mainApp">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>Asker</title>
+
+    <!-- included styles -->
+    <link rel="stylesheet" href="{{ asset('bundles/simpleitclaireexercise/frontend/css/bootstrap-combined.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/simpleitclaireexercise/frontend/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/simpleitclaireexercise/frontend/css/custom-style.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/simpleitclaireexercise/frontend/css/loading-bar.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/simpleitclaireexercise/frontend/css/exercise.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/simpleitclaireexercise/frontend/css/lightbox.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/simpleitclaireexercise/frontend/css/font-awesome.min.css') }}">
+
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li>
+              <a href="{{path('admin_index')}}">
+                Administration
+              </a>
+            </li>
+            <li>
+              <a href="{{path('admin_list_users')}}">
+                Gestion des utilisateurs
+              </a>
+            </li>
+            <li>
+              <a href="{{path('admin_list_disable')}}">Comptes non activés</a>
+            </li>
+            <li>
+              <a href="{{path('frontend_index')}}">Retour sur Asker</a>
+            </li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+      {% block content %}
+        <div class='col-xs-6'>
+          <table class="table table-bordered">
+            <thead>
+              <th>Dossier</th>
+              <th>Modèles</th>
+              <th>Utilisateurs</th>
+              <th>Action</th>
+            </thead>
+            {% for dir in dirs %}
+              <tr>
+                <td>{{dir.name}}</td>
+                <td>{{dir.models}}</td>
+                <td>{{dir.users}}</td>
+                <td>
+                  <a href="{{path('admin_stats_directory',
+                  {'directory':dir.id})}}"
+                  class="btn btn-info" role="button">
+                    <span class="glyphicon glyphicon-eye-open"
+                    title="Voir les informations sur ce dossier">
+                    </span>
+                  </a>
+                </td>
+              </tr>
+            {% endfor %}
+          </table>
+        </div>
+      {% endblock %}
+    </div><!-- /.container -->
+  </body>
+</html>

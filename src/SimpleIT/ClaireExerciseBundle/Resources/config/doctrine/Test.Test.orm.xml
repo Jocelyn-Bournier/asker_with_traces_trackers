@@ -1,0 +1,28 @@
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                          http://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="SimpleIT\ClaireExerciseBundle\Entity\Test\Test" table="claire_exercise_test" repository-class="SimpleIT\ClaireExerciseBundle\Repository\Exercise\Test\TestRepository">
+
+        <id name="id" type="integer" column="id">
+            <generator strategy="AUTO"/>
+        </id>
+
+        <one-to-many target-entity="SimpleIT\ClaireExerciseBundle\Entity\Test\TestPosition" mapped-by="test" field="testPositions">
+            <cascade>
+                <cascade-persist/>
+                <cascade-remove/>
+            </cascade>
+        </one-to-many>
+
+        <one-to-many target-entity="SimpleIT\ClaireExerciseBundle\Entity\Test\TestAttempt" mapped-by="test" field="testAttempts">
+            <cascade>
+                <cascade-persist/>
+                <cascade-remove/>
+            </cascade>
+        </one-to-many>
+
+        <many-to-one target-entity="SimpleIT\ClaireExerciseBundle\Entity\Test\TestModel" field="testModel" inversed-by="tests">
+            <join-column name="test_model_id" referenced-column-name="id" on-delete="CASCADE"/>
+        </many-to-one>
+
+    </entity>
+</doctrine-mapping>
