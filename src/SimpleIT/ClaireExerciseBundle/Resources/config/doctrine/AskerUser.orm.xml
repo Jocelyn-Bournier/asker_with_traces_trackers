@@ -14,20 +14,36 @@
     <field name="isEnable" type="boolean" column="isEnable"/>
     <field name="ldapDn" type="string" column="ldapDn" length="255"/>
     <one-to-many field="workspaces" target-entity="SimpleIT\ClaireExerciseBundle\Entity\Workspace" mapped-by="owner" />
-    <many-to-many field="directories" mapped-by="users"
-    target-entity="SimpleIT\ClaireExerciseBundle\Entity\Directory">
+    <one-to-many field="directories"
+    target-entity="SimpleIT\ClaireExerciseBundle\Entity\AskerUserDirectory" mapped-by="user">
             <cascade>
                 <cascade-persist/>
+                <cascade-remove />
             </cascade>
-    </many-to-many>
+    </one-to-many>
     <many-to-many field="roles"
     target-entity="SimpleIT\ClaireExerciseBundle\Entity\Role">
             <cascade>
                 <cascade-persist/>
             </cascade>
     </many-to-many>
+    <many-to-many field="pedagogics" inversed-by="users"
+    target-entity="SimpleIT\ClaireExerciseBundle\Entity\Pedagogic">
+        <join-table name="asker_user_pedagogic">
+            <join-columns>
+                <join-column name="asker_user_id" referenced-column-name="id" />
+            </join-columns>
+            <inverse-join-columns>
+                <join-column name="pedagogic_id" referenced-column-name="id" />
+            </inverse-join-columns>
+        </join-table>
+        <cascade>
+            <cascade-persist/>
+        </cascade>
+    </many-to-many>
+    <one-to-many field="logs" target-entity="SimpleIT\ClaireExerciseBundle\Entity\Log" mapped-by="user" />
     <unique-constraints>
-      <unique-constraint columns="username" />
+      <unique-constraint columns="username" name="search_idex_askeruser_username" />
     </unique-constraints>
   </entity>
 </doctrine-mapping>

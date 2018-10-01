@@ -18,6 +18,7 @@
 
 namespace SimpleIT\ClaireExerciseBundle\Controller\Api\ExerciseModel;
 
+use Symfony\Component\HttpFoundation\Response;
 use Doctrine\DBAL\DBALException;
 use SimpleIT\ClaireExerciseBundle\Controller\BaseController;
 use SimpleIT\ClaireExerciseBundle\Entity\ExerciseModel\ExerciseModel;
@@ -94,9 +95,11 @@ class ExerciseModelController extends BaseController
             $exerciseModelResources = $this->get(
                 'simple_it.exercise.exercise_model'
             )->getAllContentFullResourcesFromEntityList(
-                    $exerciseModels
-                );
-
+                $exerciseModels
+            );
+            #return new Response(
+            #    "<html><body>".var_dump($exerciseModelResources)." </body></html>"
+            #);
             return new ApiGotResponse($exerciseModelResources, array(
                 'details',
                 'Default'

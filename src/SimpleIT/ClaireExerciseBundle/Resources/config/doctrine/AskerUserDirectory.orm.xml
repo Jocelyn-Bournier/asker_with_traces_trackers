@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity repository-class="SimpleIT\ClaireExerciseBundle\Repository\AskerUserDirectoryRepository" name="SimpleIT\ClaireExerciseBundle\Entity\AskerUserDirectory">
+    <id name="id" type="integer" column="id">
+      <generator strategy="AUTO"/>
+    </id>
+    <field name="isManager" type="boolean" column="isManager"/>
+    <field name="startDate" type="datetime" column="startDate"/>
+    <field name="endDate" type="datetime" column="endDate" nullable="true"/>
+    <many-to-one field="directory"
+    target-entity="SimpleIT\ClaireExerciseBundle\Entity\Directory" inversed-by="users">
+    </many-to-one>
+    <many-to-one field="user"
+    target-entity="SimpleIT\ClaireExerciseBundle\Entity\AskerUser" inversed-by="directories">
+    </many-to-one>
+    <unique-constraints>
+        <unique-constraint columns="directory_id,user_id" name="search_idx_user_directory" />
+    </unique-constraints>
+  </entity>
+</doctrine-mapping>

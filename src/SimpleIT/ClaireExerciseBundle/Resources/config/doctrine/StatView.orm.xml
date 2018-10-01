@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity repository-class="SimpleIT\ClaireExerciseBundle\Repository\StatViewRepository" name="SimpleIT\ClaireExerciseBundle\Entity\StatView">
+    <id name="id" type="integer" column="id">
+      <generator strategy="AUTO"/>
+    </id>
+    <field name="name" type="string" column="name" length="70"/>
+    <field name="refPedagogic" type="string" column="refPedagogic" length="70" nullable="true"/>
+    <field name="startDate" type="date" column="startDate"/>
+    <field name="endDate" type="date" column="endDate"/>
+    <many-to-one field="directory" inversed-by="statViews"
+    target-entity="SimpleIT\ClaireExerciseBundle\Entity\Directory" >
+        <join-column name="directory_id" referenced-column-name="id" />
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

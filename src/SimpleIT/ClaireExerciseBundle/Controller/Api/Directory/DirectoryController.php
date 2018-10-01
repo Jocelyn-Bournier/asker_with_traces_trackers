@@ -18,11 +18,15 @@
 
 namespace SimpleIT\ClaireExerciseBundle\Controller\Api\Directory;
 
+#TODEL
+use Symfony\Component\HttpFoundation\Response;
+
 use SimpleIT\ClaireExerciseBundle\Controller\BaseController;
 use SimpleIT\ClaireExerciseBundle\Model\Api\ApiCreatedResponse;
 use SimpleIT\ClaireExerciseBundle\Exception\Api\ApiBadRequestException;
 use SimpleIT\ClaireExerciseBundle\Exception\Api\ApiAccessDeniedException;
 use SimpleIT\ClaireExerciseBundle\Exception\Api\ApiNotFoundException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use SimpleIT\ClaireExerciseBundle\Exception\NonExistingObjectException;
 use SimpleIT\ClaireExerciseBundle\Model\Api\ApiGotResponse;
 use SimpleIT\ClaireExerciseBundle\Model\Api\ApiDeletedResponse;
@@ -53,9 +57,15 @@ class DirectoryController extends BaseController
     public function viewAction(Directory $directoryId)
     {
         try {
-            $directoryResource = DirectoryFactory::create($directoryId);
-
-            return new ApiGotResponse($directoryResource, array("details", 'Default'));
+            if (
+                $this->getUser()->getId() == $directoryId->getOwner()->getId()
+                || $directoryId->hasManager($this->getUser())
+            ){
+                $directoryResource = DirectoryFactory::create($directoryId);
+                return new ApiGotResponse($directoryResource, array("details", 'Default'));
+            }else{
+                throw new AccessDeniedException();
+            }
 
         } catch (NonExistingObjectException $neoe) {
             throw new ApiNotFoundException(AttemptResource::RESOURCE_NAME);
@@ -65,8 +75,9 @@ class DirectoryController extends BaseController
     {
         $allowed = 0;
         try {
-            foreach($this->getUser()->getDirectories() as $dir){
+            foreach($this->getUser()->realDirectories() as $dir){
                 if ($dir->getId() == $directoryId->getId()){
+                //if ($dir->getDirectory()->getId() == $directoryId->getId()){
                     $allowed = 1;
                 }
             }
@@ -119,8 +130,11 @@ class DirectoryController extends BaseController
         $directories = $repo
             ->findMine($user);
         foreach($directories as $key =>  $dir){
-            $val = $repo->countChildrens($dir["id"]);
-            $directories[$key]["subs"] = $val[0]["total"];
+            if(!isset($dir['idp'])){
+                $val = $repo->countChildrens($dir["id"]);
+                $directories[$key]["subs"] = $val[0]["total"];
+            }
+            $directories[$key]["models"] = $repo->countModels($dir["id"])[0]["total"];
         }
         return new ApiGotResponse($directories, array('list', 'Default'));
     }
@@ -194,12 +208,12 @@ class DirectoryController extends BaseController
      * @throws \SimpleIT\ClaireExerciseBundle\Exception\Api\ApiNotFoundException
      * @return ApiDeletedResponse
      */
-    public function deleteAction($directoryId)
+    public function deleteAction(Directory $directoryId)
     {
         try {
             $this->get('simple_it.exercise.directory')->remove(
                 $directoryId,
-                $this->getUserId()
+                $this->getUser()
             );
 
             return new ApiDeletedResponse();
@@ -228,7 +242,7 @@ class DirectoryController extends BaseController
             $directory = $this->get('simple_it.exercise.directory')->edit
                 (
                     $directoryResource,
-                    $this->getUserId()
+                    $this->getUser()
                 );
             $directoryResource = DirectoryFactory::create($directory, false, 0);
 
@@ -302,5 +316,44 @@ class DirectoryController extends BaseController
             }
         }
         return $model;
+    }
+
+    public function visibleAction(Directory $directory)
+    {
+        try {
+            $user = $this->getUser();
+            $this
+                ->get('simple_it.exercise.directory')
+                ->changeVisibility($user, $directory)
+            ;
+
+            $dirResource = DirectoryFactory::create($directory);
+
+            return new ApiCreatedResponse($dirResource, array("details", 'Default'));
+
+        } catch (NonExistingObjectException $neoe) {
+            throw new ApiNotFoundException(ExerciseModelResource::RESOURCE_NAME);
+        } catch (NoAuthorException $nae) {
+            throw new ApiBadRequestException($nae->getMessage());
+        }
+    }
+
+
+    public function clearStudentAction(Directory $directory)
+    {
+        $user = $this->get('security.context')->getToken()->getUser();
+        if ($directory->getOwner()->getId() ==  $user->getId()
+        || $user->isAdmin()){
+            foreach($directory->getUsers() as $aud){
+                if ($aud->getUser()->isOnlyStudent()){
+                    $aud->setEndDate(new \DateTime());
+                }
+            }
+            $this->getDoctrine()->getEntityManager()->flush();
+            return $this->redirectToRoute('admin_stats');
+
+        }else{
+            throw new ApiAccessDeniedException('Vous ne pouvez pas effectuer cette opération');
+        }
     }
 }

@@ -83,19 +83,31 @@ class AnswerRepository extends BaseRepository
 
         return $queryBuilder->getQuery()->getResult();
     }
-    function uniqueUsersByModel($model)
+    function uniqueUsersByModel($model,$view, $ids)
     {
-        return $this->createQueryBuilder('an')
+        $qb = $this->createQueryBuilder('an')
             ->select('count(distinct a.user) as total')
             ->join('an.attempt', 'a')
             ->join('a.exercise', 'e')
             ->where('e.exerciseModel = :model')
+            ->andWhere('a.user in (:ids)')
+        ;
+        if ($view){
+            $qb
+                ->andWhere('a.createdAt > :start')
+                ->andWhere('a.createdAt < :end')
+                ->setParameter('start', $view->getStartDate())
+                ->setParameter('end', $view->getEndDate())
+            ;
+        }
+        return $qb
             ->setParameter('model',$model)
+            ->setParameter('ids',$ids)
             ->getQuery()
             ->getResult();
     }
 
-    function averageMarkByModel($model)
+    function averageMarkByModel($model,$view,$ids)
     {
         $sql = "
             select avg(mark) as avg
@@ -105,18 +117,70 @@ class AnswerRepository extends BaseRepository
             join claire_exercise_stored_exercise st
             on at.exercise_id = st.id
             where st.exercise_model_id = :model
+	    AND an.created_at > :start
+	    AND an.created_at < :end
         ";
+        if (!empty($ids)){
+            $sql .="
+                    AND user_id in (".implode(',',$ids).")"
+            ;
+        }
         $conn = $this->getEntityManager()
             ->getConnection()
         ;
         $stmt = $conn
             ->prepare($sql)
         ;
-        $stmt->execute(array('model' => $model));
+        $stmt->execute(
+		array(
+			'model' => $model,
+			'start' => $view->getStartDate()->format('Y-m-d'),
+			'end' => $view->getEndDate()->format('Y-m-d')
+		)
+	);
         return $stmt->fetchAll();
     }
 
-    function averageAnswerByModel($model)
+    function distributionMarkByModel($model,$view, $ids)
+    {
+    	$sql = "
+		SELECT count(*) as total,
+	        SUM(CASE WHEN an.mark >= 80 THEN 1 ELSE 0 END) top,
+	        SUM(CASE WHEN an.mark < 80 AND an.mark >= 60 THEN 1 ELSE 0 END) midtop,
+	        SUM(CASE WHEN an.mark < 60 AND an.mark >= 40 THEN 1 ELSE 0 END) mid,
+	        SUM(CASE WHEN an.mark < 40 AND an.mark >= 20 THEN 1 ELSE 0 END) midbot,
+	        SUM(CASE WHEN an.mark < 20 THEN 1 ELSE 0 END) bot
+               	FROM claire_exercise_answer an
+               	JOIN claire_exercise_attempt at
+               	ON an.attempt_id = at.id
+               	JOIN claire_exercise_stored_exercise st
+               	ON at.exercise_id = st.id
+             	WHERE st.exercise_model_id = :model
+		    AND an.created_at > :start
+		    AND an.created_at < :end
+	";
+        if (!empty($ids)){
+            $sql .="
+                    AND user_id in (".implode(',',$ids).")"
+            ;
+        }
+        $conn = $this->getEntityManager()
+            ->getConnection()
+        ;
+        $stmt = $conn
+            ->prepare($sql)
+        ;
+        $stmt->execute(
+		array(
+			'model' => $model,
+			'start' => $view->getStartDate()->format('Y-m-d'),
+			'end' => $view->getEndDate()->format('Y-m-d')
+		)
+	);
+        return $stmt->fetchAll();
+    }
+
+    function averageAnswerByModel($model,$view, $ids)
     {
         //Native SQL because derived table doesnt work with Doctrine
         // distinct because attempt can have many answers
@@ -130,6 +194,15 @@ class AnswerRepository extends BaseRepository
                     JOIN claire_exercise_stored_exercise s
                     ON s.id = a.exercise_id
                     WHERE exercise_model_id = :model
+		    AND an.created_at > :start
+		    AND an.created_at < :end
+        ";
+        if (!empty($ids)){
+            $sql .="
+                    AND user_id in (".implode(',',$ids).")"
+            ;
+        }
+        $sql .="
                     GROUP BY user_id
                 ) d
                 "
@@ -140,7 +213,13 @@ class AnswerRepository extends BaseRepository
         $stmt = $conn
             ->prepare($sql)
         ;
-        $stmt->execute(array('model' => $model));
+        $stmt->execute(
+		array(
+			'model' => $model,
+			'start' => $view->getStartDate()->format('Y-m-d'),
+			'end' => $view->getEndDate()->format('Y-m-d')
+		)
+	);
         return $stmt->fetchAll();
     }
 }

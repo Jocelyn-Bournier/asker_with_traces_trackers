@@ -7,7 +7,9 @@
         <import resource="services/resource.xml"/>
         <import resource="services/knowledge.xml"/>
         <import resource="services/user.xml"/>
+        <import resource="services/asker_user_directory.xml"/>
         <import resource="services/directory.xml"/>
+        <import resource="services/stat_view.xml"/>
         <import resource="services/role.xml"/>
         <import resource="services/listeners.xml"/>
         <import resource="services/converters.xml"/>

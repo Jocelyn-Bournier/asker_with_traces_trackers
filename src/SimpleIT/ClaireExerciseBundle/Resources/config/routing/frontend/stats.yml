@@ -1,0 +1,26 @@
+admin_stats:
+    pattern: /
+    defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Stat:stat }
+
+admin_filters_directory:
+    pattern: /directory/filter/{directory}/{view}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Stat:filterDirectory, view:0 }
+
+admin_stats_directory:
+    pattern: /directory/frame/{directory}/{view}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Stat:statDirectory, view:0 }
+
+admin_stats_create_view:
+    pattern: /directory/createView/{directory}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Stat:createView}
+admin_stats_delete_view:
+    pattern: /directory/deleteView/{view}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Stat:deleteView, view:0}
+    methods: [DELETE]
+admin_stats_fullfill:
+    pattern: /directory/fullfill/{directory}/{view}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Stat:fullFill, directory:0,view:0}
+    methods: [GET]
+admin_stats_edit_view:
+    pattern: /directory/editView/{view}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Stat:editView}

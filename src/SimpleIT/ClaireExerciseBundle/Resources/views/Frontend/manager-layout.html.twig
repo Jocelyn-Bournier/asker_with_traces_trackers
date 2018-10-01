@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
+    <link rel="shortcut icon" type="image/png" href="/favicon.png"/>
     <title>Asker</title>
 
     <!-- included styles -->
@@ -87,88 +88,102 @@
 <body ng-controller="mainManagerController">
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
- aria-labelledby="myModalLabel"
-  style="background-color: transparent;width:100%;height:100%;border:none;">
- <div class="modal-dialog" role="document">
-   <div class="modal-content">
-    <div class="modal-header">
-     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-      <h4 class="modal-title" id="myModalLabel">Changement du mot de passe</h4>
+aria-labelledby="myModalLabel"
+style="background-color: transparent;width:100%;height:100%;border:none;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Changement du mot de passe</h4>
       </div>
       <div class="modal-body">
         {% include 'SimpleITClaireExerciseBundle:Form:password.html.twig' %}
       </div>
       <div class="modal-footer">
-      <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
-     </div>
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
+      </div>
     </div>
-   </div>
   </div>
-
-<div id="header">
-    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" style="text-align: right">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-        </div>
-        <div id='navbar' class="navbar-collapse collapse">
-          <ul class="nav navbar-nav navbar brand-size">
-              {% for dir in app.user.directories %}
-                {% if dir.parent is null %}
-                  <li>
-                    <a ui-sref="dir-model-list({dirId:'{{dir.id}}'})"
-                    title="Consulter les exercices du dossier {{dir.name}}">
-                     {{dir.name}}
-                    </a>
-                  </li>
-                {% endif %}
-              {% endfor %}
-              <li><a ui-sref="model"
-                     title="Liste des modèles d'exercices que vous possédez ou auxquels vous avez accès">Mes modèles d'exercices</a></li>
-              <li><a ui-sref="resource"
-                     title="Liste des ressources que vous possédez ou auxquelles vous avez accès">Mes ressources</a></li>
-              <li><a ui-sref="directories"
-                     title="Liste des dossiers">Mes dossiers </a></li>
-          </ul>
-          <ul class="nav navbar-nav navbar-right"
-          style='margin-right:5px;'>
-            <li class='dropdown'>
-              <a data-toggle="dropdown" class='dropdown-toggle brand' href='#'>
-                <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-                {{ app.user.username }} <b class='caret'></b>
-              </a>
-              <ul class='dropdown-menu'>
-                <li>
-                  <a href="{{path('logout')}}" title="Se déconnecter d'asker">
-                    Se déconnecter
-                  </a>
-                </li>
-                {% if is_granted('ROLE_ADMIN') %}
-                  <li>
-                    <a href="{{path('admin_index')}}" title='Administrer Asker'>
-                      Administration
-                    </a>
-                  </li>
-                {% endif %}
-                {% if app.user.isLdap == 0 %}
-                  <li>
-                    <a href='#' title='Changer de mot de passe'
-                    data-toggle="modal" data-target="#myModal">
-                      Changer de mot de passe
-                    </a>
-                  </li>
-                {% endif %}
-              </ul>
-            </li>
-          </ul>
-        </div>
-    </nav>
 </div>
-
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+  </div>
+  <div id='navbar' class="navbar-collapse collapse">
+    <ul class="nav navbar brand-size">
+      {% for dir in app.user.realDirectories %}
+        {% if dir.parent is null and dir.isVisible %}
+          <li>
+            <a ui-sref="dir-model-list({dirId:'{{dir.id}}'})"
+            title="Consulter les exercices du dossier {{dir.name}}">
+              {{dir.name}}
+            </a>
+          </li>
+        {% endif %}
+      {% endfor %}
+      <li>
+        <a ui-sref="model"
+          title="Liste des modèles d'exercices que vous possédez ou auxquels vous avez accès">
+            Mes modèles d'exercices
+        </a>
+      </li>
+      <li>
+        <a ui-sref="resource"
+        title="Liste des ressources que vous possédez ou auxquelles vous avez accès">
+          Mes ressources
+        </a>
+      </li>
+      <li>
+        <a ui-sref="directories"
+        title="Liste des dossiers">
+          Mes dossiers
+        </a>
+      </li>
+    </ul>
+    <ul class="nav navbar-right">
+      <li class='dropdown'>
+        <a data-toggle="dropdown" class='dropdown-toggle brand' href='#'>
+          <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+          {{ app.user.username }} <b class='caret'></b>
+        </a>
+        <ul class='dropdown-menu'>
+          <li>
+            <a href="{{path('logout')}}" title="Se déconnecter d'asker">
+              Se déconnecter
+            </a>
+          </li>
+          {% if is_granted('ROLE_ADMIN') %}
+            <li>
+              <a href="{{path('admin_index')}}" title='Administrer Asker'>
+                Administration
+              </a>
+            </li>
+          {% endif %}
+          {% if is_granted('ROLE_WS_CREATOR') %}
+            <li>
+              <a href="{{path('admin_stats')}}" title='Statistiques'>
+                Statistiques
+              </a>
+            </li>
+          {% endif %}
+          {% if app.user.isLdap == 0 %}
+            <li>
+              <a href='#' title='Changer de mot de passe'
+              data-toggle="modal" data-target="#myModal">
+                Changer de mot de passe
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
 <div id="content">
   <div ui-view>
     <div class="col-xs-12 col-sm-8 col-sm-offset-2" style='margin-top:10%;'>

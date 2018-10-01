@@ -1,0 +1,153 @@
+{% extends "SimpleITClaireExerciseBundle:Frontend:admin.html.twig" %}
+{% form_theme form _self %}
+{# block  options : we remove own dir & subDir#}
+{#
+    {% set style = "" %}
+    {% set selected = '' %}
+        {% set selected = "selected=selected" %}
+    {% if choice.data.parent is null
+    {% if choice.data.owner.id != form.parent.parent.parent.vars.value.id %}
+      {% if form.parent.children.directory.vars.value == choice.value %}
+#}
+{%  block choice_widget %}
+  {% for key, choice in form.vars.choices %}
+      {% set style = "" %}
+      {% set selected = '' %}
+      {% if form.parent.children.directory.vars.value == choice.value %}
+          {% set selected = "selected" %}
+      {% endif %}
+      {% if choice.data.parent is not null
+       or choice.data.owner.id == form.parent.parent.parent.vars.value.id %}
+
+        {% set style = "display:none;" %}
+      {% endif %}
+
+    <option value="{{choice.value}}"
+            {{selected}}
+            style="{{style}}"
+             >{{choice.label}} </option>
+  {% endfor %}
+{% endblock %}
+{# display form insde tr element #}
+{% block _simpleit_claireexercisebundle_askeruser_directories_entry_widget %}
+      <td>
+        <select id="{{form.directory.vars.id}}" name="{{form.directory.vars.full_name}}">
+        {{form_widget(form.directory)}}
+        </select>
+      </td>
+      <td>
+        {{form_widget(form.isManager)}}
+      </td>
+  </div>
+{% endblock %}
+{% block content %}
+  <div class='row'>
+    <br>
+    <div class='col-xs-5 col-xs-offset-3'>
+        {{ form_start(form) }}
+          {{ form_errors(form) }}
+          {{ form_row(form.username,{'attr':{'class':'form-control'}})}}
+          {{ form_row(form.firstName,{'attr':{'class':'form-control'}})}}
+          {{ form_row(form.lastName,{'attr':{'class':'form-control'}})}}
+          {{ form_row(form.isEnable)}}
+          {{ form_row(form.isLdap)}}
+          {{ form_row(form.ldapDn,{'attr':{'class':'form-control'}})}}
+          <div class="form-group">
+            <label>Roles</label>
+            {% for role in form.roles %}
+              <div class="checkbox">
+                  {{form_row(role)}}
+              </div>
+            {% endfor %}
+          </div>
+          <table class="table" data-prototype="{{ form_widget(form.directories.vars.prototype)|e('html_attr') }}">
+            <thead>
+              <th>Répertoires 
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"
+                title="Affiche uniquement les répertoires dont l'utilisateur n'est pas proprietaire">
+                </span>
+              </th>
+              <th>Gestionnaire</th>
+              <th>Action</th>
+            </thead>
+            {% for key, directory in form.directories %}
+              {% if directory.vars.data.directory.owner.id == user.id 
+                or directory.vars.data.directory.parent is not null%}
+                {% set style = "display:none;" %}
+              {% else %}
+                {% set style = "" %}
+              {% endif %}
+              <tr  style="{{style}}">
+                {{ form_widget(directory)}}
+                </tr>
+            {% endfor %}
+          </table>
+          <button type="button" id="add_directory_button" class="btn btn-success">Ajouter un répertoire</button>
+          <input type="submit" value="Editer"
+          class="btn btn-warning" />
+        {{ form_end(form) }}
+    </div>
+  </div>
+<script>
+  var $collectionHolder;
+
+// setup an "add a directory" link
+var $addDirectoryButton = $("#add_directory_button");
+//add the button into this code
+var $newLinkLi = $("<div id='div_button' style='margin:5px;'></div>").append($addDirectoryButton);
+
+jQuery(document).ready(function() {
+    // Get the element that holds the collection of directories
+    $collectionHolder = $('table')
+
+    // add delete link into each elements
+    $collectionHolder.find("tbody tr").each(function() {
+        addDirectoryFormDeleteLink($(this));
+    });
+
+    // append "add a directory" into collectionHolder (table here) 
+    $collectionHolder.append($newLinkLi);
+
+    // count the current form inputs we have (e.g. 2), use that as the new
+    // index when inserting a new item (e.g. 2)
+    $collectionHolder.data('index', $collectionHolder.find(':input').length);
+
+    $addDirectoryButton.on('click', function(e) {
+        // add a new directory form (see next code block)
+        addDirectoryForm($collectionHolder, $newLinkLi);
+    });
+});
+function addDirectoryForm($collectionHolder, $newLinkLi) {
+    // Get the data-prototype explained earlier
+    var prototype = $collectionHolder.data('prototype');
+
+    // get the new index
+    var index = $collectionHolder.data('index');
+
+    var newForm = prototype;
+
+    // Replace '__name__' in the prototype's HTML to
+    // instead be a number based on how many items we have
+    newForm = newForm.replace(/__name__/g, index);
+
+    // increase the index with one for the next item
+    $collectionHolder.data('index', index + 1);
+
+    // Display the form inside HTML markup below
+    var $newFormLi = $("<tr></tr>").append(newForm);
+    // add the button before the last element
+    $newLinkLi.before($newFormLi);
+    // add delete button inside form
+    addDirectoryFormDeleteLink($newFormLi);
+}
+function addDirectoryFormDeleteLink($tagFormLi) {
+    var $removeFormButton = $('<td><button type="button" class="btn btn-xs btn-danger">Supprimer</button></td>');
+    $tagFormLi.append($removeFormButton);
+
+    $removeFormButton.on('click', function(e) {
+        // remove the li for the tag form
+        $tagFormLi.remove();
+    });
+}
+</script>
+{% endblock %}

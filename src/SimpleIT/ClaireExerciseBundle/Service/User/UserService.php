@@ -88,4 +88,10 @@ class UserService extends TransactionalService implements UserServiceInterface
         ;
     }
 
+    public function allTeachers()
+    {
+        return $this->userRepository->findTeachers();
+    }
+
+
 }

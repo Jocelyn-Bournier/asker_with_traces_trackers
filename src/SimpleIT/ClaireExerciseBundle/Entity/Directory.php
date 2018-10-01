@@ -23,18 +23,28 @@ class Directory
      */
     private $code;
 
+    /**
+     * @var boolean
+     */
+    private $isVisible;
+
     private $users;
 
     private $models;
 
     private $parent;
 
+    private $statViews;
+
     private $subs;
+
+    private $owner;
     
     public function __construct()
     {
         $this->users = new ArrayCollection();
         $this->subs = new ArrayCollection();
+        $this->statViews = new ArrayCollection();
         $this->models =  new ArrayCollection();
     }
 
@@ -82,15 +92,83 @@ class Directory
     {
         return $this->users;
     }
-    public function addUser(AskerUser $user)
+    public function addUser(AskerUserDirectory $user)
     {
       $this->users[] = $user;
       return $this;
     }
 
-    public function removeUser(AskerUser $user)
+    public function removeUser(AskerUserDirectory $user)
     {
       $this->users->removeElement($user);
+    }
+
+    /**
+     * Get statViews.
+     *
+     * @return statViews.
+     */
+    public function getStatViews()
+    {
+        return $this->statViews;
+    }
+    public function addStatView(StatView $statView)
+    {
+      $this->statViews[] = $statView;
+      return $this;
+    }
+
+    public function removeStatView(StatView $statView)
+    {
+      $this->statViews->removeElement($statView);
+    }
+
+    public function getManagers()
+    {
+        $managers = [];
+        foreach($this->getUsers() as $user){
+            if ($user->getUser()->getId()  !== $this->getOwner()->getId()){
+                foreach($user->getUser()->getRoles() as $role){
+                    if ($role->getName() == "ROLE_WS_CREATOR"){
+                        $managers[] = $user;
+                        break;
+                    }
+                }
+            }
+        }
+        return $managers;
+    }
+
+    public function realUsers()
+    {
+        $realUsers = [];
+        foreach($this->getUsers() as $user){
+            $realUsers[] = $user->getUser();
+        }
+        return $realUsers;
+
+    }
+
+    public function hasManager(AskerUser $has)
+    {
+        foreach($this->getUsers() as $user){
+            if ($has->getId() == $user->getUser()->getId()
+                && $user->getIsManager()
+            )
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function hasUser(AskerUser $has){
+        foreach($this->getUsers() as $user){
+            if ($has->getId() == $user->getUser()->getId()){
+                return true;
+            }
+        }
+        return false;
     }
     
     /**
@@ -177,5 +255,63 @@ class Directory
     {
         $this->code = $code;
     }
+    
+    /**
+     * Get owner.
+     *
+     * @return owner.
+     */
+    public function getOwner()
+    {
+        return $this->owner;
+    }
+    
+    /**
+     * Set owner.
+     *
+     * @param owner the value to set.
+     */
+    public function setOwner($owner)
+    {
+        $this->owner = $owner;
+    }
+
+    public function getLastView()
+    {
+        $last = null;
+        if(count($this->getStatViews()) == 0){
+            return null;
+        }else{
+            foreach($this->getStatViews() as $view){
+                if (empty($last)){
+                    $last = $view;
+                }else if ($view->getEndDate() > $last->getEndDate()){
+                    $last = $view;
+                }
+            }
+            return $last;
+        }
+    }
+    
+    /**
+     * Get isVisible.
+     *
+     * @return isVisible.
+     */
+    public function getIsVisible()
+    {
+        return $this->isVisible;
+    }
+    
+    /**
+     * Set isVisible.
+     *
+     * @param isVisible the value to set.
+     */
+    public function setIsVisible($isVisible)
+    {
+        $this->isVisible = $isVisible;
+    }
 }
+
 

@@ -58,6 +58,9 @@ sign:
 admin:
     resource: "@SimpleITClaireExerciseBundle/Resources/config/routing/frontend/admin.yml"
     prefix:   /admin/
+stats:
+    resource: "@SimpleITClaireExerciseBundle/Resources/config/routing/frontend/stats.yml"
+    prefix:   /stat/
 
 api_upload:
     resource: "@SimpleITClaireExerciseBundle/Resources/config/routing/api/upload.yml"

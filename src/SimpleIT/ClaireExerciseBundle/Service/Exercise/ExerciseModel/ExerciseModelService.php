@@ -228,6 +228,8 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
     {
         parent::updateFromSharedResource($modelResource, $model, 'exercise_model_storage');
         $model = $this->computeRequirements($modelResource, $model);
+	# debug romain
+	#die(var_dump($model));
 
         if ($modelResource->getArchived() === true && $model->getArchived() === false) {
             $model->setArchived(true);
@@ -1493,16 +1495,6 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
     public function createClarolineResourceNode($user, $model)
     {
         $workspace = $user->getPersonalWorkspace();
-        //$this->resourceManager->create(
-        //    $model,
-        //    $this->resourceManager->getResourceTypeByName('claire_exercise_model'),
-        //    $user,
-        //    $workspace,
-        //    $this->em->getRepository
-        //        (
-        //            'ClarolineCoreBundle:Resource\ResourceNode'
-        //        )->findWorkspaceRoot($workspace)
-        //);
     }
 
     /**

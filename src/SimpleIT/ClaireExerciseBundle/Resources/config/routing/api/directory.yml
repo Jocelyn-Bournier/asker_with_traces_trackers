@@ -11,6 +11,10 @@ api_directory_delete:
     requirements:
         _format: json
         resourceId: \d+
+api_directory_clear_student:
+    pattern:  /clear/student/{directory}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Directory/Directory:clearStudent }
+    methods: [GET]
 api_directory_list:
     pattern:  /
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/Directory/Directory:list }
@@ -60,3 +64,9 @@ api_directory_model_save:
     requirements:
         _format: json
 
+api_directory_visible:
+    pattern:  /visible/{directory}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Directory/Directory:visible}
+    methods: [PUT]
+    requirements:
+        _format: json

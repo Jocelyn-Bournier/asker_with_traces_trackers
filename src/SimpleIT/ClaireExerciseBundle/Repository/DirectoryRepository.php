@@ -89,17 +89,42 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
     {
         return $this->createQueryBuilder('d')
             ->select('d.id, d.name')
+            ->where('d.isVisible = true')
             ->getQuery()
             ->getArrayResult()
         ;
     }
 
-    public function findParents()
+    public function findParents($user = 0)
     {
-        $parents= $this->createQueryBuilder('d')
-            ->select('d.id, d.name, count(m.id) as models')
+        $qb = $this->createQueryBuilder('d')
+            ->select('d.id,d.code,o.username, d.name, count(m.id) as models')
             ->leftJoin('d.models', 'm')
-            ->where('d.parent IS NULL')
+            //pour afficher le nom du owner
+            ->leftJoin('d.owner', 'o')
+        ;
+        if ($user !== 0){
+            $parents = $qb
+                ->join('d.users', 'aud')
+                //->join('aud.user', 'u')
+                ->andWhere(
+                    $qb->expr()->orX(
+                        #$qb->expr()->eq('aud.user', ':user'),
+                        $qb->expr()->eq('d.owner', ':user'),
+                        $qb->expr()->eq('aud.isManager', 1)
+                    ),
+                    $qb->expr()->isNull('d.parent')
+                )
+                //->where('u.id = :user')
+                //->andWhere('d.parent IS NULL')
+                ->setParameter('user', $user)
+            ;
+        }else{
+            $parents = $qb
+                ->where('d.parent IS NULL')
+            ;
+        }
+        $parents = $parents
             ->groupBy('d.name')
             ->addGroupBy('d.id')
             ->getQuery()
@@ -116,39 +141,88 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
         }
         return $parents;
     }
+
+    public function findObjects()
+    {
+            return $this->createQueryBuilder('d');
+    }
+    public function findObjectParents()
+    {
+        return $this->createQueryBuilder('d')
+            ->where('d.parent is NULL')
+        ;
+    }
+    /* Used by AskerUserDirectoryType
+     * requets directories where the users
+     * is not the owner
+     */
+    public function findObjectNotMine($user)
+    {
+        return $this->createQueryBuilder('d')
+            ->where('d.parent is NULL')
+            ->andWhere('d.owner <> :user')
+            ->setParameter('user', $user)
+        ;
+    }
+
     public function findMine($user)
     {
         //selection des parents
-        $parents = $this->createQueryBuilder('d')
+        //$parents = $this->createQueryBuilder('d')
+        //    ->select('d.id')
+        //    ->where('d.owner = :user')
+        //    ->andWhere('d.parent IS NULL')
+        //    ->setParameter('user', $user)
+        //    ->getQuery()
+        //    ->getArrayResult();
+        $qb = $this->createQueryBuilder('d')
             ->select('d.id')
-            ->join('d.users', 'u')
-            ->where('u.id = :user')
-            ->andWhere('d.parent IS NULL')
+            ->join('d.users','aud')
+	    #->join('aud.user', 'u')
+        ;
+        $parents = $qb
+	    ->andwhere(
+                    $qb->expr()->isNull('d.parent'),
+                    $qb->expr()->eq('aud.user',':user'),
+		    $qb->expr()->orX(
+                $qb->expr()->eq('aud.isManager',1),
+	    	$qb->expr()->eq('d.owner',':owner')
+		    )
+	    )
+            #->orWhere(
+            #    $qb->expr()->eq('u.isManager',1),
+            #    $qb->expr()->andX(
+            #        $qb->expr()->eq('d.owner',':user'),
+            #        $qb->expr()->isNull('d.parent')
+            #    )
+            #)
             ->setParameter('user', $user)
+            ->setParameter('owner', $user)
             ->getQuery()
-            ->getArrayResult();
+            ->getArrayResult()
+        ;
 
         //recuperation des ids
         $ids = array_column($parents,"id");
         $qb =$this->createQueryBuilder('d')
-            ->select('d.id, d.code, d.name, p.id as idp, count(m.id) as models ')
-            ->leftJoin('d.users', 'u')
+            ->select('d.id, d.isVisible as is_visible, d.code, d.name, p.id as idp')
+            ->leftJoin('d.users', 'aud')
             ->leftJoin('d.parent', 'p')
-            ->leftJoin('d.models', 'm')
         ;
-        return $qb->where(
+        #return $qb->where(
+        return $qb->andWhere(
+                    $qb->expr()->eq('aud.user',':user'),
                 $qb->expr()->orX(
                     $qb->expr()->in('d.parent',$ids),
-                    $qb->expr()->eq('u.id',':user')
+                    $qb->expr()->eq('d.owner',':user'),
+                    $qb->expr()->eq('aud.isManager',1)
                 )
             )
             ->setParameter('user', $user)
-            ->groupBy('d.id')
-            ->addGroupBy('d.name')
-            ->addGroupBy('idp')
             ->getQuery()
             ->getResult();
     }
+
     public function findChildrens($parent)
     {
         return $this->createQueryBuilder('d')
@@ -163,6 +237,16 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
         return $this->createQueryBuilder('d')
             ->select('count(d.id) as total')
             ->where('d.parent = :parent')
+            ->setParameter('parent', $parent)
+            ->getQuery()
+            ->getResult();
+    }
+    public function countModels($parent)
+    {
+        return $this->createQueryBuilder('d')
+            ->select('count(m.id) as total')
+            ->join('d.models', 'm')
+            ->where('d.id = :parent')
             ->setParameter('parent', $parent)
             ->getQuery()
             ->getResult();
@@ -189,15 +273,47 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery()
             ->getResult();
     }
-    public function countStudents($id)
+    public function countCurrentStudents($id, $teachers)
     {
-        return $this->createQueryBuilder('d')
+        $qb = $this->createQueryBuilder('d')
             ->select('count(u.id) as total')
-            ->join('d.users', 'u')
+            ->join('d.users', 'aud')
+            ->join('aud.user', 'u')
             ->join('u.roles', 'r')
-            ->where('d.id = :id')
-            ->andWhere("r.name = 'ROLE_USER'")
+        ;
+        return $qb->where(
+                $qb->expr()->andX(
+                    #$qb->expr()->eq('r.name', ':role'),
+                    $qb->expr()->isNull('aud.endDate'),
+                    $qb->expr()->eq('d.id', ':id'),
+                    $qb->expr()->notIn('u.id',':teachers')
+                )
+            )
             ->setParameter('id', $id)
+            #->setParameter('role', "ROLE_USER")
+            ->setParameter('teachers', $teachers)
+            ->getQuery()
+            ->getResult();
+    }
+    public function countOldStudents($id, $teachers)
+    {
+        $qb = $this->createQueryBuilder('d')
+            ->select('count(u.id) as total')
+            ->join('d.users', 'aud')
+            ->join('aud.user', 'u')
+            ->join('u.roles', 'r')
+        ;
+        return $qb->where(
+                $qb->expr()->andX(
+                    #$qb->expr()->eq('r.name', ':role'),
+                    $qb->expr()->isNotNull('aud.endDate'),
+                    $qb->expr()->eq('d.id', ':id'),
+                    $qb->expr()->notIn('u.id',':teachers')
+                )
+            )
+            ->setParameter('id', $id)
+            #->setParameter('role', "ROLE_USER")
+            ->setParameter('teachers', $teachers)
             ->getQuery()
             ->getResult();
     }

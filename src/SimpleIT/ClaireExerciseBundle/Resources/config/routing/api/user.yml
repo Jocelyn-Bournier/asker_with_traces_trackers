@@ -12,3 +12,10 @@ api_user_view:
     requirements:
         _format: json
         userId: \d+
+
+api_user_available_managers:
+    pattern:  /available/managers
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/User/User:availableManagers }
+    methods: [GET]
+    requirements:
+        _format: json

@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
+    <link rel="shortcut icon" type="image/png" href="/favicon.png"/>
     <title>Asker</title>
 
     <!-- included styles -->
@@ -116,8 +117,8 @@
         </div>
         <div id='navbar' class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar brand-size">
-              {% for dir in app.user.directories %}
-                {% if dir.parent is null %}
+              {% for dir in app.user.realDirectoriesNotEnded %}
+                {% if dir.parent is null and dir.isVisible %}
                   <li>
                     <a ui-sref="dir-model-list({dirId:'{{dir.id}}'})"
                     title="Consulter les exercices du dossier {{dir.name}}">

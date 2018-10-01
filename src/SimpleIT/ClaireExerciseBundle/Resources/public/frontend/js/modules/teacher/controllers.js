@@ -1,82 +1,6 @@
 /**
- *
  * Created by bryan on 25/06/14.
  */
-var directoryControllers = angular.module('directoryControllers', ['ui.router']);
-directoryControllers.controller('directoryController',  ['$scope', '$modal',  
-    function ($scope, $modal) { 
-        $scope.section = 'directory';
-        $scope.directories = {};
-    }
-]);
-directoryControllers.controller('directoryListController', ['$scope', 'MyDirectory', '$location',
-    function ($scope, MyDirectory, $location) {
-
-        // retrieve models
-        //MyDirectory.query({id: BASE_CONFIG.currentUserId}, function (data) {
-        MyDirectory.query(function (datas) {
-            for(var i = 0; i < datas.length; i++){
-                $scope.directories[datas[i].id] = datas[i];
-            }
-
-        });
-        $scope.deleteDirectory = function (directory) {
-            directory.$delete({id: directory.id}, function () {
-                delete $scope.directories[directory.id];
-            });
-        };
-        $scope.createDirectory = function(parentid){
-            if (parentid === undefined){
-                MyDirectory.save( function (data) {
-                    $location.path('/teacher/directory/' + data.id)
-                });
-            }else{
-                MyDirectory.savechild({id:parentid}, function (data) {
-                    $location.path('/teacher/directory/' + data.id)
-                });
-            }
-        }
-        $scope.editDirectory = function(directory){
-            $location.path('/teacher/directory/' + directory.id)
-        }
-    }
-]);
-directoryControllers.controller('directoryEditController', ['$scope','$stateParams', 'MyDirectory',
-    function ($scope, $stateParams, MyDirectory) {
-
-        $scope.directory = MyDirectory.get({id: $stateParams.directoryid}, function () {
-        });
-            //var newResource = jQuery.extend(true, {}, $scope.editedResource);
-        $scope.updateDirectory = function (directory) {
-            directory.$update({id: directory.id}, function (dir) {
-                $scope.directory = dir;
-            });
-        };
-        $scope.directoryAddModel = function (collection, id) {
-            var isAlreadyAdded = false;
-            angular.forEach(collection, function (res) {
-                if (res.id == id) {
-                    isAlreadyAdded = true;
-                }
-            });
-            if (!isAlreadyAdded) {
-                collection.splice(collection.length, 0, {"id": id});
-            }
-        };
-        $scope.deleteDirectory = function (directory) {
-            directory.$delete({id: directory.id})
-        };
-        $scope.onDropModel = function(event, model, collection){
-            if ($scope.directory.models === undefined){
-                $scope.directory.models = [];
-            }
-            $scope.directory.models.push(model);
-        };
-        $scope.directoryRemoveModel = function (collection, index) {
-            collection.splice(index, 1);
-        };
-    }
-]);
 
 var resourceControllers = angular.module('resourceControllers', ['ui.router']);
 
@@ -293,6 +217,7 @@ resourceControllers.controller('resourceListController', ['$scope', '$state', 'R
             console.log('archiving...');
             var archived = new Resource;
             archived.archived = true;
+            alert('archiving');
             archived.$update({id: resource.id}, function () {
                 resource.archived = true;
             });
@@ -651,8 +576,8 @@ resourceControllers.controller('resourceSelectListController', ['$scope', 'BASE_
 
 var modelControllers = angular.module('modelControllers', ['ui.router']);
 
-modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'AttemptByExercise', 'DirectorySelect', '$routeParams', '$location',
-    function ($scope, ExerciseByModel, AttemptByExercise,DirectorySelect, $routeParams, $location) {
+modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'AttemptByExercise', '$routeParams', '$location',
+    function ($scope, ExerciseByModel, AttemptByExercise, $routeParams, $location) {
 
         $scope.section = 'model';
 
@@ -877,17 +802,7 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
                 }
             }
         };
-        $scope.modelAddDirectoryField = function (newDir, model) {
-            model.push(newDir.name);
-            //DirectorySelect.save({
-            //        modelId:model,
-            //        directoryId:newDir.id
-            //    },
-            //    function(){
-            //        console.log('saved model in directory');
 
-            //});
-        };
         $scope.modelAddKeywordsField = function (collection) {
             var keyword = $('#modelAddKeyword');
             collection.push(keyword[0].value);
@@ -937,9 +852,6 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
         $scope.modelRemoveField = function (collection, index) {
             collection.splice(index, 1);
         };
-        //$scope.directoryRemoveField = function (collection, index) {
-        //    collection.splice(index, 1);
-        //};
 
         $scope.viewAttempt = function (attempt) {
             $location.path("/learner/attempt/" + attempt.id);
@@ -1055,19 +967,9 @@ modelControllers.controller('modelListController', ['$scope', 'Model', '$locatio
         };
     }]);
 
-modelControllers.controller('modelEditController', ['$scope', 'Model','ModelDirectory','DirectoryList','DirectorySelect', 'Resource', '$location', '$stateParams',
-    function ($scope, Model,ModelDirectory,DirectoryList, DirectorySelect, Resource, $location, $stateParams) {
+modelControllers.controller('modelEditController', ['$scope', 'Model', 'Resource', '$location', '$stateParams',
+    function ($scope, Model, Resource, $location, $stateParams) {
 
-        $scope.freeDirectories =DirectoryList.query(
-            function(){
-                console.log('load free directories');
-            }
-        );
-        $scope.filterAlreadyAdded = function(item) {
-            if ($scope.model.directories.indexOf(item.name) == -1){
-                return item;
-            }
-        };
         $scope.model = Model.get({id: $stateParams.modelid}, function () {
             // fill each block with empty constraints
             $scope.fillBlockConstraints($scope.model);
@@ -1092,11 +994,6 @@ modelControllers.controller('modelEditController', ['$scope', 'Model','ModelDire
                     break;
             }
         });
-        //$scope.usedDirectories =ModelDirectory.query({modelId:$stateParams.modelid},
-        //    function(){
-        //        console.log('load directories for model');
-        //    }
-        //);
 
         $scope.fillBlockConstraints = function (model) {
             switch (model.type) {

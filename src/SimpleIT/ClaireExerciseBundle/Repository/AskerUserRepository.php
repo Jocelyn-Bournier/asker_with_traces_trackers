@@ -10,4 +10,47 @@ namespace SimpleIT\ClaireExerciseBundle\Repository;
  */
 class AskerUserRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function findTeachers()
+    {
+        return $this->createQueryBuilder('a')
+            ->select('a.id, a.username')
+            ->join('a.roles', 'r')
+            ->where('r.name = :name')
+            ->orWhere('r.name = :admin')
+            ->setParameter('name', 'ROLE_WS_CREATOR')
+            ->setParameter('admin', 'ROLE_ADMIN')
+            ->distinct()
+            ->orderBy('a.username')
+            ->getQuery()
+            ->getArrayResult()
+        ;
+
+    }
+
+    public function getArrayStudents($directory, $startDate, $endDate)
+    {
+        $teachers =$this->findTeachers();
+        $ids = array_column($teachers,"id");
+        $qb = $this->createQueryBuilder('a')
+                    ->select('a.id, a.username')
+                    ->join('a.directories', 'aud')
+                    #->join('aud.directory', 'd')
+        ;
+        return $qb
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->notIn('a.id', $ids),
+                    $qb->expr()->eq('aud.directory',':directory'),
+                    $qb->expr()->between('aud.startDate', ':startDate', ':endDate')
+                )
+            )
+            ->setParameter('directory', $directory)
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate)
+            ->getQuery()
+            ->getArrayResult()
+        ;
+
+    }
+
 }

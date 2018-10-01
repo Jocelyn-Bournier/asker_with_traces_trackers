@@ -11,18 +11,36 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
+use SimpleIT\ClaireExerciseBundle\Repository\DirectoryRepository;
+use SimpleIT\ClaireExerciseBundle\Repository\AskerUserDirectoryRepository;
+use SimpleIT\ClaireExerciseBundle\Entity\AskerUserDirectory;
+use Doctrine\Common\Collections\ArrayCollection;
+
 class AskerUserType extends AbstractType
 {
+
+    private $em;
+
+    public function __construct($em)
+    {
+        $this->em = $em;
+    }
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $userId = $builder->getData()->getId();
+        $datas = new ArrayCollection($this->em
+            ->getRepository('SimpleITClaireExerciseBundle:AskerUserDirectory')
+            ->findMyParents($userId)
+        );
         $builder
             ->add('username', TextType::class,
                 array(
                     'label' => 'Identifiant',
+                    'block_name' => 'hello'
                 )
             )
             ->add('firstName', TextType::class,
@@ -61,13 +79,16 @@ class AskerUserType extends AbstractType
                     'expanded' => true,
                 )
             )
-            ->add('directories', EntityType::class,
+            ->add('directories',CollectionType::class,
                 array(
-                    'class' => 'SimpleITClaireExerciseBundle:Directory',
-                    'choice_label' => 'name',
-                    'multiple' => true,
-                    'expanded' => true,
-                    'by_reference' => false,
+                    'entry_type' => AskerUserDirectoryType::class,
+                    'allow_add' => true,
+                    'allow_delete' => true,
+                    'data' => $datas,
+                    'entry_options' => array(
+                        'label' => false,
+                        'userId' => $userId
+                    )
                 )
             )
         ;
@@ -91,3 +112,4 @@ class AskerUserType extends AbstractType
         return 'simpleit_claireexercisebundle_askeruser';
     }
 }
+

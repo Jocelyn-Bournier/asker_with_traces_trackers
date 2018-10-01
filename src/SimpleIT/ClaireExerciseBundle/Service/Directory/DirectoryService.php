@@ -20,6 +20,8 @@ namespace SimpleIT\ClaireExerciseBundle\Service\Directory;
 
 use JMS\Serializer\SerializationContext;
 use SimpleIT\ClaireExerciseBundle\Entity\AnswerFactory;
+use SimpleIT\ClaireExerciseBundle\Entity\StatView;
+use SimpleIT\ClaireExerciseBundle\Entity\AskerUser;
 use SimpleIT\ClaireExerciseBundle\Entity\CreatedExercise\Item;
 use SimpleIT\ClaireExerciseBundle\Exception\AnswerAlreadyExistsException;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\AnswerResource;
@@ -29,7 +31,11 @@ use SimpleIT\ClaireExerciseBundle\Service\Exercise\ExerciseCreation\ExerciseServ
 use SimpleIT\ClaireExerciseBundle\Service\Serializer\SerializerInterface;
 use SimpleIT\ClaireExerciseBundle\Service\TransactionalService;
 use SimpleIT\ClaireExerciseBundle\Entity\Directory;
+use SimpleIT\ClaireExerciseBundle\Entity\AskerUserDirectory;
+use Symfony\Component\HttpFoundation\Response;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Service which manages the stored exercises
@@ -39,40 +45,97 @@ use Doctrine\Common\Collections\ArrayCollection;
 #class DirectoryService extends TransactionalService implements AnswerServiceInterface
 class DirectoryService extends TransactionalService
 {
-    /**
-     * @var  ExerciseService
-     */
-    private $exerciseService;
+#    /**
+#     * @var  ExerciseService
+#     */
+#    private $exerciseService;
+#
+#    /**
+#     * @var ItemService
+#     */
+#    private $itemService;
+#
+#    /**
+#     * @var AttemptServiceInterface
+#     */
+#    private $attemptService;
+#
 
+#    /**
+#     * @var AnswerRepository
+#     */
+#    private $answerRepository;
+#
+#    /**
+#     * @var SerializerInterface
+#     */
+#    protected $serializer;
+#
+#    /**
+#     * Set serializer
+#     *
+#     * @param SerializerInterface $serializer
+#     */
+#    public function setSerializer($serializer)
+#    {
+#        $this->serializer = $serializer;
+#    }
+#    #
+#    /**
+#     * Set exerciseService
+#     *
+#     * @param ExerciseService $exerciseService
+#     */
+#    public function setExerciseService($exerciseService)
+#    {
+#        $this->exerciseService = $exerciseService;
+#    }
+#
+#    /**
+#     * Set attemptService
+#     *
+#     * @param AttemptServiceInterface $attemptService
+#     */
+#    public function setAttemptService($attemptService)
+#    {
+#        $this->attemptService = $attemptService;
+#    }
+#
+#    /**
+#     * Set answerRepository
+#     *
+#     * @param AnswerRepository $answerRepository
+#     */
+#    public function setAnswerRepository($answerRepository)
+#    {
+#        $this->answerRepository = $answerRepository;
+#    }
+#
+#    /**
+#     * Set itemService
+#     *
+#     * @param ItemService $itemService
+#     */
+#    public function setItemService($itemService)
+#    {
+#        $this->itemService = $itemService;
+#    }
+#
+#    /**
+#     * Create an answer to an item
+#     *
+#     * @param int            $itemId
+#     * @param AnswerResource $answerResource
+#     * @param int            $attemptId
+#     * @param int            $userId
+#     *
+#     * @throws \SimpleIT\ClaireExerciseBundle\Exception\AnswerAlreadyExistsException
+#     * @return ItemResource
+#     */
     /**
-     * @var ItemService
+     * @var askerUserDirectoryService
      */
-    private $itemService;
-
-    /**
-     * @var AttemptServiceInterface
-     */
-    private $attemptService;
-
-    /**
-     * @var AnswerRepository
-     */
-    private $answerRepository;
-
-    /**
-     * @var SerializerInterface
-     */
-    protected $serializer;
-
-    /**
-     * Set serializer
-     *
-     * @param SerializerInterface $serializer
-     */
-    public function setSerializer($serializer)
-    {
-        $this->serializer = $serializer;
-    }
+    private $askerUserDirectoryService;
     /**
      * @var DirectoryRepository
      */
@@ -88,56 +151,15 @@ class DirectoryService extends TransactionalService
     }
 
     /**
-     * Set exerciseService
+     * Set askerUserDirectoryService
      *
-     * @param ExerciseService $exerciseService
+     * @param UserRepository $askerUserDirectoryService
      */
-    public function setExerciseService($exerciseService)
+    public function setaskerUserDirectoryService($askerUserDirectoryService)
     {
-        $this->exerciseService = $exerciseService;
+        $this->askerUserDirectoryService = $askerUserDirectoryService;
     }
 
-    /**
-     * Set attemptService
-     *
-     * @param AttemptServiceInterface $attemptService
-     */
-    public function setAttemptService($attemptService)
-    {
-        $this->attemptService = $attemptService;
-    }
-
-    /**
-     * Set answerRepository
-     *
-     * @param AnswerRepository $answerRepository
-     */
-    public function setAnswerRepository($answerRepository)
-    {
-        $this->answerRepository = $answerRepository;
-    }
-
-    /**
-     * Set itemService
-     *
-     * @param ItemService $itemService
-     */
-    public function setItemService($itemService)
-    {
-        $this->itemService = $itemService;
-    }
-
-    /**
-     * Create an answer to an item
-     *
-     * @param int            $itemId
-     * @param AnswerResource $answerResource
-     * @param int            $attemptId
-     * @param int            $userId
-     *
-     * @throws \SimpleIT\ClaireExerciseBundle\Exception\AnswerAlreadyExistsException
-     * @return ItemResource
-     */
     public function add($itemId, AnswerResource $answerResource, $attemptId, $userId)
     {
         // Get the item and the attempt
@@ -177,6 +199,7 @@ class DirectoryService extends TransactionalService
 
     }
 
+
     /**
      * Get all answers for an item
      *
@@ -202,43 +225,75 @@ class DirectoryService extends TransactionalService
 
         return $this->answerRepository->findAllBy($item, $attempt);
     }
+
     public function all(){
         return $this->directoryRepository->findAll();
     }
 
-    public function allParents()
+    public function countCurrentStudents($dir,$teachers)
     {
-        return $this->directoryRepository->findParents();
+        return $this->directoryRepository->countCurrentStudents($dir, $teachers);
+    }
+
+    public function countOldStudents($dir,$teachers)
+    {
+        return $this->directoryRepository->countOldStudents($dir, $teachers);
+    }
+
+    public function allParents($user = 0)
+    {
+        return $this->directoryRepository->findParents($user);
+    }
+    public function findMine(AskerUser $user)
+    {
+        return $this->directoryRepository->findMine($user->getId());
     }
 
     public function find($id)
     {
         return $this->directoryRepository->find($id);
     }
-    public function remove($id)
+    public function remove(Directory $id, AskerUser $user)
     {
-        $entity = $this->directoryRepository->find($id);
-        $this->em->remove($entity);
-        $this->em->flush();
+        if (
+            $id->getOwner()->getId() == $user->getId()
+            || $user->isAdmin()
+        ){
+            try{
+                $entity = $this->directoryRepository->find($id);
+                $this->em->remove($entity);
+                $this->em->flush();
+            }catch (ForeignKeyConstraintViolationException $e){
+               $res= new Response('Il est nécessaire de supprimer les sous-dossiers', 500);
+               $res->send();
+            }
+        }else{
+            throw new AccessDeniedException();
+        }
     }
 
-    public function edit($resource,$userId)
+    public function edit($resource,AskerUser $user)
     {
+        $userId = $user->getId();
         $find = 0;
         if (is_null($resource->getId())) {
             throw new MissingIdException();
         }
         $entity = $this->find($resource->getId());
-        foreach($entity->getUsers() as $u){
-            if($u->getId() == $userId){
-                $find = 1;
-            }
-        }
-        if (!$find){
+        if ($entity->getOwner()->getId() !== $userId
+            && !$entity->hasManager($user)
+        ){
             throw new AccessDeniedException();
         }
-        $entity->setName($resource->getName()); 
-        $entity->setCode($resource->getCode());
+        $entity->setIsVisible($resource->getIsVisible());
+        $entity->setName($resource->getName());
+        if (!$entity->getParent()){
+            $entity->setCode($resource->getCode());
+            $this->askerUserDirectoryService->updateManager($entity,$resource);
+            foreach($entity->getSubs() as $dir){
+                $this->askerUserDirectoryService->updateManager($dir, $resource);
+            }
+        }
         foreach($entity->getModels() as $model){
             $entity->removeModel($model);
         }
@@ -257,45 +312,127 @@ class DirectoryService extends TransactionalService
     {
         $dir = new Directory();
         $dir->setName('Nouveau répertoire');
+        $dir->setIsVisible(true);
+        $dir->setOwner($user);
         if ($directory != 0){
             $dir->setParent($this
                 ->directoryRepository
                 ->find($directory)
             );
         }
-        $dir->addUser($user);
+        $dirUser = new AskerUserDirectory();
+        $dirUser->setUser($user);
+        $dirUser->setIsManager(false);
+        $dirUser->setDirectory($dir);
+        $this->em->persist($dirUser);
         $this->em->persist($dir);
         $this->em->flush();
         return $dir;
     }
 
-    public function stats(Directory $directory, $attempt, $answer,$users)
+    public function stats(Directory $directory, $attempt, $answer,$view, $ids)
     {
         $models = array();
         foreach($directory->getModels() as $model){
             $models[$model->getId()]['title'] = $model->getTitle();
+	    #ok
             $models[$model->getId()]['userAnswer'] = $answer->
-                uniqueUsersByModel($model->getId())[0]['total']
+                uniqueUsersByModel($model->getId(),$view, $ids)[0]['total']
             ;
+	    #ok
             $models[$model->getId()]['userNoAnswer'] =  $attempt->
-                uniqueUsersByModel($model->getId())[0]['total']
+                uniqueUsersByModel($model->getId(),$view, $ids)[0]['total']
             ;
+	    #ok
             $models[$model->getId()]['avgAttempt'] = $attempt->
-                averageAttemptByModel($model->getId())[0]['avg']
+                averageAttemptByModel($model->getId(),$view,$ids)[0]['avg']
             ;
+	    #ok
             $models[$model->getId()]['avgAnswer'] = $answer->
-                averageAnswerByModel($model->getId())[0]['avg']
+                averageAnswerByModel($model->getId(),$view, $ids)[0]['avg']
             ;
+	    #ok
             $models[$model->getId()]['avgMark'] = $answer->
-                averageMarkByModel($model->getId())[0]['avg']
+                averageMarkByModel($model->getId(),$view, $ids)[0]['avg']
             ;
-            $models[$model->getId()]['users'] =  $users;
+            $models[$model->getId()]['distribution'] = $answer->
+                distributionMarkByModel($model->getId(),$view, $ids)[0]
+            ;
 
         }
         return $models;
     }
+    public function getIdUsers(Directory $directory, $view)
+    {
+        $this->getEntityManager();
+        $ids = array();
+        $users =$directory->realUsers();
+        #return  array_column($this->em->getRepository('SimpleITClaireExerciseBundle:AskerUser')
+        #->getArrayStudents($directory->getId(),$view->getStartDate(),$view->getEndDate()),'id');
+        foreach($users as $user){
+            if ($user->isOnlyStudent()){
+                if($view){
+                    $old = new \DateTime("2999-01-01");
+                    foreach($user->getDirectories() as $aud){
+                        if ($aud->getDirectory()->getId()  == $directory->getId()){
+                            $old = $aud->getEndDate();
+                            break;
+                        }
+                    }
+                    $old = new \DateTime("2999-01-01");
+                    foreach($user->getLogs() as $log){
+                        if ($log->getLoggedAt() >= $view->getStartDate()
+                            && $log->getLoggedAt() <= $view->getEndDate()
+                            && $old >= $view->getEndDate()
+                        ){
+                            $ids[] = $user->getId();
+                            break;
+                        }
+                    }
+                }else{
+                    $ids[] = $user->getId();
+                }
+            }
+        }
+        return $ids;
 
-    public function getModelStats(Directory $directory)
+
+    }
+    public function getUsernames(Directory $directory, $view)
+    {
+        $ids = array();
+        $users = $directory->realUsers();
+        foreach($users as $user){
+            if ($user->isOnlyStudent()){
+                if($view){
+                    $old = new \DateTime("2999-01-01");
+                    foreach($user->getDirectories() as $aud){
+                        if ($aud->getDirectory()->getId()  == $directory->getId()){
+                            $old = $aud->getEndDate();
+                            break;
+                        }
+                    }
+                    $old = new \DateTime("2999-01-01");
+                    foreach($user->getLogs() as $log){
+                        if ($log->getLoggedAt() >= $view->getStartDate()
+                            && $log->getLoggedAt() <= $view->getEndDate()
+                            && $old >= $view->getEndDate()
+                        ){
+                            $ids[$user->getId()] = $user->getUsername();
+                            break;
+                        }
+                    }
+                }else{
+                    $ids[$user->getId()] = $user->getUsername();
+                }
+            }
+        }
+        return $ids;
+
+
+    }
+
+    public function getModelStats(Directory $directory, $view, $ids)
     {
         $models = array();
         $dirs = array();
@@ -305,24 +442,83 @@ class DirectoryService extends TransactionalService
         $answer = $this->em
             ->getRepository('SimpleITClaireExerciseBundle:CreatedExercise\Answer')
         ;
-        $users = count($directory->getUsers());
         $dirs[$directory->getName()]= $this->stats(
             $directory,
-            #$models,
             $attempt,
             $answer,
-            $users
+            $view,
+            $ids
         );
         foreach($directory->getSubs() as $sub){
-            #$models = $this->stats(
             $dirs[$sub->getName()] = $this->stats(
                 $sub,
-                #$models,
                 $attempt,
                 $answer,
-                $users
+                $view,
+                $ids
             );
         }
         return $dirs;
+    }
+
+
+    public function hasView(Directory $directory)
+    {
+        $totalPeda= $this->em
+            ->getRepository('SimpleITClaireExerciseBundle:Pedagogic')
+            ->periodByCode($directory->getCode())
+        ;
+        $totalViews = array();
+        foreach($directory->getStatViews() as $view){
+            $totalViews[] =  $view->getRefPedagogic();
+        }
+        foreach($totalPeda as $peda){
+            if (isset($peda['period'])){
+                if (!in_array($peda['year']."-".$peda['period'], $totalViews)){
+                    $view = new StatView();
+                    $view->setRefPedagogic($peda['year']."-".$peda['period']);
+                    $view->setDirectory($directory);
+                    if(preg_match("/GP1AUTOM/", $peda['period'])){
+                        $view->setName($peda['year']."/". explode('-',$peda['period'])[0]);
+                        $view->setStartDate(new \DateTime($peda['year']."-08-15"));
+                        $view->setEndDate(new \DateTime(($peda['year']+1)."-01-15"));
+                    }else if (preg_match("/GP2PRINT/", $peda['period'])){
+                        $view->setName(($peda['year']+1)."/". explode('-',$peda['period'])[0]);
+                        $view->setStartDate(new \DateTime(($peda['year']+1)."-01-15"));
+                        $view->setEndDate(new \DateTime(($peda['year']+1)."-08-15"));
+                    }else{
+                        $view->setName($peda['year']."/". explode('-',$peda['period'])[0]);
+                        $view->setStartDate(new \DateTime($peda['year']."-08-15"));
+                        $view->setEndDate(new \DateTime(($peda['year']+1)."-08-15"));
+                    }
+                    $this->em->persist($view);
+                    try{
+                        $this->em->flush();
+                        $this->em->refresh($directory);
+                    }catch(\Exception $e){
+                        die('Une erreur est survenue!');
+                    }
+                }
+            }
+        }
+    }
+
+    public function changeVisibility(AskerUser $user, Directory $directory)
+    {
+        if (
+            $directory->getOwner()->getId() == $user->getId()
+            || $user->isAdmin()
+            || $directory->hasManager($user)
+        ){
+            if ($directory->getIsVisible()){
+                $directory->setIsVisible(false);
+            }else{
+                $directory->setIsVisible(true);
+            }
+            $this->em->flush();
+        }else{
+            throw new AccessDeniedException();
+        }
+
     }
 }

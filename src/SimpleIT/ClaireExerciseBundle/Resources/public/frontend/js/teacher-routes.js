@@ -31,14 +31,6 @@ mainApp.config(
                 url: '/teacher/resource/:resourceid',
                 templateUrl: BASE_CONFIG.urls.partials.teacher + '/partial-resource-edit.html'
             });
-            $stateProvider.state('directories', {
-                url: '/teacher/directories',
-                templateUrl: BASE_CONFIG.urls.partials.teacher + '/partial-directory-list.html'
-            });
-            $stateProvider.state('directoryEdit', {
-                url: '/teacher/directory/:directoryid',
-                templateUrl: BASE_CONFIG.urls.partials.teacher + '/partial-directory-edit.html'
-            });
         }
     ]
 );

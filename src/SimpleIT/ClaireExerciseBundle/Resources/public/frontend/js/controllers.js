@@ -111,16 +111,16 @@ mainAppControllers.controller('mainUserController', ['$scope', '$sce', '$routePa
 
             var userIds = [];
 
-            //for (var i in resourcesData) {
-            //    if (resourcesData.hasOwnProperty(i) && i != "$promise" && i != "$resolved") {
-            //        if (userIds.indexOf(resourcesData[i].author) == -1) {
-            //            userIds.push(resourcesData[i].author);
-            //        }
-            //        if (userIds.indexOf(resourcesData[i].owner) == -1) {
-            //            userIds.push(resourcesData[i].owner);
-            //        }
-            //    }
-            //}
+            for (var i in resourcesData) {
+                if (resourcesData.hasOwnProperty(i) && i != "$promise" && i != "$resolved") {
+                    if (userIds.indexOf(resourcesData[i].author) == -1) {
+                        userIds.push(resourcesData[i].author);
+                    }
+                    if (userIds.indexOf(resourcesData[i].owner) == -1) {
+                        userIds.push(resourcesData[i].owner);
+                    }
+                }
+            }
 
             for (i in userIds) {
                 if (typeof $scope.users[userIds[i]] === 'undefined') {
@@ -134,5 +134,4 @@ mainAppControllers.controller('mainUserController', ['$scope', '$sce', '$routePa
         }
 
         $scope.BASE_CONFIG = BASE_CONFIG;
-        $location.path($location.path());
     }]);

@@ -42,8 +42,16 @@
                     {% endif %}
                   </td>
                   <td>
-                    {% for dir in user.directories %}
-                      <span class="label label-primary">{{dir.name}}</span>
+                    {% for dir in user.realDirectories %}
+                      {% if not dir.getParent() %}
+                        {% if dir.owner == user %}
+                          <div class="label label-primary"><span class="glyphicon glyphicon-home"></span> {{dir.name}}</div>
+                        {% elseif dir.hasManager(user) %}
+                          <div class="label label-primary"><span class="glyphicon glyphicon-pencil"></span> {{dir.name}}</div>
+                        {% else %}
+                          <div class="label label-primary">{{dir.name}}</div>
+                        {% endif %}
+                      {% endif %}
                     {% endfor %}
                   </td>
                   <td>
@@ -51,17 +59,17 @@
                       <span class="label label-default">{{role.public}}</span>
                     {% endfor %}
                   </td>
-                  <td>
+                  <td class="btn-grp-vertical btn-group-xs">
                     <a class='btn btn-warning' href="{{path('admin_edit',
                     {'user':user.id})}}">
-                      <span class="glyphicon glyphicon glyphicon-edit btn-xs"
+                      <span class="glyphicon glyphicon glyphicon-edit"
                       title='Edition du profil utilisateur'>
                       </span>
                     </a>
                     {% if not user.isLdap %}
-                      <a class='btn btn-primary' href="{{path('admin_update_password',
+                      <a class='btn btn-primary' style="margin-top:3px;" href="{{path('admin_update_password',
                       {'user':user.id})}}">
-                        <span class="glyphicon glyphicon glyphicon-lock btn-xs"
+                        <span class="glyphicon glyphicon glyphicon-lock"
                         title='Changement du mot de passe'>
                         </span>
                       </a>

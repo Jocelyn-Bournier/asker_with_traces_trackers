@@ -6,6 +6,9 @@
     </id>
     <field name="name" type="string" column="name" length="50"/>
     <field name="code" type="string" column="code" length="50" nullable="true"/>
+    <field name="isVisible" type="boolean" column="isVisible" />
+    <many-to-one field="owner" nullable="false"
+    target-entity="SimpleIT\ClaireExerciseBundle\Entity\AskerUser"/>
     <many-to-many field="models" inversed-by="directories"
          target-entity="SimpleIT\ClaireExerciseBundle\Entity\ExerciseModel\ExerciseModel">
         <join-table name="directories_models">
@@ -18,23 +21,26 @@
         </join-table>
         <cascade>
             <cascade-persist/>
+            <cascade-remove />
         </cascade>
     </many-to-many>
-    <many-to-many field="users" inversed-by="directories"
-         target-entity="SimpleIT\ClaireExerciseBundle\Entity\AskerUser">
-        <join-table name="directories_users">
-            <join-columns>
-                <join-column name="directory_id" referenced-column-name="id" />
-            </join-columns>
-            <inverse-join-columns>
-                <join-column name="user_id" referenced-column-name="id" />
-            </inverse-join-columns>
-        </join-table>
-                    <cascade>
-                <cascade-persist />
+    <one-to-many field="users"
+    target-entity="SimpleIT\ClaireExerciseBundle\Entity\AskerUserDirectory" mapped-by="directory">
+            <cascade>
+                <cascade-persist/>
+                <cascade-remove />
             </cascade>
-    </many-to-many>
-    <one-to-many field="subs" mapped-by="parent" 
+    </one-to-many>
+    <one-to-many field="statViews"  mapped-by="directory"
+    target-entity="SimpleIT\ClaireExerciseBundle\Entity\StatView">
+        <cascade>
+                <cascade-remove />
+        </cascade>
+        <order-by>
+                <order-by-field name="endDate" direction="DESC" />
+        </order-by>
+    </one-to-many>
+    <one-to-many field="subs" mapped-by="parent"
     target-entity="SimpleIT\ClaireExerciseBundle\Entity\Directory"/>
     <many-to-one field="parent" inversed-by="subs"
     target-entity="SimpleIT\ClaireExerciseBundle\Entity\Directory"/>

@@ -5,8 +5,9 @@
     <div class='col-xs-4 col-xs-offset-3'>
       {% form_theme form 'bootstrap_3_layout.html.twig' %}
         {{ form_start(form) }}
+          {{ form_errors(form) }}
           {{ form_widget(form) }}
-          <input type="submit" value="Edit"
+          <input type="submit" value="Editer"
           class="btn btn-warning" />
         {{ form_end(form) }}
     </div>

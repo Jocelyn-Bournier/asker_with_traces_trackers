@@ -24,6 +24,7 @@ use SimpleIT\ClaireExerciseBundle\Exception\NonExistingObjectException;
 use SimpleIT\ClaireExerciseBundle\Model\Api\ApiGotResponse;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\UserResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\UserResourceFactory;
+use SimpleIT\ClaireExerciseBundle\Model\Resources\AskerUserResourceFactory;
 
 /**
  * API user controller
@@ -71,6 +72,22 @@ class UserController extends BaseController
             $userResources = UserResourceFactory::createCollection($users);
 
             return new ApiGotResponse($userResources, array(
+                'details',
+                'Default'
+            ));
+        } catch (NonExistingObjectException $neoe) {
+            throw new ApiNotFoundException(UserResource::RESOURCE_NAME);
+        }
+    }
+
+    public function availableManagersAction()
+    {
+        try {
+            $teachers = $this->get('simple_it.exercise.user')->allTeachers();
+
+            $teachersResources = AskerUserResourceFactory::createCollectionFromArray($teachers);
+
+            return new ApiGotResponse($teachersResources, array(
                 'details',
                 'Default'
             ));

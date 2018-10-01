@@ -26,6 +26,7 @@ use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseObject;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\DirectoryResource;
 use SimpleIT\ClaireExerciseBundle\Serializer\Handler\AbstractClassForExerciseHandler;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModelResourceFactory;
+use SimpleIT\ClaireExerciseBundle\Model\Resources\AskerUserResourceFactory;
 
 
 /**
@@ -40,17 +41,33 @@ abstract class DirectoryFactory
     /**
      * Create an Directory Resource
      *
-     * @param StoredExercise $exercise
-     * @param bool           $links
-     *
-     * @return ExerciseResource
      */
     public static function create(Directory $directory, $links = false)
     {
         $directoryResource = new DirectoryResource();
         $directoryResource->setName($directory->getName());
-        $directoryResource->setCode($directory->getCode());
+        $directoryResource->setIsVisible($directory->getIsVisible());
+        $directoryResource->setOwner($directory->getOwner()->getId());
         $directoryResource->setId($directory->getId());
+        if ($directory->getParent()){
+            $directoryResource->setIsChild(true);
+            $directoryResource->setCode($directory->getParent()->getCode());
+        }else{
+            $directoryResource->setIsChild(false);
+            $directoryResource->setCode($directory->getCode());
+        }
+        foreach($directory->getUsers() as $user){
+            if ($user->getUser()->getId() !== $directory->getOwner()->getId()){
+                if ($user->getIsManager()){
+                    $directoryResource->addManager(AskerUserResourceFactory::create($user));
+                }
+            }else{
+                    $directoryResource->addManager(AskerUserResourceFactory::create($user));
+            }
+        }
+        if (empty($directoryResource->getManagers())){
+                $directoryResource->setManagers(array());
+        }
         foreach($directory->getModels() as $model){
             //$directoryResource->addModel($model);
             $directoryResource->addModel(ExerciseModelResourceFactory::create($model,$links));
@@ -65,8 +82,28 @@ abstract class DirectoryFactory
     {
         $directoryResource = new DirectoryResource();
         $directoryResource->setName($directory->getName());
-        $directoryResource->setCode($directory->getCode());
+        $directoryResource->setIsVisible($directory->getIsVisible());
+        $directoryResource->setOwner($directory->getOwner()->getId());
         $directoryResource->setId($directory->getId());
+        if ($directory->getParent()){
+            $directoryResource->setIsChild(true);
+            $directoryResource->setCode($directory->getParent()->getCode());
+        }else{
+            $directoryResource->setIsChild(false);
+            $directoryResource->setCode($directory->getCode());
+        }
+        foreach($directory->getUsers() as $user){
+            if ($user->getUser()->getId() !== $directory->getOwner()->getId()){
+                if ($user->getIsManager()){
+                    $directoryResource->addManager(AskerUserResourceFactory::create($user));
+                }
+            }else{
+                    $directoryResource->addManager(AskerUserResourceFactory::create($user));
+            }
+        }
+        if (empty($directoryResource->getManagers())){
+                $directoryResource->setManagers(array());
+        }
         foreach($directory->getModels() as $model){
             //$directoryResource->addModel($model);
             $directoryResource->addModel(ExerciseModelResourceFactory::createProper($model));

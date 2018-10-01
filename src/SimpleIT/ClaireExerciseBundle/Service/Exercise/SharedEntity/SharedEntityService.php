@@ -654,6 +654,7 @@ abstract class SharedEntityService extends TransactionalService implements Share
             static::ENTITY_TYPE
         );
         $resource->setContent($parentResource->getContent());
+	#die("aha:".$parentResource->getContent());
         $resource->setMetadata($parentResource->getMetadata());
 
         return $resource;

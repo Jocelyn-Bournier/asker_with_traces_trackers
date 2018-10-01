@@ -4,21 +4,16 @@ mainApp.config(
 
             $resourceProvider.defaults.stripTrailingSlashes = false;
 
-            //$urlRouterProvider.otherwise('/learner/directories/news/');
-            $urlRouterProvider.otherwise('/learner/');
-
+            $urlRouterProvider.otherwise('/learner/models/');
 
             $stateProvider.state('all-attempt-list', {
-                url: '/learner/model/:modelId',
+                url: '/learner/models/',
                 templateUrl: BASE_CONFIG.urls.partials.learner + '/partial-attempt-list.html'
             });
-            $stateProvider.state('dir-model-list', {
-                url: '/learner/directory/models/:dirId',
-                templateUrl: BASE_CONFIG.urls.partials.learner + '/partial-directory-models-list.html'
-            });
-            $stateProvider.state('all-new-list', {
-                url: '/learner/directories/news/',
-                templateUrl: BASE_CONFIG.urls.partials.learner + '/partial-new-list.html'
+
+            $stateProvider.state('attempt-list', {
+                url: '/learner/model/:modelId',
+                templateUrl: BASE_CONFIG.urls.partials.learner + '/partial-attempt-list.html'
             });
 
             $stateProvider.state('attempt', {

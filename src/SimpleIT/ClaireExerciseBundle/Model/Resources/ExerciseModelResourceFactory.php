@@ -59,44 +59,49 @@ abstract class ExerciseModelResourceFactory extends SharedResourceFactory
     public static function create(ExerciseModel $exerciseModel, $links = false, $user = null) 
     {
         $exerciseModelResource = new ExerciseModelResource();
-        //die(json_encode(var_dump($exerciseModelResource)));
         parent::fill($exerciseModelResource, $exerciseModel);
 
-        // required resources
-	// is it useful?
-        //if ($new){
-        //    $rr = array();
-        //    foreach ($exerciseModel->getRequiredExerciseResources() as $req) {
-        //        /** @var \SimpleIT\ClaireExerciseBundle\Entity\ExerciseResource\ExerciseResource $req */
-        //        $rr[] = $req->getId();
-        //    }
-        //    $exerciseModelResource->setRequiredExerciseResources($rr);
-        //}
+        #code from fill
+        #$exerciseModelResource->setId($exerciseModel->getId());
+        #$exerciseModelResource->setType($exerciseModel->getType());
+        #$exerciseModelResource->setTitle($exerciseModel->getTitle());
+        #$exerciseModelResource->setAuthor($exerciseModel->getAuthor()->getId());
+        #$exerciseModelResource->setPublic($exerciseModel->getPublic());
+        #$exerciseModelResource->setArchived($exerciseModel->getArchived());
+        #$exerciseModelResource->setOwner($exerciseModel->getOwner()->getId());
+        #$exerciseModelResource->setDraft($exerciseModel->getDraft());
+        #$exerciseModelResource->setComplete($exerciseModel->getComplete());
+        #$exerciseModelResource->setCompleteError($exerciseModel->getCompleteError());
+
+        if (!is_null($exerciseModel->getParent())) {
+            $exerciseModelResource->setParent($exerciseModel->getParent()->getId());
+        }
+        if (!is_null($exerciseModel->getForkFrom())) {
+            $exerciseModelResource->setForkFrom($exerciseModel->getForkFrom()->getId());
+        }
+
+
         $dr = array();
         foreach($exerciseModel->getDirectories() as $dir){
-            //$temp = array();
-            //$temp[$dir->getId()] = $dir->getName();
-            //$dr[] = json_encode($temp);
-            //$dr[] = DirectoryFactory::create($dir);
             $dr[] = $dir->getName();
         }
         $exerciseModelResource->setDirectories($dr);
 
         // required knowledges
-        $rn = array();
-        foreach ($exerciseModel->getRequiredKnowledges() as $req) {
-            /** @var Knowledge $req */
-            $rn[] = $req->getId();
-        }
-        $exerciseModelResource->setRequiredKnowledges($rn);
+        #$rn = array();
+        #foreach ($exerciseModel->getRequiredKnowledges() as $req) {
+        #    /** @var Knowledge $req */
+        #    $rn[] = $req->getId();
+        #}
+        #$exerciseModelResource->setRequiredKnowledges($rn);
 
-        if ($links) {
-            $exercises = array();
-            foreach ($exerciseModel->getExercises() as $ex) {
-                 $exercises[] = ExerciseResourceFactory::create($ex, true);
-            }
-            $exerciseModelResource->setExercises($exercises);
-        }
+        #if ($links) {
+        #    $exercises = array();
+        #    foreach ($exerciseModel->getExercises() as $ex) {
+        #         $exercises[] = ExerciseResourceFactory::create($ex, true);
+        #    }
+        #    $exerciseModelResource->setExercises($exercises);
+        #}
 
         // removable
         if (count($exerciseModel->getExercises()) > 0) {
@@ -104,6 +109,7 @@ abstract class ExerciseModelResourceFactory extends SharedResourceFactory
         } else {
             $exerciseModelResource->setRemovable(true);
         }
+        #die((var_dump($exerciseModelResource)));
 
         return $exerciseModelResource;
     }

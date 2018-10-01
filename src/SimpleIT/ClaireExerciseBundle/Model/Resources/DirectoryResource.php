@@ -21,6 +21,7 @@ namespace SimpleIT\ClaireExerciseBundle\Model\Resources;
 use JMS\Serializer\Annotation as Serializer;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModelResource as EM;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\DirectoryResource as DR;
+use SimpleIT\ClaireExerciseBundle\Model\Resources\AskerUserResource as AU;
 
 /**
  * Class DirectoryResource
@@ -57,6 +58,24 @@ class DirectoryResource
      * @Serializer\Groups({"details", "directory"})
      */
     private $code;
+    /**
+     * @var string $owner
+     * @Serializer\Type("integer")
+     * @Serializer\Groups({"details", "directory"})
+     */
+    private $owner;
+    /**
+     * @var string $isChild
+     * @Serializer\Type("boolean")
+     * @Serializer\Groups({"details", "directory"})
+     */
+    private $isChild;
+    /**
+     * @var string $isVisible
+     * @Serializer\Type("boolean")
+     * @Serializer\Groups({"details", "directory"})
+     */
+    private $isVisible;
 
 
     /**
@@ -77,6 +96,14 @@ class DirectoryResource
      * @Serializer\Groups({"details"})
      */
     protected $subs;
+    /**
+     * @var array
+     * @Serializer\Type("array<SimpleIT\ClaireExerciseBundle\Model\Resources\AskerUserResource>")
+     * @Serializer\Groups({"details"})
+     */
+    protected $managers;
+
+
 
     /**
      * Get id
@@ -139,6 +166,35 @@ class DirectoryResource
     {
       $this->models->removeElement($model);
     }
+    /**
+     * Get managers.
+     *
+     * @return managers.
+     */
+    public function getManagers()
+    {
+        return $this->managers;
+    }
+    /**
+     * Set managers.
+     *
+     * @return managers.
+     */
+    public function setManagers($managers)
+    {
+        $this->managers = $managers;
+    }
+
+    public function addManager(AU $manager)
+    {
+      $this->managers[] = $manager;
+      return $this;
+    }
+
+    public function removeManager(AU $manager)
+    {
+      $this->managers->removeElement($manager);
+    }
 
     
     /**
@@ -199,5 +255,65 @@ class DirectoryResource
     public function removeSub(DR $directory)
     {
       $this->subs->removeElement($directory);
+    }
+
+    /**
+     * Get owner.
+     *
+     * @return owner.
+     */
+    public function getOwner()
+    {
+        return $this->owner;
+    }
+    
+    /**
+     * Set owner.
+     *
+     * @param owner the value to set.
+     */
+    public function setOwner($owner)
+    {
+        $this->owner = $owner;
+    }
+    
+    /**
+     * Get isChild.
+     *
+     * @return isChild.
+     */
+    public function getIsChild()
+    {
+        return $this->isChild;
+    }
+    
+    /**
+     * Set isChild.
+     *
+     * @param isChild the value to set.
+     */
+    public function setIsChild($isChild)
+    {
+        $this->isChild = $isChild;
+    }
+    
+    /**
+     * Get isVisible.
+     *
+     * @return isVisible.
+     */
+    public function getIsVisible()
+    {
+        return $this->isVisible;
+    }
+    
+    /**
+     * Set isVisible.
+     *
+     * @param isVisible the value to set.
+     */
+    public function setIsVisible($isVisible)
+    {
+        $this->isVisible = $isVisible;
     }
 }

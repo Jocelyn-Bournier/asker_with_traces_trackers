@@ -166,19 +166,33 @@ class AttemptRepository extends BaseRepository
             ->getQuery()
             ->getResult();
     }
-    function uniqueUsersByModel($model)
+    function uniqueUsersByModel($model,$view,$ids)
     {
-        return $this->createQueryBuilder('a')
+        $qb = $this->createQueryBuilder('a')
             ->select('count(distinct a.user) as total')
             ->join('a.exercise', 'e')
+            ->join('e.exerciseModel','m')
+            ->join('m.directories','d')
             ->where('e.exerciseModel = :model')
+            ->andWhere('a.user in (:ids)')
+        ;
+        if($view){
+            $qb
+                ->andWhere('a.createdAt > :start')
+                ->andWhere('a.createdAt < :end')
+                ->setParameter('start', $view->getStartDate())
+                ->setParameter('end', $view->getEndDate())
+            ;
+        }
+        return $qb
             ->setParameter('model',$model)
+            ->setParameter('ids',$ids)
             ->getQuery()
             ->getResult();
     }
 
 
-    function averageAttemptByModel($model)
+    function averageAttemptByModel($model,$view,$ids)
     {
         //Native SQL because derived table doesnt work with Doctrine
         $sql = "
@@ -189,8 +203,17 @@ class AttemptRepository extends BaseRepository
                     JOIN claire_exercise_stored_exercise s
                     ON s.id = a.exercise_id
                     WHERE exercise_model_id = :model
+		    AND a.created_at > :start
+		    AND a.created_at < :end
+        ";
+        if (!empty($ids)){
+            $sql .="
+                    AND user_id in (".implode(',',$ids).")"
+            ;
+        }
+        $sql .= "
                     GROUP BY user_id
-                ) d
+                ) d;
                 "
         ;
         $conn = $this->getEntityManager()
@@ -199,7 +222,13 @@ class AttemptRepository extends BaseRepository
         $stmt = $conn
             ->prepare($sql)
         ;
-        $stmt->execute(array('model' => $model));
+        $stmt->execute(
+		array(
+			'model' => $model,
+			'start' => $view->getStartDate()->format('Y-m-d'),
+			'end' => $view->getEndDate()->format('Y-m-d')
+		)
+	);
         return $stmt->fetchAll();
     }
 }

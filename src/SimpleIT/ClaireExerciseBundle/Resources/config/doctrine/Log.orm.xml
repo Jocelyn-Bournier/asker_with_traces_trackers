@@ -5,7 +5,7 @@
       <generator strategy="AUTO"/>
     </id>
     <field name="loggedAt" type="datetime" column="loggedAt"/>
-    <many-to-one target-entity="SimpleIT\ClaireExerciseBundle\Entity\AskerUser" field="user">
+    <many-to-one target-entity="SimpleIT\ClaireExerciseBundle\Entity\AskerUser" field="user" inversed-by="logs">
         <join-column name="user_id" referenced-column-name="id" nullable="false"/>
     </many-to-one>
   </entity>

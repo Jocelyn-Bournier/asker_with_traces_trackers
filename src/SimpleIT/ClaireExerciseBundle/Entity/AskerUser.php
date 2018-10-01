@@ -3,7 +3,6 @@
 namespace SimpleIT\ClaireExerciseBundle\Entity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\Common\Collections\ArrayCollection;
-
 /**
  * AskerUser
  */
@@ -57,13 +56,19 @@ class AskerUser implements UserInterface
     private $ldapDn;
 
     private $workspaces;
+
     private $directories;
+
+    private $pedagogics;
+    
+    private $logs;
 
     private $roles;
     public function __construct()
     {
         $this->directories = new ArrayCollection();
         $this->roles = new ArrayCollection();
+        $this->pedagogics = new ArrayCollection();
     }
 
     /**
@@ -182,7 +187,6 @@ class AskerUser implements UserInterface
     public function setIsLdap($isLdap)
     {
         $this->isLdap = $isLdap;
-
         return $this;
     }
 
@@ -269,7 +273,6 @@ class AskerUser implements UserInterface
     {
         $this->role->removeElement($role);
     }
-    
     /**
      * Set roles.
      *
@@ -278,6 +281,37 @@ class AskerUser implements UserInterface
     public function setRoles($roles)
     {
         $this->roles = $roles;
+    }
+
+    /**
+     * Get pedagogics.
+     *
+     * @return pedagogics.
+     */
+    public function getPedagogics()
+    {
+        return $this->pedagogics;
+    }
+    public function addPedagogic(Pedagogic $pedagogic)
+    {
+        $pedagogic->addUser($this);
+        $this->pedagogics[] = $pedagogic;
+        return $this;
+    }
+
+    public function removePedagogic( Pedagogic $pedagogic)
+    {
+        $this->pedagogic->removeElement($pedagogic);
+    }
+    
+    /**
+     * Set pedagogics.
+     *
+     * @param pedagogics the value to set.
+     */
+    public function setPedagogics($pedagogics)
+    {
+        $this->pedagogics = $pedagogics;
     }
     
     /**
@@ -344,17 +378,17 @@ class AskerUser implements UserInterface
     {
         $this->workspaces = $workspaces;
     }
-    public function addDirectory(Directory $directory)
+    public function addDirectory(AskerUserDirectory $directory)
 
     {
-        $directory->addUser($this);
+        $directory->setUser($this);
         $this->directories[] = $directory;
         return $this;
     }
 
-    public function removeDirectory( Directory $directory)
+    public function removeDirectory(AskerUserDirectory $directory)
     {
-        $directory->removeUser($this);
+        #$directory->removeUser($this);
         $this->directories->removeElement($directory);
     }
     
@@ -387,5 +421,72 @@ class AskerUser implements UserInterface
     {
         $this->isEnable = $isEnable;
     }
+
+    public function isOnlyStudent()
+    {
+
+        foreach($this->getRoles() as $role){
+            $name = $role->getName();
+            if (!preg_match( "/.*ROLE_USER.*/",$name)){
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    /**
+     * Get logs.
+     *
+     * @return logs.
+     */
+    public function getLogs()
+    {
+        return $this->logs;
+    }
+    
+    /**
+     * Set logs.
+     *
+     * @param logs the value to set.
+     */
+    public function setLogs($logs)
+    {
+        $this->logs = $logs;
+    }
+    public function isAdmin()
+    {
+        foreach($this->getRoles() as $role){
+            $name = $role->getName();
+            if (preg_match( "/.*ROLE_ADMIN.*/",$name)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function realDirectories()
+    {
+        $realDirectories = [];
+        foreach($this->getDirectories() as $aud){
+            $realDirectories[] = $aud->getDirectory();
+        }
+        return $realDirectories;
+    }
+
+    public function realDirectoriesNotEnded()
+    {
+        $realDirectories = [];
+        foreach($this->getDirectories() as $aud){
+            if (is_null($aud->getEndDate())){
+                $realDirectories[] = $aud->getDirectory();
+            }
+        }
+        return $realDirectories;
+    }
+    public function __toString()
+    {
+            return "AskerUser : " .$this->getUsername();
+    }
 }
+
 

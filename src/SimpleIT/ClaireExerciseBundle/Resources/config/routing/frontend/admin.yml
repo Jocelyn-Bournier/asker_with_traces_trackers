@@ -16,6 +16,7 @@ admin_edit:
 admin_update_password:
     pattern: /users/password/{user}
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Admin:updatePassword }
-admin_stats_directory:
-    pattern: /stats/directory/{directory}
-    defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Admin:statsDirectory }
+admin_migrate:
+    pattern: /migrate
+    defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Admin:migrate }
+
