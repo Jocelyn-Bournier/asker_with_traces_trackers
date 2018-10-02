@@ -1,343 +1,378 @@
 <div data-ng-controller="modelController">
-<div class="row" data-ng-controller="modelEditController">
-
-<div class="col-xs-12">
+  <div class="row" data-ng-controller="modelEditController">
+    <div class="col-xs-12">
+        <div class="panel-body">
+            <div class="panel panel-primary" style="margin-bottom: 0">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-centered" ng-switch="model.type">
+                            <div ng-switch-when="multiple-choice">
+                                <span title="QCM" class="glyphicon glyphicon-check" style="font-size:500%"></span>
+                            </div>
+                            <div ng-switch-when="open-ended-question">
+                                        <span class="glyphicon glyphicon-question-sign" style="font-size: 500%"
+                                              title="Question à réponse courte ouverte"></span>
+                            </div>
+                            <div ng-switch-when="pair-items">
+                                <span title="Exercice d'appariement" class="glyphicon glyphicon-random" style="font-size: 500%"></span>
+                            </div>
+                            <div ng-switch-when="order-items">
+                                <span title="Exercice d'ordonnancement" class="glyphicon glyphicon-sort" style="font-size: 500%"></span>
+                            </div>
+                            <div ng-switch-when="group-items">
+                                <span title="Exercice de groupement" class="glyphicon glyphicon-link" style="font-size: 500%"></span>
+                            </div>
+                        </div>
+                        <div class="col-xs-6 col-centered">
+                            <div class="col-xs-6">
+                                <h4>Titre</h4>
+                                <input type="text" ng-model="model.title" class="form-control"
+                                       title="Permet de retrouver le modèle dans les listes"/>
+                            </div>
+                            <div class="col-xs-3">
+                                <h4>Auteur</h4>
+                                <input type="text" ng-model="users[model.author].user_name" class="form-control" disabled>
+                            </div>
+                            <div class="col-xs-3">
+                                <h4>Propriétaire</h4>
+                                <input type="text" ng-model="users[model.owner].user_name"
+                                       class="form-control" disabled>
+                            </div>
+                        </div>
+                        <div class="col-xs-3 col-centered">
+                            <div class="col-xs-6">
+                                <div title="Ce modèle est-il partagé avec les autres auteurs ?" data-ng-click="model.public=!model.public">
+                                    <div class="col-centered">
+                                        <span class="glyphicon" ng-class="{'glyphicon-check': model.public, 'glyphicon-unchecked': !model.public}"></span>
+                                    </div>
+                                    <div class="col-centered">
+                                        <h4>Partagé</h4>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="col-centered">
+                                        <span class="glyphicon" ng-class="{'glyphicon-check': model.archived, 'glyphicon-unchecked': !model.archived}" data-ng-click="model.archived=!model.archived"></span>
+                                    </div>
+                                    <div class="col-centered">
+                                        <h4>Archivé</h4>
+                                    </div>
+                                </div>
+                                <!--<div>-->
+                                <!--<div class="col-centered">-->
+                                <!--<span class="glyphicon" ng-class="{'glyphicon-check': model.draft, 'glyphicon-unchecked': !model.draft}" data-ng-click="model.draft=!model.draft"></span>-->
+                                <!--</div>-->
+                                <!--<div class="col-centered">-->
+                                <!--<h4>Brouillon</h4>-->
+                                <!--</div>-->
+                                <!--</div>-->
+                            </div>
+                            <div class="col-xs-6">
+                                <div
+                                    title="Ce modèle est-il valide pour générer des exercices ? {{ completeError[model.complete_error] }}">
+                                    <div class="col-centered">
+                                        <span class="glyphicon" ng-class="{'glyphicon-check': model.complete, 'glyphicon-unchecked': !model.complete}"></span>
+                                    </div>
+                                    <div class="col-centered">
+                                        <h4>Complet</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div
+        ng-class="{'col-xs-5': !$parent.toggleResourceList, 'col-xs-12': $parent.toggleResourceList}">
     <div class="panel-body">
-        <div class="panel panel-primary" style="margin-bottom: 0">
-            <div class="panel-heading">
+    <accordion
+        title="Documents annexes à présenter à l'apprenant après la consigne lors de la résolution d'un exercice. Il peut s'agir de texte ou d'image. Ajouter-les en les glissant depuis la liste des ressource.">
+        <accordion-group class="panel panel-primary">
+            <accordion-heading class="panel-heading">
                 <div class="row">
-                    <div class="col-centered" ng-switch="model.type">
-                        <div ng-switch-when="multiple-choice">
-                            <span title="QCM" class="glyphicon glyphicon-check" style="font-size:500%"></span>
-                        </div>
-                        <div ng-switch-when="open-ended-question">
-                                    <span class="glyphicon glyphicon-question-sign" style="font-size: 500%"
-                                          title="Question à réponse courte ouverte"></span>
-                        </div>
-                        <div ng-switch-when="pair-items">
-                            <span title="Exercice d'appariement" class="glyphicon glyphicon-random" style="font-size: 500%"></span>
-                        </div>
-                        <div ng-switch-when="order-items">
-                            <span title="Exercice d'ordonnancement" class="glyphicon glyphicon-sort" style="font-size: 500%"></span>
-                        </div>
-                        <div ng-switch-when="group-items">
-                            <span title="Exercice de groupement" class="glyphicon glyphicon-link" style="font-size: 500%"></span>
-                        </div>
+                    <div class="col-xs-11" data-ng-click="">
+                        Documents&nbsp;<span class="caret"></span>
                     </div>
-                    <div class="col-xs-6 col-centered">
-                        <div class="col-xs-6">
-                            <h4>Titre</h4>
-                            <input type="text" ng-model="model.title" class="form-control"
-                                   title="Permet de retrouver le modèle dans les listes"/>
-                        </div>
-                        <div class="col-xs-3">
-                            <h4>Auteur</h4>
-                            <input type="text" ng-model="users[model.author].user_name" class="form-control" disabled>
-                        </div>
-                        <div class="col-xs-3">
-                            <h4>Propriétaire</h4>
-                            <input type="text" ng-model="users[model.owner].user_name"
-                                   class="form-control" disabled>
-                        </div>
-                    </div>
-                    <div class="col-xs-3 col-centered">
-                        <div class="col-xs-6">
-                            <div title="Ce modèle est-il partagé avec les autres auteurs ?" data-ng-click="model.public=!model.public">
-                                <div class="col-centered">
-                                    <span class="glyphicon" ng-class="{'glyphicon-check': model.public, 'glyphicon-unchecked': !model.public}"></span>
-                                </div>
-                                <div class="col-centered">
-                                    <h4>Partagé</h4>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="col-centered">
-                                    <span class="glyphicon" ng-class="{'glyphicon-check': model.archived, 'glyphicon-unchecked': !model.archived}" data-ng-click="model.archived=!model.archived"></span>
-                                </div>
-                                <div class="col-centered">
-                                    <h4>Archivé</h4>
-                                </div>
-                            </div>
-                            <!--<div>-->
-                            <!--<div class="col-centered">-->
-                            <!--<span class="glyphicon" ng-class="{'glyphicon-check': model.draft, 'glyphicon-unchecked': !model.draft}" data-ng-click="model.draft=!model.draft"></span>-->
-                            <!--</div>-->
-                            <!--<div class="col-centered">-->
-                            <!--<h4>Brouillon</h4>-->
-                            <!--</div>-->
-                            <!--</div>-->
-                        </div>
-                        <div class="col-xs-6">
-                            <div
-                                title="Ce modèle est-il valide pour générer des exercices ? {{ completeError[model.complete_error] }}">
-                                <div class="col-centered">
-                                    <span class="glyphicon" ng-class="{'glyphicon-check': model.complete, 'glyphicon-unchecked': !model.complete}"></span>
-                                </div>
-                                <div class="col-centered">
-                                    <h4>Complet</h4>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="col-xs-1">
+                        <span data-ng-click="" class="glyphicon glyphicon-plus"></span>
                     </div>
                 </div>
+            </accordion-heading>
+            <div class="panel-body panel panel-primary" collapse="context.pair_items.pair_blocks.resources.collapse" ui-on-Drop="onDropDocument($event,$data,model.content.documents)">
+                <accordion close-others="true">
+                    <accordion-group class="panel panel-success" data-ng-repeat="documentId in model.content.documents track by $index" class="row">
+                        <accordion-heading class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-2" ng-switch="resources[documentId.id].type">
+                                    <div ng-switch-when="text">
+                                        <span title="Texte" class="glyphicon glyphicon-font" style="font-size: 260%"></span>
+                                    </div>
+                                    <div ng-switch-when="picture">
+                                        <img title="Image" ng-src="{{BASE_CONFIG.urls.images.uploads}}{{resources[documentId.id].content.source}}" style="width: 40px; height: 40px;"/>
+                                    </div>
+                                    <div ng-switch-when="multiple-choice-question">
+                                        <span title="QCM" class="glyphicon glyphicon-check" style="font-size: 260%"></span>
+                                    </div>
+                                    <div ng-switch-when="open-ended-question">
+                                                    <span class="glyphicon glyphicon-question-sign" title="Question à réponse courte ouverte"
+                                                          style="font-size: 260%"></span>
+                                    </div>
+                                    <div ng-switch-when="sequence">
+                                        <span class="glyphicon glyphicon-sort-by-order" style="font-size: 260%"></span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-8">
+                                    <h4>{{ resources[documentId.id].title }}&nbsp;<span class="caret"></span>
+                                    </h4>
+                                </div>
+                                <div class="col-xs-1">
+    
+                                </div>
+                                <div class="col-xs-1">
+                                                <span data-ng-click="$event.stopPropagation();modelRemoveField(model.content.documents, $index)"
+                                                      class="glyphicon glyphicon-remove"></span>
+                                </div>
+                            </div>
+                        </accordion-heading>
+                        <div class="col-centered">
+                            <label>ID&nbsp;:&nbsp;</label>{{ resources[documentId.id].id }}
+                        </div>
+                        <div class="col-centered">
+                            <label>Auteur&nbsp;:&nbsp;</label>{{ users[resources[documentId.id].author].user_name }}
+                        </div>
+                        <div class="col-centered">
+                            <label>Propriétaire&nbsp;:&nbsp;</label>{{ users[resources[documentId.id].owner].user_name }}
+                        </div>
+                        <div class="col-centered">
+                            <label>Partagé&nbsp;:&nbsp;</label>
+                            <ng-switch on="resources[documentId.id].public">
+                                <span ng-switch-when="true">Oui</span>
+                                <span ng-switch-when="false">Non</span>
+                            </ng-switch>
+                        </div>
+                        <div class="col-centered">
+                            <label>Complet&nbsp;:&nbsp;</label>
+                            <ng-switch on="resources[documentId.id].complete">
+                                <span ng-switch-when="true">Oui</span>
+                                <span ng-switch-when="false">Non</span>
+                            </ng-switch>
+                        </div>
+                        <div class="col-centered" ng-switch="resources[documentId.id].type">
+                            <div ng-switch-when="text">
+                                <label>Contenu&nbsp;:&nbsp;</label>{{ resources[documentId.id].content.text }}
+                            </div>
+                            <div ng-switch-when="picture">
+                                <label>Contenu&nbsp;:&nbsp;</label>
+                                <a href="{{BASE_CONFIG.urls.images.uploads}}{{resources[documentId.id].content.source}}"
+                                   data-lightbox="res" data-title="La ressource">
+                                    <img ng-src="{{BASE_CONFIG.urls.images.uploads}}{{resources[documentId.id].content.source}}"/>
+                                </a>
+                            </div>
+                            <div ng-switch-when="multiple-choice-question">
+                                <label>Question&nbsp;:&nbsp;</label>{{ resources[documentId.id].content.question }}
+                            </div>
+                            <div ng-switch-when="open-ended-question">
+                                <label>Question&nbsp;:&nbsp;</label>{{ resources[documentId.id].content.question }}
+                            </div>
+                        </div>
+                        <div class="col-centered" ng-switch="resources[documentId.id].type">
+                            <div ng-switch-when="multiple-choice-question">
+                                <label>Commentaire&nbsp;:&nbsp;</label>{{ resources[documentId.id].content.comment }}
+                            </div>
+                            <div ng-switch-when="open-ended-question">
+                                <label>Commentaire&nbsp;:&nbsp;</label>{{ resources[documentId.id].content.comment }}
+                            </div>
+                        </div>
+                    </accordion-group>
+                </accordion>
             </div>
+        </accordion-group>
+    </accordion>
+    
+    <accordion>
+        <accordion-group class="panel panel-primary" is-open="true">
+            <accordion-heading class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-12">
+                        Consigne&nbsp;<span class="caret"></span>
+                    </div>
+                </div>
+            </accordion-heading>
+            <textarea class="form-control" rows="5" placeholder="Consigne de l'exercice" ng-model="model.content.wording"></textarea>
+        </accordion-group>
+    </accordion>
+    
+    <div ng-switch="model.type">
+        <div ng-switch-when="pair-items">
+            <div ng-include
+                 src="BASE_CONFIG.urls.partials.teacher+'/partial-model-edit-pair-items.html'"
+                 data-ng-controller="modelEditPairItemsController"></div>
+        </div>
+        <div ng-switch-when="order-items">
+            <div ng-include
+                 src="BASE_CONFIG.urls.partials.teacher+'/partial-model-edit-order-items.html'"
+                 data-ng-controller="modelEditOrderItemsController"></div>
+        </div>
+        <div ng-switch-when="multiple-choice">
+            <div ng-include
+                 src="BASE_CONFIG.urls.partials.teacher+'/partial-model-edit-multiple-choice.html'"
+                 data-ng-controller="modelEditMultipleChoiceController"></div>
+        </div>
+        <div ng-switch-when="group-items">
+            <div ng-include
+                 src="BASE_CONFIG.urls.partials.teacher+'/partial-model-edit-group-items.html'"
+                 data-ng-controller="modelEditGroupItemsController"></div>
+        </div>
+        <div ng-switch-when="open-ended-question">
+            <div ng-include
+                 src="BASE_CONFIG.urls.partials.teacher+'/partial-model-edit-open-ended-question.html'"
+                 data-ng-controller="modelEditOpenEndedQuestionController"></div>
         </div>
     </div>
-</div>
-
-<div
-    ng-class="{'col-xs-5': !$parent.toggleResourceList, 'col-xs-12': $parent.toggleResourceList}">
-<div class="panel-body">
-
-<accordion
-    title="Documents annexes à présenter à l'apprenant après la consigne lors de la résolution d'un exercice. Il peut s'agir de texte ou d'image. Ajouter-les en les glissant depuis la liste des ressource.">
-    <accordion-group class="panel panel-primary">
-        <accordion-heading class="panel-heading">
+    
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            Mots-clés
             <div class="row">
-                <div class="col-xs-11" data-ng-click="">
-                    Documents&nbsp;<span class="caret"></span>
-                </div>
-                <div class="col-xs-1">
-                    <span data-ng-click="" class="glyphicon glyphicon-plus"></span>
+                <div ng-repeat="keyword in model.keywords track by $index">
+                    <div class="col-xs-5">
+                        <input type="text" ng-model="keyword" class="form-control" disabled>
+                    </div>
+                    <div class="col-xs-1">
+                      <span data-ng-click="modelRemoveField(model.keywords, $index)"
+                      class="glyphicon glyphicon-remove"
+                      title="Supprimer ce mot-clé">
+                      </span>
+                    </div>
                 </div>
             </div>
-        </accordion-heading>
-        <div class="panel-body panel panel-primary" collapse="context.pair_items.pair_blocks.resources.collapse" ui-on-Drop="onDropDocument($event,$data,model.content.documents)">
-            <accordion close-others="true">
-                <accordion-group class="panel panel-success" data-ng-repeat="documentId in model.content.documents track by $index" class="row">
-                    <accordion-heading class="panel-heading">
-                        <div class="row">
-                            <div class="col-xs-2" ng-switch="resources[documentId.id].type">
-                                <div ng-switch-when="text">
-                                    <span title="Texte" class="glyphicon glyphicon-font" style="font-size: 260%"></span>
-                                </div>
-                                <div ng-switch-when="picture">
-                                    <img title="Image" ng-src="{{BASE_CONFIG.urls.images.uploads}}{{resources[documentId.id].content.source}}" style="width: 40px; height: 40px;"/>
-                                </div>
-                                <div ng-switch-when="multiple-choice-question">
-                                    <span title="QCM" class="glyphicon glyphicon-check" style="font-size: 260%"></span>
-                                </div>
-                                <div ng-switch-when="open-ended-question">
-                                                <span class="glyphicon glyphicon-question-sign" title="Question à réponse courte ouverte"
-                                                      style="font-size: 260%"></span>
-                                </div>
-                                <div ng-switch-when="sequence">
-                                    <span class="glyphicon glyphicon-sort-by-order" style="font-size: 260%"></span>
-                                </div>
-                            </div>
-                            <div class="col-xs-8">
-                                <h4>{{ resources[documentId.id].title }}&nbsp;<span class="caret"></span>
-                                </h4>
-                            </div>
-                            <div class="col-xs-1">
-
-                            </div>
-                            <div class="col-xs-1">
-                                            <span data-ng-click="$event.stopPropagation();modelRemoveField(model.content.documents, $index)"
-                                                  class="glyphicon glyphicon-remove"></span>
-                            </div>
-                        </div>
-                    </accordion-heading>
-                    <div class="col-centered">
-                        <label>ID&nbsp;:&nbsp;</label>{{ resources[documentId.id].id }}
-                    </div>
-                    <div class="col-centered">
-                        <label>Auteur&nbsp;:&nbsp;</label>{{ users[resources[documentId.id].author].user_name }}
-                    </div>
-                    <div class="col-centered">
-                        <label>Propriétaire&nbsp;:&nbsp;</label>{{ users[resources[documentId.id].owner].user_name }}
-                    </div>
-                    <div class="col-centered">
-                        <label>Partagé&nbsp;:&nbsp;</label>
-                        <ng-switch on="resources[documentId.id].public">
-                            <span ng-switch-when="true">Oui</span>
-                            <span ng-switch-when="false">Non</span>
-                        </ng-switch>
-                    </div>
-                    <div class="col-centered">
-                        <label>Complet&nbsp;:&nbsp;</label>
-                        <ng-switch on="resources[documentId.id].complete">
-                            <span ng-switch-when="true">Oui</span>
-                            <span ng-switch-when="false">Non</span>
-                        </ng-switch>
-                    </div>
-                    <div class="col-centered" ng-switch="resources[documentId.id].type">
-                        <div ng-switch-when="text">
-                            <label>Contenu&nbsp;:&nbsp;</label>{{ resources[documentId.id].content.text }}
-                        </div>
-                        <div ng-switch-when="picture">
-                            <label>Contenu&nbsp;:&nbsp;</label>
-                            <a href="{{BASE_CONFIG.urls.images.uploads}}{{resources[documentId.id].content.source}}"
-                               data-lightbox="res" data-title="La ressource">
-                                <img ng-src="{{BASE_CONFIG.urls.images.uploads}}{{resources[documentId.id].content.source}}"/>
-                            </a>
-                        </div>
-                        <div ng-switch-when="multiple-choice-question">
-                            <label>Question&nbsp;:&nbsp;</label>{{ resources[documentId.id].content.question }}
-                        </div>
-                        <div ng-switch-when="open-ended-question">
-                            <label>Question&nbsp;:&nbsp;</label>{{ resources[documentId.id].content.question }}
-                        </div>
-                    </div>
-                    <div class="col-centered" ng-switch="resources[documentId.id].type">
-                        <div ng-switch-when="multiple-choice-question">
-                            <label>Commentaire&nbsp;:&nbsp;</label>{{ resources[documentId.id].content.comment }}
-                        </div>
-                        <div ng-switch-when="open-ended-question">
-                            <label>Commentaire&nbsp;:&nbsp;</label>{{ resources[documentId.id].content.comment }}
-                        </div>
-                    </div>
-                </accordion-group>
-            </accordion>
-        </div>
-    </accordion-group>
-</accordion>
-
-<accordion>
-    <accordion-group class="panel panel-primary" is-open="true">
-        <accordion-heading class="panel-heading">
             <div class="row">
-                <div class="col-xs-12">
-                    Consigne&nbsp;<span class="caret"></span>
-                </div>
-            </div>
-        </accordion-heading>
-        <textarea class="form-control" rows="5" placeholder="Consigne de l'exercice" ng-model="model.content.wording"></textarea>
-    </accordion-group>
-</accordion>
-
-<div ng-switch="model.type">
-    <div ng-switch-when="pair-items">
-        <div ng-include
-             src="BASE_CONFIG.urls.partials.teacher+'/partial-model-edit-pair-items.html'"
-             data-ng-controller="modelEditPairItemsController"></div>
-    </div>
-    <div ng-switch-when="order-items">
-        <div ng-include
-             src="BASE_CONFIG.urls.partials.teacher+'/partial-model-edit-order-items.html'"
-             data-ng-controller="modelEditOrderItemsController"></div>
-    </div>
-    <div ng-switch-when="multiple-choice">
-        <div ng-include
-             src="BASE_CONFIG.urls.partials.teacher+'/partial-model-edit-multiple-choice.html'"
-             data-ng-controller="modelEditMultipleChoiceController"></div>
-    </div>
-    <div ng-switch-when="group-items">
-        <div ng-include
-             src="BASE_CONFIG.urls.partials.teacher+'/partial-model-edit-group-items.html'"
-             data-ng-controller="modelEditGroupItemsController"></div>
-    </div>
-    <div ng-switch-when="open-ended-question">
-        <div ng-include
-             src="BASE_CONFIG.urls.partials.teacher+'/partial-model-edit-open-ended-question.html'"
-             data-ng-controller="modelEditOpenEndedQuestionController"></div>
-    </div>
-</div>
-
-<div class="panel panel-primary">
-    <div class="panel-heading">
-        Mots-clés
-        <div class="row">
-            <div ng-repeat="keyword in model.keywords track by $index">
-                <div class="col-xs-5">
-                    <input type="text" ng-model="keyword" class="form-control" disabled>
-                </div>
-                <div class="col-xs-1"><span data-ng-click="modelRemoveField(model.keywords, $index)"
-                                            class="glyphicon glyphicon-remove"
-                                            title="Supprimer ce mot-clé"></span></div>
+                <div class="col-xs-5"><input id="modelAddKeyword" type="text" value=""
+                                             placeholder="nouveau mot-clé" class="form-control"></div>
+                <div class="col-xs-1"><span data-ng-click="modelAddKeywordsField(model.keywords)"
+                                            class="glyphicon glyphicon-ok"
+                                            title="Ajouter ce mot-clé"></span></div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-xs-5"><input id="modelAddKeyword" type="text" value=""
-                                         placeholder="nouveau mot-clé" class="form-control"></div>
-            <div class="col-xs-1"><span data-ng-click="modelAddKeywordsField(model.keywords)"
-                                        class="glyphicon glyphicon-ok"
-                                        title="Ajouter ce mot-clé"></span></div>
-        </div>
     </div>
-</div>
-
-<div class="panel panel-primary">
-    <div class="panel-heading">
-        Métadonnées
-        <div class="row">
-            <div ng-repeat="meta in model.metadata track by $index">
-                <div class="col-xs-5">
-                    <input type="text" ng-model="meta.key" class="form-control" disabled>
+    
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            Métadonnées
+            <div class="row">
+                <div ng-repeat="meta in model.metadata track by $index">
+                    <div class="col-xs-5">
+                        <input type="text" ng-model="meta.key" class="form-control" disabled>
+                    </div>
+                    <div class="col-xs-6">
+                        <input type="text" ng-model="meta.value" class="form-control" disabled>
+                    </div>
+                    <div class="col-xs-1"><span data-ng-click="modelRemoveField(model.metadata, $index)"
+                                                class="glyphicon glyphicon-remove"
+                                                title="Supprimer ce couple de métadonnées"></span></div>
                 </div>
-                <div class="col-xs-6">
-                    <input type="text" ng-model="meta.value" class="form-control" disabled>
-                </div>
-                <div class="col-xs-1"><span data-ng-click="modelRemoveField(model.metadata, $index)"
-                                            class="glyphicon glyphicon-remove"
-                                            title="Supprimer ce couple de métadonnées"></span></div>
+            </div>
+            <div class="row">
+                <div class="col-xs-5"><input id="modelAddMetadataKey" type="text" value=""
+                                             placeholder="nouvelle clé" class="form-control"></div>
+                <div class="col-xs-6"><input id="modelAddMetadataValue" type="text" value=""
+                                             placeholder="nouvelle valeur" class="form-control"></div>
+                <div class="col-xs-1"><span data-ng-click="modelAddMetadataField(model.metadata)"
+                                            class="glyphicon glyphicon-ok"
+                                            title="Ajouter ce couple de métadonnées"></span></div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-xs-5"><input id="modelAddMetadataKey" type="text" value=""
-                                         placeholder="nouvelle clé" class="form-control"></div>
-            <div class="col-xs-6"><input id="modelAddMetadataValue" type="text" value=""
-                                         placeholder="nouvelle valeur" class="form-control"></div>
-            <div class="col-xs-1"><span data-ng-click="modelAddMetadataField(model.metadata)"
-                                        class="glyphicon glyphicon-ok"
-                                        title="Ajouter ce couple de métadonnées"></span></div>
+    </div>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            Répertoires
+            <div class="row">
+                <div ng-repeat="directory in model.directories track by $index">
+                    <div class="col-xs-5">
+                        <input type="text" ng-model="directory" class="form-control" disabled>
+                    </div>
+                    <div class="col-xs-1">
+                      <span data-ng-click="modelRemoveField(model.directories, $index)"
+                      class="glyphicon glyphicon-remove"
+                      title="Supprimer ce répertoire">
+                      </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+              <div class='col-xs-5'>
+                <select
+                  class="form-control"
+                  ng-model="newDir"
+                  ng-options="directory.name for directory in freeDirectories
+                  | filter:filterAlreadyAdded">
+                  <option value="">Choisir un répertoire</option>
+                </select>
+              </div>
+              <div class="col-xs-1">
+                <span data-ng-click="modelAddDirectoryField(newDir, model.directories)"
+                class="glyphicon glyphicon-ok"
+                title="Ajouter ce modèle dans le répertoire">
+                </span>
+              </div>
+            </div>
         </div>
     </div>
-</div>
-
-<div class="navbar">
-    <button back-Button class="btn btn-primary"
-            title="Retour à l'écran précédent. Toute modification non sauvegardée sera perdue.">Retour
-    </button>
-    <button ng-if="BASE_CONFIG.currentUserId == model.owner && model.parent == null"
-            ng-click="updateModel()" class="btn btn-primary"
-            title="Sauvegarder les modifications. Ne peut pas être annulé.">
-        Sauvegarder
-    </button>
-    <button ng-if="BASE_CONFIG.currentUserId == model.owner"
-            ng-disabled="!model.complete"
-            ng-click="saveAndTry(model)" class="btn btn-primary"
-            title="Sauvegarder puis essayer le modèle">
-        Essayer
-    </button>
-    <button ng-if="BASE_CONFIG.currentUserId != model.owner"
-            ng-disabled="!model.complete"
-            ng-click="tryModel(model)" class="btn btn-primary"
-            title="Essayer le modèle">
-        Essayer
-    </button>
-    <button ng-if="BASE_CONFIG.currentUserId == model.owner && model.removable"
-            ng-click="deleteModel(model)" back-Button
-            class="btn btn-danger pull-right"
-            title="Supprimer ce modèle. Possible uniquement si aucun exercise n'a été généré à partir de ce modèle">
-        Supprimer
-    </button>
-</div>
-
-</div>
-</div>
-
-<script>
-    $(function () {
-        var window_height = $(window).height(),
-            content_height = window_height - 190; // 484
-
-        $('.scrollContainer').height(content_height);
-    });
-
-    $(window).resize(function () {
-        var window_height = $(window).height(),
-            content_height = window_height - 190;
-        $('.scrollContainer').height(content_height);
-    });
-</script>
-
-<div class="scrollContainer"
-     ng-class="{'col-xs-7': !$parent.toggleResourceList, 'hide': $parent.toggleResourceList}">
-    <div ui-view>
-        <div data-ng-include="BASE_CONFIG.urls.partials.teacher+'/partial-resource-list.html'"></div>
+    
+    <div class="navbar">
+        <button back-Button class="btn btn-primary"
+                title="Retour à l'écran précédent. Toute modification non sauvegardée sera perdue.">Retour
+        </button>
+        <button ng-if="BASE_CONFIG.currentUserId == model.owner && model.parent == null"
+                ng-click="updateModel()" class="btn btn-primary"
+                title="Sauvegarder les modifications. Ne peut pas être annulé.">
+            Sauvegarder
+        </button>
+        <button ng-if="BASE_CONFIG.currentUserId == model.owner"
+                ng-disabled="!model.complete"
+                ng-click="saveAndTry(model)" class="btn btn-primary"
+                title="Sauvegarder puis essayer le modèle">
+            Essayer
+        </button>
+        <button ng-if="BASE_CONFIG.currentUserId != model.owner"
+                ng-disabled="!model.complete"
+                ng-click="tryModel(model)" class="btn btn-primary"
+                title="Essayer le modèle">
+            Essayer
+        </button>
+        <button ng-if="BASE_CONFIG.currentUserId == model.owner && model.removable"
+                ng-click="deleteModel(model)" back-Button
+                class="btn btn-danger pull-right"
+                title="Supprimer ce modèle. Possible uniquement si aucun exercise n'a été généré à partir de ce modèle">
+            Supprimer
+        </button>
     </div>
-</div>
-
-</div>
+    
+    </div>
+    </div>
+    
+    <script>
+        $(function () {
+            var window_height = $(window).height(),
+                content_height = window_height - 190; // 484
+    
+            $('.scrollContainer').height(content_height);
+        });
+    
+        $(window).resize(function () {
+            var window_height = $(window).height(),
+                content_height = window_height - 190;
+            $('.scrollContainer').height(content_height);
+        });
+    </script>
+    
+    <div class="scrollContainer"
+         ng-class="{'col-xs-7': !$parent.toggleResourceList, 'hide': $parent.toggleResourceList}">
+        <div ui-view>
+            <div data-ng-include="BASE_CONFIG.urls.partials.teacher+'/partial-resource-list.html'"></div>
+        </div>
+    </div>
+  
+  </div>
 </div>

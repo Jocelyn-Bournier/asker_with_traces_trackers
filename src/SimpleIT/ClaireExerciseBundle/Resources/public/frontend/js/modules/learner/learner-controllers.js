@@ -1,5 +1,12 @@
 var learnerControllers = angular.module('learnerControllers', ['ui.router']);
 
+learnerControllers.controller('directoryModelListController', ['$scope', '$stateParams','DirectoryModelList',
+    function ($scope,$stateParams,DirectoryModelList) {
+        $scope.directory= DirectoryModelList.get({id: $stateParams.dirId}, function () {
+        });
+        //alert('hello'+$stateParams.dirId);
+    }
+]);
 learnerControllers.controller('learnerController', ['$scope', 'User', 'AttemptByExercise', 'ExerciseByModel', 'AttemptList', '$routeParams', '$location', '$stateParams',
     function ($scope, User, AttemptByExercise, ExerciseByModel, AttemptList, $routeParams, $location, $stateParams) {
         $scope.section = 'attempts';

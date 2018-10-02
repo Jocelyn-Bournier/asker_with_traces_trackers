@@ -1,5 +1,5 @@
 <div class="panel-body" data-ng-controller="learnerController">
-
+    <!--
     <accordion>
         <accordion-group class="panel panel-primary">
             <accordion-heading class="panel panel-primary panel-heading">
@@ -11,6 +11,16 @@
             </accordion-heading>
         </accordion-group>
     </accordion>
+    -->
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <div class="row">
+          <div class="col-xs-12">
+            <h4>Mes tentatives</h4>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <accordion close-others="true">
         <accordion-group class="panel panel-primary"
@@ -75,12 +85,14 @@
                                         <h4>Exercice {{ $index + 1 }}</h4>
                                     </div>
                                     <div class="col-xs-1">
+                                      <!--
                                         <h4>
                                             <span class="glyphicon glyphicon-repeat"
                                                   ng-click="$event.stopPropagation();tryExercise(exercise)"
                                                   title="Nouvelle tentative pour cet exercice">
                                         </span>
                                         </h4>
+                                        -->
                                     </div>
                                 </div>
                             </accordion-heading>

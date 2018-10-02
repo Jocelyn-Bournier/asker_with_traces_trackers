@@ -3,7 +3,7 @@ html {
 }
 
 body {
-    padding-top: 48px;
+    padding-top: 90px;
     padding-bottom: 80px;
 }
 
@@ -92,6 +92,7 @@ option {
     border-color: #428bca
 }
 
+
 .panel-model-subscribe>.panel-heading+.panel-collapse 
 .panel-body {
     border-top-color: #428bca
@@ -121,6 +122,21 @@ option {
 .panel-body {
     border-bottom-color: #3c763d
 }
+/* custom invisible panel, not visible directory */
+.panel-invisible{
+  border-color:#756A6A
+}
+.panel-invisible>.panel-heading{
+  color:#333333;
+  background-color:#A89898;
+  border-color:#756A6A
+}
+.panel-invisible>.panel-heading+.panel-collapse .panel-body{
+  border-top-color:#756A6A
+}
+.panel-invisible>.panel-footer+.panel-collapse .panel-body{
+  border-bottom-color:#756A6A
+}
 
 .archived {
     opacity: 0.6;
@@ -130,4 +146,12 @@ option {
     margin: 0;
     top: 0;
     width: 1200px;
+}
+
+.margin-fix{
+  margin-bottom:20px;
+}
+ul.brand-size * {
+  font-size:18px;
+
 }

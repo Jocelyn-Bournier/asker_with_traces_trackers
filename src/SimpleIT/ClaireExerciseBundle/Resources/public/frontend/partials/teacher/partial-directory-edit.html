@@ -1,0 +1,252 @@
+<div data-ng-controller="directoryController">
+  <div class="row" data-ng-controller="directoryEditController">
+    <div class="col-xs-12">
+      <div class="panel-body">
+        <div class="panel panel-default" style="margin-bottom: 0">
+          <div class="panel-heading">
+            <div class='row'>
+              <div class="col-centered" >
+                <div>
+                  <span class="glyphicon glyphicon-folder-open" style="font-size: 500%"/>
+                </div>
+              </div>
+              <div class="col-xs-11 col-centered">
+                <div class="col-xs-3">
+                  <h4>Titre</h4>
+                  <input type="text" ng-model="directory.name" class="form-control"/>
+                </div>
+                <div class="col-xs-3">
+                  <h4>Code Apogee</h4>
+                  <input ng-if="directory.is_child" type="text" ng-model="directory.code"
+                  placeholder="Code Apogee pour l'inscription automatique" class="form-control" disabled/>
+                  <input ng-if="!directory.is_child" type="text" ng-model="directory.code"
+                  placeholder="Code Apogee pour l'inscription automatique" class="form-control"/>
+                </div>
+                <div class="col-xs-3">
+                  <h4>Propriétaire</h4>
+                  <input type="text" ng-model="users[directory.owner].user_name"
+                    class="form-control" disabled/>
+                </div>
+                <div class="col-xs-2">
+                  <div title="Est ce que ce répertoire est visible pour les utilisateurs?" data-ng-click="directory.is_visible=!directory.is_visible">
+                    <h4>Visible</h4>
+                    <span class="glyphicon" ng-class="{'glyphicon-check': directory.is_visible, 'glyphicon-unchecked': !directory.is_visible}"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-5">
+      <div class="panel-body">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Liste des modèles
+          </div>
+          <div class="panel-body"
+          style="padding:15px;"
+          ui-on-Drop="onDropModel($event,$data,directory.models)">
+            <accordion close-others="true">
+              <accordion-group class="panel panel-primary"
+              data-ng-repeat="model in directory.models track by $index">
+                <accordion-heading class="panel-heading">
+                  <div class="row">
+                    <div class="col-xs-2"
+                    ng-switch="model.type">
+                      <div ng-switch-when="multiple-choice">
+                        <span
+                        title="QCM"
+                        style="font-size:260%;"
+                        class="glyphicon glyphicon-check"/>
+                      </div>
+                      <div ng-switch-when="group-items">
+                        <span
+                        title="Exercice de groupement"
+                        style="font-size:260%;"
+                        class="glyphicon glyphicon-link"/>
+                      </div>
+                      <div ng-switch-when="order-items">
+                        <span
+                        title="Exercice d'ordonnancement"
+                        style="font-size:260%;"
+                        class="glyphicon glyphicon-sort"/>
+                      </div>
+                      <div ng-switch-when="pair-items">
+                        <span
+                        title="Exercice d'appariement"
+                        style="font-size:260%;"
+                        class="glyphicon glyphicon-random"/>
+                      </div>
+                      <div ng-switch-when="open-ended-question">
+                        <span
+                        title="Question à réponse courte ouverte"
+                        style="font-size:260%;"
+                        class="glyphicon glyphicon-question-sign"/>
+                      </div>
+                    </div>
+                    <div class="col-xs-9">
+                      <div class="col-centered">
+                        <h4>
+                          {{model.title}}&nbsp;<span class="caret"></span>
+                        </h4>
+                      </div>
+                    </div>
+                    <div class="col-xs-1">
+                      <span
+                      data-ng-click="$event.stopPropagation();directoryRemoveField(directory.models, $index)"
+                      class="glyphicon glyphicon-remove"></span>
+                    </div>
+                  </div>
+                </accordion-heading>
+                <div class="col-centered">
+                <label>
+                  Auteur&nbsp;:&nbsp;
+                </label>
+                {{ users[model.author].user_name }}
+                </div>
+                <div class="col-centered">
+                  <label>
+                    Propriétaire&nbsp;:&nbsp;
+                  </label>
+                  {{ users[model.owner].user_name }}
+                </div>
+                <div class="col-centered">
+                  <label>
+                    Partagé&nbsp;:&nbsp;
+                  </label>
+                  <ng-switch on="model.public">
+                    <span ng-switch-when="true">Oui</span>
+                    <span ng-switch-when="false">Non</span>
+                  </ng-switch>
+                </div>
+                <div class="col-centered">
+                  <label>Complet&nbsp;:&nbsp;</label>
+                  <ng-switch on="model.complete">
+                    <span ng-switch-when="true">Oui</span>
+                    <span ng-switch-when="false">Non</span>
+                  </ng-switch>
+                </div>
+                <div class="col-centered" ng-switch="model.type">
+                  <div ng-switch-when="multiple-choice">
+                    <label>Type de modèle&nbsp;:&nbsp;</label>
+                    QCM
+                  </div>
+                  <div ng-switch-when="open-ended-question">
+                    <label>Type de modèle&nbsp;:&nbsp;</label>
+                    Question à réponse courte ouverte
+                  </div>
+                  <div ng-switch-when="pair-items">
+                    <label>Type de modèle&nbsp;:&nbsp;</label>
+                    Appariement
+                  </div>
+                  <div ng-switch-when="order-items">
+                    <label>Type de modèle&nbsp;:&nbsp;</label>
+                    Exercice d'ordonnancement
+                  </div>
+                  <div ng-switch-when="group-items">
+                    <label>Type de modèle&nbsp;:&nbsp;</label>
+                    Exercice de groupement
+                  </div>
+                </div>
+                <div class="col-centered">
+                  <label>Consigne du modèle d'exercice&nbsp;:&nbsp;</label>
+                  {{ model.content.wording }}
+                </div>
+                <div class="col-centered">
+                  <label>Répertoires&nbsp;:&nbsp;</label>
+                  <span ng-repeat="directory in model.directories">
+                    <span ng-if="$last === true">
+                      {{directory}}
+                    </span>
+                    <span ng-if="$last !== true">
+                      {{directory}},
+                    </span>
+                  </span>
+                </div>
+              </accordiong-group>
+            </accordion>
+          </div>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Liste des gestionnaires
+            <div class="row">
+              <div ng-repeat="manager in directory.managers track by $index">
+                <div class="col-xs-5" ng-if="manager.username != users[directory.owner].user_name">
+                  <input type="text" ng-model="manager.username" class="form-control" disabled>
+                </div>
+                <div class="col-xs-1" ng-show="!directory.is_child"
+                ng-if="manager.username != users[directory.owner].user_name">
+                  <span data-ng-click="directoryRemoveField(directory.managers, $index)"
+                  class="glyphicon glyphicon-remove"
+                  title="Supprimer ce gestionnaire">
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class='col-xs-5'  ng-show="!directory.is_child">
+                <select
+                  class="form-control"
+                  ng-model="newManager"
+                  ng-options="user.username for user in availableManagers
+                  | filter:filterAlreadyAdded">
+                  <option value="">Choisir un gestionnaire</option>
+                </select>
+              </div>
+              <div class="col-xs-1" ng-show="!directory.is_child">
+                <span data-ng-click="directoryAddManager(newManager, directory.managers)"
+                class="glyphicon glyphicon-ok"
+                title="Ajouter cet enseignant comme gestionnaire">
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class='panel-body'>
+        <button back-Button class="btn btn-default"
+        title="Retour à l'écran précédent. Toute modification non sauvegardée sera perdue.">
+          Retour
+        </button>
+        <button
+        ng-click="updateDirectory(directory)" class="btn btn-default"
+        title="Sauvegarder les modifications. Ne peut pas être annulé.">
+          Sauvegarder
+        </button>
+        <button 
+        ng-if="directory.total_subs ===0"
+        ng-click="deleteDirectory(directory)" back-Button
+        class="btn btn-danger pull-right"
+        title="Supprimer le répertoire">
+          Supprimer
+        </button>
+      </div>
+    </div>
+    <script>
+      //changed class name to remove css
+      $(function () {
+        var window_height = $(window).height(),
+        content_height = window_height - 190; // 484
+        $('.scrollContainera').height(content_height);
+      });
+
+      $(window).resize(function () {
+        var window_height = $(window).height(),
+        content_height = window_height - 190;
+        $('.scrollContainera').height(content_height);
+      });
+    </script>
+    <div class="scrollContainera"
+    ng-class="{'col-xs-7': !$parent.toggleResourceList, 'hide': $parent.toggleResourceList}">
+      <div ui-view>
+        <div
+        data-ng-include="BASE_CONFIG.urls.partials.teacher+'/partial-model-list.html'">
+      </div>
+    </div>
+  </div>
+</div>
