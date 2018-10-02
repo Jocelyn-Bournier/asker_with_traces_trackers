@@ -78,9 +78,9 @@
                     title="Voir les informations sur ce dossier">
                     </span>
                   </a>
-                  <button id='deleteDirectory'
+                  <button
                   data-url="{{path('api_directory_delete', {'directoryId':dir.id})}}"
-                  class="btn btn-danger btn-xs" role="button">
+                  class="btn btn-danger btn-xs remove" role="button">
                     <span class="glyphicon glyphicon-remove"
                     title="Supprimer ce dossier">
                     </span>
@@ -100,7 +100,7 @@
     </div><!-- /.container -->
   </body>
   <script>
-    $('#deleteDirectory').on('click', function(){
+    $('.remove').on('click', function(){
       $.ajax({
         url : $(this).data("url"),
         type: 'DELETE',
