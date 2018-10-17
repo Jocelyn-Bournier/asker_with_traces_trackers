@@ -38,14 +38,15 @@
     <script src="{{ asset('bundles/simpleitclaireexercise/frontend/js/controllers.js') }}"></script>
     <script src="{{ asset('bundles/simpleitclaireexercise/frontend/js/directives.js') }}"></script>
     <script src="{{ asset('bundles/simpleitclaireexercise/frontend/js/learner-routes.js') }}"></script>
+    {% if not app.user.isOnlyStudent %}
+      <script src="{{ asset('bundles/simpleitclaireexercise/frontend/js/teacher-routes.js') }}"></script>
+      <!-- teacher assets -->
+      <script src="{{ asset('bundles/simpleitclaireexercise/frontend/js/modules/teacher/controllers.js') }}"></script>
+      <script src="{{ asset('bundles/simpleitclaireexercise/frontend/js/modules/teacher/services.js') }}"></script>
+    {% endif %}
 
     <!-- utils assets -->
     <script src="{{ asset('bundles/simpleitclaireexercise/frontend/js/modules/utils/services.js') }}"></script>
-
-    <!-- teacher assets -->
-    <script src="{{ asset('bundles/simpleitclaireexercise/frontend/js/modules/teacher/controllers.js') }}"></script>
-    <script src="{{ asset('bundles/simpleitclaireexercise/frontend/js/modules/teacher/services.js') }}"></script>
-
     <!-- learner assets -->
     <script src="{{ asset('bundles/simpleitclaireexercise/frontend/js/modules/learner/learner-controllers.js') }}"></script>
     <script src="{{ asset('bundles/simpleitclaireexercise/frontend/js/modules/learner/item-controllers.js') }}"></script>
@@ -60,6 +61,9 @@
                     resources: "{{ path('api_exercise_resource_list') }}",
                     models: "{{ path('api_exercise_model_list') }}",
                     directories: "{{ path('api_directory_list') }}",
+                  {% if not app.user.isOnlyStudent %}
+                    mydirs: "{{path('api_directory_mine')}}",
+                  {% endif %}
                     attemptedModels: "{{ path('api_exercise_attempted_model_list') }}",
                     attempts: "{{ path('api_attempt_list') }}",
                     news: "{{path('api_directory_list')}}",
@@ -81,53 +85,73 @@
         };
         angular.module('mainApp').value('BASE_CONFIG', BASE_CONFIG);
     </script>
-
-</head>
-<body ng-controller="mainUserController">
-
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
- aria-labelledby="myModalLabel"
+  </head>
+  {% if app.user.isOnlyStudent %}
+    <body ng-controller="mainUserController">
+  {% else %}
+    <body ng-controller="mainManagerController">
+  {% endif %}
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel"
   style="background-color: transparent;width:100%;height:100%;border:none;">
- <div class="modal-dialog" role="document">
-   <div class="modal-content">
-    <div class="modal-header">
-     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-      <h4 class="modal-title" id="myModalLabel">Changement du mot de passe</h4>
-      </div>
-      <div class="modal-body">
-        {% include 'SimpleITClaireExerciseBundle:Form:password.html.twig' %}
-      </div>
-      <div class="modal-footer">
-      <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
-     </div>
-    </div>
-   </div>
-  </div>
-
-<div id="header">
-    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" style="text-align: right">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Changement du mot de passe</h4>
         </div>
-        <div id='navbar' class="navbar-collapse collapse">
-          <ul class="nav navbar-nav navbar brand-size">
-              {% for dir in app.user.realDirectoriesNotEnded %}
-                {% if dir.parent is null and dir.isVisible %}
-                  <li>
-                    <a ui-sref="dir-model-list({dirId:'{{dir.id}}'})"
-                    title="Consulter les exercices du dossier {{dir.name}}">
-                     {{dir.name}}
-                    </a>
-                  </li>
-                {% endif %}
-              {% endfor %}
-          </ul>
+        <div class="modal-body">
+          {% include 'SimpleITClaireExerciseBundle:Form:password.html.twig' %}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div id='navbar' class="navbar-collapse collapse">
+      <ul class="nav navbar brand-size">
+        {% for dir in app.user.realDirectories %}
+          {% if dir.parent is null and dir.isVisible %}
+            <li>
+              <a ui-sref="dir-model-list({dirId:'{{dir.id}}'})"
+              title="Consulter les exercices du dossier {{dir.name}}">
+                {{dir.name}}
+              </a>
+            </li>
+          {% endif %}
+        {% endfor %}
+        {% if not app.user.isOnlyStudent %}
+          <li>
+            <a ui-sref="model"
+              title="Liste des modèles d'exercices que vous possédez ou auxquels vous avez accès">
+                Mes modèles d'exercices
+            </a>
+          </li>
+          <li>
+            <a ui-sref="resource"
+            title="Liste des ressources que vous possédez ou auxquelles vous avez accès">
+              Mes ressources
+            </a>
+          </li>
+          <li>
+            <a ui-sref="directories"
+            title="Liste des dossiers">
+              Mes dossiers
+            </a>
+          </li>
+        {% endif %}
+      </ul>
           <ul class="nav navbar-nav navbar-right"
           style='margin-right:5px;'>
             <li class='dropdown'>
@@ -145,6 +169,13 @@
                   <li>
                     <a href="{{path('admin_index')}}" title='Administrer Asker'>
                       Administration
+                    </a>
+                  </li>
+                {% endif %}
+                {% if is_granted('ROLE_WS_CREATOR') %}
+                  <li>
+                    <a href="{{path('admin_stats')}}" title='Statistiques'>
+                      Statistiques
                     </a>
                   </li>
                 {% endif %}

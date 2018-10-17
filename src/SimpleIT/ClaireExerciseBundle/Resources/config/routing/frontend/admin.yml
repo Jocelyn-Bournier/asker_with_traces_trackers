@@ -4,6 +4,9 @@ admin_index:
 admin_list_disable:
     pattern: /users/disable
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Admin:listDisable }
+admin_preview_user:
+    pattern: /preview/user/{user}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Admin:preview , user:null}
 admin_list_users:
     pattern: /users/all
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Admin:all }

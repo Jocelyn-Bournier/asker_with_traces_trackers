@@ -1,0 +1,63 @@
+
+  <nav class="navbar navbar-inverse">
+    <div id='navbar' class="">
+      <ul class="nav navbar brand-size">
+        {% for dir in preview.realDirectories %}
+          {% if dir.parent is null and dir.isVisible %}
+            <li>
+              <a>
+                {{dir.name}}
+              </a>
+            </li>
+          {% endif %}
+        {% endfor %}
+        {% if not preview.isOnlyStudent %}
+          <li>
+            <a>
+                Mes modèles d'exercices
+            </a>
+          </li>
+          <li>
+            <a>
+              Mes ressources
+            </a>
+          </li>
+          <li>
+            <a>
+              Mes dossiers
+            </a>
+          </li>
+        {% endif %}
+              <a>
+                <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                {{ preview.username }} <b class='caret'></b>
+              </a>
+                <li>
+                  <a>
+                    Se déconnecter
+                  </a>
+                </li>
+                {% if preview.isAdmin %}
+                  <li>
+                    <a>
+                      Administration
+                    </a>
+                  </li>
+                {% endif %}
+                {% if  not preview.isOnlyStudent %}
+                  <li>
+                    <a>
+                      Statistiques
+                    </a>
+                  </li>
+                {% endif %}
+                {% if preview.isLdap == 0 %}
+                  <li>
+                    <a>
+                      Changer de mot de passe
+                    </a>
+                  </li>
+                {% endif %}
+          </ul>
+        </div>
+    </nav>

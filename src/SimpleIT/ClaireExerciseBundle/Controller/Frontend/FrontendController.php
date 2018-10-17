@@ -44,6 +44,10 @@ class FrontendController extends BaseController
                 'action' => $this->generateUrl('frontend_password')
             )
         );
+        return $this->render(
+            'SimpleITClaireExerciseBundle:Frontend:main-layout.html.twig',
+            array('currentUserId' => $userId, 'form' => $form->createView())
+        );
         if ($this->get('security.context')->isGranted('ROLE_WS_CREATOR')) {
             return $this->render(
                 'SimpleITClaireExerciseBundle:Frontend:manager-layout.html.twig',

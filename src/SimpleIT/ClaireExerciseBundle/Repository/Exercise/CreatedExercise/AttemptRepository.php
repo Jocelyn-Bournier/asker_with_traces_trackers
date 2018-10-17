@@ -203,8 +203,8 @@ class AttemptRepository extends BaseRepository
                     JOIN claire_exercise_stored_exercise s
                     ON s.id = a.exercise_id
                     WHERE exercise_model_id = :model
-		    AND a.created_at > :start
-		    AND a.created_at < :end
+                    AND a.created_at > :start
+                    AND a.created_at < :end
         ";
         if (!empty($ids)){
             $sql .="
@@ -223,12 +223,12 @@ class AttemptRepository extends BaseRepository
             ->prepare($sql)
         ;
         $stmt->execute(
-		array(
-			'model' => $model,
-			'start' => $view->getStartDate()->format('Y-m-d'),
-			'end' => $view->getEndDate()->format('Y-m-d')
-		)
-	);
+            array(
+                'model' => $model,
+                'start' => $view->getStartDate()->format('Y-m-d'),
+                'end' => $view->getEndDate()->format('Y-m-d')
+            )
+        );
         return $stmt->fetchAll();
     }
 }

@@ -335,23 +335,19 @@ class DirectoryService extends TransactionalService
         $models = array();
         foreach($directory->getModels() as $model){
             $models[$model->getId()]['title'] = $model->getTitle();
-	    #ok
             $models[$model->getId()]['userAnswer'] = $answer->
                 uniqueUsersByModel($model->getId(),$view, $ids)[0]['total']
             ;
-	    #ok
             $models[$model->getId()]['userNoAnswer'] =  $attempt->
                 uniqueUsersByModel($model->getId(),$view, $ids)[0]['total']
             ;
-	    #ok
             $models[$model->getId()]['avgAttempt'] = $attempt->
                 averageAttemptByModel($model->getId(),$view,$ids)[0]['avg']
             ;
-	    #ok
+        die('coucou');
             $models[$model->getId()]['avgAnswer'] = $answer->
                 averageAnswerByModel($model->getId(),$view, $ids)[0]['avg']
             ;
-	    #ok
             $models[$model->getId()]['avgMark'] = $answer->
                 averageMarkByModel($model->getId(),$view, $ids)[0]['avg']
             ;

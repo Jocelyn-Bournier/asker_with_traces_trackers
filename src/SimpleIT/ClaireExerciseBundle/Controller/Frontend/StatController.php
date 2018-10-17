@@ -68,20 +68,6 @@ class StatController extends BaseController
             }
             // every users connected between frame time
             $count = 0;
-            #foreach($directory->realUsers() as $user){
-            #    if ($user->isOnlyStudent()){
-            #        foreach($user->getLogs() as $log){
-            #            if ($log->getLoggedAt() >= $view->getStartDate()
-            #                && $log->getLoggedAt() <= $view->getEndDate()
-            #            ){
-            #                echo "user: " . $user->getUsername(). " at ".
-            #                    $log->getLoggedAt()->format('Y-m-d H:i:s'). "<br>";
-            #                $count++;
-            #                break;
-            #            }
-            #        }
-            #    }
-            #}
             echo "directory : " . $directory->getId()."<br>";
             foreach($directory->getUsers() as $aud){
                 if ($aud->getStartDate()->format('Y-m-d H:i:s') == "-0001-11-30 00:00:00" ){
@@ -108,21 +94,26 @@ class StatController extends BaseController
     public function statDirectoryAction(Directory $directory, StatView $view = null)
     {
         $user = $this->get('security.context')->getToken()->getUser();
-        if ($directory->hasUser($user)
+        if ($directory->hasManager($user)
             || $this->get('security.context')->isGranted('ROLE_ADMIN')
         ){
             if ($view == null){
                 $view = $directory->getLastView();
             }
-            // every users connected between frame time
+            //possible than dir->getLastView returns null
+            // ces fonctions retournent sur l'intégralité du temps si no view
             $users = $this->get('simple_it.exercise.directory')->getIdUsers($directory, $view);
             $usernames = $this->get('simple_it.exercise.directory')->getUsernames($directory, $view);
-            $directories = $this->get('simple_it.exercise.directory')->getModelStats($directory,$view, $users);
             $params = array(
-                'directories' => $directories,
-                'users' => count($users),
-                'usernames' => $usernames
+                    'directories' => '',
+                    'users' => count($users),
+                    'usernames' => $usernames
             );
+            if (!is_null($view)){
+                // every users connected between frame time
+                $directories = $this->get('simple_it.exercise.directory')->getModelStats($directory,$view, $users);
+                $params['directories'] = $directories;
+            }
             return $this->render(
                 'SimpleITClaireExerciseBundle:Frontend:statdir.html.twig',$params
             );

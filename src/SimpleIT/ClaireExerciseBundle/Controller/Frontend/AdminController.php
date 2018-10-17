@@ -35,6 +35,16 @@ use SimpleIT\ClaireExerciseBundle\Form\AskerPasswordType;
  */
 class AdminController extends BaseController
 {
+
+    public function previewAction(AskerUser $user = null)
+    {
+        return $this->render(
+            'SimpleITClaireExerciseBundle:Frontend:preview.html.twig',
+            array('preview' => $user)
+        );
+        return new Response($user->getUsername());
+    }
+
     public function indexAction()
     {
         $dirs = array();
