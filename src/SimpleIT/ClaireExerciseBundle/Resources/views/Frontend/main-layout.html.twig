@@ -43,6 +43,11 @@
       <!-- teacher assets -->
       <script src="{{ asset('bundles/simpleitclaireexercise/frontend/js/modules/teacher/controllers.js') }}"></script>
       <script src="{{ asset('bundles/simpleitclaireexercise/frontend/js/modules/teacher/services.js') }}"></script>
+    {% else %}
+      <script src="{{ asset('bundles/simpleitclaireexercise/frontend/js/teacher-routes.js') }}"></script>
+      <!-- teacher assets -->
+      <script src="{{ asset('bundles/simpleitclaireexercise/frontend/js/modules/teacher/controllers.js') }}"></script>
+      <script src="{{ asset('bundles/simpleitclaireexercise/frontend/js/modules/teacher/services.js') }}"></script>
     {% endif %}
 
     <!-- utils assets -->
