@@ -344,7 +344,6 @@ class DirectoryService extends TransactionalService
             $models[$model->getId()]['avgAttempt'] = $attempt->
                 averageAttemptByModel($model->getId(),$view,$ids)[0]['avg']
             ;
-        die('coucou');
             $models[$model->getId()]['avgAnswer'] = $answer->
                 averageAnswerByModel($model->getId(),$view, $ids)[0]['avg']
             ;
