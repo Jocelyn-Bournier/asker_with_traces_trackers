@@ -20,6 +20,7 @@ namespace SimpleIT\ClaireExerciseBundle\Controller\Frontend;
 
 use SimpleIT\ClaireExerciseBundle\Controller\BaseController;
 use SimpleIT\ClaireExerciseBundle\Entity\AskerUser;
+use SimpleIT\ClaireExerciseBundle\Entity\AskerUserDirectory;
 use SimpleIT\ClaireExerciseBundle\Entity\Directory;
 use SimpleIT\ClaireExerciseBundle\Entity\Pedagogic;
 use Symfony\Component\HttpFoundation\Response;
@@ -47,27 +48,14 @@ class AdminController extends BaseController
 
     public function indexAction()
     {
-        $dirs = array();
-	#$user = $this->getDoctrine()->getRepository("SimpleITClaireExerciseBundle:AskerUserDirectory")
-	#	->find(706);
-	#die($user->getEndDate()->format('Y-m-d H:i:s'));
-	#$user->setEndDate(new \DateTime("-0001-11-30 00:00:00"));
-	#$this->getDoctrine()->getEntityManager()->flush();
-	#$user = $this->getDoctrine()->getRepository("SimpleITClaireExerciseBundle:AskerUserDirectory")
-	#	->find(866);
-	#$user->setEndDate();
-	#$this->getDoctrine()->getEntityManager()->flush();
-	#die($user->getEndDate()->format('Y-m-d H:i:s'));
         return $this->render(
-            'SimpleITClaireExerciseBundle:Frontend:admin.html.twig', array(
-                'dirs' => $dirs,
-            )
+            'SimpleITClaireExerciseBundle:Frontend:admin.html.twig'
         );
     }
 
     public function listDisableAction()
     {
-        $dirs = $this->get('simple_it.exercise.directory')->all();
+        $dirs = $this->get('simple_it.exercise.directory')->allParents();
         return $this->render(
             'SimpleITClaireExerciseBundle:Frontend:list.html.twig',
             array(
@@ -84,45 +72,6 @@ class AdminController extends BaseController
             array(
                 'users' => $this->get('simple_it.exercise.user')->getAll(),
                 'dirs' => $dirs,
-            )
-        );
-    }
-    public function editAction(AskerUser $user)
-    {
-        $request = $this->getRequest();
-        //load old datas before binding
-        $originalDirectories = new ArrayCollection();
-        foreach ($user->getDirectories() as $aud) {
-            $originalDirectories->add($aud);
-        }
-        $form = $this->createForm(AskerUserType::class, $user);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getEntityManager();
-            $deleted = array();
-            foreach($originalDirectories as $aud){
-                if ($user->getDirectories()->contains($aud) === false
-                && $aud->getDirectory()->getOwner()->getId() !== $user->getId()
-                ){
-                    $deleted[] = $aud->getDirectory();
-                    $em->remove($aud);
-                }
-            }
-            $this->get('simple_it.exercise.asker_user_directory')->deleteChildrens($user, $deleted);
-            $this->get('simple_it.exercise.asker_user_directory')->updateForUser($user);
-            #$var=var_dump($deleted);
-            #return new Response(
-            #    "<html><body>$var </body></html>"
-            #);
-
-            $em->flush();
-            return $this->redirectToRoute('admin_list_users');
-        }
-        return $this->render(
-            "SimpleITClaireExerciseBundle:Form:user.html.twig",
-            array(
-                'form' => $form->createView(),
-                'user' => $user
             )
         );
     }
@@ -169,9 +118,14 @@ class AdminController extends BaseController
                 );
                 foreach($request->get('usersCheck') as $checked ){
                     $user = $userService->get($checked);
+                    $dirUser = new AskerUserDirectory();
                     $user->addRole($roleUser);
                     $user->setIsEnable(1);
-                    $dir->addUser($user);
+                    #$dir->addUser($user);
+                    $dirUser->setUser($user);
+                    $dirUser->setIsManager(false);
+                    $dirUser->setDirectory($dir);
+                    $em->persist($dirUser);
                 }
             }
             $em->flush();
@@ -179,5 +133,44 @@ class AdminController extends BaseController
         return $this->redirectToRoute($request->get('current'));
     }
 
+    public function editAction(AskerUser $user)
+    {
+        $request = $this->getRequest();
+        //load old datas before binding
+        $originalDirectories = new ArrayCollection();
+        foreach ($user->getDirectories() as $aud) {
+            $originalDirectories->add($aud);
+        }
+        $form = $this->createForm(AskerUserType::class, $user);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getEntityManager();
+            $deleted = array();
+            foreach($originalDirectories as $aud){
+                if ($user->getDirectories()->contains($aud) === false
+                && $aud->getDirectory()->getOwner()->getId() !== $user->getId()
+                ){
+                    $deleted[] = $aud->getDirectory();
+                    $em->remove($aud);
+                }
+            }
+            $this->get('simple_it.exercise.asker_user_directory')->deleteChildrens($user, $deleted);
+            $this->get('simple_it.exercise.asker_user_directory')->updateForUser($user);
+            #$var=var_dump($deleted);
+            #return new Response(
+            #    "<html><body>$var </body></html>"
+            #);
+
+            $em->flush();
+            return $this->redirectToRoute('admin_list_users');
+        }
+        return $this->render(
+            "SimpleITClaireExerciseBundle:Form:user.html.twig",
+            array(
+                'form' => $form->createView(),
+                'user' => $user
+            )
+        );
+    }
 
 }

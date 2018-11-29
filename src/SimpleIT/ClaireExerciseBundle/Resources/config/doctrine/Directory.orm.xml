@@ -11,6 +11,10 @@
     target-entity="SimpleIT\ClaireExerciseBundle\Entity\AskerUser"/>
     <many-to-many field="models" inversed-by="directories"
          target-entity="SimpleIT\ClaireExerciseBundle\Entity\ExerciseModel\ExerciseModel">
+            <cascade>
+                <cascade-persist/>
+                <cascade-remove />
+            </cascade>
         <join-table name="directories_models">
             <join-columns>
                 <join-column name="directory_id" referenced-column-name="id" />

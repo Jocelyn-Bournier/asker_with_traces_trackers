@@ -47,35 +47,9 @@
       </div>
     </nav>
 
-    <div class="container">
+    <div class="container" style="padding-top:50px;">
       {% block content %}
         <div class='col-xs-6'>
-          <!--
-          <table class="table table-bordered">
-            <thead>
-              <th>Dossier</th>
-              <th>Modèles</th>
-              <th>Utilisateurs</th>
-              <th>Action</th>
-            </thead>
-            {% for dir in dirs %}
-              <tr>
-                <td>{{dir.name}}</td>
-                <td>{{dir.models}}</td>
-                <td>{{dir.users}}</td>
-                <td>
-                  <a href="{{path('admin_stats_directory',
-                  {'directory':dir.id})}}"
-                  class="btn btn-info" role="button">
-                    <span class="glyphicon glyphicon-eye-open"
-                    title="Voir les informations sur ce dossier">
-                    </span>
-                  </a>
-                </td>
-              </tr>
-            {% endfor %}
-          </table>
-          -->
         </div>
       {% endblock %}
     </div><!-- /.container -->

@@ -72,7 +72,7 @@
                         title='Prévisualisation de la vue utilisateur'>
                     </div>
                     {% if not user.isLdap %}
-                      <a class='btn btn-primary' style="margin-top:3px;" href="{{path('admin_update_password',
+                      <a class='btn btn-primary'  href="{{path('admin_update_password',
                       {'user':user.id})}}">
                         <span class="glyphicon glyphicon glyphicon-lock"
                         title='Changement du mot de passe'>

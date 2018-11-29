@@ -261,10 +261,13 @@ class DirectoryService extends TransactionalService
         ){
             try{
                 $entity = $this->directoryRepository->find($id);
+                foreach($entity->getModels() as $mod){
+                    $entity->removeModel($mod);
+                }
                 $this->em->remove($entity);
                 $this->em->flush();
             }catch (ForeignKeyConstraintViolationException $e){
-               $res= new Response('Il est nécessaire de supprimer les sous-dossiers', 500);
+               $res= new Response('Il est nécessaire de supprimer les sous-dossiers:'. $e->getMessage(), 500);
                $res->send();
             }
         }else{
