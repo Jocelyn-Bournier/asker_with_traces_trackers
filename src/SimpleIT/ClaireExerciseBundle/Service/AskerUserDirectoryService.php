@@ -61,7 +61,7 @@ class AskerUserDirectoryService extends TransactionalService
     {
         //return users with roles ROLE_WS_CREATOR and wont return owner
         foreach($dir->getManagers() as $user){
-            $aud = $this->askerUserDirectoryRepository->findByUsernameDir($user->getUser()->getUsername(), $dir);
+            $aud = $this->askerUserDirectoryRepository->findByUserIdDir($user->getUser()->getId(), $dir);
             if ($aud !== null)
             {
                 $this->em->remove($aud);
@@ -70,7 +70,7 @@ class AskerUserDirectoryService extends TransactionalService
         $this->em->flush();
         foreach($data->getManagers() as $manager){
             // $manager is a model ressource not an entity managed by doctrine
-            $aud = $this->askerUserDirectoryRepository->findByUsernameDir($manager->getUsername(), $dir);
+            $aud = $this->askerUserDirectoryRepository->findByUserIdDir($manager->getId(), $dir);
             // the owner already exist so we wont create him
             if ($aud === null){
                 $aud = new AskerUserDirectory();
@@ -112,7 +112,7 @@ class AskerUserDirectoryService extends TransactionalService
                 foreach($aud->getDirectory()->getSubs() as $sub){
                     $audSub = $this
                         ->askerUserDirectoryRepository
-                        ->findByUsernameDir($user->getUsername(), $sub)
+                        ->findByUserIdDir($user->getId(), $sub)
                     ;
                     if ($audSub === null){
                         $audSub = new AskerUserDirectory();

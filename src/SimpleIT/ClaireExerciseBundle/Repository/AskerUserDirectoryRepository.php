@@ -30,6 +30,19 @@ class AskerUserDirectoryRepository extends \Doctrine\ORM\EntityRepository
         ;
     }
 
+    public function findByUserIdDir($userId,$directory)
+    {
+        return $this->createQueryBuilder('aud')
+                    ->join('aud.user', 'u')
+                    ->where('u.id = :userid')
+                    ->andWhere('aud.directory= :directory')
+                    ->setParameter('userid', $userId)
+                    ->setParameter('directory', $directory->getId())
+                    ->getQuery()
+                ->getOneOrNullResult()
+            ;
+    }
+
     public function findByUsernameDir($username,$directory)
     {
         return $this->createQueryBuilder('aud')
