@@ -20,6 +20,8 @@ namespace SimpleIT\ClaireExerciseBundle\Service;
 use SimpleIT\ClaireExerciseBundle\Entity\AskerUserDirectory;
 use SimpleIT\ClaireExerciseBundle\Entity\Directory;
 use SimpleIT\ClaireExerciseBundle\Entity\AskerUser;
+use SimpleIT\ClaireExerciseBundle\Exception\MissingIdException;
+
 /**
  * Service which manages the stored exercises
  *
@@ -69,8 +71,12 @@ class AskerUserDirectoryService extends TransactionalService
         }
         $this->em->flush();
         foreach($data->getManagers() as $manager){
-            // $manager is a model ressource not an entity managed by doctrine
-            $aud = $this->askerUserDirectoryRepository->findByUserIdDir($manager->getId(), $dir);
+            //$manager is a model ressource not an entity managed by doctrine
+            $entityUser = $this->askerUserRepository->findOneByUsername($manager->getUsername());
+            if (!$entityUser){
+                throw new MissingIdException();
+            }
+            $aud = $this->askerUserDirectoryRepository->findByUserIdDir($entityUser->getId(), $dir);
             // the owner already exist so we wont create him
             if ($aud === null){
                 $aud = new AskerUserDirectory();
@@ -78,9 +84,9 @@ class AskerUserDirectoryService extends TransactionalService
                 $aud->setDirectory($dir);
                 #$aud->setIsOld(false);
                 //if inject wrong data it wont work
-		$user = $this->askerUserRepository->findOneByUsername($manager->getUsername());
+                $user = $this->askerUserRepository->findOneByUsername($manager->getUsername());
                 $aud->setUser($user);
-		$user->addDirectory($aud);
+                $user->addDirectory($aud);
                 $dir->addUser($aud);
                 $this->em->persist($aud);
             }
