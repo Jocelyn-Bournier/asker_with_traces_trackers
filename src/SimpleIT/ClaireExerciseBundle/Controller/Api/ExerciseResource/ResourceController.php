@@ -299,7 +299,7 @@ class ResourceController extends BaseController
         $fileName = $tmpFile->getClientOriginalName();
         $extension = pathinfo($fileName, PATHINFO_EXTENSION);
         $size = filesize($tmpFile);
-        if ($size > 2000000) {
+        if ($size > 10000000) {
             throw new ApiBadRequestException('File too big');
         }
 
