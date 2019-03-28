@@ -27,6 +27,7 @@ use SimpleIT\ClaireExerciseBundle\Model\DomainKnowledge\Formula\Expression;
 use SimpleIT\ClaireExerciseBundle\Model\DomainKnowledge\Formula\Inverse;
 use SimpleIT\ClaireExerciseBundle\Model\DomainKnowledge\Formula\Multiplication;
 use SimpleIT\ClaireExerciseBundle\Model\DomainKnowledge\Formula\Power;
+use SimpleIT\ClaireExerciseBundle\Model\DomainKnowledge\Formula\BitwiseAnd;
 use SimpleIT\ClaireExerciseBundle\Model\DomainKnowledge\Formula\Sin;
 use SimpleIT\ClaireExerciseBundle\Model\DomainKnowledge\Formula\Value;
 use SimpleIT\ClaireExerciseBundle\Model\DomainKnowledge\Formula\Variable;
@@ -81,7 +82,7 @@ class FormulaService implements FormulaServiceInterface
      * Converts a split expression into an expression tree object
      *
      * @param array $splitExpr
-     *
+     
      * @return Addition|Cos|Equation|Multiplication|Power|Sin|Value|Variable
      * @throws \LogicException
      * @throws \Symfony\Component\Process\Exception\LogicException
@@ -89,8 +90,8 @@ class FormulaService implements FormulaServiceInterface
     private function buildExpr($splitExpr)
     {
         $keys = $this->getRootOperators($splitExpr);
-
         if (!empty($keys)) {
+
             if ($splitExpr[$keys[0]] === '=') {
                 $expr = new Equation();
                 $expr->setLeftExpression(
@@ -101,6 +102,14 @@ class FormulaService implements FormulaServiceInterface
                 );
             } elseif ($splitExpr[$keys[0]] === '^') {
                 $expr = new Power();
+                $expr->setLeftExpression(
+                    $this->buildExpr(array_slice($splitExpr, 0, $keys[0]))
+                );
+                $expr->setRightExpression(
+                    $this->buildExpr(array_slice($splitExpr, $keys[0] + 1))
+                );
+            } elseif ($splitExpr[$keys[0]] === '&') {
+                $expr = new BitwiseAnd();
                 $expr->setLeftExpression(
                     $this->buildExpr(array_slice($splitExpr, 0, $keys[0]))
                 );
@@ -281,7 +290,8 @@ class FormulaService implements FormulaServiceInterface
                 $currentType = 'postPoint';
             } // operator
             elseif (
-                $char === '+' || $char === '-' || $char === '*' || $char === '/' || $char === '^'
+                $char === '+' || $char === '-' || $char === '*' ||
+                $char === '/' || $char === '^' || $char === '&'
             ) {
                 $this->addPOE($split, $current, $currentType, $prevType, $key, $expression);
                 $currentType = 'op';
@@ -460,6 +470,14 @@ class FormulaService implements FormulaServiceInterface
                             $opKeys[] = $key;
                         } elseif ($bestFound !== '+' && $bestFound !== '*') {
                             $bestFound = '^';
+                            $opKeys = array($key);
+                        }
+                        break;
+                    case '&' :
+                        if ($bestFound === '&') {
+                            $opKeys[] = $key;
+                        } elseif ($bestFound !== '+' && $bestFound !== '*') {
+                            $bestFound = '&';
                             $opKeys = array($key);
                         }
                         break;
@@ -1080,7 +1098,7 @@ class FormulaService implements FormulaServiceInterface
         // format value
         if ($unknown->getType() === ResourceVariable::INTEGER) {
             if (!is_integer($unknownValue)) {
-                throw new InvalidKnowledgeException('The computed answer is not an integer');
+                throw new \LogicException('The computed answer is not an integer' . $unknownValue);
             }
         } elseif ($unknown->getType() === ResourceVariable::FLOAT) {
             if ($unknown->getDigitsAfterPoint() > 0) {
