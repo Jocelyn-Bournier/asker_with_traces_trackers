@@ -12,7 +12,7 @@
     <field name="ldapEmployeeId" type="integer" column="ldapEmployeeId"/>
     <field name="isLdap" type="boolean" column="isLdap"/>
     <field name="isEnable" type="boolean" column="isEnable"/>
-    <field name="ldapDn" type="string" column="ldapDn" length="255"/>
+    <field name="ldapDn" type="string" column="ldapDn" length="255" nullable="true"/>
     <one-to-many field="workspaces" target-entity="SimpleIT\ClaireExerciseBundle\Entity\Workspace" mapped-by="owner" />
     <one-to-many field="directories"
     target-entity="SimpleIT\ClaireExerciseBundle\Entity\AskerUserDirectory" mapped-by="user">
