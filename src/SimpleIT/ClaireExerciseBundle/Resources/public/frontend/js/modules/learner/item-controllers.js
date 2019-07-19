@@ -162,19 +162,20 @@ itemControllers.controller('orderItemsController', ['$scope', 'Answer', '$routeP
                 answer.content.push($scope.drops[i].id);
             }
 
-            console.log(answer);
+            console.log("une reponse"+JSON.stringify(answer));
 
             answer.$save({itemId: $scope.item.item_id, attemptId: $stateParams.attemptId},
                 function (item) {
                     $scope.items[$stateParams.itemId] = item;
                     $scope.displayCorrection(item)
+                    //console.log("un item"+JSON.stringify(item)) => item contient le JSON de l'API
                 });
         };
 
         // correction
         $scope.displayCorrection = function (item) {
             $scope.right = true;
-
+            console.log("la longeur des drops" + $scope.drops.length)
             for (i = 0; i < $scope.drops.length; ++i) {
                 $scope.solution[i] = {
                     object: item['content'].objects[
@@ -184,6 +185,8 @@ itemControllers.controller('orderItemsController', ['$scope', 'Answer', '$routeP
                         item['content'].solutions[i]
                         ]
                 };
+                console.log("une console de drop" +JSON.stringify($scope.solution[i]));
+                //C'est ici qu'on choisit si le cadre est rouge ou vert -- une loop un resultat binaire
                 if (item['content'].answers[i] != item['content'].solutions[i]) {
                     $scope.right = false;
                 }

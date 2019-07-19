@@ -1,16 +1,12 @@
 <div data-ng-controller="orderItemsController">
-
     <div class="row">
         <div nf-if="help != null"><strong>Aide :</strong> {{ help }}</div>
-
         <div class="col-xs-5 panel">
             <div class="panel-heading" style="color: #888888">
                 Votre réponse
             </div>
-
             <!--not corrected-->
             <div class="panel-body" ng-if="!item.corrected">
-
                 <!--drop zone-->
                 <div ui-on-Drop="onDropField($event,$data,0)"
                      title="Déposer un objet ici">
@@ -35,7 +31,6 @@
                             </a>
                         </div>
                     </div>
-
                     <!--drop zone-->
                     <div ui-on-Drop="onDropField($event,$data,$index + 1)"
                          title="Déposer un objet ici">
@@ -51,6 +46,7 @@
                      title="Votre proposition de réponse">
                     <!-- answer zone -->
                     <div>
+                      answer zone
                         <div ng-if="drop.object_type == 'text'"
                              class="etiquette txt-etiquette"
                              data-ng-class="{'etiquette-wrong': !right, 'etiquette-right': right}">
