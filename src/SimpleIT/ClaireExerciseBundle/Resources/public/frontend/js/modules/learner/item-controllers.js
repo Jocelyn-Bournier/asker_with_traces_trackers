@@ -175,7 +175,6 @@ itemControllers.controller('orderItemsController', ['$scope', 'Answer', '$routeP
         // correction
         $scope.displayCorrection = function (item) {
             $scope.right = true;
-            console.log("la longeur des drops" + $scope.drops.length)
             for (i = 0; i < $scope.drops.length; ++i) {
                 $scope.solution[i] = {
                     object: item['content'].objects[

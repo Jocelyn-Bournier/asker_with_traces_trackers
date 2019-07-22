@@ -80,7 +80,7 @@
                 <div ng-repeat="object in solution track by $index"
                      class="row">
                     <div class="col-xs-9">
-                        <div ng-if="object.object_type == 'text'"
+                        <div ng-if="object.object.object_type == 'text'"
                              class="etiquette txt-etiquette">
                             <div ng-bind-html="to_trusted(object.object.text)"></div>
                         </div>
