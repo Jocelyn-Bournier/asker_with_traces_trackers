@@ -71,25 +71,6 @@ class LdapAuthenticationProvider extends OwnAuthenticationProvider
                     }
                 }
             }
-            //if ($user->isLdap()){
-            //    $this->ldap->checkPassword($user->getLdapDn(), $token->getCredentials());
-            //}else{
-            //    $currentUser = $token->getUser();
-            //    if ($currentUser instanceof UserInterface) {
-            //        if ($currentUser->getPassword() !== $user->getPassword()) {
-            //            throw new BadCredentialsException('The credentials were changed from another session.');
-            //        }
-            //    } else {
-            //        if ('' === ($presentedPassword = $token->getCredentials())) {
-            //            throw new BadCredentialsException('The presented password cannot be empty.');
-            //        }
-
-            //        if (!$this->encoderFactory->getEncoder($user)->isPasswordValid($user->getPassword(), $presentedPassword, $user->getSalt())) {
-            //            throw new BadCredentialsException('The presented password is invalid.');
-            //        }
-            //    }
-            //}
-            //$this->ldap->checkPassword($user->getUid(), $token->getCredentials());
         }catch(LdapException $e){
             throw new BadCredentialsException('Bad Credentials.');
         }
