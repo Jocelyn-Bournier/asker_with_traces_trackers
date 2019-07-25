@@ -83,25 +83,10 @@ abstract class ExerciseModelResourceFactory extends SharedResourceFactory
 
         $dr = array();
         foreach($exerciseModel->getDirectories() as $dir){
-            $dr[] = $dir->getName();
+            $dr[] = $dir->getParent()->getName(). ": " . $dir->getName();
         }
         $exerciseModelResource->setDirectories($dr);
 
-        // required knowledges
-        #$rn = array();
-        #foreach ($exerciseModel->getRequiredKnowledges() as $req) {
-        #    /** @var Knowledge $req */
-        #    $rn[] = $req->getId();
-        #}
-        #$exerciseModelResource->setRequiredKnowledges($rn);
-
-        #if ($links) {
-        #    $exercises = array();
-        #    foreach ($exerciseModel->getExercises() as $ex) {
-        #         $exercises[] = ExerciseResourceFactory::create($ex, true);
-        #    }
-        #    $exerciseModelResource->setExercises($exercises);
-        #}
 
         // removable
         if (count($exerciseModel->getExercises()) > 0) {
@@ -109,7 +94,6 @@ abstract class ExerciseModelResourceFactory extends SharedResourceFactory
         } else {
             $exerciseModelResource->setRemovable(true);
         }
-        #die((var_dump($exerciseModelResource)));
 
         return $exerciseModelResource;
     }
