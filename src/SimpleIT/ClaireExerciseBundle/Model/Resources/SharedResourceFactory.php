@@ -116,6 +116,7 @@ abstract class SharedResourceFactory
      */
     public static function createFromEntity($entity, $type)
     {
+
         switch ($type) {
             case self::EXERCISE_MODEL:
                 /** @var ExerciseModel $entity */

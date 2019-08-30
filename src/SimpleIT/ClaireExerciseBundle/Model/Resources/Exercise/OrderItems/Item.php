@@ -153,7 +153,9 @@ class Item extends CommonItem
         // fill the new object array with the shuffled keys
         foreach ($objKeys as $index => $key) {
             $newObjects[$index] = $this->objects[$key];
-            $newValues[$index] = $this->values[$key];
+            if (key_exists($key,$this->values)){
+                $newValues[$index] = $this->values[$key];
+            }
         }
 
         // modify the solution

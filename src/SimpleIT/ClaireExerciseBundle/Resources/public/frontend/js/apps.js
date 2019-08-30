@@ -34,6 +34,7 @@ var mainApp = angular.module('mainApp',
         'attemptControllers',
         'learnerControllers',
         'newControllers',
-        'angularFileUpload'
+        'angularFileUpload',
+        'ngDraggable'
     ]
 );

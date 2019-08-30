@@ -48,17 +48,6 @@ class FrontendController extends BaseController
             'SimpleITClaireExerciseBundle:Frontend:main-layout.html.twig',
             array('currentUserId' => $userId, 'form' => $form->createView())
         );
-        if ($this->get('security.context')->isGranted('ROLE_WS_CREATOR')) {
-            return $this->render(
-                'SimpleITClaireExerciseBundle:Frontend:manager-layout.html.twig',
-                array('currentUserId' => $userId, 'form' => $form->createView())
-            );
-        } else {
-            return $this->render(
-                'SimpleITClaireExerciseBundle:Frontend:user-layout.html.twig',
-                array('currentUserId' => $userId, 'form' => $form->createView())
-            );
-        }
     }
     public function updatePasswordAction()
     {
