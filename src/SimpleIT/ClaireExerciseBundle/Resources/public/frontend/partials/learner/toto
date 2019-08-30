@@ -1,45 +1,44 @@
 <div data-ng-controller="orderItemsController">
-  <div class="row">
-    <div nf-if="help != null"><strong>Aide :</strong> {{ help }}</div>
-  </div>
-  <div class="row">
-    <div class="col-xs-4">
-      Votre réponse:
-      <div ng-drop="true" ng-drop-success="onDropField($event,$data,0)" title="Déposer un objet ici">
-        <div class="etiquette txt-etiquette etiquette-empty">
-        </div>
-      </div>
-      <div ng-repeat="drop in drops track by $index">
-        <div ng-if="drop.object_type == 'text'" class="etiquette txt-etiquette">
-          <div ng-bind-html="to_trusted(drop.text)"></div>
-        </div>
-        <div ng-if="drop.object_type == 'picture'">
-          <a href="{{ imageUrl }}{{ drop.source }}" data-lightbox="imageMobile" data-title="Partie mobile">
-            <img ng-src="{{ imageUrl }}{{ drop.source }}" class="etiquette img-etiquette"/>
-          </a>
-        </div>
-        <div ng-drop="true" ng-drop-success="onDropField($event,$data, $index+1)" title="Déposer un objet ici">
-          <div class="etiquette txt-etiquette etiquette-empty">
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-xs-4">
-      <div ng-repeat="mobileObject in item.content.objects track by $index"
-      ng-drag="true" ng-drag-data="mobileObject"
-      ng-drag-success="dropSuccessHandler($event,$index,item.content.objects)">
-        <div ng-if="mobileObject.object_type == 'text'" class="etiquette txt-etiquette">
-          <div ng-bind-html="to_trusted(mobileObject.text)"></div>
-        </div>
-        <div ng-if="mobileObject.object_type == 'picture'">
-          <a href="{{ imageUrl }}{{ mobileObject.source }}" data-lightbox="imageMobile" data-title="Partie mobile">
-            <img ng-src="{{ imageUrl }}{{ mobileObject.source }}" class="etiquette img-etiquette"/>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
+    <div class="row">
+        <div nf-if="help != null"><strong>Aide :</strong> {{ help }}</div>
+        <div class="col-xs-5 panel">
+            <div class="panel-heading" style="color: #888888">
+                Votre réponse
+            </div>
+            <!--not corrected-->
+            <div class="panel-body" ng-if="!item.corrected">
+                <!--drop zone-->
+                <div ui-on-Drop="onDropField($event,$data,0)"
+                     title="Déposer un objet ici">
+                    <div class="etiquette txt-etiquette etiquette-empty">
+                    </div>
+                </div>
 
+                <div ng-repeat="drop in drops track by $index"
+                     title="Votre proposition de réponse">
+                    <!-- answer zone -->
+                    <div ui-draggable="true" drag="drop"
+                         on-drop-success="dropSuccessHandlerField($event,$index)">
+                        <div ng-if="drop.object_type == 'text'"
+                             class="etiquette txt-etiquette">
+                            <div ng-bind-html="to_trusted(drop.text)"></div>
+                        </div>
+                        <div ng-if="drop.object_type == 'picture'">
+                            <a href="{{ imageUrl }}{{ drop.source }}"
+                               data-lightbox="imageMobile" data-title="Partie mobile">
+                                <img ng-src="{{ imageUrl }}{{ drop.source }}"
+                                     class="etiquette img-etiquette"/>
+                            </a>
+                        </div>
+                    </div>
+                    <!--drop zone-->
+                    <div ui-on-Drop="onDropField($event,$data,$index + 1)"
+                         title="Déposer un objet ici">
+                        <div class="etiquette txt-etiquette etiquette-empty">
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!--corrected-->
             <div class="panel-body" ng-if="item.corrected" title="Votre proposition de réponse">
@@ -114,6 +113,23 @@
                         </div>
                         <div ng-if="drop[0].object_type == 'picture'"
                              class="etiquette img-etiquette etiquette-empty">
+                        </div>
+                    </div>
+                    <div style="margin: 6px"
+                         ng-repeat="mobileObject in item.content.objects track by $index"
+                         ui-draggable="true" drag="mobileObject"
+                         on-drop-success="dropSuccessHandler($event,$index,item.content.objects)"
+                        >
+                        <div ng-if="mobileObject.object_type == 'text'"
+                             class="etiquette txt-etiquette">
+                            <div ng-bind-html="to_trusted(mobileObject.text)"></div>
+                        </div>
+                        <div ng-if="mobileObject.object_type == 'picture'">
+                            <a href="{{ imageUrl }}{{ mobileObject.source }}"
+                               data-lightbox="imageMobile" data-title="Partie mobile">
+                                <img ng-src="{{ imageUrl }}{{ mobileObject.source }}"
+                                     class="etiquette img-etiquette"/>
+                            </a>
                         </div>
                     </div>
                 </div>

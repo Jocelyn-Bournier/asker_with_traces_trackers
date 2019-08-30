@@ -149,7 +149,7 @@ itemControllers.controller('pairItemsController', ['$scope', 'Answer', '$routePa
         }
     }]);
 
-itemControllers.controller('orderItemsController', ['$scope', 'Answer', '$routeParams', '$location', '$stateParams',
+itemControllers.controller('orderItemsController', ['$scope', 'Answer','ngDraggable', '$routeParams', '$location', '$stateParams',
     function ($scope, Answer, $routeParams, $location, $stateParams) {
 
         // post answer
@@ -212,6 +212,7 @@ itemControllers.controller('orderItemsController', ['$scope', 'Answer', '$routeP
         $scope.onDropField = function ($event, $data, fieldNumber) {
             $scope.toDrop.id = fieldNumber;
             $scope.toDrop.data = $data;
+            alert("Field" + fieldNumber)
         };
 
         $scope.dropSuccessHandler = function ($event, index, array) {

@@ -83,7 +83,11 @@ abstract class ExerciseModelResourceFactory extends SharedResourceFactory
 
         $dr = array();
         foreach($exerciseModel->getDirectories() as $dir){
-            $dr[] = $dir->getParent()->getName(). ": " . $dir->getName();
+            if ($dir->getParent()){
+                $dr[] = $dir->getParent()->getName(). ": " . $dir->getName();
+            }else{
+                $dr[] =  $dir->getName();
+            }
         }
         $exerciseModelResource->setDirectories($dr);
 
