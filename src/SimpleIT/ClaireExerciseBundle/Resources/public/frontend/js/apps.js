@@ -35,6 +35,5 @@ var mainApp = angular.module('mainApp',
         'learnerControllers',
         'newControllers',
         'angularFileUpload',
-        'ngDraggable'
     ]
 );

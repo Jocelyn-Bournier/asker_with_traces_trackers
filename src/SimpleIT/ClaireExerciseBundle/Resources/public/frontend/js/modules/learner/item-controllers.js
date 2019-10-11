@@ -35,6 +35,8 @@ attemptControllers.controller('attemptController', ['$scope', '$state', 'Attempt
             if ($scope.item.type == 'pair-items') {
                 $state.go('attempt.pair-items', {itemId: index}, {location: false});
             } else if ($scope.item.type == 'order-items') {
+                //sort exercise: no action possible
+                //$scope.validable = true;
                 $state.go('attempt.order-items', {itemId: index}, {location: false});
             } else if ($scope.item.type == 'group-items') {
                 $state.go('attempt.group-items', {itemId: index}, {location: false});
@@ -117,7 +119,7 @@ itemControllers.controller('pairItemsController', ['$scope', 'Answer', '$routePa
         // drag and drop
         $scope.onDropList = function ($event, $data, array) {
             array.push($data);
-            $scope.validable = false;
+            $scope.validable = true;
         };
 
         $scope.onDropField = function ($event, $data, fieldNumber) {
@@ -147,19 +149,22 @@ itemControllers.controller('pairItemsController', ['$scope', 'Answer', '$routePa
             $scope.fillLearnerAnswers();
             $scope.displayCorrection($scope.item);
         }
+
     }]);
 
-itemControllers.controller('orderItemsController', ['$scope', 'Answer','ngDraggable', '$routeParams', '$location', '$stateParams',
-    function ($scope, Answer, $routeParams, $location, $stateParams) {
+itemControllers.controller('orderItemsController', ['$scope', 'Answer', '$routeParams', '$location', '$stateParams', '$timeout', '$state',
+    function ($scope, Answer, $routeParams, $location, $stateParams, $timeout,$state) {
 
         // post answer
         $scope.saveAnswer = function () {
+            //$scope.validable = true;
             $scope.validable = false;
             var answer = new Answer;
             answer.content = [];
 
             for (i = 0; i < $scope.drops.length; ++i) {
-                answer.content.push($scope.drops[i].id);
+                //answer.content.push($scope.drops[i].id);
+                answer.content.push($scope.drops[i]);
             }
 
             console.log("une reponse"+JSON.stringify(answer));
@@ -168,7 +173,7 @@ itemControllers.controller('orderItemsController', ['$scope', 'Answer','ngDragga
                 function (item) {
                     $scope.items[$stateParams.itemId] = item;
                     $scope.displayCorrection(item)
-                    //console.log("un item"+JSON.stringify(item)) => item contient le JSON de l'API
+                    console.log("un item"+JSON.stringify(item))// => item contient le JSON de l'API
                 });
         };
 
@@ -184,7 +189,7 @@ itemControllers.controller('orderItemsController', ['$scope', 'Answer','ngDragga
                         item['content'].solutions[i]
                         ]
                 };
-                console.log("une console de drop" +JSON.stringify($scope.solution[i]));
+                //console.log("une console de drop" +JSON.stringify($scope.solution[i]));
                 //C'est ici qu'on choisit si le cadre est rouge ou vert -- une loop un resultat binaire
                 if (item['content'].answers[i] != item['content'].solutions[i]) {
                     $scope.right = false;
@@ -193,61 +198,78 @@ itemControllers.controller('orderItemsController', ['$scope', 'Answer','ngDragga
             $scope.item.corrected = true;
             $scope.item['content']['mark'] = item['content']['mark'];
         };
+        $timeout(function(){ 
+            $("#toSortable").sortable({
+                receive: function( event, ui ) {
+                    console.log(`array = ${$("#toSortable").sortable("toArray").length} le scope  ${$scope.item['content'].objects.length}`)
+                    if ( $("#toSortable").sortable("toArray").length == $scope.item['content'].objects.length){
+                        $scope.validable = true;
+                        $scope.drops = $("#toSortable").sortable( "toArray",{attribute:"order"});
+                        console.log("toArray"+ JSON.stringify($("#toSortable").sortable( "toArray" ,{attribute:"order"})))
+                        $state.reload();
+                    }
+                }
+            });
+            $(".draggable").draggable({
+                helper: "clone",
+                connectToSortable: '#toSortable'
+            });
+
+        })
 
         // display learner answers
-        $scope.fillLearnerAnswers = function () {
-            for (i = 0; i < $scope.item['content'].answers.length; ++i) {
-                $scope.drops[i] = $scope.item['content'].objects[
-                    $scope.item['content'].answers[i]
-                    ];
-            }
-        };
+        //$scope.fillLearnerAnswers = function () {
+        //    for (i = 0; i < $scope.item['content'].answers.length; ++i) {
+        //        $scope.drops[i] = $scope.item['content'].objects[
+        //            $scope.item['content'].answers[i]
+        //            ];
+        //    }
+        //};
 
-        // drag and drop
-        $scope.onDropList = function ($event, $data, array) {
-            array.push($data);
-            $scope.validable = false;
-        };
+        //// drag and drop
+        //$scope.onDropList = function ($event, $data, array) {
+        //    array.push($data);
+        //    $scope.validable = false;
+        //};
 
-        $scope.onDropField = function ($event, $data, fieldNumber) {
-            $scope.toDrop.id = fieldNumber;
-            $scope.toDrop.data = $data;
-            alert("Field" + fieldNumber)
-        };
+        //$scope.onDropField = function ($event, $data, fieldNumber) {
+        //    $scope.toDrop.id = fieldNumber;
+        //    $scope.toDrop.data = $data;
+        //};
 
-        $scope.dropSuccessHandler = function ($event, index, array) {
-            array.splice(index, 1);
-            if ($scope.item['content'].objects.length == 0) {
-                $scope.validable = true;
-            }
-            resumeDND();
-        };
+        //$scope.dropSuccessHandler = function ($event, index, array) {
+        //    array.splice(index, 1);
+        //    if ($scope.item['content'].objects.length == 0) {
+        //        $scope.validable = true;
+        //    }
+        //    resumeDND();
+        //};
 
-        $scope.dropSuccessHandlerField = function ($event, fieldNumber) {
-            $scope.toDrag.id = fieldNumber;
-            resumeDND();
-        };
+        //$scope.dropSuccessHandlerField = function ($event, fieldNumber) {
+        //    $scope.toDrag.id = fieldNumber;
+        //    resumeDND();
+        //};
 
-        var resumeDND = function () {
-            if ($scope.toDrop.id !== null && $scope.toDrag.id !== null) {
-                if ($scope.toDrop.id < $scope.toDrag.id) {
-                    $scope.drops.splice($scope.toDrag.id, 1);
-                    $scope.drops.splice($scope.toDrop.id, 0, $scope.toDrop.data);
-                } else {
-                    $scope.drops.splice($scope.toDrop.id, 0, $scope.toDrop.data);
-                    $scope.drops.splice($scope.toDrag.id, 1);
-                }
-            } else {
-                if ($scope.toDrop.id !== null) {
-                    $scope.drops.splice($scope.toDrop.id, 0, $scope.toDrop.data);
-                } else {
-                    $scope.drops.splice($scope.toDrag.id, 1);
-                }
-            }
+        //var resumeDND = function () {
+        //    if ($scope.toDrop.id !== null && $scope.toDrag.id !== null) {
+        //        if ($scope.toDrop.id < $scope.toDrag.id) {
+        //            $scope.drops.splice($scope.toDrag.id, 1);
+        //            $scope.drops.splice($scope.toDrop.id, 0, $scope.toDrop.data);
+        //        } else {
+        //            $scope.drops.splice($scope.toDrop.id, 0, $scope.toDrop.data);
+        //            $scope.drops.splice($scope.toDrag.id, 1);
+        //        }
+        //    } else {
+        //        if ($scope.toDrop.id !== null) {
+        //            $scope.drops.splice($scope.toDrop.id, 0, $scope.toDrop.data);
+        //        } else {
+        //            $scope.drops.splice($scope.toDrag.id, 1);
+        //        }
+        //    }
 
-            $scope.toDrop = {'id': null, 'data': null};
-            $scope.toDrag.id = null;
-        };
+        //    $scope.toDrop = {'id': null, 'data': null};
+        //    $scope.toDrag.id = null;
+        //};
 
         // init answer array
         $scope.drops = [];
@@ -481,6 +503,7 @@ itemControllers.controller('groupItemsController', ['$scope', 'Answer', '$routeP
             array.push($data);
         };
 
+        //c'est ici que le boutton passe visible en theorique
         $scope.dropSuccessHandler = function ($event, index, array) {
             array.splice(index, 1);
             $scope.validable = ($scope.item['content'].objects.length == 0);
