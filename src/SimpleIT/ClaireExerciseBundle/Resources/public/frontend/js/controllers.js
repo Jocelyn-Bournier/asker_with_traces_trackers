@@ -1,7 +1,7 @@
 var mainAppControllers = angular.module('mainAppControllers', ['ui.router']);
 
-mainAppControllers.controller('mainManagerController', ['$scope', '$sce', '$routeParams', '$location', 'BASE_CONFIG', 'User', 'Resource',
-    function ($scope, $sce, $routeParams, $location, BASE_CONFIG, User, Resource) {
+mainAppControllers.controller('mainManagerController', ['$scope', '$sce', '$routeParams', '$location', 'BASE_CONFIG', 'User', 'Resource','Model',
+    function ($scope, $sce, $routeParams, $location, BASE_CONFIG, User, Resource,Model) {
         // Error codes for complete
         $scope.completeError = {
             '101': 'Le modèle parent n\'est pas public',
@@ -91,6 +91,30 @@ mainAppControllers.controller('mainManagerController', ['$scope', '$sce', '$rout
                 });
             });
         };
+        $scope.loadModelsAndUsers = function(){
+            // retrieve models
+            Model.query({owner: BASE_CONFIG.currentUserId}, function (data) {
+                // load an id indexed array of the models
+                var privateModels = [];
+                for (var i = 0; i < data.length; ++i) {
+                    privateModels[data[i].id] = data[i];
+                }
+                //code ajouté juste car j'en avais marre du public load
+                //$scope.models = privateModels;
+
+                Model.query({'public-except-user': BASE_CONFIG.currentUserId}, function (data) {
+                    // load an id indexed array of the models
+                    var publicModels = [];
+                    for (var i = 0; i < data.length; ++i) {
+                        publicModels[data[i].id] = data[i];
+                    }
+
+                    $scope.models =jQuery.extend(publicModels, privateModels);
+
+                    $scope.loadUsers($scope.models);
+                });
+            });
+        };
 
         $scope.to_trusted = function(html_code) {
             return $sce.trustAsHtml(html_code);
@@ -98,6 +122,7 @@ mainAppControllers.controller('mainManagerController', ['$scope', '$sce', '$rout
 
         // initial loading
         $scope.loadResourcesAndUsers();
+        $scope.loadModelsAndUsers();
         $scope.BASE_CONFIG = BASE_CONFIG;
     }]);
 
@@ -111,16 +136,16 @@ mainAppControllers.controller('mainUserController', ['$scope', '$sce', '$routePa
 
             var userIds = [];
 
-            //for (var i in resourcesData) {
-            //    if (resourcesData.hasOwnProperty(i) && i != "$promise" && i != "$resolved") {
-            //        if (userIds.indexOf(resourcesData[i].author) == -1) {
-            //            userIds.push(resourcesData[i].author);
-            //        }
-            //        if (userIds.indexOf(resourcesData[i].owner) == -1) {
-            //            userIds.push(resourcesData[i].owner);
-            //        }
-            //    }
-            //}
+            for (var i in resourcesData) {
+                if (resourcesData.hasOwnProperty(i) && i != "$promise" && i != "$resolved") {
+                    if (userIds.indexOf(resourcesData[i].author) == -1) {
+                        userIds.push(resourcesData[i].author);
+                    }
+                    if (userIds.indexOf(resourcesData[i].owner) == -1) {
+                        userIds.push(resourcesData[i].owner);
+                    }
+                }
+            }
 
             for (i in userIds) {
                 if (typeof $scope.users[userIds[i]] === 'undefined') {
