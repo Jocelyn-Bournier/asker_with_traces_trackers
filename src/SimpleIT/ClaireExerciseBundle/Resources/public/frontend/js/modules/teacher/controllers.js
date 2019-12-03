@@ -992,25 +992,27 @@ modelControllers.controller('modelListController', ['$scope', 'Model', '$locatio
     function ($scope, Model, $location) {
 
         // retrieve models
-        Model.query({owner: BASE_CONFIG.currentUserId}, function (data) {
-            // load an id indexed array of the models
-            var privateModels = [];
-            for (var i = 0; i < data.length; ++i) {
-                privateModels[data[i].id] = data[i];
-            }
+        //Model.query({owner: BASE_CONFIG.currentUserId}, function (data) {
+        //    // load an id indexed array of the models
+        //    var privateModels = [];
+        //    for (var i = 0; i < data.length; ++i) {
+        //        privateModels[data[i].id] = data[i];
+        //    }
+        //    //code ajouté juste car j'en avais marre du public load
+        //    //$scope.models = privateModels;
 
-            Model.query({'public-except-user': BASE_CONFIG.currentUserId}, function (data) {
-                // load an id indexed array of the models
-                var publicModels = [];
-                for (var i = 0; i < data.length; ++i) {
-                    publicModels[data[i].id] = data[i];
-                }
+        //    Model.query({'public-except-user': BASE_CONFIG.currentUserId}, function (data) {
+        //        // load an id indexed array of the models
+        //        var publicModels = [];
+        //        for (var i = 0; i < data.length; ++i) {
+        //            publicModels[data[i].id] = data[i];
+        //        }
 
-                $scope.models = jQuery.extend(publicModels, privateModels);
+        //        $scope.models =jQuery.extend(publicModels, privateModels);
 
-                $scope.loadUsers($scope.models);
-            });
-        });
+        //        $scope.loadUsers($scope.models);
+        //    });
+        //});
 
         $scope.deleteModel = function (model) {
             model.$delete({id: model.id}, function () {
