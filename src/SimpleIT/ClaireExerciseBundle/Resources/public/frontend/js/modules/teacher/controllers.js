@@ -1183,6 +1183,7 @@ modelControllers.controller('modelEditController', ['$scope', 'Model','ModelDire
             var newModel = $scope.preUpdate();
             newModel.$update({id: $stateParams.modelid}, function (model) {
                 $scope.model = model;
+                $scope.models[model.id] = model;
                 if (model.complete) {
                     $scope.tryModel(model);
                 }
@@ -1221,6 +1222,7 @@ modelControllers.controller('modelEditController', ['$scope', 'Model','ModelDire
             var newModel = $scope.preUpdate();
             newModel.$update({id: $stateParams.modelid}, function (model) {
                 $scope.model = model;
+                $scope.models[model.id] = model;
             });
         };
 
