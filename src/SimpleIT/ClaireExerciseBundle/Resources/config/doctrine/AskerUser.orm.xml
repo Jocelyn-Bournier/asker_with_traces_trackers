@@ -41,7 +41,11 @@
             <cascade-persist/>
         </cascade>
     </many-to-many>
-    <one-to-many field="logs" target-entity="SimpleIT\ClaireExerciseBundle\Entity\Log" mapped-by="user" />
+    <one-to-many field="logs" target-entity="SimpleIT\ClaireExerciseBundle\Entity\Log" mapped-by="user">
+        <cascade>
+            <cascade-remove />
+        </cascade>
+        </one-to-many>
     <unique-constraints>
       <unique-constraint columns="username" name="search_idex_askeruser_username" />
     </unique-constraints>
