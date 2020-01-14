@@ -188,17 +188,18 @@ class DirectoryController extends BaseController
      * @throws ApiBadRequestException
      * @return ApiGotResponse
      */
-    public function newInDirectoryAction(
-        CollectionInformation $collectionInformation,
-        $user)
-    {
-        $directories = $this->getDoctrine()
-            ->getRepository('SimpleITClaireExerciseBundle:Directory')
-            //->findAll();
-            ->findNews($user);
+    #dead code i guess 27/11/2019
+    #public function newInDirectoryAction(
+    #    CollectionInformation $collectionInformation,
+    #    $user)
+    #{
+    #    $directories = $this->getDoctrine()
+    #        ->getRepository('SimpleITClaireExerciseBundle:Directory')
+    #        //->findAll();
+    #        ->findNews($user);
 
-        return new ApiGotResponse($directories, array('list', 'Default'));
-    }
+    #    return new ApiGotResponse($directories, array('list', 'Default'));
+    #}
     /**
      * Delete a directory
      *
