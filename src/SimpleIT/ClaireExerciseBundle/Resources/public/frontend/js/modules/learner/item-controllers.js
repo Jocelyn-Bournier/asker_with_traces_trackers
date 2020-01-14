@@ -36,7 +36,6 @@ attemptControllers.controller('attemptController', ['$scope', '$state', 'Attempt
                 $state.go('attempt.pair-items', {itemId: index}, {location: false});
             } else if ($scope.item.type == 'order-items') {
                 //sort exercise: no action possible
-                //$scope.validable = true;
                 $state.go('attempt.order-items', {itemId: index}, {location: false});
             } else if ($scope.item.type == 'group-items') {
                 $state.go('attempt.group-items', {itemId: index}, {location: false});
@@ -157,30 +156,31 @@ itemControllers.controller('orderItemsController', ['$scope', 'Answer', '$routeP
 
         // post answer
         $scope.saveAnswer = function () {
-            //$scope.validable = true;
             $scope.validable = false;
             var answer = new Answer;
             answer.content = [];
 
-            for (i = 0; i < $scope.drops.length; ++i) {
+            //for (i = 0; i < $scope.drops.length; ++i) {
+            for (i = 0; i < $scope.ss.length; ++i) {
                 //answer.content.push($scope.drops[i].id);
-                answer.content.push($scope.drops[i]);
+                //answer.content.push($scope.drops[i]);
+                answer.content.push($scope.ss[i]);
             }
 
-            console.log("une reponse"+JSON.stringify(answer));
 
             answer.$save({itemId: $scope.item.item_id, attemptId: $stateParams.attemptId},
                 function (item) {
                     $scope.items[$stateParams.itemId] = item;
                     $scope.displayCorrection(item)
-                    console.log("un item"+JSON.stringify(item))// => item contient le JSON de l'API
+                    //console.log("un item"+JSON.stringify(item))// => item contient le JSON de l'API
                 });
         };
 
         // correction
         $scope.displayCorrection = function (item) {
             $scope.right = true;
-            for (i = 0; i < $scope.drops.length; ++i) {
+            //for (i = 0; i < $scope.drops.length; ++i) {
+            for (i = 0; i < $scope.ss.length; ++i) {
                 $scope.solution[i] = {
                     object: item['content'].objects[
                         item['content'].solutions[i]
@@ -198,16 +198,22 @@ itemControllers.controller('orderItemsController', ['$scope', 'Answer', '$routeP
             $scope.item.corrected = true;
             $scope.item['content']['mark'] = item['content']['mark'];
         };
+
         $timeout(function(){ 
+                //$scope.item['content'].objects.splice($scope.item.content.give_first, 1);
             $("#toSortable").sortable({
                 receive: function( event, ui ) {
-                    console.log(`array = ${$("#toSortable").sortable("toArray").length} le scope  ${$scope.item['content'].objects.length}`)
+                    $(ui.item).remove();
+                    console.log("toArray"+ JSON.stringify($("#toSortable").sortable( "toArray" ,{attribute:"order"})));
                     if ( $("#toSortable").sortable("toArray").length == $scope.item['content'].objects.length){
                         $scope.validable = true;
-                        $scope.drops = $("#toSortable").sortable( "toArray",{attribute:"order"});
-                        console.log("toArray"+ JSON.stringify($("#toSortable").sortable( "toArray" ,{attribute:"order"})))
-                        $state.reload();
+                        //$scope.drops = $("#toSortable").sortable( "toArray",{attribute:"order"});
+                        $scope.ss = $("#toSortable").sortable( "toArray",{attribute:"order"});
+
+                        console.log("toArray"+ JSON.stringify($("#toSortable").sortable( "toArray" ,{attribute:"order"})));
                     }
+                    //$scope.item['content'].objects.splice($(ui.item).attr('order'),1);
+                    $state.reload();
                 }
             });
             $(".draggable").draggable({
@@ -218,13 +224,13 @@ itemControllers.controller('orderItemsController', ['$scope', 'Answer', '$routeP
         })
 
         // display learner answers
-        //$scope.fillLearnerAnswers = function () {
-        //    for (i = 0; i < $scope.item['content'].answers.length; ++i) {
-        //        $scope.drops[i] = $scope.item['content'].objects[
-        //            $scope.item['content'].answers[i]
-        //            ];
-        //    }
-        //};
+        $scope.fillLearnerAnswers = function () {
+            for (i = 0; i < $scope.item['content'].answers.length; ++i) {
+                $scope.drops[i] = $scope.item['content'].objects[
+                    $scope.item['content'].answers[i]
+                    ];
+            }
+        };
 
         //// drag and drop
         //$scope.onDropList = function ($event, $data, array) {
@@ -273,6 +279,7 @@ itemControllers.controller('orderItemsController', ['$scope', 'Answer', '$routeP
 
         // init answer array
         $scope.drops = [];
+        $scope.ss = [];
         $scope.solution = [];
         $scope.help = null;
         for (var i = 0; i < $scope.item['content'].objects.length; ++i) {
@@ -292,26 +299,26 @@ itemControllers.controller('orderItemsController', ['$scope', 'Answer', '$routeP
                 $scope.help = 'Pour vous aider, le premier et le dernier objet ont été placés.'
 
                 if ($scope.item.content.give_last < $scope.item.content.give_first) {
-                    $scope.drops.splice(0, 0, $scope.item['content'].objects[$scope.item.content.give_first]);
-                    $scope.item['content'].objects.splice($scope.item.content.give_first, 1);
-                    $scope.drops.splice(0, 0, $scope.item['content'].objects[$scope.item.content.give_last]);
-                    $scope.item['content'].objects.splice($scope.item.content.give_last, 1);
+                    //$scope.drops.splice(0, 0, $scope.item['content'].objects[$scope.item.content.give_first]);
+                    //$scope.item['content'].objects.splice($scope.item.content.give_first, 1);
+                    //$scope.drops.splice(0, 0, $scope.item['content'].objects[$scope.item.content.give_last]);
+                    //$scope.item['content'].objects.splice($scope.item.content.give_last, 1);
                 } else {
-                    $scope.drops.splice(0, 0, $scope.item['content'].objects[$scope.item.content.give_last]);
-                    $scope.item['content'].objects.splice($scope.item.content.give_last, 1);
-                    $scope.drops.splice(0, 0, $scope.item['content'].objects[$scope.item.content.give_first]);
-                    $scope.item['content'].objects.splice($scope.item.content.give_first, 1);
+                    //$scope.drops.splice(0, 0, $scope.item['content'].objects[$scope.item.content.give_last]);
+                    //$scope.item['content'].objects.splice($scope.item.content.give_last, 1);
+                    //$scope.drops.splice(0, 0, $scope.item['content'].objects[$scope.item.content.give_first]);
+                    //$scope.item['content'].objects.splice($scope.item.content.give_first, 1);
                 }
             }
             else if ($scope.item.content.give_first != '-1') {
                 $scope.help = 'Pour vous aider, le premier objet a été placé.'
-                $scope.drops.splice(0, 0, $scope.item['content'].objects[$scope.item.content.give_first]);
-                $scope.item['content'].objects.splice($scope.item.content.give_first, 1);
+                //$scope.drops.splice(0, 0, $scope.item['content'].objects[$scope.item.content.give_first]);
+                //$scope.item['content'].objects.splice($scope.item.content.give_first, 1);
             }
             else if ($scope.item.content.give_last != '-1') {
                 $scope.help = 'Pour vous aider, le dernier objet a été placé.'
-                $scope.drops.splice(0, 0, $scope.item['content'].objects[$scope.item.content.give_last]);
-                $scope.item['content'].objects.splice($scope.item.content.give_last, 1);
+                //$scope.drops.splice(0, 0, $scope.item['content'].objects[$scope.item.content.give_last]);
+                //$scope.item['content'].objects.splice($scope.item.content.give_last, 1);
             }
 
         }
