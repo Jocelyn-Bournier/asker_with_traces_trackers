@@ -1,9 +1,10 @@
-api_directory_new_list:
-    pattern:  /new/{user}
-    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Directory/Directory:newInDirectory }
-    methods: [GET]
-    requirements:
-        _format: json
+#deadcode 27/11/2019
+#api_directory_new_list:
+#    pattern:  /new/{user}
+#    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Directory/Directory:newInDirectory }
+#    methods: [GET]
+#    requirements:
+#        _format: json
 api_directory_delete:
     pattern:  /{directoryId}
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/Directory/Directory:delete }
