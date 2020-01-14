@@ -5,9 +5,25 @@
   <div class="row">
     <div class="col-xs-4">
       <b>Votre réponse:</b>
-      <ul id='toSortable' class="etiquette txt-etiquette etiquette-empty"
+      <div id='toSortable' class="etiquette txt-etiquette etiquette-empty"
       title="Déposer vos réponses ici">
-      </ul>
+        <div ng-if="item.content.objects[item.content.give_first].object_type == 'text'" order="{{item.content.give_first}}" id="drag-{{item.content.give_first}}" class=" draggable etiquette txt-etiquette">
+          <div ng-bind-html="to_trusted(item.content.objects[item.content.give_first].text)"></div>
+        </div>
+        <div ng-if="drop.object_type == 'picture'">
+          <a href="{{ imageUrl }}{{drop.source }}" data-lightbox="imageMobile" data-title="Partie mobile">
+            <img ng-src="{{ imageUrl }}{{ drop.source }}" class="etiquette img-etiquette"/>
+          </a>
+        </div>
+        <div ng-if="item.content.objects[item.content.give_last].object_type == 'text'" order="{{item.content.give_last}}" id="drag-{{item.content.give_last}}" class=" draggable etiquette txt-etiquette">
+          <div ng-bind-html="to_trusted(item.content.objects[item.content.give_last].text)"></div>
+        </div>
+        <div ng-if="drop.object_type == 'picture'">
+          <a href="{{ imageUrl }}{{drop.source }}" data-lightbox="imageMobile" data-title="Partie mobile">
+            <img ng-src="{{ imageUrl }}{{ drop.source }}" class="etiquette img-etiquette"/>
+          </a>
+        </div>
+      </div>
     </div>
     <div class="col-xs-8" ng-if="item.corrected">
       <b>Solution:</b>
@@ -33,9 +49,10 @@
     </div>
 
     <div class="col-xs-4" ng-if="!item.corrected">
-      <b>Objets à glisser-déposer:</b>
+      <b>Objets à votre disposition:</b>
       <div id="fromSortable" class="object-list">
         <div ng-repeat="mobileObject in item.content.objects track by $index">
+          <div ng-if="$index !== item.content.give_first &&  $index !== item.content.give_last">
             <div ng-if="mobileObject.object_type == 'text'" order="{{$index}}" id="drag-{{$index}}" class=" draggable etiquette txt-etiquette">
               <div ng-bind-html="to_trusted(mobileObject.text)"></div>
             </div>
@@ -44,6 +61,7 @@
                 <img ng-src="{{ imageUrl }}{{ mobileObject.source }}" class="etiquette img-etiquette"/>
               </a>
             </div>
+          </div>
         </div>
       </div>
     </div>
