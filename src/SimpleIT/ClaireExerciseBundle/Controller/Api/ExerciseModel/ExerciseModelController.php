@@ -92,11 +92,11 @@ class ExerciseModelController extends BaseController
                 $this->getUserId()
             );
 
-            $exerciseModelResources = $this->get(
-                'simple_it.exercise.exercise_model'
-            )->getAllContentFullResourcesFromEntityList(
-                $exerciseModels
-            );
+            $exerciseModelResources =
+                $this
+                    ->get('simple_it.exercise.exercise_model')
+                    ->getAllContentFullResourcesFromEntityList($exerciseModels)
+            ;
             #return new Response(
             #    "<html><body>".var_dump($exerciseModelResources)." </body></html>"
             #);
@@ -139,18 +139,6 @@ class ExerciseModelController extends BaseController
 
             // create the claroline ResourceNode for this model
             $workspace = $user->getPersonalWorkspace();
-            //$this->get('simple_it.manager.resource_manager')->create(
-            //    $model,
-            //    //$this->get('simple_it.manager.resource_manager')->getResourceTypeByName(
-            //        'claire_exercise_model'
-            //    ),
-            //    $user,
-            //    $workspace,
-            //    $this->get('doctrine.orm.entity_manager')->getRepository
-            //        (
-            //            'ClarolineCoreBundle:Resource\ResourceNode'
-            //        )->findWorkspaceRoot($workspace)
-            //);
 
             $modelResource = ExerciseModelResourceFactory::create($model);
 
