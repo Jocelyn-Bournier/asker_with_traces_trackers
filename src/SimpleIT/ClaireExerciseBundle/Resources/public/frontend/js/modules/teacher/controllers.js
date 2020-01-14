@@ -1062,15 +1062,15 @@ modelControllers.controller('modelListController', ['$scope', 'Model', '$locatio
         //};
 
         $scope.restoreModel = function (model) {
-            console.log('restoring...');
-            var archived = new Model;
-            archived.archived = false;
-	    archived.directories = model.directories;
-	    archived.metadata = model.metadata;
-            archived.$update({id: model.id}, function () {
-		//model.archived = archived.metadata;
-                model.archived = false;
-		//model.archved = archived.directories;
+        console.log('restoring...');
+        var archived = new Model;
+        archived.archived = false;
+        archived.directories = model.directories;
+        archived.metadata = model.metadata;
+        archived.$update({id: model.id}, function () {
+        //model.archived = archived.metadata;
+        model.archived = false;
+        //model.archved = archived.directories;
             });
         };
 
