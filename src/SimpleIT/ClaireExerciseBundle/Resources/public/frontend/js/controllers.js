@@ -1,7 +1,7 @@
 var mainAppControllers = angular.module('mainAppControllers', ['ui.router']);
 
-mainAppControllers.controller('mainManagerController', ['$scope', '$sce', '$routeParams', '$location', 'BASE_CONFIG', 'User', 'Resource','Model',
-    function ($scope, $sce, $routeParams, $location, BASE_CONFIG, User, Resource,Model) {
+mainAppControllers.controller('mainManagerController', ['$scope', '$sce', '$routeParams', '$location', 'BASE_CONFIG', 'User', 'Resource','Model', '$rootScope',
+    function ($scope, $sce, $routeParams, $location, BASE_CONFIG, User, Resource,Model, $rootScope) {
         // Error codes for complete
         $scope.completeError = {
             '101': 'Le modèle parent n\'est pas public',
@@ -43,6 +43,9 @@ mainAppControllers.controller('mainManagerController', ['$scope', '$sce', '$rout
             '810': 'Chaque formule doit posséder une équation ou faire référence à une connaissance du domaine'
         };
 
+        if (typeof $rootScope.models === 'undefined') {
+            $rootScope.models = null;
+        }
         // load only once every necessary user
         $scope.loadUsers = function (resourcesData) {
             if (typeof $scope.users === 'undefined') {
@@ -91,30 +94,6 @@ mainAppControllers.controller('mainManagerController', ['$scope', '$sce', '$rout
                 });
             });
         };
-        $scope.loadModelsAndUsers = function(){
-            // retrieve models
-            Model.query({owner: BASE_CONFIG.currentUserId}, function (data) {
-                // load an id indexed array of the models
-                var privateModels = [];
-                for (var i = 0; i < data.length; ++i) {
-                    privateModels[data[i].id] = data[i];
-                }
-                //code ajouté juste car j'en avais marre du public load
-                //$scope.models = privateModels;
-
-                Model.query({'public-except-user': BASE_CONFIG.currentUserId}, function (data) {
-                    // load an id indexed array of the models
-                    var publicModels = [];
-                    for (var i = 0; i < data.length; ++i) {
-                        publicModels[data[i].id] = data[i];
-                    }
-
-                    $scope.models =jQuery.extend(publicModels, privateModels);
-
-                    $scope.loadUsers($scope.models);
-                });
-            });
-        };
 
         $scope.to_trusted = function(html_code) {
             return $sce.trustAsHtml(html_code);
@@ -122,7 +101,7 @@ mainAppControllers.controller('mainManagerController', ['$scope', '$sce', '$rout
 
         // initial loading
         $scope.loadResourcesAndUsers();
-        $scope.loadModelsAndUsers();
+        //$scope.loadModelsAndUsers();
         $scope.BASE_CONFIG = BASE_CONFIG;
     }]);
 

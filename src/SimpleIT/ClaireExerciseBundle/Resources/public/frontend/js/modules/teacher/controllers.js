@@ -988,8 +988,8 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
     }])
 ;
 
-modelControllers.controller('modelListController', ['$scope', 'Model', '$location',
-    function ($scope, Model, $location) {
+modelControllers.controller('modelListController', ['$scope', 'Model', '$location', '$rootScope',
+    function ($scope, Model, $location,$rootScope) {
 
         // retrieve models
         //Model.query({owner: BASE_CONFIG.currentUserId}, function (data) {
@@ -1013,6 +1013,60 @@ modelControllers.controller('modelListController', ['$scope', 'Model', '$locatio
         //        $scope.loadUsers($scope.models);
         //    });
         //});
+        //$scope.loadModelsAndUsers = function(){
+        //    // retrieve models
+        //    Model.query({owner: BASE_CONFIG.currentUserId}, function (data) {
+        //        // load an id indexed array of the models
+        //        var privateModels = [];
+        //        for (var i = 0; i < data.length; ++i) {
+        //            privateModels[data[i].id] = data[i];
+        //        }
+        //        //$scope.models = privateModels;
+        //        // uncomment and comment below if you are bored with heavy loading
+
+        //        Model.query({'public-except-user': BASE_CONFIG.currentUserId}, function (data) {
+        //            // load an id indexed array of the models
+        //            var publicModels = [];
+        //            for (var i = 0; i < data.length; ++i) {
+        //                publicModels[data[i].id] = data[i];
+        //            }
+
+        //            $scope.models =jQuery.extend(publicModels, privateModels);
+
+        //            $scope.loadUsers($scope.models);
+        //    console.log(`models is empty so i load it4 ${$scope.models}`);
+        //        });
+        //    });
+        //};
+        if ($rootScope.models === null){
+            $rootScope.models = 1;
+            //console.log(`models is empty so i load it2 ${$scope.models}`);
+            //$scope.loadModelsAndUsers();
+            //console.log(`models is empty so i load it3 ${$scope.models}`);
+            Model.query({owner: BASE_CONFIG.currentUserId}, function (data) {
+                // load an id indexed array of the models
+                var privateModels = [];
+                for (var i = 0; i < data.length; ++i) {
+                    privateModels[data[i].id] = data[i];
+                }
+                //$scope.models = privateModels;
+                // uncomment and comment below if you are bored with heavy loading
+
+                Model.query({'public-except-user': BASE_CONFIG.currentUserId}, function (data) {
+                    // load an id indexed array of the models
+                    var publicModels = [];
+                    for (var i = 0; i < data.length; ++i) {
+                        publicModels[data[i].id] = data[i];
+                    }
+
+                    $rootScope.models =jQuery.extend(publicModels, privateModels);
+
+                    $scope.loadUsers($rootScope.models);
+                });
+            });
+        }else{
+            $scope.models = $rootScope.models;
+        }
 
         $scope.deleteModel = function (model) {
             model.$delete({id: model.id}, function () {
