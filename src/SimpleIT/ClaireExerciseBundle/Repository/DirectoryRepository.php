@@ -1,6 +1,7 @@
 <?php
 
 namespace SimpleIT\ClaireExerciseBundle\Repository;
+use Doctrine\ORM\Query\ResultSetMapping;
 
 /**
  * DirectoryRepository
@@ -97,39 +98,74 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
 
     public function findParents($user = 0)
     {
-        $qb = $this->createQueryBuilder('d')
-            ->select('d.id,d.code,o.username, d.name, count(m.id) as models')
-            ->leftJoin('d.models', 'm')
-            //pour afficher le nom du owner
-            ->leftJoin('d.owner', 'o')
-        ;
+        $sql = "
+            SELECT d.id, d.name, COUNT(dm.model_id) as models, d.code, a.username
+            FROM directory d
+            LEFT JOIN directories_models dm
+            ON d.id = dm.directory_id
+            JOIN asker_user a
+            ON a.id = d.owner_id
+            WHERE parent_id IS NULL";
         if ($user !== 0){
-            $parents = $qb
-                ->join('d.users', 'aud')
-                //->join('aud.user', 'u')
-                ->andWhere(
-                    $qb->expr()->orX(
-                        #$qb->expr()->eq('aud.user', ':user'),
-                        $qb->expr()->eq('d.owner', ':user'),
-                        $qb->expr()->eq('aud.isManager', 1)
-                    ),
-                    $qb->expr()->isNull('d.parent')
+            $sql .= "
+                AND (
+                    d.id  IN (
+                        SELECT directory_id
+                        FROM asker_user_directory
+                        WHERE user_id = :user and isManager = 1
+                    )
+                    OR owner_id = :user
                 )
-                //->where('u.id = :user')
-                //->andWhere('d.parent IS NULL')
-                ->setParameter('user', $user)
-            ;
-        }else{
-            $parents = $qb
-                ->where('d.parent IS NULL')
-            ;
+            ";
         }
-        $parents = $parents
-            ->groupBy('d.name')
-            ->addGroupBy('d.id')
-            ->getQuery()
-            ->getArrayResult();
+        $sql .= " GROUP BY d.id, d.name, d.code;";
+        $stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+        if ($user !== 0){
+            $stmt->execute(array(':user'=>$user->getId()));
+        }else{
+            $stmt->execute();
+        }
+        $parents =  $stmt->fetchAll();
+
+        #remove next time
+        #$qb = $this->createQueryBuilder('d')
+        #    ->select('d.id,d.code,o.username, d.name, count(m.id) as models')
+        #    ->leftJoin('d.models', 'm')#Permits to display directory without models
+        #    //pour afficher le nom du owner
+        #    ->join('d.owner', 'o') # For admin's view
+        #;
+        #if ($user !== 0){
+        #    $parents = $qb
+        #        ->join('d.users', 'aud')
+        #        //->join('aud.user', 'u')
+        #        ->andWhere(
+        #            $qb->expr()->orX(
+        #                #Must be owner OR (being manager of directory)
+        #                $qb->expr()->eq('d.owner', ':user'),
+        #                $qb->expr()->andX(
+        #                    $qb->expr()->eq('aud.isManager', 1),
+        #                    $qb->expr()->eq('aud.user', ':user')
+        #                )
+        #            ),
+        #            $qb->expr()->isNull('d.parent')
+        #        )
+        #        //->where('u.id = :user')
+        #        //->andWhere('d.parent IS NULL')
+        #        ->setParameter('user', $user)
+        #    ;
+        #}else{
+        #    #admins get all parents directories
+        #    $parents = $qb
+        #        ->where('d.parent IS NULL')
+        #    ;
+        #}
+        #$parents = $parents
+        #    ->groupBy('d.name')
+        #    ->addGroupBy('d.id')
+        #    ->getQuery()
+        #    ->getArrayResult();
         foreach($parents as $key =>  $parent){
+
             $parents[$key]['models'] += $this->
                 countModelChildrens($parent['id'])
                 [0]['total']
