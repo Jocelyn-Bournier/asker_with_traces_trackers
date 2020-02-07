@@ -33,7 +33,7 @@ use Symfony\Component\Security\Core\SecurityContext;
 class StatController extends BaseController
 {
     public function statAction()
-    {   
+    {
         if ($this->get('security.context')->isGranted('ROLE_ADMIN')){
             $dirs = $this->get('simple_it.exercise.directory')->allParents();
         }else if ($this->get('security.context')->isGranted('ROLE_WS_CREATOR')){
