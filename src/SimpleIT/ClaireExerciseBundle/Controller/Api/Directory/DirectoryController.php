@@ -115,9 +115,10 @@ class DirectoryController extends BaseController
      */
     public function listAction(CollectionInformation $collectionInformation)
     {
+        $user = $this->get('security.context')->getToken()->getUser()->getId();
         $directories = $this->getDoctrine()
             ->getRepository('SimpleITClaireExerciseBundle:Directory')
-            ->findAllApi();
+            ->findAllApi($user);
 
         return new ApiGotResponse($directories, array('list', 'Default'));
     }

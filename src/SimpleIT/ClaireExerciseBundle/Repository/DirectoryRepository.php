@@ -86,11 +86,29 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
         ;
     }
 
-    public function findAllApi()
+    public function findAllApi($user)
     {
+        $sql = "
+            SELECT d.id, d.name
+            FROM directory d
+            WHERE d.isVisible is true
+            and (
+                d.owner_id = :user or
+                d.id in (SELECT directory_id FROM asker_user_directory WHERE user_id = :user and isManager =1)
+            );
+        ";
+        /* This request doesnt work because subdirectory does not update isManager
+            SELECT d.id, d.name FROM directory d JOIN asker_user_directory aud on aud.directory_id = d.id
+            WHERE d.isVisible is true and aud.user_id = 2 and isManager is true;
+         */
+        $stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+        $stmt->execute(array(':user'=>$user));
+        return $stmt->fetchAll();
         return $this->createQueryBuilder('d')
             ->select('d.id, d.name')
+            ->join('d.users','aud')
             ->where('d.isVisible = true')
+            ->andWhere('d.owner = 1')
             ->getQuery()
             ->getArrayResult()
         ;
