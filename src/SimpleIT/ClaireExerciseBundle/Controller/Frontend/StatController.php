@@ -61,7 +61,9 @@ class StatController extends BaseController
     {
         $user = $this->get('security.context')->getToken()->getUser();
         if (
-            $this->get('security.context')->isGranted('ROLE_ADMIN')
+            $directory->hasManager($user)
+            || $this->get('security.context')->isGranted('ROLE_ADMIN')
+            || $directory->getOwner() == $user
         ){
             if ($view == null){
                 $view = $directory->getLastView();
@@ -94,8 +96,10 @@ class StatController extends BaseController
     public function statDirectoryAction(Directory $directory, StatView $view = null)
     {
         $user = $this->get('security.context')->getToken()->getUser();
-        if ($directory->hasManager($user)
+        if (
+            $directory->hasManager($user)
             || $this->get('security.context')->isGranted('ROLE_ADMIN')
+            || $directory->getOwner() == $user
         ){
             if ($view == null){
                 $view = $directory->getLastView();
@@ -123,8 +127,10 @@ class StatController extends BaseController
     public function filterDirectoryAction(Directory $directory, StatView $view = null)
     {
         $user = $this->get('security.context')->getToken()->getUser();
-        if ($directory->hasUser($user)
+        if (
+            $directory->hasManager($user)
             || $this->get('security.context')->isGranted('ROLE_ADMIN')
+            || $directory->getOwner() == $user
         ){
             $this->get('simple_it.exercise.directory')->hasView($directory);
             if ($view == null){
