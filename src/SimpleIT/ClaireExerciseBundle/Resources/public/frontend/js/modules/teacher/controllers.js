@@ -1064,8 +1064,6 @@ modelControllers.controller('modelListController', ['$scope', 'Model', '$locatio
                     $scope.loadUsers($rootScope.models);
                 });
             });
-        }else{
-            $scope.models = $rootScope.models;
         }
 
         $scope.deleteModel = function (model) {
