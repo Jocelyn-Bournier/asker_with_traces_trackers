@@ -3,7 +3,7 @@ admin_stats:
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Stat:stat }
 
 admin_filters_directory:
-    pattern: /directory/filter/{directory}/{view}
+    pattern: /filter/{directory}/{view}
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Stat:filterDirectory, view:0 }
 
 admin_stats_directory:
