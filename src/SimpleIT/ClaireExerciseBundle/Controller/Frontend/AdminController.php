@@ -49,7 +49,7 @@ class AdminController extends BaseController
     public function indexAction()
     {
         return $this->render(
-            'SimpleITClaireExerciseBundle:Frontend:admin.html.twig'
+            'SimpleITClaireExerciseBundle:Frontend:template_creator.html.twig'
         );
     }
 
@@ -57,7 +57,7 @@ class AdminController extends BaseController
     {
         $dirs = $this->get('simple_it.exercise.directory')->allParents();
         return $this->render(
-            'SimpleITClaireExerciseBundle:Frontend:list.html.twig',
+            'SimpleITClaireExerciseBundle:Frontend:list_users.html.twig',
             array(
                 'users' => $this->get('simple_it.exercise.user')->allDisabled(),
                 'dirs' => $dirs,
@@ -68,7 +68,7 @@ class AdminController extends BaseController
     {
         $dirs = $this->get('simple_it.exercise.directory')->all();
         return $this->render(
-            'SimpleITClaireExerciseBundle:Frontend:list.html.twig',
+            'SimpleITClaireExerciseBundle:Frontend:list_users.html.twig',
             array(
                 'users' => $this->get('simple_it.exercise.user')->getAll(),
                 'dirs' => $dirs,

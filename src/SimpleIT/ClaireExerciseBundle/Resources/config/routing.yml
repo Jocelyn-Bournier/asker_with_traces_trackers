@@ -61,7 +61,9 @@ admin:
 stats:
     resource: "@SimpleITClaireExerciseBundle/Resources/config/routing/frontend/stats.yml"
     prefix:   /stat/
-
+export:
+    resource: "@SimpleITClaireExerciseBundle/Resources/config/routing/frontend/export.yml"
+    prefix:   /export/
 api_upload:
     resource: "@SimpleITClaireExerciseBundle/Resources/config/routing/api/upload.yml"
     prefix:   /api/

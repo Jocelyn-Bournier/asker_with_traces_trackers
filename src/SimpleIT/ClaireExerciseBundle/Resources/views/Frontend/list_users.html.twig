@@ -1,10 +1,8 @@
-{% extends "SimpleITClaireExerciseBundle:Frontend:admin.html.twig" %}
-
-
+{% extends "SimpleITClaireExerciseBundle:Frontend:template_creator.html.twig" %}
 {% block content %}
   <div class="container">
     <div class="row">
-      <br>
+      <h2>Gestion des utilisateurs</h2>
       <form method='post' action="{{path('admin_change')}}">
         <input type='hidden' name='current' value="{{app.request.get('_route')}}">
         <div class="col-xs-12">

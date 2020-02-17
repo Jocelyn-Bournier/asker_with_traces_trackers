@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>Asker</title>
+    <link rel="shortcut icon" type="image/png" href="/favicon.png"/>
+
+    <!-- included styles -->
+    <link rel="stylesheet" href="{{ asset('bundles/simpleitclaireexercise/frontend/css/bootstrap.min.css') }}">
+    <script src="{{ asset('bundles/simpleitclaireexercise/frontend/js/vendors/jquery.min.js') }}"></script>
+    <script src="{{ asset('bundles/simpleitclaireexercise/frontend/js/vendors/modal.js') }}"></script>
+
+  </head>
+  <body >
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            {% if is_granted('ROLE_ADMIN') %}
+              <li>
+                <a href="{{path('admin_list_users')}}">
+                  Gestion des utilisateurs
+                </a>
+              </li>
+              <li>
+                <a href="{{path('admin_list_disable')}}">Comptes non activés</a>
+              </li>
+            {% endif %}
+            <li>
+              <a href="{{path('admin_stats')}}">
+                Statistiques
+              </a>
+            </li>
+            <li>
+              <a href="{{path('admin_export')}}">
+                Export vers AMC
+              </a>
+            </li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li>
+              <a href="{{path('frontend_index')}}">Retour sur Asker</a>
+            </li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+    <div style="margin-top:60px;">
+    </div>
+    {% block content %}
+    {% endblock %}
+  </body>
+</html>
