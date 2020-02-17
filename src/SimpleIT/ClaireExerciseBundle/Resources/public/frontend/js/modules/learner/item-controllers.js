@@ -26,23 +26,25 @@ attemptControllers.controller('attemptController', ['$scope', '$state', 'Attempt
                                 $scope.gotoItem(0);
                             });
                     });
-            });
+            }
+        );
 
         $scope.gotoItem = function (index) {
             // switch item
             $scope.item = $scope.items[index];
             // when data loaded
+            // its cleaner but it makes a loop between controllers
+            //$state.go('attempt.order-items', {itemId: $scope.item.item_id}, {location: false});
             if ($scope.item.type == 'pair-items') {
-                $state.go('attempt.pair-items', {itemId: index}, {location: false});
+                $state.go('attempt.pair-items', {itemId: $scope.item.item_idi}, {location: false});
             } else if ($scope.item.type == 'order-items') {
-                //sort exercise: no action possible
-                $state.go('attempt.order-items', {itemId: index}, {location: false});
+                $state.go('attempt.order-items', {itemId: 0}, {location: false});
             } else if ($scope.item.type == 'group-items') {
-                $state.go('attempt.group-items', {itemId: index}, {location: false});
+                $state.go('attempt.group-items', {itemId: $scope.item.item_id}, {location: false});
             } else if ($scope.item.type == 'multiple-choice') {
-                $state.go('attempt.multiple-choice', {itemId: index}, {location: false});
+                $state.go('attempt.multiple-choice', {itemId: $scope.item.item_id}, {location: false});
             } else if ($scope.item.type == 'open-ended-question') {
-                $state.go('attempt.open-ended-question', {itemId: index}, {location: false});
+                $state.go('attempt.open-ended-question', {itemId: $scope.item.item_id}, {location: false});
             }
         };
 
@@ -161,16 +163,16 @@ itemControllers.controller('orderItemsController', ['$scope', 'Answer', '$routeP
             answer.content = [];
 
             //for (i = 0; i < $scope.drops.length; ++i) {
-            for (i = 0; i < $scope.ss.length; ++i) {
-                //answer.content.push($scope.drops[i].id);
-                //answer.content.push($scope.drops[i]);
-                answer.content.push($scope.ss[i]);
+            for (i = 0; i < $scope.drops.length; ++i) {
+                answer.content.push($scope.drops[i]);
             }
 
 
             answer.$save({itemId: $scope.item.item_id, attemptId: $stateParams.attemptId},
                 function (item) {
                     $scope.items[$stateParams.itemId] = item;
+                    $scope.item  = item;
+                    $scope.fillLearnerAnswers();
                     $scope.displayCorrection(item)
                     //console.log("un item"+JSON.stringify(item))// => item contient le JSON de l'API
                 });
@@ -180,7 +182,7 @@ itemControllers.controller('orderItemsController', ['$scope', 'Answer', '$routeP
         $scope.displayCorrection = function (item) {
             $scope.right = true;
             //for (i = 0; i < $scope.drops.length; ++i) {
-            for (i = 0; i < $scope.ss.length; ++i) {
+            for (i = 0; i < $scope.drops.length; ++i) {
                 $scope.solution[i] = {
                     object: item['content'].objects[
                         item['content'].solutions[i]
@@ -189,7 +191,6 @@ itemControllers.controller('orderItemsController', ['$scope', 'Answer', '$routeP
                         item['content'].solutions[i]
                         ]
                 };
-                //console.log("une console de drop" +JSON.stringify($scope.solution[i]));
                 //C'est ici qu'on choisit si le cadre est rouge ou vert -- une loop un resultat binaire
                 if (item['content'].answers[i] != item['content'].solutions[i]) {
                     $scope.right = false;
@@ -204,14 +205,14 @@ itemControllers.controller('orderItemsController', ['$scope', 'Answer', '$routeP
             $("#toSortable").sortable({
                 receive: function( event, ui ) {
                     $(ui.item).remove();
-                    console.log("toArray"+ JSON.stringify($("#toSortable").sortable( "toArray" ,{attribute:"order"})));
+                    //console.log("toArray"+ JSON.stringify($("#toSortable").sortable( "toArray" ,{attribute:"order"})));
                     if ( $("#toSortable").sortable("toArray").length == $scope.item['content'].objects.length){
                         $scope.validable = true;
                         //$scope.drops = $("#toSortable").sortable( "toArray",{attribute:"order"});
-                        $scope.ss = $("#toSortable").sortable( "toArray",{attribute:"order"});
 
-                        console.log("toArray"+ JSON.stringify($("#toSortable").sortable( "toArray" ,{attribute:"order"})));
+                        //console.log("toArray"+ JSON.stringify($("#toSortable").sortable( "toArray" ,{attribute:"order"})));
                     }
+                    $scope.drops = $("#toSortable").sortable( "toArray",{attribute:"order"});
                     //$scope.item['content'].objects.splice($(ui.item).attr('order'),1);
                     $state.reload();
                 }
@@ -232,54 +233,10 @@ itemControllers.controller('orderItemsController', ['$scope', 'Answer', '$routeP
             }
         };
 
-        //// drag and drop
-        //$scope.onDropList = function ($event, $data, array) {
-        //    array.push($data);
-        //    $scope.validable = false;
-        //};
-
-        //$scope.onDropField = function ($event, $data, fieldNumber) {
-        //    $scope.toDrop.id = fieldNumber;
-        //    $scope.toDrop.data = $data;
-        //};
-
-        //$scope.dropSuccessHandler = function ($event, index, array) {
-        //    array.splice(index, 1);
-        //    if ($scope.item['content'].objects.length == 0) {
-        //        $scope.validable = true;
-        //    }
-        //    resumeDND();
-        //};
-
-        //$scope.dropSuccessHandlerField = function ($event, fieldNumber) {
-        //    $scope.toDrag.id = fieldNumber;
-        //    resumeDND();
-        //};
-
-        //var resumeDND = function () {
-        //    if ($scope.toDrop.id !== null && $scope.toDrag.id !== null) {
-        //        if ($scope.toDrop.id < $scope.toDrag.id) {
-        //            $scope.drops.splice($scope.toDrag.id, 1);
-        //            $scope.drops.splice($scope.toDrop.id, 0, $scope.toDrop.data);
-        //        } else {
-        //            $scope.drops.splice($scope.toDrop.id, 0, $scope.toDrop.data);
-        //            $scope.drops.splice($scope.toDrag.id, 1);
-        //        }
-        //    } else {
-        //        if ($scope.toDrop.id !== null) {
-        //            $scope.drops.splice($scope.toDrop.id, 0, $scope.toDrop.data);
-        //        } else {
-        //            $scope.drops.splice($scope.toDrag.id, 1);
-        //        }
-        //    }
-
-        //    $scope.toDrop = {'id': null, 'data': null};
-        //    $scope.toDrag.id = null;
-        //};
 
         // init answer array
         $scope.drops = [];
-        $scope.ss = [];
+        //$scope.ss = [];
         $scope.solution = [];
         $scope.help = null;
         for (var i = 0; i < $scope.item['content'].objects.length; ++i) {
@@ -290,43 +247,25 @@ itemControllers.controller('orderItemsController', ['$scope', 'Answer', '$routeP
         if ($scope.item['corrected'] == true) {
             $scope.fillLearnerAnswers();
             $scope.displayCorrection($scope.item);
-            console.log($scope.drops);
-            console.log($scope.corrected);
+            //console.log($scope.drops);
+            //console.log($scope.corrected);
             console.log($scope.solution);
         } else {
             // give first, give last
             if ($scope.item.content.give_last != '-1' && $scope.item.content.give_first != '-1') {
                 $scope.help = 'Pour vous aider, le premier et le dernier objet ont été placés.'
-
-                if ($scope.item.content.give_last < $scope.item.content.give_first) {
-                    //$scope.drops.splice(0, 0, $scope.item['content'].objects[$scope.item.content.give_first]);
-                    //$scope.item['content'].objects.splice($scope.item.content.give_first, 1);
-                    //$scope.drops.splice(0, 0, $scope.item['content'].objects[$scope.item.content.give_last]);
-                    //$scope.item['content'].objects.splice($scope.item.content.give_last, 1);
-                } else {
-                    //$scope.drops.splice(0, 0, $scope.item['content'].objects[$scope.item.content.give_last]);
-                    //$scope.item['content'].objects.splice($scope.item.content.give_last, 1);
-                    //$scope.drops.splice(0, 0, $scope.item['content'].objects[$scope.item.content.give_first]);
-                    //$scope.item['content'].objects.splice($scope.item.content.give_first, 1);
-                }
-            }
-            else if ($scope.item.content.give_first != '-1') {
+            }else if($scope.item.content.give_first != '-1') {
                 $scope.help = 'Pour vous aider, le premier objet a été placé.'
-                //$scope.drops.splice(0, 0, $scope.item['content'].objects[$scope.item.content.give_first]);
-                //$scope.item['content'].objects.splice($scope.item.content.give_first, 1);
-            }
-            else if ($scope.item.content.give_last != '-1') {
+            }else if($scope.item.content.give_last != '-1') {
                 $scope.help = 'Pour vous aider, le dernier objet a été placé.'
-                //$scope.drops.splice(0, 0, $scope.item['content'].objects[$scope.item.content.give_last]);
-                //$scope.item['content'].objects.splice($scope.item.content.give_last, 1);
             }
 
         }
 
 
         // dnd init
-        $scope.toDrop = {'id': null, 'data': null};
-        $scope.toDrag = {'id': null};
+        //$scope.toDrop = {'id': null, 'data': null};
+        //$scope.toDrag = {'id': null};
     }]);
 
 itemControllers.controller('multipleChoiceController', ['$scope', 'Answer', '$routeParams', '$location', '$stateParams',

@@ -2,7 +2,7 @@
   <div class="row">
     <div nf-if="help != null"><strong>Aide :</strong> {{ help }}</div>
   </div>
-  <div class="row">
+  <div class="row" ng-if="!item.corrected">
     <div class="col-xs-4">
       <b>Votre réponse:</b>
       <div id='toSortable' class="etiquette txt-etiquette etiquette-empty"
@@ -25,7 +25,42 @@
         </div>
       </div>
     </div>
-    <div class="col-xs-8" ng-if="item.corrected">
+    <div class="col-xs-4">
+      <b>Objets à votre disposition:</b>
+      <div id="fromSortable" class="object-list">
+        <div ng-repeat="mobileObject in item.content.objects track by $index">
+          <div ng-if="$index !== item.content.give_first &&  $index !== item.content.give_last">
+            <div ng-if="mobileObject.object_type == 'text'" order="{{$index}}" id="drag-{{$index}}" class=" draggable etiquette txt-etiquette">
+              <div ng-bind-html="to_trusted(mobileObject.text)"></div>
+            </div>
+            <div ng-if="mobileObject.object_type == 'picture'">
+              <a href="{{ imageUrl }}{{ mobileObject.source }}" data-lightbox="imageMobile" data-title="Partie mobile">
+                <img ng-src="{{ imageUrl }}{{ mobileObject.source }}" class="etiquette img-etiquette"/>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row" ng-if="item.corrected">
+    <div class="col-xs-4">
+      <b>Votre réponse:</b>
+      <div ng-repeat="key in item.content.answers track by $index" class="row">
+        <div ng-if="item.content.objects[key].object_type == 'text'" class="etiquette txt-etiquette"
+        data-ng-class="{
+          'etiquette-right' : key == item.content.solutions[$index],
+          'etiquette-wrong' : key != item.content.solutions[$index]}">
+          <div ng-bind-html="to_trusted(item.content.objects[key].text)"></div>
+        </div>
+        <div ng-if="item.content.objects[key].object_type == 'picture'">
+          <a href="{{ imageUrl }}{{ item.content.objects[key].source }}" data-lightbox="imageMobile" data-title="Objet">
+            <img ng-src="{{ imageUrl }}{{ item.content.objects[key].source }}" class="etiquette img-etiquette"/>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-8">
       <b>Solution:</b>
       <div ng-repeat="object in solution track by $index" class="row">
         <div class="col-xs-6">
@@ -42,24 +77,6 @@
           <div class="etiquette txt-etiquette">
             <div>
               <p>{{ object.value }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-xs-4" ng-if="!item.corrected">
-      <b>Objets à votre disposition:</b>
-      <div id="fromSortable" class="object-list">
-        <div ng-repeat="mobileObject in item.content.objects track by $index">
-          <div ng-if="$index !== item.content.give_first &&  $index !== item.content.give_last">
-            <div ng-if="mobileObject.object_type == 'text'" order="{{$index}}" id="drag-{{$index}}" class=" draggable etiquette txt-etiquette">
-              <div ng-bind-html="to_trusted(mobileObject.text)"></div>
-            </div>
-            <div ng-if="mobileObject.object_type == 'picture'">
-              <a href="{{ imageUrl }}{{ mobileObject.source }}" data-lightbox="imageMobile" data-title="Partie mobile">
-                <img ng-src="{{ imageUrl }}{{ mobileObject.source }}" class="etiquette img-etiquette"/>
-              </a>
             </div>
           </div>
         </div>

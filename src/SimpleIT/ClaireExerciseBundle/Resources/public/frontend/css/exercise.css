@@ -8,7 +8,7 @@
 .txt-etiquette {
     min-height: 34px;
     padding: 6px;
-    border: 1px solid #428bca;
+    border: 2px solid #428bca;
 }
 
 .img-etiquette {
@@ -18,12 +18,12 @@
 }
 
 .etiquette-wrong {
-    border: 5px solid #e1000a;
+    border: 2px solid #e1000a;
     opacity: 0.5;
 }
 
 .etiquette-right {
-    border: 5px solid #009d0a;
+    border: 2px solid #009d0a;
 }
 
 .etiquette-empty {
