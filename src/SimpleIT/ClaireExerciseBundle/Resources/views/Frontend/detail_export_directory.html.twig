@@ -1,0 +1,47 @@
+{% extends "SimpleITClaireExerciseBundle:Frontend:template_creator.html.twig" %}
+{% block content %}
+  <div class="container">
+    <div class='col-xs-12'>
+      <h2>Dossier: {{directory.name}}</h2>
+    </div>
+    <div class='row' id='content_stat'>
+      {% if users != 0 %}
+        <table class="table table-bordered">
+          <thead>
+            <th>Modèle</th>
+            <th>Nombre d'exercices dans le QCM</th>
+            <th>Export</th>
+          </thead>
+          {% for directory, models in directories %}
+            {% if models is not empty %}
+              <tr class="active">
+                <td colspan=7><b>{{directory}}</b></td>
+              </tr>
+            {% endif %}
+            {% for key, model in models %}
+              <tr>
+                <td>{{model.title}}</td>
+                <form action="{{path('export_create_qcm', {'model':key})}}" method="post">
+                    <td><input type="number" value="1" name="numero" min="1"></input></td>
+                    <td>
+                      <!-- <a href="{{path('export_create_qcm', {'model':key})}}"> -->
+                      <button
+                      type="submit"
+                      class="btn btn-primary btn-xs" role="button">
+                        <span class="glyphicon glyphicon-share"
+                        title="Exporter QCM">
+                        </span>
+                      </button>
+                      <!-- </a> -->
+                    </td>
+                </form>
+              </tr>
+            {% endfor %}
+          {% endfor %}
+        </table>
+      {% else %}
+        Aucun étudiant est inscrit ou aucun étudiant s'est connecté.
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

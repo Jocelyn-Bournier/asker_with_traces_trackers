@@ -167,14 +167,9 @@
                 {{ app.user.username }} <b class='caret'></b>
               </a>
               <ul class='dropdown-menu'>
-                <li>
-                  <a href="{{path('logout')}}" title="Se déconnecter d'asker">
-                    Se déconnecter
-                  </a>
-                </li>
                 {% if is_granted('ROLE_ADMIN') %}
                   <li>
-                    <a href="{{path('admin_index')}}" title='Administrer Asker'>
+                    <a href="{{path('admin_list_users')}}" title='Administrer Asker'>
                       Administration
                     </a>
                   </li>
@@ -186,6 +181,13 @@
                     </a>
                   </li>
                 {% endif %}
+                {% if is_granted('ROLE_WS_CREATOR') %}
+                  <li>
+                    <a href="{{path('admin_export')}}" title='Export'>
+                      Export
+                    </a>
+                  </li>
+                {% endif %}
                 {% if app.user.isLdap == 0 %}
                   <li>
                     <a href='#' title='Changer de mot de passe'
@@ -194,6 +196,11 @@
                     </a>
                   </li>
                 {% endif %}
+                <li>
+                  <a href="{{path('logout')}}" title="Se déconnecter d'asker">
+                    Se déconnecter
+                  </a>
+                </li>
               </ul>
             </li>
           </ul>

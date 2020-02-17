@@ -51,7 +51,7 @@ class StatController extends BaseController
 
         }
         return $this->render(
-            'SimpleITClaireExerciseBundle:Frontend:stat.html.twig', array(
+            'SimpleITClaireExerciseBundle:Frontend:list_stat_directories.html.twig', array(
                 'dirs' => $dirs,
             )
         );
@@ -119,7 +119,7 @@ class StatController extends BaseController
                 $params['directories'] = $directories;
             }
             return $this->render(
-                'SimpleITClaireExerciseBundle:Frontend:statdir.html.twig',$params
+                'SimpleITClaireExerciseBundle:Frontend:detail_stat_directory.html.twig',$params
             );
         }
         return $this->redirectToRoute('admin_stats');
@@ -145,7 +145,7 @@ class StatController extends BaseController
                 $params['editForm'] = $this->editViewAction($view);
             }
             return $this->render(
-                'SimpleITClaireExerciseBundle:Frontend:filterdir.html.twig',$params
+                'SimpleITClaireExerciseBundle:Frontend:ajax_stat_view.html.twig',$params
             );
         }
         return $this->redirectToRoute('admin_stats');

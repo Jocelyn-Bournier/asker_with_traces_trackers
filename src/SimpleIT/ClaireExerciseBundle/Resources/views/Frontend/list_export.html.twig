@@ -1,0 +1,50 @@
+{% extends "SimpleITClaireExerciseBundle:Frontend:template_creator.html.twig" %}
+{% block content %}
+  <div class="container">
+    <h2>Export vers AMC</h2>
+    {% for type, flash_messages in app.session.flashBag.all %}
+      {% for flash_message in flash_messages %}
+        <div class="flash-{{ type }}">
+          {{ flash_message }}
+        </div>
+      {% endfor %}
+    {% endfor %}
+    <div class='col-xs-9'>
+      <table class="table table-bordered">
+        <thead>
+          <th>Dossier</th>
+          <th>Modèles</th>
+          {% if is_granted('ROLE_ADMIN') %}
+            <th>Propriétaire</th>
+          {% endif %}
+          <th>Inscrits</th>
+          <th>Anciens</th>
+          <th>Code Apogee</th>
+          <!--<th>Utilisateurs</th>-->
+          <th>Action</th>
+        </thead>
+        {% for dir in dirs %}
+          <tr>
+            <td>{{dir.name}}</td>
+            <td>{{dir.models}}</td>
+            {% if is_granted('ROLE_ADMIN') %}
+              <td>{{dir.username}}</td>
+            {% endif %}
+            <td>{{dir.currentStudents}}</td>
+            <td>{{dir.oldStudents}}</td>
+            <td>{{dir.code}}</td>
+            <!--<td>{{dir.users}}</td>-->
+            <td>
+              <a href="{{path('export_filters_directory', {'directory':dir.id})}}"
+              class="btn btn-info btn-xs" role="button">
+                <span class="glyphicon glyphicon-search"
+                title="Voir les modèles exportables ">
+                </span>
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div><!-- /.container -->
+{% endblock %}

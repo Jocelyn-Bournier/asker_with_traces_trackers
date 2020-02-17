@@ -29,7 +29,7 @@ security:
             pattern: ^/sign/$
             security: false
         secure:
-            pattern: ^/(front|api|admin|stat)/
+            pattern: ^/(front|api|admin|stat|export)/
             anonymous: false
             #provider: ldap_provider
             ldap_login:
