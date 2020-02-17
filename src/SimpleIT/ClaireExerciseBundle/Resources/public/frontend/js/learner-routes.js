@@ -32,7 +32,7 @@ mainApp.config(
             });
 
             $stateProvider.state('attempt.order-items', {
-                url: '/order-items/:itemId',
+                //url: '/order-items/:itemId',
                 templateUrl: BASE_CONFIG.urls.partials.learner + '/partial-order-items.html'
             });
 
