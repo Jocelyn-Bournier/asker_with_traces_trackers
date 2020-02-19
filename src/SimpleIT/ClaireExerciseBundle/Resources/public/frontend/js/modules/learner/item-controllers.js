@@ -36,15 +36,15 @@ attemptControllers.controller('attemptController', ['$scope', '$state', 'Attempt
             // its cleaner but it makes a loop between controllers
             //$state.go('attempt.order-items', {itemId: $scope.item.item_id}, {location: false});
             if ($scope.item.type == 'pair-items') {
-                $state.go('attempt.pair-items', {itemId: $scope.item.item_idi}, {location: false});
+                $state.go('attempt.pair-items', {itemId: 0}, {location: false});
             } else if ($scope.item.type == 'order-items') {
                 $state.go('attempt.order-items', {itemId: 0}, {location: false});
             } else if ($scope.item.type == 'group-items') {
-                $state.go('attempt.group-items', {itemId: $scope.item.item_id}, {location: false});
+                $state.go('attempt.group-items', {itemId: 0}, {location: false});
             } else if ($scope.item.type == 'multiple-choice') {
-                $state.go('attempt.multiple-choice', {itemId: $scope.item.item_id}, {location: false});
+                $state.go('attempt.multiple-choice', {itemId: 0}, {location: false});
             } else if ($scope.item.type == 'open-ended-question') {
-                $state.go('attempt.open-ended-question', {itemId: $scope.item.item_id}, {location: false});
+                $state.go('attempt.open-ended-question', {itemId: 0}, {location: false});
             }
         };
 
