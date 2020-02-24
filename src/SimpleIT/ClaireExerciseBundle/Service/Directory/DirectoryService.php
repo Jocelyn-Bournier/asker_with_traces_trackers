@@ -361,7 +361,7 @@ class DirectoryService extends TransactionalService
         $answer = $this->em
             ->getRepository('SimpleITClaireExerciseBundle:CreatedExercise\Answer')
         ;
-        $dirs[$directory->getId()]= $this->stats(
+        $dirs[$directory->getName()]= $this->stats(
             $directory,
             $attempt,
             $answer,
@@ -369,7 +369,7 @@ class DirectoryService extends TransactionalService
             $ids
         );
         foreach($directory->getSubs() as $sub){
-            $dirs[$sub->getId()] = $this->stats(
+            $dirs[$sub->getName()] = $this->stats(
                 $sub,
                 $attempt,
                 $answer,
