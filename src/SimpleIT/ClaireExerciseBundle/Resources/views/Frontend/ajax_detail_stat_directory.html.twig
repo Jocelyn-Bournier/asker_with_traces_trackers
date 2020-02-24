@@ -1,0 +1,107 @@
+{% if users != 0 %}
+  <table class="table table-bordered">
+    <thead>
+      <th>Modèle</th>
+      <th title="Tous les utilisateurs qui se sont connectés à Asker pendant l'interval">Connectés</th>
+      <th>Utilisateurs ayant généré au moins un exo</th>
+      <th>Moyenne exercices générés</th>
+      <th>Utilisateurs ayant soumis au moins une réponse</th>
+      <th>Moyenne exercices répondus</th>
+      <th>Répartition des notes</th>
+    </thead>
+    {% for directory, models in directories %}
+      {% if models is not empty %}
+        <tr class="active">
+          <td colspan=7><b>{{directory}}</b></td>
+        </tr>
+      {% endif %}
+      {% for id, model in models %}
+        <tr>
+          <td>{{model.title}}</td>
+          <td>{{users}}</td>
+          <td>
+            {{model.userNoAnswer}}
+            ({{((model.userNoAnswer*100)/users)|number_format(0)}}%)
+          </td>
+          <td>{{model.avgAttempt|number_format(2)}}</td>
+          <td>
+            {{model.userAnswer}}
+            ({{((model.userAnswer*100)/users)|number_format(0)}}%)
+
+            <center>{{model.avgMark|number_format(2)}}</center>
+          </td>
+          <td>{{model.avgAnswer|number_format(2)}}</td>
+          <td id="model-{{id}}" style="padding:5px 0px 0px 5px;">
+          </td>
+        </tr>
+      {% endfor %}
+    {% endfor %}
+  </table>
+  <div class="col-xs-3">
+  <table class="table table-bordered">
+    <thead>
+      <th>username</th>
+    </thead>
+    <tbody>
+      {%for id, username in usernames %}
+        <tr>
+          <td>{{username}}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <div id="toto" style="height: 300px; width: 100%;"></div>
+  </div>
+{% else %}
+  Aucun étudiant est inscrit ou aucun étudiant s'est connecté.
+{% endif %}
+
+<script>
+function drawChart(selector,data){
+  var margin = {top: 5, right: 0, bottom: 20, left: 25},
+      width = 200 - margin.left - margin.right,
+      height = 100 - margin.top - margin.bottom;
+  // set the ranges
+  var x = d3.scaleBand()
+    .range([0, width])
+    .padding(0.1);
+  var y = d3.scaleLinear()
+    .range([height, 0]);
+  var svg = d3.select('#'+selector).append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")");
+
+    // format the data
+    data = JSON.parse(data);
+
+    // Scale the range of the data in the domains
+    x.domain(data.map(function(d) { return d.range; }));
+    y.domain([0, d3.max(data, function(d) { return d.nb; })]);
+
+    // append the rectangles for the bar chart
+    svg.selectAll(".bar")
+        .data(data)
+        .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", function(d) { return x(d.range); })
+        .attr("width", x.bandwidth())
+        .attr("y", function(d) { return y(d.nb); })
+        .attr("height", function(d) { return height - y(d.nb); });
+    svg.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
+    // add the y Axis
+    //svg.append("g")
+    //    .call(d3.axisLeft(y));
+    //})
+}
+{%for directory, models in directories%}
+  {% for id, model in models %}
+    data = '{{model.json|json_encode()|raw}}';
+    drawChart("model-{{id}}",data);
+  {% endfor %}
+{% endfor %}
+</script>
