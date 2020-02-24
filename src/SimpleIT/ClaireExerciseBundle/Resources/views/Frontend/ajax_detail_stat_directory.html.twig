@@ -2,7 +2,7 @@
   <table class="table table-bordered" >
     <thead>
       <th>Modèle</th>
-      <th title="Tous les utilisateurs qui se sont connectés à Asker pendant l'interval">Connectés</th>
+      <th title="Tous les utilisateurs qui se sont connectés à Asker pendant l'intervalle">Connectés</th>
       <th>Utilisateurs ayant généré au moins un exo</th>
       <th>Moyenne exercices générés</th>
       <th>Utilisateurs ayant soumis au moins une réponse</th>
@@ -91,7 +91,7 @@ function drawChart(selector,data){
         .attr("width", x.bandwidth())
         .attr("y", function(d) { return y(d.nb); })
         .attr("height", function(d) { return height - y(d.nb); })
-        .append("svg:title").text(function (d) { return `Il y a eu ${d.nb} réponses dans l'interval`;});
+        .append("svg:title").text(function (d) { return `Il y a eu ${d.nb} réponses dans l'intervalle`;});
 
     svg.append("g")
         .attr("transform", "translate(0," + height + ")")
