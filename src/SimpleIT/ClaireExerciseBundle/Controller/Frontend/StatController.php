@@ -22,6 +22,9 @@ use SimpleIT\ClaireExerciseBundle\Controller\BaseController;
 use SimpleIT\ClaireExerciseBundle\Entity\AskerUser;
 use SimpleIT\ClaireExerciseBundle\Entity\Directory;
 use SimpleIT\ClaireExerciseBundle\Entity\StatView;
+use SimpleIT\ClaireExerciseBundle\Entity\ExerciseModel\ExerciseModel;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use SimpleIT\ClaireExerciseBundle\Model\Api\ApiDeletedResponse;
 use SimpleIT\ClaireExerciseBundle\Form\StatViewType;
 use Symfony\Component\Security\Core\SecurityContext;
@@ -93,6 +96,31 @@ class StatController extends BaseController
             die('!');
         }
     }
+    //public function statJsonDirectoryAction(Directory $directory, ExerciseModel $model, StatView $view = null)
+    //{
+
+    //    $user = $this->get('security.context')->getToken()->getUser();
+    //    if (
+    //        $directory->hasManager($user)
+    //        || $this->get('security.context')->isGranted('ROLE_ADMIN')
+    //        || $directory->getOwner() == $user
+    //    ){
+    //        if ($view == null){
+    //            $view = $directory->getLastView();
+    //        }
+    //        $users = $this->get('simple_it.exercise.directory')->getIdUsers($directory, $view);
+    //        $usernames = $this->get('simple_it.exercise.directory')->getUsernames($directory, $view);
+    //        if (!is_null($view)){
+    //            // every users connected between frame time
+    //            $directories = $this->get('simple_it.exercise.directory')->JSONstats($directory, $model,$view, $users);
+    //        }
+    //        $response = new JsonResponse();
+    //        $response->setData($directories);
+    //        return $response;
+    //    }
+    //    return $this->redirectToRoute('admin_stats');
+    //}
+
     public function statDirectoryAction(Directory $directory, StatView $view = null)
     {
         $user = $this->get('security.context')->getToken()->getUser();
@@ -117,9 +145,10 @@ class StatController extends BaseController
                 // every users connected between frame time
                 $directories = $this->get('simple_it.exercise.directory')->getModelStats($directory,$view, $users);
                 $params['directories'] = $directories;
+                $params['view'] = $view->getId();
             }
             return $this->render(
-                'SimpleITClaireExerciseBundle:Frontend:detail_stat_directory.html.twig',$params
+                'SimpleITClaireExerciseBundle:Frontend:ajax_detail_stat_directory.html.twig',$params
             );
         }
         return $this->redirectToRoute('admin_stats');
@@ -145,7 +174,7 @@ class StatController extends BaseController
                 $params['editForm'] = $this->editViewAction($view);
             }
             return $this->render(
-                'SimpleITClaireExerciseBundle:Frontend:ajax_stat_view.html.twig',$params
+                'SimpleITClaireExerciseBundle:Frontend:list_stat_view.html.twig',$params
             );
         }
         return $this->redirectToRoute('admin_stats');

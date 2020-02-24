@@ -45,93 +45,6 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 #class DirectoryService extends TransactionalService implements AnswerServiceInterface
 class DirectoryService extends TransactionalService
 {
-#    /**
-#     * @var  ExerciseService
-#     */
-#    private $exerciseService;
-#
-#    /**
-#     * @var ItemService
-#     */
-#    private $itemService;
-#
-#    /**
-#     * @var AttemptServiceInterface
-#     */
-#    private $attemptService;
-#
-
-#    /**
-#     * @var AnswerRepository
-#     */
-#    private $answerRepository;
-#
-#    /**
-#     * @var SerializerInterface
-#     */
-#    protected $serializer;
-#
-#    /**
-#     * Set serializer
-#     *
-#     * @param SerializerInterface $serializer
-#     */
-#    public function setSerializer($serializer)
-#    {
-#        $this->serializer = $serializer;
-#    }
-#    #
-#    /**
-#     * Set exerciseService
-#     *
-#     * @param ExerciseService $exerciseService
-#     */
-#    public function setExerciseService($exerciseService)
-#    {
-#        $this->exerciseService = $exerciseService;
-#    }
-#
-#    /**
-#     * Set attemptService
-#     *
-#     * @param AttemptServiceInterface $attemptService
-#     */
-#    public function setAttemptService($attemptService)
-#    {
-#        $this->attemptService = $attemptService;
-#    }
-#
-#    /**
-#     * Set answerRepository
-#     *
-#     * @param AnswerRepository $answerRepository
-#     */
-#    public function setAnswerRepository($answerRepository)
-#    {
-#        $this->answerRepository = $answerRepository;
-#    }
-#
-#    /**
-#     * Set itemService
-#     *
-#     * @param ItemService $itemService
-#     */
-#    public function setItemService($itemService)
-#    {
-#        $this->itemService = $itemService;
-#    }
-#
-#    /**
-#     * Create an answer to an item
-#     *
-#     * @param int            $itemId
-#     * @param AnswerResource $answerResource
-#     * @param int            $attemptId
-#     * @param int            $userId
-#     *
-#     * @throws \SimpleIT\ClaireExerciseBundle\Exception\AnswerAlreadyExistsException
-#     * @return ItemResource
-#     */
     /**
      * @var askerUserDirectoryService
      */
@@ -333,6 +246,17 @@ class DirectoryService extends TransactionalService
         return $dir;
     }
 
+    public function JSONstats($repo,Directory $directory, $model, $view, $ids)
+    {
+        $datas = $repo->
+            distributionMarkByModel($model->getId(),$view, $ids)[0]
+        ;
+        $json = array();
+        foreach($datas as $key=> $val){
+            $json[] = array('range' => $key, 'nb' => $val);
+        }
+        return $json;
+    }
     public function stats(Directory $directory, $attempt, $answer,$view, $ids)
     {
         $models = array();
@@ -353,10 +277,7 @@ class DirectoryService extends TransactionalService
             $models[$model->getId()]['avgMark'] = $answer->
                 averageMarkByModel($model->getId(),$view, $ids)[0]['avg']
             ;
-            $models[$model->getId()]['distribution'] = $answer->
-                distributionMarkByModel($model->getId(),$view, $ids)[0]
-            ;
-
+            $models[$model->getId()]['json'] = $this->JSONstats($answer,$directory,$model,$view,$ids);
         }
         return $models;
     }
@@ -440,7 +361,7 @@ class DirectoryService extends TransactionalService
         $answer = $this->em
             ->getRepository('SimpleITClaireExerciseBundle:CreatedExercise\Answer')
         ;
-        $dirs[$directory->getName()]= $this->stats(
+        $dirs[$directory->getId()]= $this->stats(
             $directory,
             $attempt,
             $answer,
@@ -448,9 +369,34 @@ class DirectoryService extends TransactionalService
             $ids
         );
         foreach($directory->getSubs() as $sub){
-            $dirs[$sub->getName()] = $this->stats(
+            $dirs[$sub->getId()] = $this->stats(
                 $sub,
                 $attempt,
+                $answer,
+                $view,
+                $ids
+            );
+        }
+        return $dirs;
+    }
+    public function getColumnStats(Directory $directory, $model, $view, $ids)
+    {
+        $models = array();
+        $dirs = array();
+        $answer = $this->em
+            ->getRepository('SimpleITClaireExerciseBundle:CreatedExercise\Answer')
+        ;
+        $dirs[$directory->getName()]= $this->JSONstats(
+            $directory,
+            $model,
+            $answer,
+            $view,
+            $ids
+        );
+        foreach($directory->getSubs() as $sub){
+            $dirs[$sub->getName()] = $this->JSONstats(
+                $sub,
+                $model,
                 $answer,
                 $view,
                 $ids
