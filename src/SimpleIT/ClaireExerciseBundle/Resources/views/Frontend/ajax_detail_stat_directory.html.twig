@@ -1,5 +1,5 @@
 {% if users != 0 %}
-  <table class="table table-bordered">
+  <table class="table table-bordered" >
     <thead>
       <th>Modèle</th>
       <th title="Tous les utilisateurs qui se sont connectés à Asker pendant l'interval">Connectés</th>
@@ -17,21 +17,23 @@
       {% endif %}
       {% for id, model in models %}
         <tr>
-          <td>{{model.title}}</td>
-          <td>{{users}}</td>
-          <td>
+          <td class="td-stat">{{model.title}}</td>
+          <td class="td-stat">{{users}}</td>
+          <td class="td-stat">
             {{model.userNoAnswer}}
             ({{((model.userNoAnswer*100)/users)|number_format(0)}}%)
           </td>
-          <td>{{model.avgAttempt|number_format(2)}}</td>
-          <td>
+          <td class="td-stat">{{model.avgAttempt|number_format(2)}}</td>
+          <td class="td-stat">
             {{model.userAnswer}}
             ({{((model.userAnswer*100)/users)|number_format(0)}}%)
-
-            <center>{{model.avgMark|number_format(2)}}</center>
           </td>
-          <td>{{model.avgAnswer|number_format(2)}}</td>
+          <td class="td-stat">{{model.avgAnswer|number_format(2)}}</td>
           <td id="model-{{id}}" style="padding:5px 0px 0px 5px;">
+            <span class="glyphicon glyphicon-info-sign cursor"
+            style="cursor:pointer;"
+            title="La moyenne de toutes les notes est de {{model.avgMark|number_format(2)}}"
+            ></span>
           </td>
         </tr>
       {% endfor %}
@@ -88,7 +90,9 @@ function drawChart(selector,data){
         .attr("x", function(d) { return x(d.range); })
         .attr("width", x.bandwidth())
         .attr("y", function(d) { return y(d.nb); })
-        .attr("height", function(d) { return height - y(d.nb); });
+        .attr("height", function(d) { return height - y(d.nb); })
+        .append("svg:title").text(function (d) { return `Il y a eu ${d.nb} réponses dans l'interval`;});
+
     svg.append("g")
         .attr("transform", "translate(0," + height + ")")
         .call(d3.axisBottom(x));

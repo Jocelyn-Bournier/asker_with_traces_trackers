@@ -148,6 +148,10 @@ option {
     width: 1200px;
 }
 
+.td-stat{
+  vertical-align:middle !important;
+  text-align:center;
+}
 .margin-fix{
   margin-bottom:20px;
 }
