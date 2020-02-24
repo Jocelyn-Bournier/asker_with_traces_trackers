@@ -117,8 +117,8 @@ class AnswerRepository extends BaseRepository
             join claire_exercise_stored_exercise st
             on at.exercise_id = st.id
             where st.exercise_model_id = :model
-	    AND an.created_at > :start
-	    AND an.created_at < :end
+        AND an.created_at > :start
+        AND an.created_at < :end
         ";
         if (!empty($ids)){
             $sql .="
@@ -132,33 +132,34 @@ class AnswerRepository extends BaseRepository
             ->prepare($sql)
         ;
         $stmt->execute(
-		array(
-			'model' => $model,
-			'start' => $view->getStartDate()->format('Y-m-d'),
-			'end' => $view->getEndDate()->format('Y-m-d')
-		)
-	);
+        array(
+            'model' => $model,
+            'start' => $view->getStartDate()->format('Y-m-d'),
+            'end' => $view->getEndDate()->format('Y-m-d')
+        )
+    );
         return $stmt->fetchAll();
     }
 
     function distributionMarkByModel($model,$view, $ids)
     {
-    	$sql = "
-		SELECT count(*) as total,
-	        SUM(CASE WHEN an.mark >= 80 THEN 1 ELSE 0 END) top,
-	        SUM(CASE WHEN an.mark < 80 AND an.mark >= 60 THEN 1 ELSE 0 END) midtop,
-	        SUM(CASE WHEN an.mark < 60 AND an.mark >= 40 THEN 1 ELSE 0 END) mid,
-	        SUM(CASE WHEN an.mark < 40 AND an.mark >= 20 THEN 1 ELSE 0 END) midbot,
-	        SUM(CASE WHEN an.mark < 20 THEN 1 ELSE 0 END) bot
-               	FROM claire_exercise_answer an
-               	JOIN claire_exercise_attempt at
-               	ON an.attempt_id = at.id
-               	JOIN claire_exercise_stored_exercise st
-               	ON at.exercise_id = st.id
-             	WHERE st.exercise_model_id = :model
-		    AND an.created_at > :start
-		    AND an.created_at < :end
-	";
+            //SELECT count(*) as total,
+        $sql = "
+            SELECT 
+            SUM(CASE WHEN an.mark < 20 THEN 1 ELSE 0 END)'20',
+            SUM(CASE WHEN an.mark < 40 AND an.mark >= 20 THEN 1 ELSE 0 END) '40',
+            SUM(CASE WHEN an.mark < 60 AND an.mark >= 40 THEN 1 ELSE 0 END) '60',
+            SUM(CASE WHEN an.mark < 80 AND an.mark >= 60 THEN 1 ELSE 0 END) '80',
+            SUM(CASE WHEN an.mark >= 80 THEN 1 ELSE 0 END) '100'
+            FROM claire_exercise_answer an
+            JOIN claire_exercise_attempt at
+            ON an.attempt_id = at.id
+            JOIN claire_exercise_stored_exercise st
+            ON at.exercise_id = st.id
+            WHERE st.exercise_model_id = :model
+            AND an.created_at > :start
+            AND an.created_at < :end
+        ";
         if (!empty($ids)){
             $sql .="
                     AND user_id in (".implode(',',$ids).")"
@@ -171,12 +172,12 @@ class AnswerRepository extends BaseRepository
             ->prepare($sql)
         ;
         $stmt->execute(
-		array(
-			'model' => $model,
-			'start' => $view->getStartDate()->format('Y-m-d'),
-			'end' => $view->getEndDate()->format('Y-m-d')
-		)
-	);
+        array(
+            'model' => $model,
+            'start' => $view->getStartDate()->format('Y-m-d'),
+            'end' => $view->getEndDate()->format('Y-m-d')
+        )
+    );
         return $stmt->fetchAll();
     }
 
@@ -194,8 +195,8 @@ class AnswerRepository extends BaseRepository
                     JOIN claire_exercise_stored_exercise s
                     ON s.id = a.exercise_id
                     WHERE exercise_model_id = :model
-		    AND an.created_at > :start
-		    AND an.created_at < :end
+            AND an.created_at > :start
+            AND an.created_at < :end
         ";
         if (!empty($ids)){
             $sql .="
@@ -214,12 +215,12 @@ class AnswerRepository extends BaseRepository
             ->prepare($sql)
         ;
         $stmt->execute(
-		array(
-			'model' => $model,
-			'start' => $view->getStartDate()->format('Y-m-d'),
-			'end' => $view->getEndDate()->format('Y-m-d')
-		)
-	);
-        return $stmt->fetchAll();
+        array(
+            'model' => $model,
+            'start' => $view->getStartDate()->format('Y-m-d'),
+            'end' => $view->getEndDate()->format('Y-m-d')
+        )
+    );
+    return $stmt->fetchAll();
     }
 }
