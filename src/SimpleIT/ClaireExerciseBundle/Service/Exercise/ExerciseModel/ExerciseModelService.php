@@ -257,13 +257,21 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
             ->getRepository('SimpleITClaireExerciseBundle:Directory')
         ;
         $dirs = array();
+        $alls = array();
         $currents = array();
         foreach($model->getDirectories() as $dir){
             $currents[$dir->getName()] = "0";
         }
+        //get all directories longName to match "Parentsname: childname"
+        foreach($repo->findAll() as $d){
+            $alls[$d->getLongName()] = $d->getId();
+        }
         //from client
         foreach($modelResource->getDirectories() as $dir){
-            $dirs[$dir] = $repo->findOneByName($dir);
+            if (!isset($alls[$dir])){
+                die("Something wrong happened #96345");
+            }
+            $dirs[$dir] = $repo->find($alls[$dir]);
             if (!isset($currents[$dir])){
                 $dirs[$dir]->addModel($model);
             }

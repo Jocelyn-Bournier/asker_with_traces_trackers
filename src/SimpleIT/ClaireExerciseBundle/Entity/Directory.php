@@ -197,6 +197,21 @@ class Directory
         return $this->getName();
     }
     
+   /*
+    *  getLongName
+    *  if subDirectory return parent's name + his name
+    *  @return string 
+    */
+    public function getLongName()
+    {
+        if ($this->getParent()){
+            return $this->getParent()->getName().": " . $this->getName();
+        }else{
+            return $this->getName();
+
+        }
+
+    }
     /**
      * Get parent.
      *
