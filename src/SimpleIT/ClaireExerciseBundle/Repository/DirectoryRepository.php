@@ -89,8 +89,10 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
     public function findAllApi($user)
     {
         $sql = "
-            SELECT d.id, d.name
+            SELECT d.id, d.name, p.name as parent_name
             FROM directory d
+            LEFT JOIN directory p
+            ON p.id = d.parent_id
             WHERE d.isVisible is true
             and (
                 d.owner_id = :user or
@@ -104,14 +106,21 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
         $stmt = $this->getEntityManager()->getConnection()->prepare($sql);
         $stmt->execute(array(':user'=>$user));
         return $stmt->fetchAll();
-        return $this->createQueryBuilder('d')
-            ->select('d.id, d.name')
-            ->join('d.users','aud')
-            ->where('d.isVisible = true')
-            ->andWhere('d.owner = 1')
-            ->getQuery()
-            ->getArrayResult()
-        ;
+        //$qb = $this->createQueryBuilder('d')
+        //    ->select('d.id, d.name')
+        //    ->join('d.users','aud')
+        //    ->where('d.isVisible = true');
+        //$qb->expr()
+        //   ->andX(
+        //$qb->expr()
+        //   ->andX(
+        //        $qb->expr()->eq('d.owner', ':user')
+
+        //   )
+        //    ->andWhere('d.owner = 1')
+        //    ->getQuery()
+        //    ->getArrayResult()
+        //;
     }
 
     public function findParents($user = 0)

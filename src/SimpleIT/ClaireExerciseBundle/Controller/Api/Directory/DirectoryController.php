@@ -106,7 +106,7 @@ class DirectoryController extends BaseController
         }
     }
     /**
-     * Get the list of directories
+     * Get the list of directories short
      *
      * @param CollectionInformation $collectionInformation
      *
@@ -120,8 +120,27 @@ class DirectoryController extends BaseController
             ->getRepository('SimpleITClaireExerciseBundle:Directory')
             ->findAllApi($user);
 
-        return new ApiGotResponse($directories, array('list', 'Default'));
+        $format= array();
+        foreach($directories as $d){
+            if(empty($d['parent_name'])){
+                $name = $d['name'];
+            }else{
+                $name =$d['parent_name'].": ".$d['name'];
+
+            } 
+            $format[] = array('id' => $d['id'], 'name' => $name);
+
+        }
+        return new ApiGotResponse($format, array('list', 'Default'));
     }
+    /**
+     * Get the list of directories longest
+     *
+     * @param CollectionInformation $collectionInformation
+     *
+     * @throws ApiBadRequestException
+     * @return ApiGotResponse
+     */
     public function mineAction(CollectionInformation $collectionInformation)
     {
         $user = $this->get('security.context')->getToken()->getUser()->getId();
