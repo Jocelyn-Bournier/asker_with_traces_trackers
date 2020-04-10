@@ -84,11 +84,13 @@ class OrderItemsService extends ExerciseCreationService
 
         $la = AnswerResourceFactory::create($answer);
         $learnerAnswers = $la->getContent();
+        #die(var_dump($learnerAnswers));
 
         $item->setAnswers($learnerAnswers);
 
         // check the answers
         $sol = $item->getSolutions();
+        #die(var_dump($learnerAnswers) . var_dump($sol));
 
         // if it matches the answer, set it as solution
         if ($this->matchSolution($learnerAnswers, $sol)) {
@@ -194,12 +196,20 @@ class OrderItemsService extends ExerciseCreationService
 
         // set give first and last
         if ($model->isGiveFirst()) {
-            $item->setGiveFirst($this->getFirst($item->getSolutions()));
+            if($model->getOrder() == 'desc'){
+                $item->setGiveFirst($this->getLast($item->getSolutions()));
+            }else{
+                $item->setGiveFirst($this->getFirst($item->getSolutions()));
+            }
         } else {
             $item->setGiveFirst(-1);
         }
         if ($model->isGiveLast()) {
-            $item->setGiveLast($this->getLast($item->getSolutions()));
+            if($model->getOrder() == 'desc'){
+                $item->setGiveLast($this->getFirst($item->getSolutions()));
+            }else{
+                $item->setGiveLast($this->getLast($item->getSolutions()));
+            }
         } else {
             $item->setGiveLast(-1);
         }
@@ -526,6 +536,7 @@ class OrderItemsService extends ExerciseCreationService
         }
         $objects = $objectsToAdd;
 
+        #die c est ici quon genere la solution
         // create the  the solution
         $solutions['name'] = 'or';
         $i = 0;
@@ -560,6 +571,9 @@ class OrderItemsService extends ExerciseCreationService
                 $solutions[$i] = $key;
                 $i++;
             }
+        }
+        if ($model->getOrder() == 'desc'){
+            krsort($solutions);
         }
     }
 
