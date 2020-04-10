@@ -153,7 +153,7 @@ class AnswerService extends TransactionalService implements AnswerServiceInterfa
             $attemptId,
             $userId
         );
-
+        //here bug mark  perharps
         $answer->setMark($itemResource->getContent()->getMark());
         $this->em->flush();
 
