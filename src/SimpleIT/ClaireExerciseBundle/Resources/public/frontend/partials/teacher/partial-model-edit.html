@@ -335,12 +335,23 @@
                 title="Sauvegarder puis essayer le modèle">
             Essayer
         </button>
-        <button ng-if="BASE_CONFIG.currentUserId != model.owner"
-                ng-disabled="!model.complete"
-                ng-click="tryModel(model)" class="btn btn-primary"
-                title="Essayer le modèle">
-            Essayer
-        </button>
+          <button  type="submit" name="fromPlatform" form="comper3"
+          class="btn btn-primary"
+          title="Rattacher le modéle au référentiel comper3">
+            Rattacher au référentiel
+          </button>
+        <form action="https://comper.projet.liris.cnrs.fr/sites/plateform-to-ref/linkResource.php"
+        method="post" target="_blank" id="comper3" style="display:hidden;">
+          <input type="hidden" name="id" value="asker:{{model.id}}"></input>
+          <input type="hidden" name="title" value="{{model.title}}"></input>
+          <input type="hidden" name="interactivityType" value="active"></input>
+          <input type="hidden" name="language" value="fr"></input>
+          <input type="hidden" name="learningPlatform" value="asker"></input>
+          <input type="hidden" name="author" value="{{users[model.owner].user_name}}"></input>
+          <input type="hidden" name="location" value="{{href}}"></input>
+          <input type="hidden" name="learningResourceType" value="{{comperType}}"></input>
+
+        </form>
         <button ng-if="BASE_CONFIG.currentUserId == model.owner && model.removable"
                 ng-click="deleteModel(model)" back-Button
                 class="btn btn-danger pull-right"

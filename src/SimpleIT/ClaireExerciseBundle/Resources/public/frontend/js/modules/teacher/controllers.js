@@ -695,6 +695,7 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
             keywords: [], // list of keywords that a resource must have to be selected
             metadata: [] // list of metadata objects that a resource must have to be selected
         };
+        $scope.href= window.location.href.replace('teacher','learner');
 
         $scope.modelContext = {
             "newModel": {
@@ -977,6 +978,20 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
                     $scope.viewAttempt(attempt);
                 });
         };
+        $scope.typeToComper = function (type) {
+            switch (type) {
+                case 'multiple-choice':
+                    return "choice";
+                case 'open-ended-question':
+                    return  "fill-in";
+                case 'pair-items':
+                    return "matching";
+                case 'order-items':
+                    return "sequencing";
+                case 'group-items':
+                    return "matching";
+            }
+        };
 
         $scope.tryModel = function (model) {
             // create exercise from model
@@ -1173,18 +1188,23 @@ modelControllers.controller('modelEditController', ['$scope', 'Model','ModelDire
             switch ($scope.model.type) {
                 case 'multiple-choice':
                     $scope.acceptedTypes = ['multiple-choice-question'];
+                    $scope.comperType = "choice";
                     break;
                 case 'open-ended-question':
                     $scope.acceptedTypes = ['open-ended-question'];
+                    $scope.comperType = "fill-in";
                     break;
                 case 'pair-items':
                     $scope.acceptedTypes = ['picture', 'text'];
+                    $scope.comperType = "matching";
                     break;
                 case 'order-items':
                     $scope.acceptedTypes = ['picture', 'text'];
+                    $scope.comperType = "sequencing";
                     break;
                 case 'group-items':
                     $scope.acceptedTypes = ['picture', 'text'];
+                    $scope.comperType = "matching";
                     break;
             }
         });
