@@ -24,25 +24,23 @@
                     </div>
                     <div class="col-centered pull-right" ui-draggable="true" drag="model">
                         <h4>
-        <div class="col-centered">
-          <button type="submit" name="fromPlatform" form="comper3-{{model.id}}"
-              title="Rattacher au référentiel comper3" style="background:none;border:none;padding:0;"
-              ng-click="$event.stopPropagation()">
-                <span class="glyphicon  glyphicon-cloud-upload">
-                </span>
-          </button>
-          <form action="https://comper.projet.liris.cnrs.fr/sites/plateform-to-ref/linkResource.php"
-          method="post" target="_blank" id="comper3-{{model.id}}" style="display:none;">
-            <input type="hidden" name="id" value="asker:{{model.id}}"></input>
-            <input type="hidden" name="title" value="{{model.title}}"></input>
-            <input type="hidden" name="interactivityType" value="active"></input>
-            <input type="hidden" name="language" value="fr"></input>
-            <input type="hidden" name="learningPlatform" value="asker"></input>
-            <input type="hidden" name="author" value="{{users[model.owner].user_name}}"></input>
-            <input type="hidden" name="location" value="{{href}}/{{model.id}}"></input>
-            <input type="hidden" name="learningResourceType" ng-value="typeToComper(model.type)"></input>
-          </form>
-        </div>
+                          <button type="submit" name="fromPlatform" form="comper3-{{model.id}}"
+                              title="Rattacher au référentiel comper3" style="background:none;border:none;padding:0;"
+                              ng-click="$event.stopPropagation()">
+                                <span class="glyphicon  glyphicon-cloud-upload">
+                                </span>
+                          </button>
+                          <form action="https://comper.projet.liris.cnrs.fr/sites/plateform-to-ref/linkResource.php"
+                          method="post" target="_blank" id="comper3-{{model.id}}" style="display:none;">
+                            <input type="hidden" name="id" value="asker:{{model.id}}"></input>
+                            <input type="hidden" name="title" value="{{model.title}}"></input>
+                            <input type="hidden" name="interactivityType" value="active"></input>
+                            <input type="hidden" name="language" value="fr"></input>
+                            <input type="hidden" name="learningPlatform" value="asker"></input>
+                            <input type="hidden" name="author" value="{{users[model.owner].user_name}}"></input>
+                            <input type="hidden" name="location" value="{{href}}/{{model.id}}"></input>
+                            <input type="hidden" name="learningResourceType" ng-value="typeToComper(model.type)"></input>
+                          </form>
                             <span ng-if="model.complete"
                                   ng-click="$event.stopPropagation();tryModel(model)"
                                   class="glyphicon glyphicon-repeat"
