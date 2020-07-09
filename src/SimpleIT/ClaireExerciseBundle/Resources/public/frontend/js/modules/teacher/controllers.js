@@ -1064,16 +1064,14 @@ modelControllers.controller('modelListController', ['$scope', 'Model', '$locatio
                 for (var i = 0; i < data.length; ++i) {
                     privateModels[data[i].id] = data[i];
                 }
-                //$scope.models = privateModels;
-                // uncomment and comment below if you are bored with heavy loading
-
+                //$rootScope.models = privateModels;
+                //comment below if you are bored with heavy loading
                 Model.query({'public-except-user': BASE_CONFIG.currentUserId}, function (data) {
                     // load an id indexed array of the models
                     var publicModels = [];
                     for (var i = 0; i < data.length; ++i) {
                         publicModels[data[i].id] = data[i];
                     }
-
                     $rootScope.models =jQuery.extend(publicModels, privateModels);
 
                     $scope.loadUsers($rootScope.models);
