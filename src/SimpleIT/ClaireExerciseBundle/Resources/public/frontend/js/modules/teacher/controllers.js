@@ -680,6 +680,7 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
     function ($scope, ExerciseByModel, AttemptByExercise,DirectorySelect, $routeParams, $location) {
 
         $scope.section = 'model';
+        $scope.href= `${window.location.protocol}//${window.location.hostname}${window.location.pathname}#learner/model/`;
 
         /*
          * Here is a contextual client-side object used to specify user's filters information.
@@ -695,7 +696,6 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
             keywords: [], // list of keywords that a resource must have to be selected
             metadata: [] // list of metadata objects that a resource must have to be selected
         };
-        $scope.href= window.location.href.replace('teacher','learner');
 
         $scope.modelContext = {
             "newModel": {
@@ -1172,11 +1172,18 @@ modelControllers.controller('modelEditController', ['$scope', 'Model','ModelDire
                 console.log('load free directories');
             }
         );
+        console.log(window.location.href);
+        console.log(window.location.hostname);
+        console.log(window.location.pathname);
+        console.log(window.location.protocol);
         $scope.filterAlreadyAdded = function(item) {
-            if ($scope.model.directories.indexOf(item.name) == -1){
-                return item;
+            if (typeof $scope.model.directories !== 'undefined'){
+                if ($scope.model.directories.indexOf(item.name) == -1){
+                    return item;
+                }
             }
         };
+
         $scope.model = Model.get({id: $stateParams.modelid}, function () {
             // fill each block with empty constraints
             $scope.fillBlockConstraints($scope.model);

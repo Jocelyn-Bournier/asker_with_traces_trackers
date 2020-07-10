@@ -337,7 +337,7 @@
         </button>
           <button  type="submit" name="fromPlatform" form="comper3"
           class="btn btn-primary"
-          title="Rattacher le modéle au référentiel comper3">
+          title="rattacher le modèle à un référentiel COMPER">
             Rattacher au référentiel
           </button>
         <form action="https://comper.projet.liris.cnrs.fr/sites/plateform-to-ref/linkResource.php"
@@ -348,7 +348,7 @@
           <input type="hidden" name="language" value="fr"></input>
           <input type="hidden" name="learningPlatform" value="asker"></input>
           <input type="hidden" name="author" value="{{users[model.owner].user_name}}"></input>
-          <input type="hidden" name="location" value="{{href}}"></input>
+          <input type="hidden" name="location" value="{{href}}{{model.id}}"></input>
           <input type="hidden" name="learningResourceType" value="{{comperType}}"></input>
 
         </form>
