@@ -24,7 +24,7 @@ mainApp.config(
 
             $stateProvider.state('resource', {
                 url: '/teacher/resource',
-                templateUrl: `{BASE_CONFIG.urls.partials.teacher}/partial-resource-list.html?v=${buildVersion}`
+                templateUrl: `${BASE_CONFIG.urls.partials.teacher}/partial-resource-list.html?v=${buildVersion}`
             });
 
             $stateProvider.state('resourceEdit', {
