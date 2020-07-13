@@ -37,7 +37,7 @@ mainApp.config(
             });
             $stateProvider.state('directoryEdit', {
                 url: '/teacher/directory/:directoryid',
-                templateUrl: BASE_CONFIG.urls.partials.teacher + '/partial-directory-edit.html?v=465'
+                templateUrl: `${BASE_CONFIG.urls.partials.teacher}/partial-directory-edit.html?v=${buildVersion}`
             });
         }
     ]
