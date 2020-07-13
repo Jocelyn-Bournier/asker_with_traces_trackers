@@ -680,7 +680,7 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
     function ($scope, ExerciseByModel, AttemptByExercise,DirectorySelect, $routeParams, $location) {
 
         $scope.section = 'model';
-        $scope.href= `${window.location.protocol}//${window.location.hostname}${window.location.pathname}#learner/model/`;
+        $scope.href= `${window.location.protocol}//${window.location.hostname}${window.location.pathname}#/learner/model/`;
 
         /*
          * Here is a contextual client-side object used to specify user's filters information.
@@ -1172,10 +1172,6 @@ modelControllers.controller('modelEditController', ['$scope', 'Model','ModelDire
                 console.log('load free directories');
             }
         );
-        console.log(window.location.href);
-        console.log(window.location.hostname);
-        console.log(window.location.pathname);
-        console.log(window.location.protocol);
         $scope.filterAlreadyAdded = function(item) {
             if (typeof $scope.model.directories !== 'undefined'){
                 if ($scope.model.directories.indexOf(item.name) == -1){
