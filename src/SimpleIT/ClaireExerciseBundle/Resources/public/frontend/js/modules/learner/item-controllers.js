@@ -35,16 +35,17 @@ attemptControllers.controller('attemptController', ['$scope', '$state', 'Attempt
             // when data loaded
             // its cleaner but it makes a loop between controllers
             //$state.go('attempt.order-items', {itemId: $scope.item.item_id}, {location: false});
+            //back to index => it was not possible to validate multiques questions model
             if ($scope.item.type == 'pair-items') {
-                $state.go('attempt.pair-items', {itemId: 0}, {location: false});
+                $state.go('attempt.pair-items', {itemId: index}, {location: false});
             } else if ($scope.item.type == 'order-items') {
-                $state.go('attempt.order-items', {itemId: 0}, {location: false});
+                $state.go('attempt.order-items', {itemId: index}, {location: false});
             } else if ($scope.item.type == 'group-items') {
-                $state.go('attempt.group-items', {itemId: 0}, {location: false});
+                $state.go('attempt.group-items', {itemId: index}, {location: false});
             } else if ($scope.item.type == 'multiple-choice') {
-                $state.go('attempt.multiple-choice', {itemId: 0}, {location: false});
+                $state.go('attempt.multiple-choice', {itemId: index}, {location: false});
             } else if ($scope.item.type == 'open-ended-question') {
-                $state.go('attempt.open-ended-question', {itemId: 0}, {location: false});
+                $state.go('attempt.open-ended-question', {itemId: index}, {location: false});
             }
         };
 
