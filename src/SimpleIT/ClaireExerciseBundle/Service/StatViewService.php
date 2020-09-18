@@ -41,19 +41,10 @@ class StatViewService extends TransactionalService
 
     public function remove(StatView $view)
     {
-        //if (
-        //    $id->getOwner()->getId() == $user->getId()
-        //    || $user->isAdmin()
-        //){
-            //try{
                 $this->em->remove($view);
                 $this->em->flush();
-            //}catch (ForeignKeyConstraintViolationException $e){
-            //}
-        //}else{
-        //    throw new AccessDeniedException();
-        //}
     }
+
 
 }
 
