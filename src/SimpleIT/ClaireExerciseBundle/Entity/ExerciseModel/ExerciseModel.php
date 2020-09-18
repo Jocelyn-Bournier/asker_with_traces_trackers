@@ -216,4 +216,10 @@ class ExerciseModel extends SharedEntity
     {
         $this->directories = $directories;
     }
+
+
+    public function __toString()
+    {
+        return "Je suis un modéle avec le nom ". $this->title;
+    }
 }
