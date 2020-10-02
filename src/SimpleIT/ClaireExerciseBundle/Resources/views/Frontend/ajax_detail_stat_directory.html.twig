@@ -18,7 +18,9 @@
             <a style="color: #333;" class="pull-right" href="{{path('admin_stats_export_directory',{'directory':id, 'view': view})}}">
               <span class="glyphicon glyphicon-export cursor"
               style="cursor:pointer;"
-              title="Exporter le répertoire {{directories[id].name}} en csv"></span>
+              title="Exporter le répertoire '{{directories[id].name}}' en csv.
+              Fonction en mode alpha. Retourne uniquement la premiere réponse
+              pour un modéle"></span>
             </a>
             #}
           </td>
@@ -46,7 +48,9 @@
             <a style="color: #333" href="{{path('admin_stats_export_directory',{'directory':id, 'view': view,'model':modelId})}}"
               <span class="glyphicon glyphicon-export cursor"
               style="cursor:pointer;"
-              title="Exporter les notes de {{model.title}} en csv"></span>
+              title="Exporter les notes de '{{model.title}}' en csv.
+Fonction en mode alpha. Retourne uniquement la premiere réponse
+pour un modéle par étudiant"></span>
             </a>
           </td>
         </tr>
