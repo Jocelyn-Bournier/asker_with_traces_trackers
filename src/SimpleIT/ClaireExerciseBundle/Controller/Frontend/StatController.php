@@ -226,4 +226,49 @@ class StatController extends BaseController
         }
     }
 
+    public function exportModelAction(Directory $directory, ExerciseModel $model, StatView $view)
+    {
+        $user = $this->get('security.context')->getToken()->getUser();
+        if (
+            $directory->hasManager($user)
+            || $this->get('security.context')->isGranted('ROLE_ADMIN')
+            || $directory->getOwner() == $user
+        ){
+            if ($view == null){
+                $view = $directory->getLastView();
+            }
+            //possible than dir->getLastView returns null
+            $users = $this->get('simple_it.exercise.directory')->getIdUsers($directory, $view);
+            if (count($users) == 0){
+                if ($directory->getParent()){
+                    $id = $directory->getParent()->getId();
+                }else{
+                    $id = $directory->getId();
+                }
+                return $this->redirectToRoute('admin_filters_directory',
+                    array(
+                        'directory' => $id,
+                        'view' => $view->getId()
+                    )
+                );
+            }
+            $datas = $this->get('simple_it.exercise.directory')->exportTomuss($model->getId(),$users,$view);
+            #$usernames = $this->get('simple_it.exercise.directory')->getUsernames($directory, $view);
+            $fp = fopen('php://temp', 'w'); #limit is 2MB
+            foreach ($datas as $fields) {
+                fputcsv($fp, $fields, ' ');
+            }
+            rewind($fp);
+            $response = new Response(stream_get_contents($fp));
+            $stat = fstat($fp);
+            fclose($fp);
+            $response->headers->set('Content-Type', 'text/csv');
+            $response->headers->set('Content-Length', $stat['size']);
+            $title =  strtolower(str_replace(' ','-',$model->getTitle()));
+            $response->headers->set('Content-Disposition', 'attachment; filename="'.$title.'.csv"');
+            return $response;
+        }
+        return $this->redirectToRoute('admin_stats');
+    }
+
 }

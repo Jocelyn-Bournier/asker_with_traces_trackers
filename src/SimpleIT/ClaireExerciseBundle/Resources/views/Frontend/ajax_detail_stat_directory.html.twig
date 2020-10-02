@@ -9,13 +9,22 @@
       <th>Moyenne exercices répondus</th>
       <th>Répartition des notes</th>
     </thead>
-    {% for directory, models in directories %}
-      {% if models is not empty %}
+    {% for id in directories|keys %}
+      {% if directories[id].models is not empty %}
         <tr class="active">
-          <td colspan=7><b>{{directory}}</b></td>
+          <td colspan=7>
+            <b>{{directories[id].name}}</b>
+            {#
+            <a style="color: #333;" class="pull-right" href="{{path('admin_stats_export_directory',{'directory':id, 'view': view})}}">
+              <span class="glyphicon glyphicon-export cursor"
+              style="cursor:pointer;"
+              title="Exporter le répertoire {{directories[id].name}} en csv"></span>
+            </a>
+            #}
+          </td>
         </tr>
       {% endif %}
-      {% for id, model in models %}
+      {% for modelId, model in directories[id].models %}
         <tr>
           <td class="td-stat">{{model.title}}</td>
           <td class="td-stat">{{users}}</td>
@@ -29,11 +38,16 @@
             ({{((model.userAnswer*100)/users)|number_format(0)}}%)
           </td>
           <td class="td-stat">{{model.avgAnswer|number_format(2)}}</td>
-          <td id="model-{{id}}" style="padding:5px 0px 0px 5px;">
+          <td id="model-{{modelId}}" style="padding:5px 0px 0px 5px;">
             <span class="glyphicon glyphicon-info-sign cursor"
             style="cursor:pointer;"
             title="La moyenne de toutes les notes est de {{model.avgMark|number_format(2)}}"
             ></span>
+            <a style="color: #333" href="{{path('admin_stats_export_directory',{'directory':id, 'view': view,'model':modelId})}}"
+              <span class="glyphicon glyphicon-export cursor"
+              style="cursor:pointer;"
+              title="Exporter les notes de {{model.title}} en csv"></span>
+            </a>
           </td>
         </tr>
       {% endfor %}
@@ -101,10 +115,10 @@ function drawChart(selector,data){
     //    .call(d3.axisLeft(y));
     //})
 }
-{%for directory, models in directories%}
-  {% for id, model in models %}
+{% for id in directories|keys %}
+  {% for modelId, model in directories[id].models %}
     data = '{{model.json|json_encode()|raw}}';
-    drawChart("model-{{id}}",data);
+    drawChart("model-{{modelId}}",data);
   {% endfor %}
 {% endfor %}
 </script>

@@ -24,3 +24,9 @@ admin_stats_fullfill:
 admin_stats_edit_view:
     pattern: /directory/editView/{view}
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Stat:editView}
+admin_stats_export_directory:
+    pattern: /directory/export-directory/{directory}/{model}/{view}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Stat:exportModel, view:0}
+admin_test_dunno:
+    pattern: /directory/export-directory/{view}/
+    defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Stat:exportModel, view:0}

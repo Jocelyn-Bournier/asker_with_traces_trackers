@@ -181,6 +181,47 @@ class AnswerRepository extends BaseRepository
         return $stmt->fetchAll();
     }
 
+    function exportTomuss($model, $users, $view)
+    {
+        $sql = "
+            SELECT REPLACE(au.username,'p','1'),ans.mark
+            FROM claire_exercise_answer ans
+            JOIN claire_exercise_attempt att
+            ON att.id = ans.attempt_id
+            JOIN claire_exercise_stored_exercise se
+            ON se.id = att.exercise_id
+            JOIN asker_user au
+            ON au.id = att.user_id
+            WHERE se.exercise_model_id =  :model
+            and user_id in (".implode(',',$users).")
+            AND ans.created_at = (
+                SELECT MIN(ans.created_at)
+                FROM claire_exercise_answer ans
+                JOIN claire_exercise_attempt a
+                ON a.id = ans.attempt_id
+                JOIN claire_exercise_stored_exercise se
+                ON se.id = a.exercise_id
+                WHERE se.exercise_model_id = :model
+                AND ans.created_at > :start
+                AND ans.created_at < :end
+                AND att.user_id = a.user_id )
+            ";
+        $conn = $this->getEntityManager()
+            ->getConnection()
+        ;
+        $stmt = $conn
+            ->prepare($sql)
+        ;
+        $stmt->execute(
+            array(
+                'model' => $model,
+                'start' => $view->getStartDate()->format('Y-m-d'),
+                'end' => $view->getEndDate()->format('Y-m-d')
+            )
+        );
+        return $stmt->fetchAll();
+    }
+
     function averageAnswerByModel($model,$view, $ids)
     {
         //Native SQL because derived table doesnt work with Doctrine
@@ -215,12 +256,12 @@ class AnswerRepository extends BaseRepository
             ->prepare($sql)
         ;
         $stmt->execute(
-        array(
-            'model' => $model,
-            'start' => $view->getStartDate()->format('Y-m-d'),
-            'end' => $view->getEndDate()->format('Y-m-d')
-        )
-    );
-    return $stmt->fetchAll();
+            array(
+                'model' => $model,
+                'start' => $view->getStartDate()->format('Y-m-d'),
+                'end' => $view->getEndDate()->format('Y-m-d')
+            )
+        );
+        return $stmt->fetchAll();
     }
 }
