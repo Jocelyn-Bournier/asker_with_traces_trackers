@@ -257,6 +257,39 @@ class DirectoryService extends TransactionalService
         }
         return $json;
     }
+    public function getModelStats(Directory $directory, $view, $ids)
+    {
+        $models = array();
+        $dirs = array();
+        $attempt = $this->em
+            ->getRepository('SimpleITClaireExerciseBundle:CreatedExercise\Attempt')
+        ;
+        $answer = $this->em
+            ->getRepository('SimpleITClaireExerciseBundle:CreatedExercise\Answer')
+        ;
+        #C'est horrible mais ca permet d'avoir l'id et le directoryName
+        $dirs[$directory->getId()]['name'] = $directory->getName();
+        $dirs[$directory->getId()]['models'] = $this->stats(
+        #$dirs[$directory->getId().'+#='.$directory->getName()]= $this->stats(
+            $directory,
+            $attempt,
+            $answer,
+            $view,
+            $ids
+        );
+        foreach($directory->getSubs() as $sub){
+            $dirs[$sub->getId()]['name'] = $sub->getName();
+            $dirs[$sub->getId()]['models'] = $this->stats(
+            #$dirs[$sub->getId().'+#='. $sub->getName()] = $this->stats(
+                $sub,
+                $attempt,
+                $answer,
+                $view,
+                $ids
+            );
+        }
+        return $dirs;
+    }
     public function stats(Directory $directory, $attempt, $answer,$view, $ids)
     {
         $models = array();
@@ -277,6 +310,7 @@ class DirectoryService extends TransactionalService
             $models[$model->getId()]['avgMark'] = $answer->
                 averageMarkByModel($model->getId(),$view, $ids)[0]['avg']
             ;
+            $models[$model->getId()]['directoryId'] =  $directory->getId();
             $models[$model->getId()]['json'] = $this->JSONstats($answer,$directory,$model,$view,$ids);
         }
         return $models;
@@ -351,34 +385,7 @@ class DirectoryService extends TransactionalService
 
     }
 
-    public function getModelStats(Directory $directory, $view, $ids)
-    {
-        $models = array();
-        $dirs = array();
-        $attempt = $this->em
-            ->getRepository('SimpleITClaireExerciseBundle:CreatedExercise\Attempt')
-        ;
-        $answer = $this->em
-            ->getRepository('SimpleITClaireExerciseBundle:CreatedExercise\Answer')
-        ;
-        $dirs[$directory->getName()]= $this->stats(
-            $directory,
-            $attempt,
-            $answer,
-            $view,
-            $ids
-        );
-        foreach($directory->getSubs() as $sub){
-            $dirs[$sub->getName()] = $this->stats(
-                $sub,
-                $attempt,
-                $answer,
-                $view,
-                $ids
-            );
-        }
-        return $dirs;
-    }
+
     public function getColumnStats(Directory $directory, $model, $view, $ids)
     {
         $models = array();
@@ -445,6 +452,14 @@ class DirectoryService extends TransactionalService
                 }
             }
         }
+    }
+
+    public function exportTomuss($model, $users, $view)
+    {
+        $answer = $this->em
+            ->getRepository('SimpleITClaireExerciseBundle:CreatedExercise\Answer')
+        ;
+        return $answer->exportTomuss($model, $users, $view);
     }
 
     public function changeVisibility(AskerUser $user, Directory $directory)
