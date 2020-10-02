@@ -229,6 +229,10 @@ class StatController extends BaseController
     public function exportModelAction(Directory $directory, ExerciseModel $model, StatView $view)
     {
         $user = $this->get('security.context')->getToken()->getUser();
+        #permissions are fixed in parent directory
+        if ($directory->getParent()){
+            $directory = $directory->getParent();
+        }
         if (
             $directory->hasManager($user)
             || $this->get('security.context')->isGranted('ROLE_ADMIN')
@@ -240,14 +244,9 @@ class StatController extends BaseController
             //possible than dir->getLastView returns null
             $users = $this->get('simple_it.exercise.directory')->getIdUsers($directory, $view);
             if (count($users) == 0){
-                if ($directory->getParent()){
-                    $id = $directory->getParent()->getId();
-                }else{
-                    $id = $directory->getId();
-                }
                 return $this->redirectToRoute('admin_filters_directory',
                     array(
-                        'directory' => $id,
+                        'directory' => $directory->getId(),
                         'view' => $view->getId()
                     )
                 );
