@@ -220,6 +220,6 @@ class ExerciseModel extends SharedEntity
 
     public function __toString()
     {
-        return "Je suis un modéle avec le nom ". $this->title;
+        return "Je suis un modéle avec le nom ". $this->title . " mon id est " .$this->id;
     }
 }
