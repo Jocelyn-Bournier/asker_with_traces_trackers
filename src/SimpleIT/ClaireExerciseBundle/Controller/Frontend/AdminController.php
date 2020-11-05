@@ -66,7 +66,7 @@ class AdminController extends BaseController
     }
     public function allAction()
     {
-        $dirs = $this->get('simple_it.exercise.directory')->all();
+        $dirs = $this->get('simple_it.exercise.directory')->allParents();
         return $this->render(
             'SimpleITClaireExerciseBundle:Frontend:list_users.html.twig',
             array(
