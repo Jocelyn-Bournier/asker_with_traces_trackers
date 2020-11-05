@@ -23,3 +23,6 @@ admin_migrate:
     pattern: /migrate
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Admin:migrate }
 
+admin_importlocal:
+    pattern: /import/local
+    defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Admin:importLocal }
