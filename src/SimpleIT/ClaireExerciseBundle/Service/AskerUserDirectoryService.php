@@ -133,5 +133,16 @@ class AskerUserDirectoryService extends TransactionalService
             }
         }
     }
+
+    public function create(AskerUser $user, Directory $directory)
+    {
+        $aud= new AskerUserDirectory();
+        $aud->setUser($user);
+        $aud->setIsManager(false);
+        $aud->setDirectory($directory);
+        $this->updateForUser($user);
+        $this->em->persist($aud);
+        $this->em->flush($aud);
+    }
 }
 
