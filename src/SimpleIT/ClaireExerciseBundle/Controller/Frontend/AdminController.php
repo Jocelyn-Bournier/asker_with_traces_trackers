@@ -156,10 +156,6 @@ class AdminController extends BaseController
             }
             $this->get('simple_it.exercise.asker_user_directory')->deleteChildrens($user, $deleted);
             $this->get('simple_it.exercise.asker_user_directory')->updateForUser($user);
-            #$var=var_dump($deleted);
-            #return new Response(
-            #    "<html><body>$var </body></html>"
-            #);
 
             $em->flush();
             return $this->redirectToRoute('admin_list_users');
@@ -171,6 +167,46 @@ class AdminController extends BaseController
                 'user' => $user
             )
         );
+    }
+    public function importLocalAction(){
+        $handle = fopen(__DIR__."/datas.csv", "r");
+        $datas=array();
+        $request = $this->getRequest();
+        $role = "ROLE_USER";
+        $userService = $this->get('simple_it.exercise.user');
+        if ($handle) {
+            while (($line = fgets($handle)) !== false) {
+                $exploded =  explode(';', $line);
+                $username = "ext_".$exploded[1].".".$exploded[0];
+                $user = $userService->createLocalUser(
+                    $exploded[1],
+                    $exploded[0],
+                    $username,
+                    $exploded[3],
+                    True
+                );
+                if ($this->get('simple_it.exercise.role')->addRoleToUser($role, $user)){
+                    $this->get('simple_it.exercise.asker_user_directory')->create(
+                        $user,
+                        $this->get('simple_it.exercise.directory')
+                            ->findOneByName('M1101 - Programmation Shell')
+                    );
+                }else{
+                    die("Role: $role does not exist");
+
+                }
+                $newLine = trim($line).";$username;".$exploded[3];
+                $datas[] = $newLine;
+            }
+            fclose($handle);
+            $handle = fopen(__DIR__."/newdatas.csv", "w");
+            foreach($datas as $line){
+                fwrite($handle,$line."\n");
+            }
+            fclose($handle);
+        } else {
+            die("the file does not exist");
+        }
     }
 
 }
