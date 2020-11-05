@@ -88,6 +88,43 @@ class UserService extends TransactionalService implements UserServiceInterface
         ;
     }
 
+    /**
+     * Create local user in database
+     * @param string $first
+     * @param string $last
+     * @param string $username
+     * @param string $password
+     * @param bool $enable
+     *
+     * @return AskerUser
+     */
+    public function createLocalUser($first, $last, $username, $password, $enable)
+    {
+        $user = new AskerUser();
+        $user->setFirstName($first);
+        $user->setLastName($last);
+        echo "createing $username<br>";
+        $user->setUsername($username);
+        $user->setPassword(
+            password_hash($password, PASSWORD_DEFAULT)
+        );
+        $user->setLdapEmployeeId(0);
+        $user->setIsLdap(0);
+        $user->setIsEnable($enable);
+        $user->setLdapDn('');
+        $user->setSalt(uniqid());
+        try{
+            $this->em->persist($user);
+            $this->em->flush($user);
+        }catch(\Doctrine\DBAL\DBALException $e){
+            die("Symfony failed to create $username:". $e->getMessage());
+        }
+        return $user;
+
+    }
+
+
+
     public function allTeachers()
     {
         return $this->userRepository->findTeachers();
