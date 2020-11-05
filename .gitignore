@@ -12,3 +12,5 @@
 /build/
 /vendor/
 /bin/
+/src/SimpleIT/ClaireExerciseBundle/Resources/public/frontend/js/modules/utils/build.js
+/app/config/version.yml
