@@ -132,7 +132,6 @@ class AskerUserDirectoryService extends TransactionalService
                 }
             }
         }
-
     }
 }
 
