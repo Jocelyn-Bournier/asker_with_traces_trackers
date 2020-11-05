@@ -60,7 +60,7 @@ class AskerUser implements UserInterface
     private $directories;
 
     private $pedagogics;
-    
+
     private $logs;
 
     private $roles;
@@ -228,27 +228,27 @@ class AskerUser implements UserInterface
     }
 
 
-    //public function equals(UserInterface $user)                                    
-    //{       
-    //    if (!$user instanceof LdapUser) {                                          
-    //        return false;                                                          
-    //    }                                                                          
-    //
-    //    if ($this->password !== $user->getPassword()) {                            
+    //public function equals(UserInterface $user)
+    //{
+    //    if (!$user instanceof LdapUser) {
     //        return false;
     //    }
-    //        
-    //    if ($this->getSalt() !== $user->getSalt()) {                               
-    //        return false;                                                          
+    //
+    //    if ($this->password !== $user->getPassword()) {
+    //        return false;
     //    }
-    //        
-    //    if ($this->username !== $user->getUsername()) {                            
-    //        return false; 
-    //    }   
-    //        
+    //
+    //    if ($this->getSalt() !== $user->getSalt()) {
+    //        return false;
+    //    }
+    //
+    //    if ($this->username !== $user->getUsername()) {
+    //        return false;
+    //    }
+    //
     //    return true;
-    //} 
-    
+    //}
+
     /**
      * Get roles.
      *
@@ -303,7 +303,7 @@ class AskerUser implements UserInterface
     {
         $this->pedagogic->removeElement($pedagogic);
     }
-    
+
     /**
      * Set pedagogics.
      *
@@ -313,7 +313,7 @@ class AskerUser implements UserInterface
     {
         $this->pedagogics = $pedagogics;
     }
-    
+
     /**
      * Get lastName.
      *
@@ -323,7 +323,7 @@ class AskerUser implements UserInterface
     {
         return $this->lastName;
     }
-    
+
     /**
      * Set lastName.
      *
@@ -333,7 +333,7 @@ class AskerUser implements UserInterface
     {
         $this->lastName = $lastName;
     }
-    
+
     /**
      * Get firstName.
      *
@@ -343,7 +343,7 @@ class AskerUser implements UserInterface
     {
         return $this->firstName;
     }
-    
+
     /**
      * Set firstName.
      *
@@ -353,7 +353,7 @@ class AskerUser implements UserInterface
     {
         $this->firstName = $firstName;
     }
-    
+
     /**
      * Get workspaces.
      *
@@ -368,7 +368,7 @@ class AskerUser implements UserInterface
     {
         return $this->workspaces;
     }
-    
+
     /**
      * Set workspaces.
      *
@@ -391,7 +391,7 @@ class AskerUser implements UserInterface
         #$directory->removeUser($this);
         $this->directories->removeElement($directory);
     }
-    
+
     /**
      * Get directories.
      *
@@ -401,7 +401,7 @@ class AskerUser implements UserInterface
     {
         return $this->directories;
     }
-    
+
     /**
      * Get isEnable.
      *
@@ -411,7 +411,7 @@ class AskerUser implements UserInterface
     {
         return $this->isEnable;
     }
-    
+
     /**
      * Set isEnable.
      *
@@ -433,7 +433,7 @@ class AskerUser implements UserInterface
         }
         return true;
     }
-    
+
     /**
      * Get logs.
      *
@@ -443,7 +443,7 @@ class AskerUser implements UserInterface
     {
         return $this->logs;
     }
-    
+
     /**
      * Set logs.
      *
