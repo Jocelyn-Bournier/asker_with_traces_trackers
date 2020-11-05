@@ -4,6 +4,8 @@ asker
 A Symfony project created on November 28, 2016, 2:34 pm.
 
 
+#Deprecated install method  
+# Please use https://forge.univ-lyon1.fr/romain.chanu/asker_deploy  
 sudo -E apt update  
 sudo -E apt install apache2 php5 libapache2-mod-php5 php5-ldap php5-mysql mysql-server git acl  
 cd /var/www/html/  
@@ -22,5 +24,7 @@ php app/console doctrine:schema:update -f
 Maintenant on peut utiliser son navigateur  
 http://*YOUR_IP*/asker/web/app_dev.php
 
+# generate release version
+bash new_assets_release.sh
 
 
