@@ -20,11 +20,11 @@ sudo setfacl -R -m u:"$HTTPDUSER":rwX -m u:$(whoami):rwX app/cache app/logs
 #Ne pas oublier de créer la database dans mysql  
 php app/console doctrine:schema:update -f
 
-#on utilise le dump mysql
+#on utilise le dump mysql  
 Maintenant on peut utiliser son navigateur  
 http://*YOUR_IP*/asker/web/app_dev.php
 
-#generate release version
+#generate release version  
 bash new_assets_release.sh
 
 
