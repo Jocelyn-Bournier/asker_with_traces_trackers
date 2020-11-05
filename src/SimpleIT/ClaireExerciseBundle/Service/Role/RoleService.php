@@ -19,6 +19,7 @@
 namespace SimpleIT\ClaireExerciseBundle\Service\Role;
 
 use SimpleIT\ClaireExerciseBundle\Entity\Role;
+use SimpleIT\ClaireExerciseBundle\Entity\AskerUser;
 use SimpleIT\ClaireExerciseBundle\Repository\RoleRepository;
 use SimpleIT\ClaireExerciseBundle\Service\TransactionalService;
 
@@ -68,11 +69,43 @@ class RoleService extends TransactionalService
         return $this->roleRepository->findAll();
     }
 
+    /**
+     * @param string $role
+     *
+     * @return Role
+     */
+    public function getRoleByName($role)
+    {
+        return $this->roleRepository->findOneBy(
+            array('name' =>  "$role")
+        );
+    }
+
+    /**
+     * @return Role
+     */
     public function getRoleUser()
     {
         return $this->roleRepository->findOneBy(
             array('name' =>  'ROLE_USER')
         );
+    }
+
+    /**
+     * @param string $role
+     * @param AskerUser $user
+     *
+     * @return Role
+     */
+    public function addRoleToUser($role, AskerUser $user)
+    {
+        $role = $this->getRoleByName($role);
+        if ($role){
+            $user->addRole($role);
+            $this->em->flush();
+            return 1;
+        }
+        return 0;
     }
 
 }
