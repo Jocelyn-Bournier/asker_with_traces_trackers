@@ -73,71 +73,6 @@ class DirectoryService extends TransactionalService
         $this->askerUserDirectoryService = $askerUserDirectoryService;
     }
 
-    public function add($itemId, AnswerResource $answerResource, $attemptId, $userId)
-    {
-        // Get the item and the attempt
-        if (count($this->getAll($itemId, $attemptId)) > 0) {
-            throw new AnswerAlreadyExistsException();
-        }
-        $attempt = $this->attemptService->get($attemptId, $userId);
-        /** @var Item $item */
-        $item = $this->itemService->getByAttempt($itemId, $attemptId);
-
-        $this->exerciseService->validateAnswer($item, $answerResource);
-
-        $context = SerializationContext::create();
-        $context->setGroups(array("answer_storage", 'Default'));
-        $content = $this->serializer->jmsSerialize(
-            $answerResource,
-            'json',
-            $context
-        );
-
-        $answer = AnswerFactory::create($content, $item, $attempt);
-        // Add the answer to the database
-
-        $this->em->persist($answer);
-        $this->em->flush();
-
-        $itemResource = $this->itemService->findItemAndCorrectionByAttempt(
-            $itemId,
-            $attemptId,
-            $userId
-        );
-
-        $answer->setMark($itemResource->getContent()->getMark());
-        $this->em->flush();
-
-        return $itemResource;
-
-    }
-
-
-    /**
-     * Get all answers for an item
-     *
-     * @param int  $itemId Item id
-     * @param int  $attemptId
-     * @param null $userId
-     *
-     * @return array
-     */
-    public function getAll($itemId = null, $attemptId = null, $userId = null)
-    {
-        $item = null;
-        $attempt = null;
-
-        if (!is_null($itemId)) {
-            if (!is_null($attemptId)) {
-                $attempt = $this->attemptService->get($attemptId, $userId);
-                $item = $this->itemService->getByAttempt($itemId, $attemptId);
-            } else {
-                $item = $this->itemService->get($itemId);
-            }
-        }
-
-        return $this->answerRepository->findAllBy($item, $attempt);
-    }
 
     public function all(){
         return $this->directoryRepository->findAll();
@@ -165,6 +100,10 @@ class DirectoryService extends TransactionalService
     public function find($id)
     {
         return $this->directoryRepository->find($id);
+    }
+    public function findOneByName($name)
+    {
+        return $this->directoryRepository->findOneByName($name);
     }
     public function remove(Directory $id, AskerUser $user)
     {
