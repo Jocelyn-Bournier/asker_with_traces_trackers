@@ -1,5 +1,28 @@
 <div data-ng-controller="learnerController">
   <div class="panel-body" data-ng-controller="directoryModelListController">
+    <div ng-if="directory.framework_id != null && directory.framework_id != ''" class="row">
+      <div class="col-md-3">
+        <button ng-click="requestRecommendations(directory)" class="btn" >Obtenir des recommandations</button>
+      </div>
+      <div class="col-md-9 table-responsive">
+        <table ng-if="recommendations_list" class="table">
+          <thead>
+            <tr>
+              <th>Ressource</th>
+              <th>Tag</th>
+              <th>Pertinence</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="recomm in recommendations_list">
+              <td><a href="{{recomm.location}}">{{recomm.title}}</a></td>
+              <td>{{recomm.tag}}</td>
+              <td>{{recomm.weight}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
     <!-- every models in directory -->
     <div ng-repeat="model in directory.models  track by $index">
       <!-- every models if attempts in directory -->
