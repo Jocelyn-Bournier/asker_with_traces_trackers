@@ -18,10 +18,16 @@ class Directory
      * @var string
      */
     private $name;
+
     /**
      * @var string
      */
     private $code;
+
+    /**
+     * @var string
+     */
+    private $frameworkId;
 
     /**
      * @var boolean
@@ -269,6 +275,26 @@ class Directory
     public function setCode($code)
     {
         $this->code = $code;
+    }
+
+    /**
+     * Get frameworkId.
+     *
+     * @return frameworkId.
+     */
+    public function getFrameworkId()
+    {
+        return $this->frameworkId;
+    }
+    
+    /**
+     * Set frameworkId.
+     *
+     * @param frameworkId the value to set.
+     */
+    public function setFrameworkId($frameworkId)
+    {
+        $this->frameworkId = $frameworkId;
     }
     
     /**

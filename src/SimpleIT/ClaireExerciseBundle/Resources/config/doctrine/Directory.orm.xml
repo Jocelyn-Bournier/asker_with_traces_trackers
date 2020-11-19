@@ -6,6 +6,7 @@
     </id>
     <field name="name" type="string" column="name" length="50"/>
     <field name="code" type="string" column="code" length="50" nullable="true"/>
+    <field name="frameworkId" type="string" column="frameworkId" length="5" nullable="true"/>
     <field name="isVisible" type="boolean" column="isVisible" />
     <many-to-one field="owner" nullable="false"
     target-entity="SimpleIT\ClaireExerciseBundle\Entity\AskerUser"/>

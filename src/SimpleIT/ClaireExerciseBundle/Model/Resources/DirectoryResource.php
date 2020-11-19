@@ -59,6 +59,12 @@ class DirectoryResource
      */
     private $code;
     /**
+     * @var string $frameworkId
+     * @Serializer\Type("string")
+     * @Serializer\Groups({"details", "directory"})
+     */
+    private $frameworkId;
+    /**
      * @var string $owner
      * @Serializer\Type("integer")
      * @Serializer\Groups({"details", "directory"})
@@ -235,6 +241,26 @@ class DirectoryResource
     public function setCode($code)
     {
         $this->code = $code;
+    }
+
+     /**
+     * Get frameworkId.
+     *
+     * @return frameworkId.
+     */
+    public function getFrameworkId()
+    {
+        return $this->frameworkId;
+    }
+    
+    /**
+     * Set frameworkId.
+     *
+     * @param frameworkId the value to set.
+     */
+    public function setFrameworkId($frameworkId)
+    {
+        $this->frameworkId = $frameworkId;
     }
     
     /**

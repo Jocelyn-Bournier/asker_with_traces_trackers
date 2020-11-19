@@ -126,7 +126,7 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
     public function findParents($user = 0)
     {
         $sql = "
-            SELECT d.id, d.name, COUNT(dm.model_id) as models, d.code, a.username
+            SELECT d.id, d.name, COUNT(dm.model_id) as models, d.code, d.frameworkId, a.username
             FROM directory d
             LEFT JOIN directories_models dm
             ON d.id = dm.directory_id
@@ -268,7 +268,7 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
         //recuperation des ids
         $ids = array_column($parents,"id");
         $qb =$this->createQueryBuilder('d')
-            ->select('d.id, d.isVisible as is_visible, d.code, d.name, p.id as idp')
+            ->select('d.id, d.isVisible as is_visible, d.code, d.frameworkId, d.name, p.id as idp')
             ->leftJoin('d.users', 'aud')
             ->leftJoin('d.parent', 'p')
         ;

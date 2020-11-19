@@ -144,6 +144,7 @@ class DirectoryService extends TransactionalService
         $entity->setName($resource->getName());
         if (!$entity->getParent()){
             $entity->setCode($resource->getCode());
+            $entity->setFrameworkId($resource->getFrameworkId());
             $this->askerUserDirectoryService->updateManager($entity,$resource);
             foreach($entity->getSubs() as $dir){
                 $this->askerUserDirectoryService->updateManager($dir, $resource);

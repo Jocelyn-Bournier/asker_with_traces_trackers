@@ -51,9 +51,11 @@ abstract class DirectoryFactory
         if ($directory->getParent()){
             $directoryResource->setIsChild(true);
             $directoryResource->setCode($directory->getParent()->getCode());
+            $directoryResource->setFrameworkId($directory->getParent()->getFrameworkId());
         }else{
             $directoryResource->setIsChild(false);
             $directoryResource->setCode($directory->getCode());
+            $directoryResource->setFrameworkId($directory->getFrameworkId());
         }
         foreach($directory->getUsers() as $user){
             if ($user->getUser()->getId() !== $directory->getOwner()->getId()){
@@ -87,9 +89,11 @@ abstract class DirectoryFactory
         if ($directory->getParent()){
             $directoryResource->setIsChild(true);
             $directoryResource->setCode($directory->getParent()->getCode());
+            $directoryResource->setFrameworkId($directory->getParent()->getFrameworkId());
         }else{
             $directoryResource->setIsChild(false);
             $directoryResource->setCode($directory->getCode());
+            $directoryResource->setFrameworkId($directory->getFrameworkId());
         }
         foreach($directory->getUsers() as $user){
             if ($user->getUser()->getId() !== $directory->getOwner()->getId()){

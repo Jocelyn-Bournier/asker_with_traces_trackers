@@ -258,7 +258,6 @@ class DirectoryController extends BaseController
      */
     public function editAction(DirectoryResource $directoryResource,$directoryId)
     {
-
         try {
             $directory = $this->get('simple_it.exercise.directory')->edit
                 (
