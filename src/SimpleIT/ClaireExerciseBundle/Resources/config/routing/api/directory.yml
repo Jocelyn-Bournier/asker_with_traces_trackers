@@ -71,3 +71,8 @@ api_directory_visible:
     methods: [PUT]
     requirements:
         _format: json
+
+api_directory_jwt:
+    pattern: /jwt/{frameworkId}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Directory/Directory:jwt}
+    methods: [GET]
