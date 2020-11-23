@@ -9,6 +9,9 @@ services:
         arguments: ["@doctrine.orm.entity_manager"]
         tags:
             - { name: form.type }
+    app.jwtService:
+        class:     SimpleIT\ClaireExerciseBundle\Service\JwtService
+        arguments: ['%comper_jwt_key_path%', '%kernel.root_dir%']
 
 #    service_name:
 #        class: AppBundle\Directory\ClassName

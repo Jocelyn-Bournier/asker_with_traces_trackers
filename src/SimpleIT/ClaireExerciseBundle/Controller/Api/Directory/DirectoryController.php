@@ -39,7 +39,6 @@ use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResourceFactory;
 use SimpleIT\ClaireExerciseBundle\Entity\ExerciseModel\ExerciseModel;
 use SimpleIT\ClaireExerciseBundle\Entity\Directory;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use \Firebase\JWT\JWT;
 
 /**
  * API Attempt controller
@@ -381,18 +380,19 @@ class DirectoryController extends BaseController
 
     public function jwtAction($frameworkId)
     {
-        $key       = "some_secret";
-        $user      = $this->get('security.context')->getToken()->getUser();
-        $timestamp = new \DateTime();
-        $timestamp = $timestamp->getTimestamp()+30;
-        $payload = [
+        $jwtEncoder = $this->container->get('app.jwtService');
+        $user       = $this->get('security.context')->getToken()->getUser();
+        $timestamp  = new \DateTime();
+        $timestamp  = $timestamp->getTimestamp()+30;
+        $payload    = [
             "user"     => "asker:".$user->getUsername(),
             "fwid"     => $frameworkId,
             "username" => $user->getUsername(),
             "role"     => "learner",                                     // NOTE : use actual role here for teaching admin purpose.
             "exp"      => $timestamp
         ];
-        $token    = JWT::encode($payload, $key);
+        $token = $jwtEncoder->getToken($payload);
+        
         $response = new JsonResponse(array('token' => $token));
         return $response;
     }

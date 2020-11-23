@@ -13,30 +13,31 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                 crossDomain: true,
                 async:       true,
                 success: function(data, textStatus){
-                    console.log(data);
+                    $.ajax({
+                        url:         "http://192.168.1.3:8080/jwt/recomm.php",
+                        type:        "GET",
+                        crossDomain: true,
+                        async:       true,
+                        beforeSend: function(xhr){
+                          xhr.setRequestHeader("Authorization", "Bearer "+data['token']);  
+                        },
+                        success: function(data, textStatus){
+                            data.map(x => {
+                                x.tag    = x.tag.replace('Tag_', '');
+                                x.weight = (Math.round(x.weight * 10000)/100).toString()+' %'; 
+                            })
+                            $scope.recommendations_list = data;
+                            $scope.$apply();
+                        },
+                        error: function(message, textStatus){
+                            console.log(message);
+                        }
+                    });
                 },
                 error: function(message, textStatus){
                     console.log(message);
                 }
             });
-            $.ajax({
-                url:         "http://192.168.1.3:8080/jwt/recomm.php",
-                type:        "GET",
-                crossDomain: true,
-                async:       true,
-                success: function(data, textStatus){
-                    data.map(x => {
-                        x.tag    = x.tag.replace('Tag_', '');
-                        x.weight = (Math.round(x.weight * 10000)/100).toString()+' %'; 
-                    })
-                    $scope.recommendations_list = data;
-                    $scope.$apply();
-                },
-                error: function(message, textStatus){
-                    console.log(message);
-                }
-            });
-            
         };
     }
 ]);

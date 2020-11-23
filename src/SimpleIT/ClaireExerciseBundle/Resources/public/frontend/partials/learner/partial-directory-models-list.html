@@ -4,8 +4,8 @@
       <div class="col-md-3">
         <button ng-click="requestRecommendations(directory)" class="btn" >Obtenir des recommandations</button>
       </div>
-      <div class="col-md-9 table-responsive">
-        <table ng-if="recommendations_list" class="table">
+      <div class="col-md-9 table-responsive" style="max-height: 160px; overflow-y: auto;">
+        <table ng-if="recommendations_list" class="table table-condensed">
           <thead>
             <tr>
               <th>Ressource</th>
