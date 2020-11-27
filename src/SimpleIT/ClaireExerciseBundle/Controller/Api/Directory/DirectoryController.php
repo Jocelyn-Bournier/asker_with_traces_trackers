@@ -386,7 +386,7 @@ class DirectoryController extends BaseController
         $timestamp  = $timestamp->getTimestamp()+30;
         $payload    = [
             "user"     => "asker:".$user->getUsername(),
-            "fwid"     => $frameworkId,
+            "fwid"     => intval($frameworkId),
             "username" => $user->getUsername(),
             "role"     => "learner",                                     // NOTE : use actual role here for teaching admin purpose.
             "exp"      => $timestamp
