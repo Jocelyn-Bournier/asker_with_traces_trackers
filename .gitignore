@@ -16,3 +16,4 @@
 /app/config/version.yml
 /app/config/jwtRS256.key
 /app/config/jwtRS256.key.pub
+/app/config/comper.yml
