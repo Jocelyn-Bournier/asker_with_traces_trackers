@@ -18,7 +18,8 @@
         "sensio/distribution-bundle": "~4.0",
         "sensio/framework-extra-bundle": "^3.0.2",
         "incenteev/composer-parameter-handler": "~2.0",
-        "jms/serializer": "^1.4"
+        "jms/serializer": "^1.4",
+	"firebase/php-jwt": "^5.2"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3",
