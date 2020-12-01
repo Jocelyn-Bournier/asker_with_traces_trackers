@@ -8,9 +8,10 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
         $scope.requestRecommendations = function (directory) {
             console.log(directory);
             let frameworkId  = directory.framework_id;
+	    let tmpWay = "app.php";
             let recommEngine = "https://traffic.irit.fr/comper/recommendations/api/retrieve/last/json/";
             $.ajax({
-                url:         "/app_dev.php/api/directories/jwt/"+frameworkId,
+                url:         `/${tmpWay}/api/directories/jwt/${frameworkId}`,
                 type:        "GET",
                 crossDomain: true,
                 async:       true,
@@ -32,7 +33,8 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                             let protocol  = location.protocol;
                             let slashes   = protocol.concat("//");
                             let host      = slashes.concat(window.location.hostname);
-                            let urlPrefix = host+'/app.php/front/#/learner/model/';
+                            let urlPrefix = `${host}/${tmpWay}/front/#/learner/model/`;
+                            //let urlPrefix = host+'/app.php/front/#/learner/model/';
                             let findModel = (resourceLocation, directory) =>{
                                 for(let i = 0; i < directory.models.length; i++){
                                     model = directory.models[i];
@@ -88,7 +90,8 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
         $scope.sendRecommendationStatement = function (recommendationTitle) {
             let encodedTitle    = encodeURIComponent(recommendationTitle);
             $.ajax({
-                url:         "/app_dev.php/api/recommendations/statement/"+encodedTitle,
+                url:         `/${tmpWay}/api/recommendations/statement/${encodedTitle}`,
+                //url:         "/app_dev.php/api/recommendations/statement/"+encodedTitle,
                 type:        "POST",
                 async:       true,
                 success: function(data, textStatus){}
