@@ -14,3 +14,5 @@
 /bin/
 /src/SimpleIT/ClaireExerciseBundle/Resources/public/frontend/js/modules/utils/build.js
 /app/config/version.yml
+/app/config/jwtRS256.key
+/app/config/jwtRS256.key.pub
