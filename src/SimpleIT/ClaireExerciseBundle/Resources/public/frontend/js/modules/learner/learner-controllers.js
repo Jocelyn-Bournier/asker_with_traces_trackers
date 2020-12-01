@@ -32,7 +32,7 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                             let protocol  = location.protocol;
                             let slashes   = protocol.concat("//");
                             let host      = slashes.concat(window.location.hostname);
-                            let urlPrefix = host+'/app.php/front/#/learner/model/';    // Remplacer par l'url de prod. 
+                            let urlPrefix = host+'/app.php/front/#/learner/model/';
                             let findModel = (resourceLocation, directory) =>{
                                 for(let i = 0; i < directory.models.length; i++){
                                     model = directory.models[i];
@@ -83,6 +83,15 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                 error: function(message, textStatus){
                     console.log(message);
                 }
+            });
+        };
+        $scope.sendRecommendationStatement = function (recommendationTitle) {
+            let encodedTitle    = encodeURIComponent(recommendationTitle);
+            $.ajax({
+                url:         "/app_dev.php/api/recommendations/statement/"+encodedTitle,
+                type:        "POST",
+                async:       true,
+                success: function(data, textStatus){}
             });
         };
     }

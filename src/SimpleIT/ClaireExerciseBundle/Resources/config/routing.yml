@@ -47,6 +47,10 @@ api_directories:
     resource: "@SimpleITClaireExerciseBundle/Resources/config/routing/api/directory.yml"
     prefix:   /api/directories/
 
+api_recommendation:
+    resource: "@SimpleITClaireExerciseBundle/Resources/config/routing/api/recommendation.yml"
+    prefix:   /api/recommendations/
+
 
 frontend:
     resource: "@SimpleITClaireExerciseBundle/Resources/config/routing/frontend/frontend.yml"

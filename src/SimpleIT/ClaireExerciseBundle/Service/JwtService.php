@@ -46,6 +46,7 @@ class JwtService
     {
         $configDirectories = array($this->rootDir.'/config');
         $fileLocator       = new FileLocator($configDirectories);
+
         $file  = $fileLocator->locate($this->keyFilename, null, true);
         $key   = file_get_contents($file);
         $token = JWT::encode($payload, $key, 'RS256');
