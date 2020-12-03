@@ -10,7 +10,7 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
             let frameworkId  = directory.framework_id;
             let recommEngine = "https://traffic.irit.fr/comper/recommendations/api/retrieve/last/json/";
             $.ajax({
-                url:         "/app_dev.php/api/directories/jwt/"+frameworkId,
+                url:         "/api/directories/jwt/"+frameworkId,
                 type:        "GET",
                 crossDomain: true,
                 async:       true,
