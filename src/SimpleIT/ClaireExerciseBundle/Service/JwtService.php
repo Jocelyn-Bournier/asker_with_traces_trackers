@@ -18,7 +18,7 @@
 
 namespace SimpleIT\ClaireExerciseBundle\Service;
 use Symfony\Component\Config\FileLocator;
-use \Firebase\JWT\JWT;
+use Firebase\JWT\JWT;
 
 /**
  * Service which manages jwt tokens
