@@ -11,7 +11,7 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
 	    let tmpWay = "app.php";
             let recommEngine = "https://traffic.irit.fr/comper/recommendations/api/retrieve/last/json/";
             $.ajax({
-                url:         `/${tmpWay}/api/directories/jwt/${frameworkId}`,
+                url:         "/api/directories/jwt/"+frameworkId,
                 type:        "GET",
                 crossDomain: true,
                 async:       true,
