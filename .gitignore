@@ -17,3 +17,6 @@
 /app/config/comper.yml
 /app/config/jwtRS256.key
 /app/config/jwtRS256.key.pub
+/composer.lock
+/src/SimpleIT/ClaireExerciseBundle/Controller/Frontend/datas.csv
+/src/SimpleIT/ClaireExerciseBundle/Controller/Frontend/newdatas.csv
