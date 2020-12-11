@@ -90,7 +90,7 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
         $scope.sendRecommendationStatement = function (recommendationTitle) {
             let encodedTitle    = encodeURIComponent(recommendationTitle);
             $.ajax({
-                url:         `/${tmpWay}/api/recommendations/statement/${encodedTitle}`,
+                url:         `/api/recommendations/statement/${encodedTitle}`,
                 //url:         "/app_dev.php/api/recommendations/statement/"+encodedTitle,
                 type:        "POST",
                 async:       true,
