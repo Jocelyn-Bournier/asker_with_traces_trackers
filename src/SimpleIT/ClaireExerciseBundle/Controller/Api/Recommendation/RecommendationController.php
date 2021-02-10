@@ -18,23 +18,37 @@
 
 namespace SimpleIT\ClaireExerciseBundle\Controller\Api\Recommendation;
 use Symfony\Component\HttpFoundation\JsonResponse;
-
 use SimpleIT\ClaireExerciseBundle\Controller\BaseController;
+use SimpleIT\ClaireExerciseBundle\Entity\ComperRecommendation;
 /**
- * API Recommendation Controller
+ * Recommendation Controller
  *
+ * ANR COMPER
  * @author Rémi Casado <remi.casado@protonmail.com>
  */
 class RecommendationController extends BaseController
 {
 
-    public function sendStatementAction($recommendationTitle)
+    /**
+     * ANR COMPER
+     * 
+     * Save a ComperRecommendationTrace corresponding to the action of clicking on a recommendation link as a learner.
+     * 
+     * Note : Originally sent a statement to the comper LRS.
+     */
+    public function sendStatementAction($directoryId, $title)
     {
-        $statementFactory = $this->container->get('app.statementFactoryService');
-        $user             = $this->get('security.context')->getToken()->getUser();
-        $statement        = $statementFactory->generateRecommendationClickStatement($user, $recommendationTitle);
-        $response         = $statementFactory->sendStatements($statement); 
-        $response = new JsonResponse($response);
+        $location = $this->get('request')->get('location');
+        $user     = $this->get('security.context')->getToken()->getUser();
+        $recomm   = new ComperRecommendationTrace();
+        $recomm->setCreatedAt(new \DateTime());
+        $recomm->setUser($user);
+        $recomm->setContextDirectory($directoryId);
+        $recomm->setResourceLocation($location);
+        $recomm->setResourceTitle($title);
+        $this->getDoctrine()->getEntityManager()->persist($recomm);
+        $this->getDoctrine()->getEntityManager()->flush();
+        $response         = new JsonResponse('Recommendation trace created');
         return $response;
     }
 

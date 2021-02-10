@@ -83,6 +83,14 @@ class AnswerByItemByAttemptController extends BaseController
             $itemResource = $this->get('simple_it.exercise.answer')
                 ->add($itemId, $answerResource, $attemptId, $this->getUserId());
 
+            // ANR COMPER : Create a statement to send to the LRS.
+            // First retrieve the current user, then generate the statement & finally send it.
+            // The function $statementFactory->generateAnswerStatement as a feature that checks if the user is attached to a directory with a frameworkId set.
+            $user             = $this->get('security.context')->getToken()->getUser();
+            $statementFactory = $this->container->get('app.statementFactoryService');
+            $statement        = $statementFactory->generateAnswerStatement($user, $itemResource, $attemptId, $answerResource, $this->getDoctrine());
+            $response         = $statementFactory->sendStatements($statement);
+
             return new ApiGotResponse($itemResource, array("corrected", 'Default'));
 
         } catch (NonExistingObjectException $neoe) {

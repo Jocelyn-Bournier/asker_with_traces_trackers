@@ -378,7 +378,11 @@ class DirectoryController extends BaseController
         }
     }
 
-    public function jwtAction($frameworkId)
+    /**
+     * ANR COMPER
+     * Creates a Token JWT to send data to the COMPER services (profile & recommendations so far)
+     */
+    public function jwtAction($frameworkId, $role)
     {
         $jwtEncoder = $this->container->get('app.jwtService');
         $user       = $this->get('security.context')->getToken()->getUser();
@@ -388,8 +392,10 @@ class DirectoryController extends BaseController
             "user"     => "asker:".$user->getUsername(),
             "fwid"     => intval($frameworkId),
             "username" => $user->getUsername(),
-            "role"     => "learner",                                     // NOTE : use actual role here for teaching admin purpose.
-            "exp"      => $timestamp
+            "role"     => $role,
+            "exp"      => $timestamp,
+            "platform" => 'asker',
+            "homepage" => 'https://asker.univ-lyon1.fr/'
         ];
         $token = $jwtEncoder->getToken($payload);
         

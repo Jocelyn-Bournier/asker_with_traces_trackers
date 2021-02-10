@@ -26,6 +26,16 @@
             <div class="col-xs-2 col-sm-2">
               <div class="col-centered pull-right">
                 <h4>
+                  <button ng-if="directory.frameworkId != null && directory.frameworkId != ''" type="submit" name="fromPlatform" 
+                          form="comper-profile-explorer" ng-click="$event.stopPropagation();getComperJWT(directory.frameworkId)" 
+                          title="Explorer les profils d'étudiants de ce dossier." style="background: none; border: none; padding: 0;">
+                    <span class="glyphicon  glyphicon-cloud-upload"></span>
+                  </button>
+                  <form ng-if="directory.frameworkId != null && directory.frameworkId != ''" id="comper-profile-explorer" 
+                        action="https://comper.projet.liris.cnrs.fr/sites/profile-engine/"
+                        method="post" target="_blank" style="display:none;">
+                    <input type="hidden" id="comper-jwt-input" name="token" />
+                  </form>
                   <span class="glyphicon" ng-class="
                   directory.is_visible ? 'glyphicon-eye-open'
                   : 'glyphicon-eye-close'"

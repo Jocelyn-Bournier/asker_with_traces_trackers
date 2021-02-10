@@ -3,6 +3,10 @@
     <div ng-if="directory.framework_id != null && directory.framework_id != ''"  ng-include="BASE_CONFIG.urls.partials.learner+'/comper-recommandations.html'" class="row">
       
     </div>
+    <div id="profileModal" ng-if="directory.framework_id != null && directory.framework_id != ''"  ng-include="BASE_CONFIG.urls.partials.learner+'/comper-profile.html'" class="modal fade"
+         tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="background: transparent; overflow-y: auto; width: 100vw;">
+      
+    </div>
     <!-- every models in directory -->
     <div ng-repeat="model in directory.models  track by $index">
       <!-- every models if attempts in directory -->

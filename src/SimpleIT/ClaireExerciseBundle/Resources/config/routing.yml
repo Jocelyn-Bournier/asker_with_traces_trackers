@@ -51,6 +51,10 @@ api_recommendation:
     resource: "@SimpleITClaireExerciseBundle/Resources/config/routing/api/recommendation.yml"
     prefix:   /api/recommendations/
 
+api_profile:
+    resource: "@SimpleITClaireExerciseBundle/Resources/config/routing/api/profile.yml"
+    prefix:   /api/profile/
+
 
 frontend:
     resource: "@SimpleITClaireExerciseBundle/Resources/config/routing/frontend/frontend.yml"

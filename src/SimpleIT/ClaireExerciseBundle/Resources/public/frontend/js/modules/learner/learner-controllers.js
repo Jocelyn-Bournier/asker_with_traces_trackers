@@ -6,19 +6,17 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
         });
         //alert('hello'+$stateParams.dirId);
         $scope.requestRecommendations = function (directory) {
-            console.log(directory);
             let frameworkId  = directory.framework_id;
-	    let tmpWay = "app.php";
-            let recommEngine = "https://traffic.irit.fr/comper/recommendations/api/retrieve/last/json/";
+            let recommEngine = "https://traffic.irit.fr/comper/recommendations/api/generate/";
             $.ajax({
-                url:         "/api/directories/jwt/"+frameworkId,
+                url:         "app_dev.php/api/directories/jwt/"+frameworkId+'/learner',
                 type:        "GET",
                 crossDomain: true,
                 async:       true,
                 success: function(data, textStatus){
                     $.ajax({
                         url:         recommEngine,
-                        type:        "GET",
+                        type:        "POST",
                         crossDomain: true,
                         async:       true,
                         headers: {          
@@ -87,16 +85,55 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                 }
             });
         };
-        $scope.sendRecommendationStatement = function (recommendationTitle) {
+        $scope.sendRecommendationStatement = function (directory, recommendationLocation, recommendationTitle) {
             let encodedTitle    = encodeURIComponent(recommendationTitle);
+            let encodedLocation = encodeURIComponent(recommendationLocation);
             $.ajax({
-                url:         `/api/recommendations/statement/${encodedTitle}`,
-                //url:         "/app_dev.php/api/recommendations/statement/"+encodedTitle,
-                type:        "POST",
+                url:         "/app_dev.php/api/recommendations/"+directory+'/'+encodedTitle+'?location='+encodedLocation,
+                type:        "GET",
                 async:       true,
                 success: function(data, textStatus){}
             });
         };
+        $scope.requestProfile = function (directory) {
+            document.getElementById('olm-target-loader').classList.remove('hidden');
+            let frameworkId   = directory.framework_id;
+            $.ajax({
+                url:         "app_dev.php/api/profile/request/"+frameworkId,
+                type:        "GET",
+                crossDomain: true,
+                async:       true,
+                success: function(data, textStatus){
+                    document.getElementById('olm-target-loader').classList.add('hidden');
+                    data = JSON.parse(data);
+                    let OLM = document._OLM;
+                    // Creates a sample framework randomly scored. This should be replaced with some framework retrieving function. 
+                    let framework = data;
+                    // Creates a tree based on the framework.
+                    let fw_tree = new OLM.CORE.FrameworkTree();
+                    fw_tree.buildFromFramework(framework);
+                    document._OLM.currentTree = fw_tree;
+                    // Creates the treeIndented object. The config is editable on the right =>  
+                    let treeIndented  = new OLM.TreeIndented(document.getElementById('olm-target'), fw_tree, {
+                        "fontHoverColor":  "rgba(0, 0, 0, 1)",
+                        "fontColor":       "rgba(0, 0, 0, .85)",
+                        "backgroundColor": "rgba(255, 255, 255, .95)"
+                    });
+                    treeIndented.onClick = (node) => {
+                    // Your click behavior here. In the exemple below, we just pompt the node in the console.
+                    }
+                    // We chose an id for the svg element. Default behavior automatically creates a unique id.
+                    treeIndented.draw(svgId = 'test-pack');
+                    document.getElementById('olm-options').classList.remove('hidden');
+                }
+            });
+            $.ajax({
+                url:     "/app_dev.php/api/profile/trace/"+directory.id+'/request',
+                type:    "POST",
+                async:   true,
+                success: function(data, textStatus){}
+            });
+        }
     }
 ]);
 learnerControllers.controller('learnerController', ['$scope', 'User', 'AttemptByExercise', 'ExerciseByModel', 'AttemptList', '$routeParams', '$location', '$stateParams',

@@ -380,4 +380,36 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * ANR COMPER
+     * 
+     * This function helps knowing if a learner just did an exercise in the context of COMPER (ie, in a directory with a frameworkId set)
+     * Retrieves the frameworkIds of the parents directory of an exerciseModel. The learner (user) must be related to the directory.
+     */
+    public function getFrameworkIdsFromUserAndModel($userId, $storedExerciseId)
+    {
+        $sql = "
+            SELECT d.frameworkId
+            FROM directory d
+            JOIN directories_models dm
+                ON d.id = dm.directory_id
+            JOIN claire_exercise_stored_exercise st
+                ON st.exercise_model_id = dm.model_id
+            JOIN asker_user_directory aud
+                ON aud.directory_id = d.id
+            WHERE st.id = :model
+            AND   aud.user_id = :user
+            AND   d.frameworkId IS NOT NULL
+        ";
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(
+            array(
+                'model' => $storedExerciseId,
+                'user' => $userId
+            )
+        );
+        return $stmt->fetchAll();
+    }
 }
