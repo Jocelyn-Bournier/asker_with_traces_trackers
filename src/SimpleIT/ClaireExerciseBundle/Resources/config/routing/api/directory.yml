@@ -73,6 +73,6 @@ api_directory_visible:
         _format: json
 
 api_directory_jwt:
-    pattern: /jwt/{frameworkId}
+    pattern: /jwt/{frameworkId}/{role}
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/Directory/Directory:jwt}
     methods: [GET]

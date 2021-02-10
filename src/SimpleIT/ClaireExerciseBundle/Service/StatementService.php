@@ -42,8 +42,35 @@ class StatementService
             "fr-FR" => "a interagi"
         ]
     ];
+    public $OBJECT_NAME_MULTIPLE_CHOICE = [
+        "en-US" => "choice",
+        "fr-FR" => "choix-multiple"
+    ];
+    public $OBJECT_NAME_SEQUENCING = [
+        "en-US" => "sequencing",
+        "fr-FR" => "ordonnancement"
+    ];
+    public $OBJECT_NAME_MATCHING = [
+        "en-US" => "matching",
+        "fr-FR" => "appariement"
+    ];
+    public $OBJECT_NAME_GROUPING = [
+        "en-US" => "matching",
+        "fr-FR" => "regroupement"
+    ];
+    public $OBJECT_NAME_OPEN_ENDED_QUESTION = [
+        "en-US" => "fill-in",
+        "fr-FR" => "réponse-ouverte"
+    ];
+    
+    const OBJECT_RECOMMENDATION_ID  = "https://comper.fr/vocabulary/recommendation";
+    const OBJECT_RESOURCE_ID_PREFIX = "https://comper.fr/xapi/activities/asker:";
+    const OBJECT_TYPE_CMI           = "http://adlnet.gov/expapi/activities/cmi.interaction";
 
-    const OBJECT_RECOMMENDATION_ID = "https://comper.fr/vocabulary/recommendation";
+    const OBJECT_INTERACTION_TYPE_CHOICE              = "choice";
+    const OBJECT_INTERACTION_TYPE_SEQUENCING          = "sequencing";
+    const OBJECT_INTERACTION_TYPE_MATCHING            = "matching";
+    const OBJECT_INTERACTION_TYPE_OPEN_ENDED_QUESTION = "fill-in";
 
     // Constantes StatementService -----------------------------------------------------------------
     const TYPE_MULTIPLE_CHOICE     = 0;
@@ -196,36 +223,67 @@ class StatementService
         ];
     }
 
-    public function setObjectFromResource()
+    public function setObjectFromResource($data)
     {
-        if  (   ($this->objectDefinitionNameType=='multiple-choice') or
-                ($this->objectDefinitionNameType=='order-items')
-            )
-         {
-
-
-            $this->object =  array(
-                'id'=> $this->objectId,
-                'objectType'=>$this->objectType,
-                'definition'=>array(     
-                            'name'=>array(
-                                'en-EN'=>$this->objectDefinitionNameType,
-                                'fr-FR'=>$this->objectDefinitionNameTypeFR
-                            ),
-                            'description'=>array(
-                                'fr-FR'=>$this->objectDefinitionDescriptionType
-                            ),
-                            'type'=>$this->objectDefinitionType,
-                            'interactionType'=>$this->objectDefinitionInteractionType,
+        if($data['type'] == 'multiple-choice'){
+            $this->object =  [
+                'id'         => StatementService::OBJECT_RESOURCE_ID_PREFIX.$data['modelId'],
+                'definition' => [     
+                                'name'                    => $this->OBJECT_NAME_MULTIPLE_CHOICE,
+                                'description'             => [
+                                    'fr-FR' => $data['description'] //$this->objectDefinitionDescriptionType
+                                ],
+                                'type'                    => StatementService::OBJECT_TYPE_CMI,
+                                'interactionType'         => StatementService::OBJECT_INTERACTION_TYPE_CHOICE,
+                                'choices'                 => $data['choices'],
+                                'correctResponsesPattern' => $data['correctAnswer'],
+                                "extensions" => [
+                                    StatementService::EXTENSION_NODE_ID => $data['modelId']
+                                ]
+                ],
+                'objectType' => 'Activity'         
                             // 'moreInfo'=>'http:/localhost/data/xAPI/statements/acvitities/moreinfo/'.$this->moreInfo,
-                            'choices'=>$this->choices,
-                            'correctResponsesPattern'=>$this->askedanswers         
-                )
-            );
+            ];
         }
-
-        if ($this->objectDefinitionNameType=='open-ended-question'){
-                   $this->object =  array(
+        else if($data['type'] == 'order-items'){
+            $this->object =  [
+                'id'         => StatementService::OBJECT_RESOURCE_ID_PREFIX.$data['modelId'],
+                'objectType' => 'Activity',
+                'definition' => [     
+                                'name'                    => $this->OBJECT_NAME_SEQUENCING,
+                                'description'             => [
+                                    'fr-FR' => $data['description'] //$this->objectDefinitionDescriptionType
+                                ],
+                                'type'                    => StatementService::OBJECT_TYPE_CMI,
+                                'interactionType'         => StatementService::OBJECT_INTERACTION_TYPE_SEQUENCING,
+                                'choices'                 => $data['choices'],
+                                'correctResponsesPattern' => $data['correctAnswer'],
+                                "extensions" => [
+                                    StatementService::EXTENSION_NODE_ID => $data['modelId']
+                                ]
+                ]         
+                            // 'moreInfo'=>'http:/localhost/data/xAPI/statements/acvitities/moreinfo/'.$this->moreInfo,
+            ];
+        }
+        else if ($data['type'] == 'open-ended-question'){
+            $this->object =  [
+                'id'         => StatementService::OBJECT_RESOURCE_ID_PREFIX.$data['modelId'],
+                'definition' => [     
+                                'name'                    => $this->OBJECT_NAME_OPEN_ENDED_QUESTION,
+                                'description'             => [
+                                    'fr-FR' => $data['description'] //$this->objectDefinitionDescriptionType
+                                ],
+                                'type'                    => StatementService::OBJECT_TYPE_CMI,
+                                'interactionType'         => StatementService::OBJECT_INTERACTION_TYPE_OPEN_ENDED_QUESTION,
+                                'correctResponsesPattern' => $data['correctAnswer'],
+                                "extensions" => [
+                                    StatementService::EXTENSION_NODE_ID => $data['modelId']
+                                ]
+                ],
+                'objectType' => 'Activity'         
+            ];
+            /*
+                    $this->object =  array(
                     'id'=> $this->objectId,
                     'objectType'=>$this->objectType,
                     'definition'=>array(    
@@ -242,10 +300,29 @@ class StatementService
                                 'correctResponsesPattern'=>$this->askedanswers         
                     )
                 );
+            */
         }
-       if (($this->objectDefinitionNameType=='pair-items') or 
-           ($this->objectDefinitionNameType=='group-items')
-       ){
+        else if ($data['type'] == 'pair-items'){
+            $this->object =  [
+                'id'         => StatementService::OBJECT_RESOURCE_ID_PREFIX.$data['modelId'],
+                'objectType' => 'Activity',
+                'definition' => [     
+                                    'name'                    => $this->OBJECT_NAME_MATCHING,
+                                    'description'             => [
+                                        'fr-FR' => $data['description'] //$this->objectDefinitionDescriptionType
+                                    ],
+                                    'type'                    => StatementService::OBJECT_TYPE_CMI,
+                                    'interactionType'         => StatementService::OBJECT_INTERACTION_TYPE_MATCHING,
+                                    'source'                  => $data['source'],
+                                    'target'                  => $data['target'],
+                                    'correctResponsesPattern' => $data['correctAnswer'],
+                                    "extensions" => [
+                                        StatementService::EXTENSION_NODE_ID => $data['modelId']
+                                    ]
+                                ]         
+                            // 'moreInfo'=>'http:/localhost/data/xAPI/statements/acvitities/moreinfo/'.$this->moreInfo,
+            ];
+            /*
                    $this->object =  array(
                         'id'=> $this->objectId,
                         'objectType'=>$this->objectType,
@@ -269,7 +346,45 @@ class StatementService
                                 'correctResponsesPattern'=>$this->askedanswers         
                     )
                 );
+            */
         }
+        else if ($data['type']=='group-items'){
+            $this->object =  [
+                'id'         => StatementService::OBJECT_RESOURCE_ID_PREFIX.$data['modelId'],
+                'objectType' => 'Activity',
+                'definition' => [     
+                                    'name'                    => $this->OBJECT_NAME_GROUPING,
+                                    'description'             => [
+                                        'fr-FR' => $data['description'] //$this->objectDefinitionDescriptionType
+                                    ],
+                                    'type'                    => StatementService::OBJECT_TYPE_CMI,
+                                    'interactionType'         => StatementService::OBJECT_INTERACTION_TYPE_MATCHING,
+                                    'source'                  => $data['source'],
+                                    'target'                  => $data['target'],
+                                    'correctResponsesPattern' => $data['correctAnswer'],
+                                    "extensions" => [
+                                        StatementService::EXTENSION_NODE_ID => $data['modelId']
+                                    ]
+                                ]         
+                            // 'moreInfo'=>'http:/localhost/data/xAPI/statements/acvitities/moreinfo/'.$this->moreInfo,
+            ];
+        }
+    }
+
+    public function setResult($data)
+    {
+        $success = ($data['mark'] == 100);
+        $this->result = [
+            'completion' => true,
+            'success'    => $success,
+            'response'   => $data['answers'],
+            'score'      => [
+                'scaled' => $data['mark'] / 100
+            ]/*,
+            'extensions' => [
+                'http:/localhost/data/xAPI/statements/result/correct'=> $this->correcte 
+            ] */
+        ];
     }
 
     public function setObjectId($objectId)
@@ -429,24 +544,7 @@ class StatementService
 
     /*************************************************************************************************************/
 
-    public function setResult()
-    {
-        $this->result = 
-                        array(
-
-                            'completion'=>$this->completion,
-                            'success'=>$this->sucess,
-                            'response'=>$this->answsers,
-
-                            'score'=>array(
-                                'scaled'=>$this->scaled/100
-                            ),
-
-                            'extensions'=>array(
-                                'http:/localhost/data/xAPI/statements/result/correct'=> $this->correcte 
-                            )                               
-                        );
-    }
+    
 
 
    

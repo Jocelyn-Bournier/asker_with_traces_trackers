@@ -45,6 +45,19 @@ directoryControllers.controller('directoryListController', ['$scope', 'MyDirecto
         $scope.editDirectory = function(directory){
             $location.path('/teacher/directory/' + directory.id)
         }
+        $scope.getComperJWT = function (frameworkId) {
+            $.ajax({
+                url:         "app_dev.php/api/directories/jwt/"+frameworkId+'/teacher',
+                type:        "GET",
+                crossDomain: true,
+                async:       false,
+                success: function(data, textStatus){
+                    let token = data['token'];
+                    document.getElementById('comper-jwt-input').value = token;
+                }
+            });
+            return true;
+        }
     }
 ]);
 directoryControllers.controller('directoryEditController', ['$scope','$stateParams', 'MyDirectory', 'AvailableManagers',
