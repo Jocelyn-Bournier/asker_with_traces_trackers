@@ -113,7 +113,8 @@
           break;
     }
     $.ajax({
-      url:     "/app_dev.php/api/profile/trace/"+directoryId+'/'+action,
+      //url:     "/app_dev.php/api/profile/trace/"+directoryId+'/'+action,
+      url:     "/api/profile/trace/"+directoryId+'/'+action,
       type:    "POST",
       async:   true,
       success: function(data, textStatus){}

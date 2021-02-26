@@ -9,7 +9,8 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
             let frameworkId  = directory.framework_id;
             let recommEngine = "https://traffic.irit.fr/comper/recommendations/api/generate/";
             $.ajax({
-                url:         "app_dev.php/api/directories/jwt/"+frameworkId+'/learner',
+                //url:         "app_dev.php/api/directories/jwt/"+frameworkId+'/learner',
+                url:         "/api/directories/jwt/"+frameworkId+'/learner',
                 type:        "GET",
                 crossDomain: true,
                 async:       true,
@@ -89,7 +90,8 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
             let encodedTitle    = encodeURIComponent(recommendationTitle);
             let encodedLocation = encodeURIComponent(recommendationLocation);
             $.ajax({
-                url:         "/app_dev.php/api/recommendations/"+directory+'/'+encodedTitle+'?location='+encodedLocation,
+                //url:         "/app_dev.php/api/recommendations/"+directory+'/'+encodedTitle+'?location='+encodedLocation,
+                url:         "/api/recommendations/"+directory+'/'+encodedTitle+'?location='+encodedLocation,
                 type:        "GET",
                 async:       true,
                 success: function(data, textStatus){}
@@ -99,7 +101,8 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
             document.getElementById('olm-target-loader').classList.remove('hidden');
             let frameworkId   = directory.framework_id;
             $.ajax({
-                url:         "app_dev.php/api/profile/request/"+frameworkId,
+                //url:         "app_dev.php/api/profile/request/"+frameworkId,
+                url:         "/api/profile/request/"+frameworkId,
                 type:        "GET",
                 crossDomain: true,
                 async:       true,
@@ -128,7 +131,8 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                 }
             });
             $.ajax({
-                url:     "/app_dev.php/api/profile/trace/"+directory.id+'/request',
+                //url:     "/app_dev.php/api/profile/trace/"+directory.id+'/request',
+                url:     "/api/profile/trace/"+directory.id+'/request',
                 type:    "POST",
                 async:   true,
                 success: function(data, textStatus){}
