@@ -41,7 +41,7 @@ class ProfileController extends BaseController
         $timestamp  = new \DateTime();
         $timestamp  = $timestamp->getTimestamp()+30;
         $payload    = [
-            "user"     => "asker:".$user->getUsername(),
+            "user"     => "asker:".$user->getId(),
             "fwid"     => intval($framework_id),
             "username" => $user->getUsername(),
             "role"     => 'learner',

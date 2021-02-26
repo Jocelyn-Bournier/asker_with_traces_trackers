@@ -158,7 +158,8 @@ class StatementService
                                 'choices'                 => $data['choices'],
                                 'correctResponsesPattern' => $data['correctAnswer'],
                                 "extensions" => [
-                                    StatementService::EXTENSION_NODE_ID => $data['modelId']
+                                    #StatementService::EXTENSION_NODE_ID => $data['modelId']
+				    StatementService::EXTENSION_NODE_ID => 'asker:'.$data['modelId']
                                 ]
                 ],
                 'objectType' => 'Activity'         
@@ -178,7 +179,8 @@ class StatementService
                                 'choices'                 => $data['choices'],
                                 'correctResponsesPattern' => $data['correctAnswer'],
                                 "extensions" => [
-                                    StatementService::EXTENSION_NODE_ID => $data['modelId']
+                                    #StatementService::EXTENSION_NODE_ID => $data['modelId']
+				    StatementService::EXTENSION_NODE_ID => 'asker:'.$data['modelId']
                                 ]
                 ]         
             ];
@@ -195,7 +197,8 @@ class StatementService
                                 'interactionType'         => StatementService::OBJECT_INTERACTION_TYPE_OPEN_ENDED_QUESTION,
                                 'correctResponsesPattern' => $data['correctAnswer'],
                                 "extensions" => [
-                                    StatementService::EXTENSION_NODE_ID => $data['modelId']
+                                    #StatementService::EXTENSION_NODE_ID => $data['modelId']
+				    StatementService::EXTENSION_NODE_ID => 'asker:'.$data['modelId']
                                 ]
                 ],
                 'objectType' => 'Activity'         
@@ -216,7 +219,8 @@ class StatementService
                                     'target'                  => $data['target'],
                                     'correctResponsesPattern' => $data['correctAnswer'],
                                     "extensions" => [
-                                        StatementService::EXTENSION_NODE_ID => $data['modelId']
+                                        #StatementService::EXTENSION_NODE_ID => $data['modelId']
+					StatementService::EXTENSION_NODE_ID => 'asker:'.$data['modelId']
                                     ]
                                 ]         
             ];
@@ -236,7 +240,8 @@ class StatementService
                                     'target'                  => $data['target'],
                                     'correctResponsesPattern' => $data['correctAnswer'],
                                     "extensions" => [
-                                        StatementService::EXTENSION_NODE_ID => $data['modelId']
+                                        #StatementService::EXTENSION_NODE_ID => $data['modelId']
+					StatementService::EXTENSION_NODE_ID => 'asker:'.$data['modelId']
                                     ]
                                 ]         
             ];

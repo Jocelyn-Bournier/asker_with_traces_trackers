@@ -98,6 +98,7 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
             });
         };
         $scope.requestProfile = function (directory) {
+	    document.getElementById('olm-target').innerHTML = '';
             document.getElementById('olm-target-loader').classList.remove('hidden');
             let frameworkId   = directory.framework_id;
             $.ajax({

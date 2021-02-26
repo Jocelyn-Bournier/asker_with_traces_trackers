@@ -138,7 +138,7 @@ class StatementFactoryService
         $data['mark']        = $answer[count($answer) - 1]->getMark();
         $statement = new StatementService();
 
-        $userId = "asker:".$user->getUsername();
+        $userId = "asker:".$user->getId();
         $statement->setActor(StatementService::ASKER_PROFILE_HOME, $userId);
 
         $statement->setVerb($statement->VERB_ANSWERED);
