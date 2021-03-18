@@ -1,7 +1,7 @@
 var learnerControllers = angular.module('learnerControllers', ['ui.router']);
 
-learnerControllers.controller('directoryModelListController', ['$scope', '$stateParams','DirectoryModelList',
-    function ($scope,$stateParams,DirectoryModelList) {
+learnerControllers.controller('directoryModelListController', ['$scope', '$stateParams','DirectoryModelList','$http',
+    function ($scope,$stateParams,DirectoryModelList,$http) {
         $scope.directory= DirectoryModelList.get({id: $stateParams.dirId}, function () {
         });
         //alert('hello'+$stateParams.dirId);
@@ -10,7 +10,8 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
             let recommEngine = "https://traffic.irit.fr/comper/recommendations/api/generate/";
             $.ajax({
                 //url:         "app_dev.php/api/directories/jwt/"+frameworkId+'/learner',
-                url:         "/api/directories/jwt/"+frameworkId+'/learner',
+                //url:         "/api/directories/jwt/"+frameworkId+'/learner',
+                url:         `${BASE_CONFIG.urls.api.directories}jwt/${frameworkId}/learner`,
                 type:        "GET",
                 crossDomain: true,
                 async:       true,
@@ -20,13 +21,14 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                         type:        "POST",
                         crossDomain: true,
                         async:       true,
-                        headers: {          
+                        headers: {
                             "Accept": "application/json",
                             "Accept-Language": "*",
                             "Accept-Charset": "*",
-                        },  
+                            //"Access-Control-Allow-Origin":"*"
+                        },
                         beforeSend: function(xhr){
-                          xhr.setRequestHeader("Authorization", "Bearer "+data['token']);  
+                          xhr.setRequestHeader("Authorization", "Bearer "+data['token']);
                         },
                         success: function(data, textStatus){
                             let protocol  = location.protocol;
@@ -103,7 +105,8 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
             let frameworkId   = directory.framework_id;
             $.ajax({
                 //url:         "app_dev.php/api/profile/request/"+frameworkId,
-                url:         "/api/profile/request/"+frameworkId,
+                //url:         "/api/profile/request/"+frameworkId,
+                url:         `${BASE_CONFIG.urls.api.profile}request/${frameworkId}`,
                 type:        "GET",
                 crossDomain: true,
                 async:       true,
@@ -133,7 +136,7 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
             });
             $.ajax({
                 //url:     "/app_dev.php/api/profile/trace/"+directory.id+'/request',
-                url:     "/api/profile/trace/"+directory.id+'/request',
+                url:     `${BASE_CONFIG.urls.api.profile}trace/${frameworkId}/request`,
                 type:    "POST",
                 async:   true,
                 success: function(data, textStatus){}
