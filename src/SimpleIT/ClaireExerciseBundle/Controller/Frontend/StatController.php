@@ -109,18 +109,22 @@ class StatController extends BaseController
             }
             //possible than dir->getLastView returns null
             // ces fonctions retournent sur l'intégralité du temps si no view
-            $users = $this->get('simple_it.exercise.directory')->getIdUsers($directory, $view);
-            $usernames = $this->get('simple_it.exercise.directory')->getUsernames($directory, $view);
+            $users = $this->get('simple_it.exercise.directory')->getUsers($directory, $view);
+            $stats = $this->get('simple_it.exercise.directory')->getPreviewStats($directory, $users, $view);
             $params = array(
-                    'directories' => '',
-                    'users' => count($users),
-                    'usernames' => $usernames
+                'directory' => $directory->getId(),
+                'directories' => '',
+                'users' => $users,
+                'stats' => $stats,
+                'userscount' => count($users)
             );
             if (!is_null($view)){
                 // every users connected between frame time
-                $directories = $this->get('simple_it.exercise.directory')->getModelStats($directory,$view, $users);
+                $ids = $this->get('simple_it.exercise.directory')->getIdUsers($directory, $view);
+                $directories = $this->get('simple_it.exercise.directory')->getModelStats($directory,$view, $ids);
                 $params['directories'] = $directories;
                 $params['view'] = $view->getId();
+
             }
             return $this->render(
                 'SimpleITClaireExerciseBundle:Frontend:ajax_detail_stat_directory.html.twig',$params
@@ -153,6 +157,12 @@ class StatController extends BaseController
             );
         }
         return $this->redirectToRoute('admin_stats');
+    }
+    public function statDetailAction(Directory $directory, StatView $view = null, $stats)
+    {
+        return $this->render(
+            'SimpleITClaireExerciseBundle:Frontend:detail_stat_user.html.twig'
+        );
     }
 
     public function createViewAction(Directory $directory)

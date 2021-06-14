@@ -1,0 +1,17 @@
+{% extends "SimpleITClaireExerciseBundle:Frontend:template_creator.html.twig" %}
+{% block content %}
+  <div class="container">
+    <h2>Les statistiques</h2>
+
+    {% for type, flash_messages in app.session.flashBag.all %}
+      {% for flash_message in flash_messages %}
+        <div class="flash-{{ type }}">
+          {{ flash_message }}
+        </div>
+      {% endfor %}
+    {% endfor %}
+    <div class='col-xs-9'>
+        Fiche détaillée
+    </div>
+ </div>
+{% endblock %}

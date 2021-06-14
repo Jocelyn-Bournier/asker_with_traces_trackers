@@ -18,7 +18,7 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
             SimpleIT\ClaireExerciseBundle\Entity\CreatedExercise\Attempt a
             JOIN a.exercise ese
             JOIN ese.exerciseModel em
-            WHERE a.user  = $user 
+            WHERE a.user  = $user
             AND em.id = $model"
         )
         ->getResult();
@@ -383,7 +383,7 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * ANR COMPER
-     * 
+     *
      * This function helps knowing if a learner just did an exercise in the context of COMPER (ie, in a directory with a frameworkId set)
      * Retrieves the frameworkIds of the parents directory of an exerciseModel. The learner (user) must be related to the directory.
      */
@@ -410,6 +410,40 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
                 'user' => $userId
             )
         );
+        return $stmt->fetchAll();
+    }
+    public function getPreviewStats($model,$user,$view)
+    {
+        $sql = "
+            select count(an.id) as count,
+                avg(an.mark) as mark,
+                min(an.created_at) as firstDate,
+                max(an.created_at) as lastDate
+            from claire_exercise_attempt a
+            join claire_exercise_answer an on a.id = an.attempt_id
+            join claire_exercise_stored_exercise se on a.exercise_id = se.id
+            join claire_exercise_model m on se.exercise_model_id = m.id
+            join directories_models dm on m.id = dm.model_id
+            join directory d on dm.directory_id = d.id
+            where a.user_id = :user
+                and d.parent_id = :model
+        ";
+
+        $params = array(
+            ':user'=> $user,
+            ':model'=> $model
+        );
+
+        if($view != null){
+            $sql .= "and an.created_at > :start
+                     and an.created_at < :end";
+
+            $params[':start'] = $view->getStartDate()->format('Y-m-d');
+            $params[':end'] = $view->getEndDate()->format('Y-m-d');
+        }
+
+        $stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+        $stmt->execute($params);
         return $stmt->fetchAll();
     }
 }
