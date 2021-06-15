@@ -448,12 +448,13 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
         $stmt->execute($params);
         return $stmt->fetchAll();
     }
-    function JSONmodelMark($model, $user)
+    function JSONmodelStats($model, $user)
     {
         $sql = "
             SELECT AVG(an.mark) value,
                 d.name directory,
-                m.title model
+                m.title model,
+                COUNT(an.mark) total
             FROM claire_exercise_answer an
             JOIN claire_exercise_attempt at
                 ON an.attempt_id = at.id

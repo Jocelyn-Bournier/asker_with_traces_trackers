@@ -202,10 +202,10 @@ class DirectoryService extends TransactionalService
         }
         return $json;
     }
-    public function JSONmodelMark($directory,$user)
+    public function JSONmodelStats($directory,$user)
     {
         return $this->directoryRepository->
-            JSONmodelMark($directory,$user);
+            JSONmodelStats($directory,$user);
     }
     public function getModelStats(Directory $directory, $view, $ids)
     {

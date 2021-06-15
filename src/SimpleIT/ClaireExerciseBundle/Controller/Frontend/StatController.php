@@ -167,17 +167,21 @@ class StatController extends BaseController
         ;
 
         $json = array();
-        foreach ($models as $model) {
-            $json[] = $this->get('simple_it.exercise.directory')->
-                JSONmodelMark($model['id'], $user->getId())[0]
+        foreach ($models as $key => $model) {
+            $json[$key] = $this->get('simple_it.exercise.directory')->
+                JSONmodelStats($model['id'], $user->getId())[0]
             ;
+            if($json[$key]['total'] == 0) unset($json[$key]);
         }
+
+        $json = array_values(array_filter($json));
 
         return $this->render(
             'SimpleITClaireExerciseBundle:Frontend:detail_stat_user.html.twig',
             array(
                 'stats' => $stats[0],
-                'json' => $json
+                'json' => $json,
+                'name' => $directory->getName()
             )
         );
     }
