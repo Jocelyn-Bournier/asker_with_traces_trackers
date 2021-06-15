@@ -11,8 +11,8 @@ admin_stats_directory:
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Stat:statDirectory, view:0 }
 
 admin_stats_detail:
-    pattern: /directory/detail/{directory}/{stats.user.id}/{view}
-    defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Stat:statDetail, view:0 }
+    pattern: /detail/{directory}/{user}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Stat:statDetail}
 
 admin_stats_create_view:
     pattern: /directory/createView/{directory}

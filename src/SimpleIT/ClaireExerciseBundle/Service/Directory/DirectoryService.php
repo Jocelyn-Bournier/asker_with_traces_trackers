@@ -97,6 +97,11 @@ class DirectoryService extends TransactionalService
         return $this->directoryRepository->findMine($user->getId());
     }
 
+    public function findAllModelsIds($id)
+    {
+        return $this->directoryRepository->findAllModelsIds($id);
+    }
+
     public function find($id)
     {
         return $this->directoryRepository->find($id);
@@ -196,6 +201,11 @@ class DirectoryService extends TransactionalService
             $json[] = array('range' => $key, 'nb' => $val);
         }
         return $json;
+    }
+    public function JSONmodelMark($directory,$user)
+    {
+        return $this->directoryRepository->
+            JSONmodelMark($directory,$user);
     }
     public function getModelStats(Directory $directory, $view, $ids)
     {
@@ -443,11 +453,15 @@ class DirectoryService extends TransactionalService
                 $stats[$key]['mark'] = round($stat[0]['mark'],2);
                 $stats[$key]['firstDate'] = $stat[0]['firstDate'];
                 $stats[$key]['lastDate'] = $stat[0]['lastDate'];
+                $stats[$key]['firstDate2'] = $stat[0]['firstDate2'];
+                $stats[$key]['lastDate2'] = $stat[0]['lastDate2'];
             }
             else{
                 $stats[$key]['mark'] = "-";
                 $stats[$key]['firstDate'] = "-";
                 $stats[$key]['lastDate'] = "-";
+                $stats[$key]['firstDate2'] = "-";
+                $stats[$key]['lastDate2'] = "-";
             }
         }
         return $stats;

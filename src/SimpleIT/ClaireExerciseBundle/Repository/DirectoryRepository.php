@@ -418,7 +418,9 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
             select count(an.id) as count,
                 avg(an.mark) as mark,
                 min(an.created_at) as firstDate,
-                max(an.created_at) as lastDate
+                max(an.created_at) as lastDate,
+                min(a.created_at) as firstDate2,
+                max(a.created_at) as lastDate2
             from claire_exercise_attempt a
             join claire_exercise_answer an on a.id = an.attempt_id
             join claire_exercise_stored_exercise se on a.exercise_id = se.id
@@ -446,4 +448,70 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
         $stmt->execute($params);
         return $stmt->fetchAll();
     }
+    function JSONmodelMark($model, $user)
+    {
+        $sql = "
+            SELECT AVG(an.mark) value,
+                d.name directory,
+                m.title model
+            FROM claire_exercise_answer an
+            JOIN claire_exercise_attempt at
+                ON an.attempt_id = at.id
+            JOIN claire_exercise_stored_exercise st
+                ON at.exercise_id = st.id
+            JOIN directories_models dm
+                ON st.exercise_model_id = dm.model_id
+            JOIN claire_exercise_model m
+                ON m.id = dm.model_id
+            JOIN directory d
+                ON d.id = dm.directory_id
+            WHERE dm.model_id = :model
+                AND at.user_id = :user
+        ";
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(array('model'=>$model,'user'=>$user));
+        return $stmt->fetchAll();
+    }
+    function findAllModelsIds($id)
+    {
+        $sql = "
+            SELECT m.id
+            FROM claire_exercise_model m
+            JOIN directories_models dm
+                ON dm.model_id = m.id
+            JOIN directory d
+                ON d.id = dm.directory_id
+            WHERE d.parent_id = :id
+        ";
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(array('id'=>$id));
+        return $stmt->fetchAll();
+    }
+
+    /*
+    SELECT an.mark value,
+                d.name directory,
+                m.title model
+            FROM claire_exercise_answer an
+            JOIN claire_exercise_attempt at
+                ON an.attempt_id = at.id
+            JOIN claire_exercise_stored_exercise st
+                ON at.exercise_id = st.id
+            JOIN directories_models dm
+                ON st.exercise_model_id = dm.model_id
+            JOIN claire_exercise_model m
+                ON m.id = dm.model_id
+            JOIN directory d
+                ON d.id = dm.directory_id
+            WHERE dm.model_id in (SELECT m.id
+            FROM claire_exercise_model m
+            JOIN directories_models dm
+                ON dm.model_id = m.id
+            JOIN directory d
+                ON d.id = dm.directory_id
+            WHERE d.parent_id = 1)
+                AND at.user_id = 919
+    */
 }

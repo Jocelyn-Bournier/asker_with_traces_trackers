@@ -112,14 +112,13 @@ class StatController extends BaseController
             $users = $this->get('simple_it.exercise.directory')->getUsers($directory, $view);
             $stats = $this->get('simple_it.exercise.directory')->getPreviewStats($directory, $users, $view);
             $params = array(
-                'directory' => $directory->getId(),
+                'directory' => $directory,
                 'directories' => '',
                 'users' => $users,
                 'stats' => $stats,
                 'userscount' => count($users)
             );
             if (!is_null($view)){
-                // every users connected between frame time
                 $ids = $this->get('simple_it.exercise.directory')->getIdUsers($directory, $view);
                 $directories = $this->get('simple_it.exercise.directory')->getModelStats($directory,$view, $ids);
                 $params['directories'] = $directories;
@@ -158,10 +157,28 @@ class StatController extends BaseController
         }
         return $this->redirectToRoute('admin_stats');
     }
-    public function statDetailAction(Directory $directory, StatView $view = null, $stats)
+    public function statDetailAction(Directory $directory, AskerUser $user)
     {
+        $stats = $this->get('simple_it.exercise.directory')->
+            getPreviewStats($directory,array('0' => $user),null)
+        ;
+        $models = $this->get('simple_it.exercise.directory')->
+            findAllModelsIds($directory->getId())
+        ;
+
+        $json = array();
+        foreach ($models as $model) {
+            $json[] = $this->get('simple_it.exercise.directory')->
+                JSONmodelMark($model['id'], $user->getId())[0]
+            ;
+        }
+
         return $this->render(
-            'SimpleITClaireExerciseBundle:Frontend:detail_stat_user.html.twig'
+            'SimpleITClaireExerciseBundle:Frontend:detail_stat_user.html.twig',
+            array(
+                'stats' => $stats[0],
+                'json' => $json
+            )
         );
     }
 
