@@ -448,13 +448,13 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
         $stmt->execute($params);
         return $stmt->fetchAll();
     }
-    function JSONmodelStats($model, $user)
+    function JSONUserStats($model, $user, $view)
     {
         $sql = "
-            SELECT AVG(an.mark) value,
+            SELECT AVG(an.mark) mark,
                 d.name directory,
-                m.title model,
-                COUNT(an.mark) total
+                m.title name,
+                COUNT(an.id) total
             FROM claire_exercise_answer an
             JOIN claire_exercise_attempt at
                 ON an.attempt_id = at.id
@@ -469,15 +469,29 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
             WHERE dm.model_id = :model
                 AND at.user_id = :user
         ";
+
+        $params = array(
+            'model'=>$model,
+            'user'=>$user
+        );
+
+        if($view != null){
+            $sql .= "and an.created_at > :start
+                     and an.created_at < :end";
+
+            $params[':start'] = $view->getStartDate()->format('Y-m-d');
+            $params[':end'] = $view->getEndDate()->format('Y-m-d');
+        }
+
         $conn = $this->getEntityManager()->getConnection();
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array('model'=>$model,'user'=>$user));
+        $stmt->execute($params);
         return $stmt->fetchAll();
     }
     function findAllModelsIds($id)
     {
         $sql = "
-            SELECT m.id
+            SELECT m.id, d.id dir
             FROM claire_exercise_model m
             JOIN directories_models dm
                 ON dm.model_id = m.id
@@ -490,11 +504,13 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
         $stmt->execute(array('id'=>$id));
         return $stmt->fetchAll();
     }
-
-    /*
-    SELECT an.mark value,
-                d.name directory,
-                m.title model
+    function getSubDirsStats($id,$user,$view)
+    {
+        $sql = "
+            SELECT d.id id,
+                d.name name,
+                COUNT(an.id) total,
+                AVG(an.mark) mark
             FROM claire_exercise_answer an
             JOIN claire_exercise_attempt at
                 ON an.attempt_id = at.id
@@ -506,13 +522,66 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
                 ON m.id = dm.model_id
             JOIN directory d
                 ON d.id = dm.directory_id
-            WHERE dm.model_id in (SELECT m.id
-            FROM claire_exercise_model m
+            WHERE d.parent_id = :id
+                AND at.user_id = :user
+        ";
+
+        $params = array(
+            'id'=>$id,
+            'user'=>$user
+        );
+
+        if($view != null){
+            $sql .= "and an.created_at > :start
+                     and an.created_at < :end";
+
+            $params[':start'] = $view->getStartDate()->format('Y-m-d');
+            $params[':end'] = $view->getEndDate()->format('Y-m-d');
+        }
+        $sql .= " GROUP BY d.id";
+
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    }
+    function getModelsStats($id,$user,$view)
+    {
+        $sql = "
+            SELECT m.id id,
+                m.title name,
+                COUNT(an.id) total,
+                AVG(an.mark) mark
+            FROM claire_exercise_answer an
+            JOIN claire_exercise_attempt at
+                ON an.attempt_id = at.id
+            JOIN claire_exercise_stored_exercise st
+                ON at.exercise_id = st.id
             JOIN directories_models dm
-                ON dm.model_id = m.id
-            JOIN directory d
-                ON d.id = dm.directory_id
-            WHERE d.parent_id = 1)
-                AND at.user_id = 919
-    */
+                ON st.exercise_model_id = dm.model_id
+            JOIN claire_exercise_model m
+                ON m.id = dm.model_id
+            WHERE dm.directory_id = :id
+                AND at.user_id = :user
+        ";
+
+        $params = array(
+            'id'=>$id,
+            'user'=>$user
+        );
+
+        if($view != null){
+            $sql .= "and an.created_at > :start
+                     and an.created_at < :end";
+
+            $params[':start'] = $view->getStartDate()->format('Y-m-d');
+            $params[':end'] = $view->getEndDate()->format('Y-m-d');
+        }
+        $sql .= " GROUP BY m.id";
+
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    }
 }

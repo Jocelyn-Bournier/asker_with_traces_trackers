@@ -202,10 +202,23 @@ class DirectoryService extends TransactionalService
         }
         return $json;
     }
-    public function JSONmodelStats($directory,$user)
+    public function JSONUserStats($directory,$user,$view)
     {
-        return $this->directoryRepository->
-            JSONmodelStats($directory,$user);
+        $models = $this->directoryRepository->
+            findAllModelsIds($directory->getId())
+        ;
+
+        $json = array();
+
+        foreach ($models as $key => $model) {
+            $json[$key] = $this->directoryRepository->
+                JSONUserStats($model['id'], $user->getId(), $view)[0]
+            ;
+            if($json[$key]['total'] == 0) unset($json[$key]);
+        }
+        $json = array_values(array_filter($json));
+
+        return $json;
     }
     public function getModelStats(Directory $directory, $view, $ids)
     {
@@ -439,12 +452,12 @@ class DirectoryService extends TransactionalService
         }
     }
 
-    public function getPreviewStats(Directory $directory, $users, $views)
+    public function getPreviewStats(Directory $directory, $users, $view)
     {
         $stats = array();
         foreach ($users as $key => $user) {
             $stat = $this->directoryRepository->
-                getPreviewStats($directory->getId(),$user->getId(),$views)
+                getPreviewStats($directory->getId(),$user->getId(),$view)
             ;
 
             $stats[$key]['user'] = $user;
@@ -492,5 +505,18 @@ class DirectoryService extends TransactionalService
             throw new AccessDeniedException();
         }
 
+    }
+    public function JSONUserModelsStats($directory,$user,$view)
+    {
+        $dirs = $this->directoryRepository->
+            getSubDirsStats($directory->getId(),$user->getId(),$view)
+        ;
+        foreach ($dirs as $key => $dir) {
+            $dirs[$key]['models'] = $this->directoryRepository->
+                getModelsStats($dir['id'],$user->getId(),$view)
+            ;
+        }
+
+        return $dirs;
     }
 }

@@ -157,33 +157,42 @@ class StatController extends BaseController
         }
         return $this->redirectToRoute('admin_stats');
     }
-    public function statDetailAction(Directory $directory, AskerUser $user)
+    public function statDetailAction(Directory $directory, AskerUser $user, StatView $view = null)
     {
-        $stats = $this->get('simple_it.exercise.directory')->
-            getPreviewStats($directory,array('0' => $user),null)
-        ;
-        $models = $this->get('simple_it.exercise.directory')->
-            findAllModelsIds($directory->getId())
-        ;
+        if (
+            $directory->hasManager($user)
+            || $this->get('security.context')->isGranted('ROLE_ADMIN')
+            || $directory->getOwner() == $user
+        ){
+            $this->get('simple_it.exercise.directory')->hasView($directory);
+            if ($view == null){
+                $view = $directory->getLastView();
+            }
 
-        $json = array();
-        foreach ($models as $key => $model) {
-            $json[$key] = $this->get('simple_it.exercise.directory')->
-                JSONmodelStats($model['id'], $user->getId())[0]
+            $stats = $this->get('simple_it.exercise.directory')->
+                getPreviewStats($directory,array('0' => $user),$view)[0]
             ;
-            if($json[$key]['total'] == 0) unset($json[$key]);
+
+            $json = $this->get('simple_it.exercise.directory')->
+                JSONUserStats($directory, $user, $view)
+            ;
+
+            $json_directory = $this->get('simple_it.exercise.directory')->
+                JSONUserModelsStats($directory, $user, $view)
+            ;
+
+            return $this->render(
+                'SimpleITClaireExerciseBundle:Frontend:detail_stat_user.html.twig',
+                array(
+                    'stats' => $stats,
+                    'json' => $json,
+                    'json_directory' => $json_directory,
+                    'name' => $directory->getName(),
+                    'view' => $view
+                )
+            );
         }
-
-        $json = array_values(array_filter($json));
-
-        return $this->render(
-            'SimpleITClaireExerciseBundle:Frontend:detail_stat_user.html.twig',
-            array(
-                'stats' => $stats[0],
-                'json' => $json,
-                'name' => $directory->getName()
-            )
-        );
+        return $this->redirectToRoute('admin_stats');
     }
 
     public function createViewAction(Directory $directory)

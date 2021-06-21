@@ -12,7 +12,7 @@ admin_stats_directory:
 
 admin_stats_detail:
     pattern: /detail/{directory}/{user}
-    defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Stat:statDetail}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Stat:statDetail, view:0 }
 
 admin_stats_create_view:
     pattern: /directory/createView/{directory}
