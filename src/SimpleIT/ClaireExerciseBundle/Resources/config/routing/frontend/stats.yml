@@ -10,8 +10,12 @@ admin_stats_directory:
     pattern: /directory/frame/{directory}/{view}
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Stat:statDirectory, view:0 }
 
+admin_stats_personal:
+    pattern: /personal/{directory}/{user}/{view}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Stat:statPersonal, view:0 }
+
 admin_stats_detail:
-    pattern: /detail/{directory}/{user}
+    pattern: /detail/{directory}/{user}/{view}
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Stat:statDetail, view:0 }
 
 admin_stats_create_view:

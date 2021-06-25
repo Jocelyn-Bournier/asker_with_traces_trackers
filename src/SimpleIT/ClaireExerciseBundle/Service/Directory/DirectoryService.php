@@ -461,8 +461,9 @@ class DirectoryService extends TransactionalService
             ;
 
             $stats[$key]['user'] = $user;
-            $stats[$key]['count'] = $stat[0]['count'];
-            if($stat[0]['count'] > 0){
+            $stats[$key]['count1'] = $stat[0]['count1'];
+            $stats[$key]['count2'] = $stat[0]['count2'];
+            if($stat[0]['count1'] > 0){
                 $stats[$key]['mark'] = round($stat[0]['mark'],2);
                 $stats[$key]['firstDate'] = $stat[0]['firstDate'];
                 $stats[$key]['lastDate'] = $stat[0]['lastDate'];
@@ -518,5 +519,21 @@ class DirectoryService extends TransactionalService
         }
 
         return $dirs;
+    }
+    public function JSONUserTimeStats($directory,$user,$view)
+    {
+        $json = array();
+
+        $json['high'] = $this->directoryRepository->
+            getTimeMark($directory->getId(),$user->getId(),$view,2)
+        ;
+        $json['medium'] = $this->directoryRepository->
+            getTimeMark($directory->getId(),$user->getId(),$view,1)
+        ;
+        $json['low'] = $this->directoryRepository->
+            getTimeMark($directory->getId(),$user->getId(),$view,0)
+        ;
+
+        return $json;
     }
 }

@@ -415,12 +415,13 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
     public function getPreviewStats($model,$user,$view)
     {
         $sql = "
-            select count(an.id) as count,
+            select count(a.id) as count1,
+                count(an.id) as count2,
                 avg(an.mark) as mark,
-                min(an.created_at) as firstDate,
-                max(an.created_at) as lastDate,
-                min(a.created_at) as firstDate2,
-                max(a.created_at) as lastDate2
+                min(a.created_at) as firstDate,
+                max(a.created_at) as lastDate,
+                min(an.created_at) as firstDate2,
+                max(an.created_at) as lastDate2
             from claire_exercise_attempt a
             join claire_exercise_answer an on a.id = an.attempt_id
             join claire_exercise_stored_exercise se on a.exercise_id = se.id
@@ -453,8 +454,9 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
         $sql = "
             SELECT AVG(an.mark) mark,
                 d.name directory,
+                d.id id,
                 m.title name,
-                COUNT(an.id) total
+                COUNT(at.id) total
             FROM claire_exercise_answer an
             JOIN claire_exercise_attempt at
                 ON an.attempt_id = at.id
@@ -548,8 +550,7 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
     function getModelsStats($id,$user,$view)
     {
         $sql = "
-            SELECT m.id id,
-                m.title name,
+            SELECT m.title name,
                 COUNT(an.id) total,
                 AVG(an.mark) mark
             FROM claire_exercise_answer an
@@ -561,6 +562,8 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
                 ON st.exercise_model_id = dm.model_id
             JOIN claire_exercise_model m
                 ON m.id = dm.model_id
+            JOIN directory d
+                ON d.id = dm.directory_id
             WHERE dm.directory_id = :id
                 AND at.user_id = :user
         ";
@@ -578,6 +581,52 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
             $params[':end'] = $view->getEndDate()->format('Y-m-d');
         }
         $sql .= " GROUP BY m.id";
+
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    }
+    function getTimeMark($id,$user,$view,$slice)
+    {
+        $sql = "
+            SELECT an.mark Value,
+                an.created_at Date
+            FROM claire_exercise_answer an
+            JOIN claire_exercise_attempt at
+                ON an.attempt_id = at.id
+            JOIN claire_exercise_stored_exercise st
+                ON at.exercise_id = st.id
+            JOIN directories_models dm
+                ON st.exercise_model_id = dm.model_id
+            JOIN claire_exercise_model m
+                ON m.id = dm.model_id
+            JOIN directory d
+                ON d.id = dm.directory_id
+            WHERE d.parent_id = :id
+                AND at.user_id = :user
+        ";
+
+        switch ($slice) {
+            case 2: $sql .= " and an.mark > 66 "; break;
+            case 1: $sql .= " and an.mark > 33 and an.mark <= 66 "; break;
+            case 0: $sql .= " and an.mark <= 33 "; break;
+        }
+
+        $params = array(
+            'id'=>$id,
+            'user'=>$user
+        );
+
+        if($view != null){
+            $sql .= "and an.created_at > :start
+                     and an.created_at < :end";
+
+            $params[':start'] = $view->getStartDate()->format('Y-m-d');
+            $params[':end'] = $view->getEndDate()->format('Y-m-d');
+        }
+
+        $sql .= " order by an.created_at asc";
 
         $conn = $this->getEntityManager()->getConnection();
         $stmt = $conn->prepare($sql);

@@ -157,6 +157,34 @@ class StatController extends BaseController
         }
         return $this->redirectToRoute('admin_stats');
     }
+    public function statPersonalAction(Directory $directory, AskerUser $user, StatView $view = null)
+    {
+        if (
+            $directory->hasManager($user)
+            || $this->get('security.context')->isGranted('ROLE_ADMIN')
+            || $directory->getOwner() == $user
+        ){
+            $this->get('simple_it.exercise.directory')->hasView($directory);
+            if ($view == null){
+                $view = $directory->getLastView();
+            }
+
+            $params = array(
+                'user' => $user,
+                'directory' => $directory,
+                'selectView' => $view,
+                'createForm' => $this->createViewAction($directory),
+            );
+            if ($view){
+                $params['editForm'] = $this->editViewAction($view);
+            }
+
+            return $this->render(
+                'SimpleITClaireExerciseBundle:Frontend:personal_stats.html.twig',$params
+
+            );
+        }
+    }
     public function statDetailAction(Directory $directory, AskerUser $user, StatView $view = null)
     {
         if (
@@ -177,8 +205,12 @@ class StatController extends BaseController
                 JSONUserStats($directory, $user, $view)
             ;
 
-            $json_directory = $this->get('simple_it.exercise.directory')->
+            $json_sunburst = $this->get('simple_it.exercise.directory')->
                 JSONUserModelsStats($directory, $user, $view)
+            ;
+
+            $json_timeline = $this->get('simple_it.exercise.directory')->
+                JSONUserTimeStats($directory, $user, $view)
             ;
 
             return $this->render(
@@ -186,9 +218,11 @@ class StatController extends BaseController
                 array(
                     'stats' => $stats,
                     'json' => $json,
-                    'json_directory' => $json_directory,
-                    'name' => $directory->getName(),
-                    'view' => $view
+                    'user' => $user,
+                    'json_sunburst' => $json_sunburst,
+                    'json_timeline' => $json_timeline,
+                    'directory' => $directory,
+                    'selectView' => $view
                 )
             );
         }

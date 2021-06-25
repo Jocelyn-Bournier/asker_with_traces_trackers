@@ -1,238 +1,323 @@
-{% extends "SimpleITClaireExerciseBundle:Frontend:template_creator.html.twig" %}
-{% block content %}
-  <div class="container">
-    <h2>Les statistiques détaillées</h2>
-
-    {% for type, flash_messages in app.session.flashBag.all %}
-      {% for flash_message in flash_messages %}
-        <div class="flash-{{ type }}">
-          {{ flash_message }}
-        </div>
-      {% endfor %}
-    {% endfor %}
-    <table class="table table-bordered">
-        <thead>
-            <th colspan="2">Étudiant</th>
-            <th colspan="2">Username</th>
-        </thead>
-        <tr>
-            <td class="td-stat" colspan="2">{{stats.user.lastName}}  {{stats.user.firstName}}</td>
-            <td class="td-stat" colspan="2">{{stats.user.username}}</td>
-        </tr>
-        <thead>
-            <th class="td-stat" colspan="4">Vue dans le temps des notes obtenues par l'étudiant</th>
-        </thead>
-        <tr class="active">
-            <td colspan="4">TODO</td>
-        </tr>
-        <thead>
-            <th>Premier exercice généré</th>
-            <th>Première réponse soumise</th>
-            <th>Dernière réponse soumise</th>
-            <th>Dernier exercice généré</th>
-        </thead>
-        <tr>
-            <td class="td-stat">{{stats.firstDate}}</td>
-            <td class="td-stat">{{stats.firstDate2}}</td>
-            <td class="td-stat">{{stats.lastDate2}}</td>
-            <td class="td-stat">{{stats.lastDate}}</td>
-        </tr>
+<table class="table table-bordered">
+    <thead>
+        <th colspan="2">Étudiant</th>
+        <th colspan="2">Username</th>
+    </thead>
+    <tr>
+        <td class="td-stat" colspan="2">{{stats.user.lastName}}  {{stats.user.firstName}}</td>
+        <td class="td-stat" colspan="2">{{stats.user.username}}</td>
+    </tr>
+    <thead>
+        <th class="td-stat" colspan="4">Vue dans le temps des notes obtenues par l'étudiant</th>
+    </thead>
+    <tr class="active">
+        <td colspan="4" id="timeline_chart"></td>
+    </tr>
+    <thead>
+        <th>Premier exercice généré</th>
+        <th>Dernier exercice généré</th>
+        <th>Première réponse soumise</th>
+        <th>Dernière réponse soumise</th>
+    </thead>
+    <tr>
+        <td class="td-stat">{{stats.firstDate}}</td>
+        <td class="td-stat">{{stats.lastDate}}</td>
+        <td class="td-stat">{{stats.firstDate2}}</td>
+        <td class="td-stat">{{stats.lastDate2}}</td>
+    </tr>
+    <tr>
+        <td class="td-stat" colspan="2">Nombre total d'exercices générés : {{stats.count1}}</td>
+        <td class="td-stat" colspan="2">Nombre total de réponses soumises : {{stats.count2}}</td>
+    </tr>
+    <thead>
+        <th class="td-stat" colspan="4">
+            Répartition globale des notes de l'élève dans le dossier {{directory.name}}
+        </th>
+    </thead>
+    <tr class="active">
+        <td id="barplot_chart" colspan="4">
+            {% if json == null %}
+                Il n'y a pas de notes pour cet étudiant dans ce répertoire
+            {% endif %}
+        </td>
+    </tr>
+    {% if json_sunburst != null %}
         <thead>
             <th class="td-stat" colspan="4">
-                Répartition globale des notes de l'élève dans le dossier {{name}}
+                Liste des sous dossiers de {{directory.name}}
             </th>
         </thead>
         <tr class="active">
-            <td id="barplot_chart" colspan="4">
-                {% if json == null %}
-                    Il n'y a pas de notes pour cet étudiant dans ce répertoire
-                {% endif %}
-            </td>
+            <td id="barplot_chart_directory" colspan="4"></td>
         </tr>
-        {% if json_directory != null %}
-            <thead>
-                <th class="td-stat" colspan="4">
-                    Liste des sous dossiers de {{name}}
-                </th>
-            </thead>
-            <tr class="active">
-                <td id="barplot_chart_directory" colspan="4"></td>
-            </tr>
-            <thead>
-                <th class="td-stat" colspan="4" id="model"></th>
-            </thead>
-            <tr class="active">
-                <td id="barplot_chart_model" colspan="4"></td>
-            </tr>
-        {% endif %}
-    </table>
- </div>
-     <script>
-        function Sunburst(selector, data, type) {
-            if(data.length == 0) return;
-            // set the dimensions and margins of the graph
-            var margin = {top: 200, right: 0, bottom: 200, left: 0},
-                width = 1200 - margin.left - margin.right,
-                height = 800 - margin.top - margin.bottom,
-                innerRadius = 50,
-                outerRadius = Math.min(width, height) / 2;   // the outerRadius goes from the middle of the SVG area to the border
+        <thead>
+            <th class="td-stat" colspan="4" id="model"></th>
+        </thead>
+        <tr class="active">
+            <td id="barplot_chart_model" colspan="4"></td>
+        </tr>
+    {% endif %}
+</table>
+<script>
+    function Sunburst(selector, data, type, _color) {
+        if(data.length == 0) return;
+        var color = d3.scaleOrdinal(d3.schemeCategory20);
+        // set the dimensions and margins of the graph
+        var margin = {top: 200, right: 0, bottom: 200, left: 0},
+            width = 1200 - margin.left - margin.right,
+            height = 800 - margin.top - margin.bottom,
+            innerRadius = 50,
+            outerRadius = Math.min(width, height) / 2;   // the outerRadius goes from the middle of the SVG area to the border
 
-            // append the svg object
-            var svg = d3.select("#"+selector)
-              .append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
-              .append("g")
-                .attr("transform", "translate(" + (width / 2 + margin.left) + "," + (height / 2 + margin.top) + ")");
+        // append the svg object
+        var svg = d3.select("#"+selector)
+          .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+            .attr("transform", "translate(" + (width / 2 + margin.left) + "," + (height / 2 + margin.top) + ")");
 
-                function scaleRadial() {
-                  var domain = [0, 1],
-                      range = [0, 1];
-                  function scale(x) {
-                    var r0 = range[0] * range[0], r1 = range[1] * range[1];
-                    return Math.sqrt((x - domain[0]) / (domain[1] - domain[0]) * (r1 - r0) + r0);
-                  }
+            function scaleRadial() {
+              var domain = [0, 1],
+                  range = [0, 1];
+              function scale(x) {
+                var r0 = range[0] * range[0], r1 = range[1] * range[1];
+                return Math.sqrt((x - domain[0]) / (domain[1] - domain[0]) * (r1 - r0) + r0);
+              }
 
-                  scale.domain = function(_) {
-                    return arguments.length ? (domain = [+_[0], +_[1]], scale) : domain.slice();
-                  };
+              scale.domain = function(_) {
+                return arguments.length ? (domain = [+_[0], +_[1]], scale) : domain.slice();
+              };
 
-                  scale.range = function(_) {
-                    return arguments.length ? (range = [+_[0], +_[1]], scale) : range.slice();
-                  };
+              scale.range = function(_) {
+                return arguments.length ? (range = [+_[0], +_[1]], scale) : range.slice();
+              };
 
-                  scale.ticks = function(count) {
-                    return d3.scaleLinear().domain(domain).ticks(count);
-                  };
+              scale.ticks = function(count) {
+                return d3.scaleLinear().domain(domain).ticks(count);
+              };
 
-                  scale.tickFormat = function(count, specifier) {
-                    return d3.scaleLinear().domain(domain).tickFormat(count, specifier);
-                  };
+              scale.tickFormat = function(count, specifier) {
+                return d3.scaleLinear().domain(domain).tickFormat(count, specifier);
+              };
 
-                  return scale;
+              return scale;
+            }
+          // Scales
+          var x = d3.scaleBand()
+              .range([0, 2 * Math.PI])    // X axis goes from 0 to 2pi = all around the circle. If I stop at 1Pi, it will be around a half circle
+              .align(0)                  // This does nothing
+              .domain(data.map(function(d) { return d.name; })); // The domain of the X axis is the list of states.
+          var y = scaleRadial()
+              .range([innerRadius, outerRadius])   // Domain will be define later.
+              .domain([0, 100]); // Domain of Y is from 0 to the max seen in the data
+
+          var tooltip = d3.select("#"+selector)
+            .append("div")
+              .style("opacity", 0)
+              .attr("class", "tooltip")
+              .style("background-color", "black")
+              .style("border-radius", "5px")
+              .style("padding", "10px")
+              .style("color", "white")
+
+          var showTooltip = function(d) {
+              var x = d3.event.pageX
+              var y = d3.event.pageY
+            tooltip
+              .transition()
+              .duration(200)
+            tooltip
+              .style("opacity", 1)
+              .style("left", (x+30) + "px")
+              .style("top", (y+30) + "px")
+
+              switch(type){
+                  case 0:
+                      tooltip.html(
+                            "Répertoire : " + d.directory + '<br>' +
+                            "Modèle : " + d.name + '<br>' +
+                            "Note moyenne : " + (Math.round(d.mark * 100) / 100) + '<br>' +
+                            "Nombre de réponses soumises : " + d.total
+                        )
+                  break;
+                  case 1:
+                      d3.select(this).style("cursor", "pointer");
+                      tooltip.html(
+                            "Répertoire : " + d.name + '<br>' +
+                            "Note moyenne : " + (Math.round(d.mark * 100) / 100) + '<br>' +
+                            "Nombre de réponses soumises : " + d.total
+                        )
+                  break;
+                  case 2:
+                      tooltip.html(
+                            "Modèle : " + d.name + '<br>' +
+                            "Note moyenne : " + (Math.round(d.mark * 100) / 100) + '<br>' +
+                            "Nombre de réponses soumises : " + d.total
+                        )
+                  break;
+              }
+          }
+          var moveTooltip = function(d) {
+              var x = d3.event.pageX
+              var y = d3.event.pageY
+            tooltip
+              .style("left", (x+30) + "px")
+              .style("top", (y+30) + "px")
+          }
+          var hideTooltip = function(d) {
+            tooltip
+              .transition()
+              .duration(200)
+              .style("opacity", 0)
+            d3.select(this).style("cursor", "default");
+          }
+          var clickTooltip = function(d) {
+              if(type !== 1) return;
+              document.getElementById('model').innerHTML=
+                `Liste des modèles de ${d.name}`
+              ;
+
+              var element = document.getElementById("barplot_chart_model");
+                while (element.firstChild) {
+                  element.removeChild(element.firstChild);
                 }
-              // Scales
-              var x = d3.scaleBand()
-                  .range([0, 2 * Math.PI])    // X axis goes from 0 to 2pi = all around the circle. If I stop at 1Pi, it will be around a half circle
-                  .align(0)                  // This does nothing
-                  .domain(data.map(function(d) { return d.name; })); // The domain of the X axis is the list of states.
-              var y = scaleRadial()
-                  .range([innerRadius, outerRadius])   // Domain will be define later.
-                  .domain([0, 100]); // Domain of Y is from 0 to the max seen in the data
 
-              var tooltip = d3.select("#"+selector)
-                .append("div")
-                  .style("opacity", 0)
-                  .attr("class", "tooltip")
-                  .style("background-color", "black")
-                  .style("border-radius", "5px")
-                  .style("padding", "10px")
-                  .style("color", "white")
+              Sunburst("barplot_chart_model", d.models, 2, color(d.id));
+              window.scrollBy(0,850);
+          }
+          // Add the bars
+          svg.append("g")
+            .selectAll("path")
+            .data(data)
+            .enter()
+            .append("path")
+              .attr("fill", d => (type !== 2 ? color(d.id) : _color))
+              .attr("d", d3.arc()     // imagine your doing a part of a donut plot
+                  .innerRadius(innerRadius)
+                  .outerRadius(function(d) { return y(d['mark']|1); })
+                  .startAngle(function(d) { return x(d.name); })
+                  .endAngle(function(d) { return x(d.name) + x.bandwidth(); })
+                  .padAngle(0.01)
+                  .padRadius(innerRadius))
+          .on("mouseover", showTooltip )
+          .on("mousemove", moveTooltip )
+          .on("mouseleave", hideTooltip )
+          .on("click", clickTooltip )
 
-              var showTooltip = function(d) {
-                  var x = d3.event.pageX
-                  var y = d3.event.pageY
-                tooltip
-                  .transition()
-                  .duration(200)
-                tooltip
-                  .style("opacity", 1)
-                  .style("left", (x+30) + "px")
-                  .style("top", (y+30) + "px")
+          // Add the labels
+          svg.append("g")
+              .selectAll("g")
+              .data(data)
+              .enter()
+              .append("g")
+                .attr("text-anchor", function(d) { return (x(d.name) + x.bandwidth() / 2 + Math.PI) % (2 * Math.PI) < Math.PI ? "end" : "start"; })
+                .attr("transform", function(d) { return "rotate(" + ((x(d.name) + x.bandwidth() / 2) * 180 / Math.PI - 90) + ")"+"translate(" + (y(d['mark'])+10) + ",0)";})
+              .append("text")
+                .text(function(d){return(d.name)})
+                .attr("transform", function(d) { return (x(d.name) + x.bandwidth() / 2 + Math.PI) % (2 * Math.PI) < Math.PI ? "rotate(180)" : "rotate(0)"; })
+                .style("font-size", "13px")
+                .attr("alignment-baseline", "middle")
 
-                  switch(type){
-                      case 0:
-                          tooltip.html(
-                                "Répertoire : " + d.directory + '<br>' +
-                                "Modèle : " + d.name + '<br>' +
-                                "Note moyenne : " + (Math.round(d.mark * 100) / 100) + '<br>' +
-                                "Nombre d'exercices générés : " + d.total
-                            )
-                      break;
-                      case 1:
-                          d3.select(this).style("cursor", "pointer");
-                          tooltip.html(
-                                "Répertoire : " + d.name + '<br>' +
-                                "Note moyenne : " + (Math.round(d.mark * 100) / 100) + '<br>' +
-                                "Nombre d'exercices générés : " + d.total
-                            )
-                      break;
-                      case 2:
-                          tooltip.html(
-                                "Modèle : " + d.name + '<br>' +
-                                "Note moyenne : " + (Math.round(d.mark * 100) / 100) + '<br>' +
-                                "Nombre d'exercices générés : " + d.total
-                            )
-                      break;
-                  }
-              }
-              var moveTooltip = function(d) {
-                  var x = d3.event.pageX
-                  var y = d3.event.pageY
-                tooltip
-                  .style("left", (x+30) + "px")
-                  .style("top", (y+30) + "px")
-              }
-              var hideTooltip = function(d) {
-                tooltip
-                  .transition()
-                  .duration(200)
-                  .style("opacity", 0)
-                d3.select(this).style("cursor", "default");
-              }
-              var clickTooltip = function(d) {
-                  if(type !== 1) return;
-                  document.getElementById('model').innerHTML=
-                    `Liste des modèles de ${d.name}`
-                  ;
+    }
+    data = {{json|json_encode()|raw}};
+    Sunburst("barplot_chart", data, 0, null);
 
-                  var element = document.getElementById("barplot_chart_model");
-                    while (element.firstChild) {
-                      element.removeChild(element.firstChild);
-                    }
+    data = {{json_sunburst|json_encode()|raw}};
+    Sunburst("barplot_chart_directory", data, 1, null);
 
-                  Sunburst("barplot_chart_model", d.models, 2);
-                  window.scrollBy(0,850);
-              }
+    function Timeline(selector, data){
 
-              // Add the bars
-              svg.append("g")
-                .selectAll("path")
-                .data(data)
-                .enter()
-                .append("path")
-                  .attr("fill", "#69b3a2")
-                  .attr("d", d3.arc()     // imagine your doing a part of a donut plot
-                      .innerRadius(innerRadius)
-                      .outerRadius(function(d) { return y(d['mark']|1); })
-                      .startAngle(function(d) { return x(d.name); })
-                      .endAngle(function(d) { return x(d.name) + x.bandwidth(); })
-                      .padAngle(0.01)
-                      .padRadius(innerRadius))
-              .on("mouseover", showTooltip )
-              .on("mousemove", moveTooltip )
-              .on("mouseleave", hideTooltip )
-              .on("click", clickTooltip )
+            var i, j;
+            data = [];
+          for (i = j = 1; j <= 15; i = ++j) {
+            data.push({
+              tir: i,
+              start: new Date(+(new Date()) - Math.floor(Math.random() * 1000000000)),
+              end: new Date()
+            });
+          }
+          console.log(data);
 
-              // Add the labels
-              svg.append("g")
-                  .selectAll("g")
-                  .data(data)
-                  .enter()
-                  .append("g")
-                    .attr("text-anchor", function(d) { return (x(d.name) + x.bandwidth() / 2 + Math.PI) % (2 * Math.PI) < Math.PI ? "end" : "start"; })
-                    .attr("transform", function(d) { return "rotate(" + ((x(d.name) + x.bandwidth() / 2) * 180 / Math.PI - 90) + ")"+"translate(" + (y(d['mark'])+10) + ",0)";})
-                  .append("text")
-                    .text(function(d){return(d.name)})
-                    .attr("transform", function(d) { return (x(d.name) + x.bandwidth() / 2 + Math.PI) % (2 * Math.PI) < Math.PI ? "rotate(180)" : "rotate(0)"; })
-                    .style("font-size", "13px")
-                    .attr("alignment-baseline", "middle")
+        wrapper = document.querySelector("#"+selector)
+        width = wrapper.clientWidth;
+        parser = d3.isoParse
 
-        }
-        data = {{json|json_encode()|raw}};
-        Sunburst("barplot_chart", data, 0);
+        minX = d3.min(data, d => parser(d.start))
+        maxX = d3.max(data, d => parser(d.end))
 
-        data = {{json_directory|json_encode()|raw}};
-        Sunburst("barplot_chart_directory", data, 1);
-    </script>
-{% endblock %}
+        // --- X scale
+        x = d3.scaleTime()
+          .domain([minX, maxX])
+          .rangeRound([0, width])
+
+        // --- nest all the data
+        symbols = d3.nest()
+          .key(d => d.tir)
+          .entries(data)
+
+        height = wrapper.getBoundingClientRect().bottom
+
+        spanX = (d => x(parser(d.start)))
+        spanW = (d => x(parser(d.end)) - x(parser(d.start)))
+
+        chart =  ((symbol) =>{
+          svg = d3.select(this)
+          console.log(symbol);
+          svg.selectAll('rect')
+            .data(symbol.values)
+            .enter()
+            .append('rect')
+              .attr('x', d => spanX(d))
+              .attr('y', 0)
+              .attr('width', d => spanW(d))
+              .attr('height', height)
+              .attr('fill',  d => d.color || '#ddf')
+            .on('mouseover', d =>
+              tooltip.html([d.tir, d.start, d.end].join('<br>')))
+            .on('mouseout', () => tooltip.html(''))
+          })
+        // --- add all charts
+        allCharts = d3.select(wrapper).selectAll('svg')
+              .data(symbols)
+              .enter()
+              .append('svg')
+                .attr('height', height)
+              .each(chart)
+
+        // --- add X axis
+        xAxis = d3.axisBottom(x)
+                .ticks(width / 100)
+
+        globalX = d3.select(wrapper)
+          .append('svg')
+            .attr('class', 'axis')
+            .call(xAxis)
+
+        // --- catch all zoom svg rect
+        catchAll = d3.select('body')
+          .append('svg')
+            .attr('class', 'zoom')
+          .append('rect')
+            .attr('fill', 'none')
+            .attr('width', width)
+            .attr('height', wrapper.getBoundingClientRect().bottom)
+
+        // --- add tooltip
+        tooltip = d3.select(wrapper).append('div')
+                  .attr('class', 'tooltip')
+
+        catchAll.call(d3.zoom())
+          .scaleExtent([0.1, 10])
+          /*.on("zoom",() =>
+            transform = d3.event.transform
+            globalX.call(xAxis.scale(transform.rescaleX(x)))
+            allCharts.selectAll('rect')
+              .attr('x', d => transform.applyX(spanX(d)))
+              .attr('width', d => transform.k * spanW(d)))*/
+
+    }
+    data = {{json_timeline|json_encode()|raw}};
+    //Timeline("timeline_chart", data);
+
+</script>
