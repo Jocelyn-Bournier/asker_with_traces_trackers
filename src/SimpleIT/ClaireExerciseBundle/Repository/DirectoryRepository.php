@@ -587,11 +587,14 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
         $stmt->execute($params);
         return $stmt->fetchAll();
     }
-    function getTimeMark($id,$user,$view,$slice)
+    function getAllAnswers($id,$user,$view)
     {
         $sql = "
-            SELECT an.mark Value,
-                an.created_at Date
+            SELECT an.mark value,
+                an.created_at start,
+                an.created_at date,
+                m.title name,
+                d.name directory
             FROM claire_exercise_answer an
             JOIN claire_exercise_attempt at
                 ON an.attempt_id = at.id
@@ -603,15 +606,9 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
                 ON m.id = dm.model_id
             JOIN directory d
                 ON d.id = dm.directory_id
-            WHERE d.parent_id = :id
+            WHERE d.id = :id
                 AND at.user_id = :user
         ";
-
-        switch ($slice) {
-            case 2: $sql .= " and an.mark > 66 "; break;
-            case 1: $sql .= " and an.mark > 33 and an.mark <= 66 "; break;
-            case 0: $sql .= " and an.mark <= 33 "; break;
-        }
 
         $params = array(
             'id'=>$id,

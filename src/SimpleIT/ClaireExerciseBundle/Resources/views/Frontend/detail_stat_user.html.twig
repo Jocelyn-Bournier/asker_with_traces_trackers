@@ -228,96 +228,277 @@
 
     function Timeline(selector, data){
 
-            var i, j;
-            data = [];
-          for (i = j = 1; j <= 15; i = ++j) {
-            data.push({
-              tir: i,
-              start: new Date(+(new Date()) - Math.floor(Math.random() * 1000000000)),
-              end: new Date()
-            });
+        let types = data
+            .filter(d => d.length !== 0)
+            .map(d => d[0].directory);
+            console.log(types);
+
+        let csv = data.flat();
+
+        (function() {
+          d3.timeline = function() {
+            var timelines = [];
+            var dateAccessor = function (d) {return new Date(d)};
+            var processedTimelines = [];
+            var startAccessor = function (d) {return d.start};
+            var endAccessor = function (d) {return d.end};
+            var size = [1180,100];
+            var timelineExtent = [-Infinity, Infinity];
+            var setExtent = [];
+            var displayScale = d3.scaleLinear();
+            var swimlanes = [];
+            var padding = 0;
+            var fixedExtent = false;
+            var maximumHeight = Infinity;
+
+            function processTimelines() {
+            	timelines.forEach(function (band) {
+            		var projectedBand = {};
+                    for (var x in band) {
+                        if (band.hasOwnProperty(x)) {
+                            projectedBand[x] = band[x];
+                        }
+                    }
+            		projectedBand.start = dateAccessor(startAccessor(band));
+            		projectedBand.end = dateAccessor(endAccessor(band));
+            		projectedBand.lane = 0;
+            		processedTimelines.push(projectedBand);
+            	});
+            }
+
+            function projectTimelines() {
+                if (fixedExtent === false) {
+                    var minStart = d3.min(processedTimelines, function (d) {return d.start});
+                    var maxEnd = d3.max(processedTimelines, function (d) {return d.end});
+                    timelineExtent = [minStart,maxEnd];
+                }
+                else {
+                    timelineExtent = [dateAccessor(setExtent[0]), dateAccessor(setExtent[1])];
+                }
+
+                displayScale.domain(timelineExtent).range([0,size[0]]);
+
+                processedTimelines.forEach(function (band) {
+                    band.originalStart = band.start;
+                    band.originalEnd = band.end;
+                    band.start = displayScale(band.start);
+                    band.end = displayScale(band.end);
+                });
+            }
+
+            function fitsIn(lane, band) {
+            	if (lane.end < band.start || lane.start > band.end) {
+            		return true;
+            	}
+            	var filteredLane = lane.filter(function (d) {return d.start <= band.end && d.end >= band.start});
+            	if (filteredLane.length === 0) {
+            		return true;
+            	}
+            	return false;
+            }
+
+            function findlane(band) {
+            	//make the first array
+            	if (swimlanes[0] === undefined) {
+            		swimlanes[0] = [band];
+            		return;
+            	}
+            	var l = swimlanes.length - 1;
+            	var x = 0;
+
+            	while (x <= l) {
+            		if (fitsIn(swimlanes[x], band)) {
+            			swimlanes[x].push(band);
+            			return;
+            		}
+            		x++;
+            	}
+            	swimlanes[x] = [band];
+            	return;
+            }
+
+            function timeline(data) {
+            	if (!arguments.length) return timeline;
+
+            	timelines = data;
+
+            	processedTimelines = [];
+            	swimlanes = [];
+
+            	processTimelines();
+                projectTimelines();
+
+
+            	processedTimelines.forEach(function (band) {
+            		findlane(band);
+            	});
+
+            	var height = size[1] / swimlanes.length;
+            	height = Math.min(height, maximumHeight);
+
+            	swimlanes.forEach(function (lane, i) {
+            		lane.forEach(function (band) {
+            			band.y = i * (height);
+            			band.dy = height - padding;
+            			band.lane = i;
+            		});
+            	});
+
+            	return processedTimelines;
+            }
+
+            timeline.dateFormat = function (_x) {
+        	     if (!arguments.length) return dateAccessor;
+        	     dateAccessor = _x;
+            	return timeline;
+            }
+
+            timeline.bandStart = function (_x) {
+        	     if (!arguments.length) return startAccessor;
+        	     startAccessor = _x;
+            	return timeline;
+            }
+
+            timeline.bandEnd = function (_x) {
+        	     if (!arguments.length) return endAccessor;
+        	     endAccessor = _x;
+            	return timeline;
+            }
+
+            timeline.size = function (_x) {
+        	     if (!arguments.length) return size;
+        	     size = _x;
+            	return timeline;
+            }
+
+            timeline.padding = function (_x) {
+        	     if (!arguments.length) return padding;
+        	     padding = _x;
+            	return timeline;
+            }
+
+            timeline.extent = function (_x) {
+        	    if (!arguments.length) return timelineExtent;
+        	    	fixedExtent = true;
+        	    	setExtent = _x;
+        	    	if (_x.length === 0) {
+        	    		fixedExtent = false;
+        	    	}
+            	return timeline;
+            }
+
+            timeline.maxBandHeight = function (_x) {
+        	    if (!arguments.length) return maximumHeight;
+        	    	maximumHeight = _x;
+            	return timeline;
+            }
+
+            return timeline;
+        }
+        })();
+        var timeline = d3.timeline()
+          .extent(d3.extent(csv.map(d=>d.start)))
+          .padding(3)
+          .maxBandHeight(20);
+          let colorScale = d3.scaleOrdinal(d3.schemeCategory20);
+
+        let x = d3
+            .scaleTime()
+            .range([0, 1200])
+            .domain(d3.extent(csv.map(d => new Date(d.date))));
+
+        var svg = d3.select("#"+selector)
+          .append("svg")
+            .attr("width", 1200)
+            .attr("height", 90 * types.length)
+
+        svg.append("g")
+            .attr("class", "axis")
+            .attr("transform", "translate(0," + (types.length * 90 - 20) + ")")
+            .call(d3.axisBottom(x).tickFormat(d3.timeFormat("%d/%m/%Y")))
+
+        types.forEach(function (type, i) {
+          onlyThisType = csv.filter(function(d) {return d.directory === type});
+
+          let theseBands = timeline(onlyThisType);
+          var tooltip = d3.select("#"+selector)
+            .append("div")
+              .style("opacity", 0)
+              .attr("class", "tooltip")
+              .style("background-color", "black")
+              .style("border-radius", "5px")
+              .style("padding", "10px")
+              .style("color", "white")
+
+          var showTooltip = function(d) {
+              var x = d3.event.pageX
+              var y = d3.event.pageY
+            tooltip
+              .transition()
+              .duration(200)
+            tooltip
+              .style("opacity", 1)
+              .style("left", (x+30) + "px")
+              .style("top", (y+30) + "px")
+              var formatD = d3.timeFormat("%d/%m/%Y");
+              var formatH = d3.timeFormat("%H:%M:%S");
+              tooltip.html(
+                  "Date : " + formatD(new Date(d.date)) + '<br>' +
+                  "Heure : " + formatH(new Date(d.date)) + '<br>' +
+                  "Note : " + (Math.round(d.value * 100) / 100) + '<br>' +
+                  "Modèle : " + d.name + '<br>'
+              )
           }
-          console.log(data);
+          var hideTooltip = function(d) {
+            tooltip
+              .transition()
+              .duration(200)
+              .style("opacity", 0)
+            d3.select(this).style("cursor", "default");
+          }
 
-        wrapper = document.querySelector("#"+selector)
-        width = wrapper.clientWidth;
-        parser = d3.isoParse
-
-        minX = d3.min(data, d => parser(d.start))
-        maxX = d3.max(data, d => parser(d.end))
-
-        // --- X scale
-        x = d3.scaleTime()
-          .domain([minX, maxX])
-          .rangeRound([0, width])
-
-        // --- nest all the data
-        symbols = d3.nest()
-          .key(d => d.tir)
-          .entries(data)
-
-        height = wrapper.getBoundingClientRect().bottom
-
-        spanX = (d => x(parser(d.start)))
-        spanW = (d => x(parser(d.end)) - x(parser(d.start)))
-
-        chart =  ((symbol) =>{
-          svg = d3.select(this)
-          console.log(symbol);
-          svg.selectAll('rect')
-            .data(symbol.values)
-            .enter()
-            .append('rect')
-              .attr('x', d => spanX(d))
-              .attr('y', 0)
-              .attr('width', d => spanW(d))
-              .attr('height', height)
-              .attr('fill',  d => d.color || '#ddf')
-            .on('mouseover', d =>
-              tooltip.html([d.tir, d.start, d.end].join('<br>')))
-            .on('mouseout', () => tooltip.html(''))
+          svg.append("g")
+          .attr("transform", "translate(10," + (35 + (i * 90)) + ")")
+          .selectAll("rect")
+          .data(theseBands)
+          .enter()
+          .append("rect")
+          .attr("rx", 2)
+          .attr("x", function (d) {return d.start})
+          .attr("y", 0)
+          .attr("height", function (d) {return d.dy})
+          .attr("width", 5)
+          .style("fill", function (d) {
+              if(d.value > 66) return "green";
+              else if(d.value <= 33) return "red";
+              else return "orange";
           })
-        // --- add all charts
-        allCharts = d3.select(wrapper).selectAll('svg')
-              .data(symbols)
-              .enter()
-              .append('svg')
-                .attr('height', height)
-              .each(chart)
+          .on("mouseover", showTooltip)
+          .on("mouseout", hideTooltip)
 
-        // --- add X axis
-        xAxis = d3.axisBottom(x)
-                .ticks(width / 100)
+          svg.append("rect")
+          .attr("rx", 2)
+          .attr("x", 0)
+          .attr("y", 55 + (i * 90))
+          .attr("height", 1)
+          .attr("width", 1200)
+          .style("fill", "#424C47")
 
-        globalX = d3.select(wrapper)
-          .append('svg')
-            .attr('class', 'axis')
-            .call(xAxis)
+          svg.append("rect")
+          .style("fill", colorScale(i))
+          .attr("y", 5 + (i * 90))
+          .attr("x", 20)
+          .attr("height", 20)
+          .attr("width", 20)
 
-        // --- catch all zoom svg rect
-        catchAll = d3.select('body')
-          .append('svg')
-            .attr('class', 'zoom')
-          .append('rect')
-            .attr('fill', 'none')
-            .attr('width', width)
-            .attr('height', wrapper.getBoundingClientRect().bottom)
+          svg.append("text")
+          .text(type)
+          .attr("y", 20 + (i * 90))
+          .attr("x", 50)
 
-        // --- add tooltip
-        tooltip = d3.select(wrapper).append('div')
-                  .attr('class', 'tooltip')
-
-        catchAll.call(d3.zoom())
-          .scaleExtent([0.1, 10])
-          /*.on("zoom",() =>
-            transform = d3.event.transform
-            globalX.call(xAxis.scale(transform.rescaleX(x)))
-            allCharts.selectAll('rect')
-              .attr('x', d => transform.applyX(spanX(d)))
-              .attr('width', d => transform.k * spanW(d)))*/
-
+        })
     }
     data = {{json_timeline|json_encode()|raw}};
-    //Timeline("timeline_chart", data);
+    Timeline("timeline_chart", data);
 
 </script>

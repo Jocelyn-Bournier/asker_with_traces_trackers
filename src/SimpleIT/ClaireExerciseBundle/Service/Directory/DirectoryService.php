@@ -522,18 +522,15 @@ class DirectoryService extends TransactionalService
     }
     public function JSONUserTimeStats($directory,$user,$view)
     {
+        $dirs = $this->directoryRepository->
+            findChildrens($directory->getId())
+        ;
         $json = array();
-
-        $json['high'] = $this->directoryRepository->
-            getTimeMark($directory->getId(),$user->getId(),$view,2)
-        ;
-        $json['medium'] = $this->directoryRepository->
-            getTimeMark($directory->getId(),$user->getId(),$view,1)
-        ;
-        $json['low'] = $this->directoryRepository->
-            getTimeMark($directory->getId(),$user->getId(),$view,0)
-        ;
-
+        foreach ($dirs as $dir) {
+            $json[] = $this->directoryRepository->
+                getAllAnswers($dir['id'],$user->getId(),$view)
+            ;
+        }
         return $json;
     }
 }
