@@ -145,7 +145,7 @@ class AnswerRepository extends BaseRepository
     {
             //SELECT count(*) as total,
         $sql = "
-            SELECT 
+            SELECT
             SUM(CASE WHEN an.mark < 20 THEN 1 ELSE 0 END)'20',
             SUM(CASE WHEN an.mark < 40 AND an.mark >= 20 THEN 1 ELSE 0 END) '40',
             SUM(CASE WHEN an.mark < 60 AND an.mark >= 40 THEN 1 ELSE 0 END) '60',

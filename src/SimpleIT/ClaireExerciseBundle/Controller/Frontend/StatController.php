@@ -109,18 +109,21 @@ class StatController extends BaseController
             }
             //possible than dir->getLastView returns null
             // ces fonctions retournent sur l'intégralité du temps si no view
-            $users = $this->get('simple_it.exercise.directory')->getIdUsers($directory, $view);
-            $usernames = $this->get('simple_it.exercise.directory')->getUsernames($directory, $view);
+            $users = $this->get('simple_it.exercise.directory')->getUsers($directory, $view);
+            $stats = $this->get('simple_it.exercise.directory')->getPreviewStats($directory, $users, $view);
             $params = array(
-                    'directories' => '',
-                    'users' => count($users),
-                    'usernames' => $usernames
+                'directory' => $directory,
+                'directories' => '',
+                'users' => $users,
+                'stats' => $stats,
+                'userscount' => count($users)
             );
             if (!is_null($view)){
-                // every users connected between frame time
-                $directories = $this->get('simple_it.exercise.directory')->getModelStats($directory,$view, $users);
+                $ids = $this->get('simple_it.exercise.directory')->getIdUsers($directory, $view);
+                $directories = $this->get('simple_it.exercise.directory')->getModelStats($directory,$view, $ids);
                 $params['directories'] = $directories;
                 $params['view'] = $view->getId();
+
             }
             return $this->render(
                 'SimpleITClaireExerciseBundle:Frontend:ajax_detail_stat_directory.html.twig',$params
@@ -150,6 +153,77 @@ class StatController extends BaseController
             }
             return $this->render(
                 'SimpleITClaireExerciseBundle:Frontend:list_stat_view.html.twig',$params
+            );
+        }
+        return $this->redirectToRoute('admin_stats');
+    }
+    public function statPersonalAction(Directory $directory, AskerUser $user, StatView $view = null)
+    {
+        if (
+            $directory->hasManager($user)
+            || $this->get('security.context')->isGranted('ROLE_ADMIN')
+            || $directory->getOwner() == $user
+        ){
+            $this->get('simple_it.exercise.directory')->hasView($directory);
+            if ($view == null){
+                $view = $directory->getLastView();
+            }
+
+            $params = array(
+                'user' => $user,
+                'directory' => $directory,
+                'selectView' => $view,
+                'createForm' => $this->createViewAction($directory),
+            );
+            if ($view){
+                $params['editForm'] = $this->editViewAction($view);
+            }
+
+            return $this->render(
+                'SimpleITClaireExerciseBundle:Frontend:personal_stats.html.twig',$params
+
+            );
+        }
+    }
+    public function statDetailAction(Directory $directory, AskerUser $user, StatView $view = null)
+    {
+        if (
+            $directory->hasManager($user)
+            || $this->get('security.context')->isGranted('ROLE_ADMIN')
+            || $directory->getOwner() == $user
+        ){
+            $this->get('simple_it.exercise.directory')->hasView($directory);
+            if ($view == null){
+                $view = $directory->getLastView();
+            }
+
+            $stats = $this->get('simple_it.exercise.directory')->
+                getPreviewStats($directory,array('0' => $user),$view)[0]
+            ;
+
+            $json = $this->get('simple_it.exercise.directory')->
+                JSONUserStats($directory, $user, $view)
+            ;
+
+            $json_sunburst = $this->get('simple_it.exercise.directory')->
+                JSONUserModelsStats($directory, $user, $view)
+            ;
+
+            $json_timeline = $this->get('simple_it.exercise.directory')->
+                JSONUserTimeStats($directory, $user, $view)
+            ;
+
+            return $this->render(
+                'SimpleITClaireExerciseBundle:Frontend:detail_stat_user.html.twig',
+                array(
+                    'stats' => $stats,
+                    'json' => $json,
+                    'user' => $user,
+                    'json_sunburst' => $json_sunburst,
+                    'json_timeline' => $json_timeline,
+                    'directory' => $directory,
+                    'selectView' => $view
+                )
             );
         }
         return $this->redirectToRoute('admin_stats');

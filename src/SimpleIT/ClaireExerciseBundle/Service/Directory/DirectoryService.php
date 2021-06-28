@@ -97,6 +97,11 @@ class DirectoryService extends TransactionalService
         return $this->directoryRepository->findMine($user->getId());
     }
 
+    public function findAllModelsIds($id)
+    {
+        return $this->directoryRepository->findAllModelsIds($id);
+    }
+
     public function find($id)
     {
         return $this->directoryRepository->find($id);
@@ -195,6 +200,24 @@ class DirectoryService extends TransactionalService
         foreach($datas as $key=> $val){
             $json[] = array('range' => $key, 'nb' => $val);
         }
+        return $json;
+    }
+    public function JSONUserStats($directory,$user,$view)
+    {
+        $models = $this->directoryRepository->
+            findAllModelsIds($directory->getId())
+        ;
+
+        $json = array();
+
+        foreach ($models as $key => $model) {
+            $json[$key] = $this->directoryRepository->
+                JSONUserStats($model['id'], $user->getId(), $view)[0]
+            ;
+            if($json[$key]['total'] == 0) unset($json[$key]);
+        }
+        $json = array_values(array_filter($json));
+
         return $json;
     }
     public function getModelStats(Directory $directory, $view, $ids)
@@ -324,6 +347,41 @@ class DirectoryService extends TransactionalService
 
 
     }
+    public function getUsers(Directory $directory, $view)
+    {
+        $this->getEntityManager();
+        $finalUsers = array();
+        $users =$directory->realUsers();
+        #return  array_column($this->em->getRepository('SimpleITClaireExerciseBundle:AskerUser')
+        #->getArrayStudents($directory->getId(),$view->getStartDate(),$view->getEndDate()),'id');
+        foreach($users as $user){
+            if ($user->isOnlyStudent()){
+                if($view){
+                    $old = new \DateTime("2999-01-01");
+                    foreach($user->getDirectories() as $aud){
+                        if ($aud->getDirectory()->getId()  == $directory->getId()){
+                            $old = $aud->getEndDate();
+                            break;
+                        }
+                    }
+                    $old = new \DateTime("2999-01-01");
+                    foreach($user->getLogs() as $log){
+                        if ($log->getLoggedAt() >= $view->getStartDate()
+                            && $log->getLoggedAt() <= $view->getEndDate()
+                            && $old >= $view->getEndDate()
+                        ){
+                            $finalUsers[] = $user;
+                            break;
+                        }
+                    }
+                }else{
+                    $finalUsers[] = $user;
+                }
+            }
+        }
+        return $finalUsers;
+
+    }
 
 
     public function getColumnStats(Directory $directory, $model, $view, $ids)
@@ -394,6 +452,35 @@ class DirectoryService extends TransactionalService
         }
     }
 
+    public function getPreviewStats(Directory $directory, $users, $view)
+    {
+        $stats = array();
+        foreach ($users as $key => $user) {
+            $stat = $this->directoryRepository->
+                getPreviewStats($directory->getId(),$user->getId(),$view)
+            ;
+
+            $stats[$key]['user'] = $user;
+            $stats[$key]['count1'] = $stat[0]['count1'];
+            $stats[$key]['count2'] = $stat[0]['count2'];
+            if($stat[0]['count1'] > 0){
+                $stats[$key]['mark'] = round($stat[0]['mark'],2);
+                $stats[$key]['firstDate'] = $stat[0]['firstDate'];
+                $stats[$key]['lastDate'] = $stat[0]['lastDate'];
+                $stats[$key]['firstDate2'] = $stat[0]['firstDate2'];
+                $stats[$key]['lastDate2'] = $stat[0]['lastDate2'];
+            }
+            else{
+                $stats[$key]['mark'] = "-";
+                $stats[$key]['firstDate'] = "-";
+                $stats[$key]['lastDate'] = "-";
+                $stats[$key]['firstDate2'] = "-";
+                $stats[$key]['lastDate2'] = "-";
+            }
+        }
+        return $stats;
+    }
+
     public function exportTomuss($model, $users, $view)
     {
         $answer = $this->em
@@ -419,5 +506,31 @@ class DirectoryService extends TransactionalService
             throw new AccessDeniedException();
         }
 
+    }
+    public function JSONUserModelsStats($directory,$user,$view)
+    {
+        $dirs = $this->directoryRepository->
+            getSubDirsStats($directory->getId(),$user->getId(),$view)
+        ;
+        foreach ($dirs as $key => $dir) {
+            $dirs[$key]['models'] = $this->directoryRepository->
+                getModelsStats($dir['id'],$user->getId(),$view)
+            ;
+        }
+
+        return $dirs;
+    }
+    public function JSONUserTimeStats($directory,$user,$view)
+    {
+        $dirs = $this->directoryRepository->
+            findChildrens($directory->getId())
+        ;
+        $json = array();
+        foreach ($dirs as $dir) {
+            $json[] = $this->directoryRepository->
+                getAllAnswers($dir['id'],$user->getId(),$view)
+            ;
+        }
+        return $json;
     }
 }
