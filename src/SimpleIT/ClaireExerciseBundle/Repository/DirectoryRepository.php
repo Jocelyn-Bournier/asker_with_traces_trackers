@@ -421,7 +421,8 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
                 min(a.created_at) as firstDate,
                 max(a.created_at) as lastDate,
                 min(an.created_at) as firstDate2,
-                max(an.created_at) as lastDate2
+                max(an.created_at) as lastDate2,
+                datediff(max(a.created_at), min(a.created_at)) as days
             from claire_exercise_attempt a
             join claire_exercise_answer an on a.id = an.attempt_id
             join claire_exercise_stored_exercise se on a.exercise_id = se.id

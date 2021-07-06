@@ -159,10 +159,11 @@ class StatController extends BaseController
     }
     public function statPersonalAction(Directory $directory, AskerUser $user, StatView $view = null)
     {
+        $_user = $this->get('security.context')->getToken()->getUser();
         if (
-            $directory->hasManager($user)
+            $directory->hasManager($_user)
             || $this->get('security.context')->isGranted('ROLE_ADMIN')
-            || $directory->getOwner() == $user
+            || $directory->getOwner() == $_user
         ){
             $this->get('simple_it.exercise.directory')->hasView($directory);
             if ($view == null){
@@ -184,13 +185,15 @@ class StatController extends BaseController
 
             );
         }
+        return $this->redirectToRoute('admin_stats');
     }
     public function statDetailAction(Directory $directory, AskerUser $user, StatView $view = null)
     {
+        $_user = $this->get('security.context')->getToken()->getUser();
         if (
-            $directory->hasManager($user)
+            $directory->hasManager($_user)
             || $this->get('security.context')->isGranted('ROLE_ADMIN')
-            || $directory->getOwner() == $user
+            || $directory->getOwner() == $_user
         ){
             $this->get('simple_it.exercise.directory')->hasView($directory);
             if ($view == null){

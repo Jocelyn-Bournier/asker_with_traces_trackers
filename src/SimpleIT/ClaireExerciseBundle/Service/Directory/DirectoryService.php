@@ -198,7 +198,7 @@ class DirectoryService extends TransactionalService
         ;
         $json = array();
         foreach($datas as $key=> $val){
-            $json[] = array('range' => $key, 'nb' => (int)$val);
+            $json[] = array('range' => $key, 'nb' => $val);
         }
         return $json;
     }
@@ -469,6 +469,7 @@ class DirectoryService extends TransactionalService
                 $stats[$key]['lastDate'] = $stat[0]['lastDate'];
                 $stats[$key]['firstDate2'] = $stat[0]['firstDate2'];
                 $stats[$key]['lastDate2'] = $stat[0]['lastDate2'];
+                $stats[$key]['days'] = $stat[0]['days'];
             }
             else{
                 $stats[$key]['mark'] = "-";
@@ -476,6 +477,7 @@ class DirectoryService extends TransactionalService
                 $stats[$key]['lastDate'] = "-";
                 $stats[$key]['firstDate2'] = "-";
                 $stats[$key]['lastDate2'] = "-";
+                $stats[$key]['days'] = "-";
             }
         }
         return $stats;

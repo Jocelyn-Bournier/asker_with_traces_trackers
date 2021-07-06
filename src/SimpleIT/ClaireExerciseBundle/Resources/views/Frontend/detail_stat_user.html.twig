@@ -37,7 +37,7 @@
     <tr class="active">
         <td id="barplot_chart" colspan="4">
             {% if json == null %}
-                Il n'y a pas de notes pour cet étudiant dans ce répertoire
+                <b> Il n'y a pas de notes pour cet étudiant dans ce répertoire <b>
             {% endif %}
         </td>
     </tr>
@@ -167,9 +167,9 @@
           }
           var hideTooltip = function(d) {
             tooltip
-              .transition()
-              .duration(200)
               .style("opacity", 0)
+              .style("left", "0px")
+              .style("top", "0px")
             d3.select(this).style("cursor", "default");
           }
           var clickTooltip = function(d) {
@@ -231,9 +231,14 @@
         let types = data
             .filter(d => d.length !== 0)
             .map(d => d[0].directory);
-            console.log(types);
 
-        let csv = data.flat();
+        let csv = data.map(array => {
+            return array.map((d,i) => {
+                date = (new Date(d.start)).getTime() + 100000000*i;
+                d.start = new Date(date);
+                return d;
+            });
+        }).flat().sort((a,b) => a.date - b.date);
 
         (function() {
           d3.timeline = function() {
@@ -412,24 +417,32 @@
             .attr("width", 1200)
             .attr("height", 90 * types.length)
 
-        svg.append("g")
-            .attr("class", "axis")
-            .attr("transform", "translate(0," + (types.length * 90 - 20) + ")")
-            .call(d3.axisBottom(x).tickFormat(d3.timeFormat("%d/%m/%Y")))
+        var tooltip = d3.select("#"+selector)
+          .append("div")
+            .style("opacity", 0)
+            .attr("class", "tooltip")
+            .style("background-color", "black")
+            .style("border-radius", "5px")
+            .style("padding", "10px")
+            .style("color", "white")
+
+
+        let dates = data.flat().map(d => new Date(d.date));
+        var formatD = d3.timeFormat("%d/%m/%Y");
+
+        svg.append("text")
+        .text(formatD(new Date(Math.min(...dates))))
+        .attr("y", types.length * 90 - 10)
+        .attr("x", 10)
+        svg.append("text")
+        .text(formatD(new Date(Math.max(...dates))))
+        .attr("y", types.length * 90 - 10)
+        .attr("x", 1120)
 
         types.forEach(function (type, i) {
           onlyThisType = csv.filter(function(d) {return d.directory === type});
 
           let theseBands = timeline(onlyThisType);
-          var tooltip = d3.select("#"+selector)
-            .append("div")
-              .style("opacity", 0)
-              .attr("class", "tooltip")
-              .style("background-color", "black")
-              .style("border-radius", "5px")
-              .style("padding", "10px")
-              .style("color", "white")
-
           var showTooltip = function(d) {
               var x = d3.event.pageX
               var y = d3.event.pageY
@@ -451,9 +464,9 @@
           }
           var hideTooltip = function(d) {
             tooltip
-              .transition()
-              .duration(200)
               .style("opacity", 0)
+              .style("left", "0px")
+              .style("top", "0px")
             d3.select(this).style("cursor", "default");
           }
 
