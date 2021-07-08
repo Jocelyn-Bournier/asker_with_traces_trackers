@@ -73,6 +73,8 @@
     <div id="content_stat"></div>
  </div>
  <script>
+    sessionStorage.setItem('ancrage', '#users-array');
+
      var url =  "{{path('admin_stats_detail',{'directory' : directory.id,'user':user.id})}}";
      $('#editForm').hide();
      $('#createForm').hide();

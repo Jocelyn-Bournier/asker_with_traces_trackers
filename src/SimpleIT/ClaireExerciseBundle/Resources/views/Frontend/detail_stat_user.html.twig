@@ -184,7 +184,7 @@
                 }
 
               Sunburst("barplot_chart_model", d.models, 2, color(d.id));
-              window.scrollBy(0,850);
+              $('html,body').animate({scrollTop: $("#barplot_chart_model").offset().top},'slow');
           }
           // Add the bars
           svg.append("g")

@@ -156,10 +156,16 @@ function drawChart(selector,data){
         .attr("transform", "translate(0," + height + ")")
         .call(d3.axisBottom(x));
 }
+
 {% for id in directories|keys %}
   {% for modelId, model in directories[id].models %}
     data = '{{model.json|json_encode()|raw}}';
     drawChart("model-{{modelId}}",data);
   {% endfor %}
 {% endfor %}
+
+if(sessionStorage.getItem("ancrage")){
+    $('html,body').animate({scrollTop: $(sessionStorage.getItem("ancrage")).offset().top},'slow');
+    sessionStorage.removeItem('ancrage');
+}
 </script>
