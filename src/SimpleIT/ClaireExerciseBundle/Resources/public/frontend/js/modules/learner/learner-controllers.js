@@ -34,8 +34,8 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                             let protocol  = location.protocol;
                             let slashes   = protocol.concat("//");
                             let host      = slashes.concat(window.location.hostname);
-                            //let urlPrefix = `${host}/${tmpWay}/front/#/learner/model/`;
-                            let urlPrefix = `${host}/app.php/front/#/learner/model/`; 
+                            let urlPrefix = `${host}/${tmpWay}/front/#/learner/model/`;
+                            //let urlPrefix = host+'/app.php/front/#/learner/model/';
                             let findModel = (resourceLocation, directory) =>{
                                 for(let i = 0; i < directory.models.length; i++){
                                     model = directory.models[i];
@@ -114,13 +114,13 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                     document.getElementById('olm-target-loader').classList.add('hidden');
                     data = JSON.parse(data);
                     let OLM = document._OLM;
-                    // Creates a sample framework randomly scored. This should be replaced with some framework retrieving function.
+                    // Creates a sample framework randomly scored. This should be replaced with some framework retrieving function. 
                     let framework = data;
                     // Creates a tree based on the framework.
                     let fw_tree = new OLM.CORE.FrameworkTree();
                     fw_tree.buildFromFramework(framework);
                     document._OLM.currentTree = fw_tree;
-                    // Creates the treeIndented object. The config is editable on the right =>
+                    // Creates the treeIndented object. The config is editable on the right =>  
                     let treeIndented  = new OLM.TreeIndented(document.getElementById('olm-target'), fw_tree, {
                         "fontHoverColor":  "rgba(0, 0, 0, 1)",
                         "fontColor":       "rgba(0, 0, 0, .85)",
@@ -194,3 +194,4 @@ learnerControllers.controller('learnerController', ['$scope', 'User', 'AttemptBy
                 });
         };
     }]);
+

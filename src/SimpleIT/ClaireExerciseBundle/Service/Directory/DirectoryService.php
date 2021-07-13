@@ -205,16 +205,17 @@ class DirectoryService extends TransactionalService
     public function JSONUserStats($directory,$user,$view)
     {
         $models = $this->directoryRepository->
-            findAllModelsIds($directory->getId())
+            findAllModels($directory->getId())
         ;
 
         $json = array();
-
         foreach ($models as $key => $model) {
             $json[$key] = $this->directoryRepository->
-                JSONUserStats($model['id'], $user->getId(), $view)[0]
+                JSONUserStats($model['mid'],$model['did'], $user->getId(), $view)[0]
             ;
-            if($json[$key]['total'] == 0) unset($json[$key]);
+        }
+        foreach ($json as $key => $dir) {
+            if($json[$key]['totalAtt'] == 0) unset($json[$key]);
         }
         $json = array_values(array_filter($json));
 
@@ -454,6 +455,10 @@ class DirectoryService extends TransactionalService
 
     public function getPreviewStats(Directory $directory, $users, $view)
     {
+        $attempt = $this->em
+            ->getRepository('SimpleITClaireExerciseBundle:CreatedExercise\Attempt')
+        ;
+
         $stats = array();
         foreach ($users as $key => $user) {
             $stat = $this->directoryRepository->
@@ -463,13 +468,20 @@ class DirectoryService extends TransactionalService
             $stats[$key]['user'] = $user;
             $stats[$key]['count1'] = $stat[0]['count1'];
             $stats[$key]['count2'] = $stat[0]['count2'];
-            if($stat[0]['count1'] > 0){
+            if($stats[$key]['count1'] > 0){
                 $stats[$key]['mark'] = round($stat[0]['mark'],2);
                 $stats[$key]['firstDate'] = $stat[0]['firstDate'];
                 $stats[$key]['lastDate'] = $stat[0]['lastDate'];
-                $stats[$key]['firstDate2'] = $stat[0]['firstDate2'];
-                $stats[$key]['lastDate2'] = $stat[0]['lastDate2'];
                 $stats[$key]['days'] = $stat[0]['days'];
+
+                if($stats[$key]['count2'] > 0){
+                    $stats[$key]['firstDate2'] = $stat[0]['firstDate2'];
+                    $stats[$key]['lastDate2'] = $stat[0]['lastDate2'];
+                }
+                else{
+                    $stats[$key]['firstDate2'] = "-";
+                    $stats[$key]['lastDate2'] = "-";
+                }
             }
             else{
                 $stats[$key]['mark'] = "-";
@@ -514,6 +526,7 @@ class DirectoryService extends TransactionalService
         $dirs = $this->directoryRepository->
             getSubDirsStats($directory->getId(),$user->getId(),$view)
         ;
+
         foreach ($dirs as $key => $dir) {
             $dirs[$key]['models'] = $this->directoryRepository->
                 getModelsStats($dir['id'],$user->getId(),$view)
@@ -525,8 +538,9 @@ class DirectoryService extends TransactionalService
     public function JSONUserTimeStats($directory,$user,$view)
     {
         $dirs = $this->directoryRepository->
-            findChildrens($directory->getId())
+            getSubDirs($directory->getId())
         ;
+
         $json = array();
         foreach ($dirs as $dir) {
             $json[] = $this->directoryRepository->

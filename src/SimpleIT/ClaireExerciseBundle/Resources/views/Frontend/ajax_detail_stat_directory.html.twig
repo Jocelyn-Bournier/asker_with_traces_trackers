@@ -109,13 +109,25 @@ const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
     )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
 
 // do the work...
-document.querySelectorAll('th').forEach(th => th.addEventListener('click', (() => {
+document.querySelectorAll('table#users-array th')
+        .forEach(th => th.addEventListener('click', () => {
+            if(th.innerHTML == 'Détail') return;
 
-    const table = document.getElementById('users-array');
-    Array.from(document.getElementsByName('user'))
-        .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
-        .forEach(tr => document.getElementsByName('body-stats')[0].appendChild(tr) );
-})));
+            document.querySelectorAll('table#users-array th')
+                .forEach(_th => (_th.style.border = '1px solid #ddd'));
+            th.style.border = '3px solid black';
+
+            const table = document.getElementById('users-array');
+            Array.from(document.getElementsByName('user'))
+                .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+                .forEach(td => document.getElementsByName('body-stats')[0].appendChild(td) );
+        }))
+
+document.querySelectorAll('table#users-array th')
+        .forEach(th => th.addEventListener("mouseenter", (e) => {
+            if(th.innerHTML == 'Détail') return;
+            th.style.cursor = 'pointer';
+        }));
 
 function drawChart(selector,data){
   var margin = {top: 5, right: 0, bottom: 20, left: 25},

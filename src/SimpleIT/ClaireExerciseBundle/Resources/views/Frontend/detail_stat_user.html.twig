@@ -29,18 +29,16 @@
         <td class="td-stat" colspan="2">Nombre total d'exercices générés : {{stats.count1}}</td>
         <td class="td-stat" colspan="2">Nombre total de réponses soumises : {{stats.count2}}</td>
     </tr>
-    <thead>
-        <th class="td-stat" colspan="4">
-            Répartition globale des notes de l'élève dans le dossier {{directory.name}}
-        </th>
-    </thead>
-    <tr class="active">
-        <td id="barplot_chart" colspan="4">
-            {% if json == null %}
-                <b> Il n'y a pas de notes pour cet étudiant dans ce répertoire <b>
-            {% endif %}
-        </td>
-    </tr>
+    {% if json != null %}
+        <thead>
+            <th class="td-stat" colspan="4">
+                Répartition globale des notes de l'élève dans le dossier {{directory.name}}
+            </th>
+        </thead>
+        <tr class="active">
+            <td id="barplot_chart" colspan="4"></td>
+        </tr>
+    {% endif %}
     {% if json_sunburst != null %}
         <thead>
             <th class="td-stat" colspan="4">
@@ -107,7 +105,7 @@
           var x = d3.scaleBand()
               .range([0, 2 * Math.PI])    // X axis goes from 0 to 2pi = all around the circle. If I stop at 1Pi, it will be around a half circle
               .align(0)                  // This does nothing
-              .domain(data.map(function(d) { return d.name; })); // The domain of the X axis is the list of states.
+              .domain(data.map(function(d) { return d.id; })); // The domain of the X axis is the list of states.
           var y = scaleRadial()
               .range([innerRadius, outerRadius])   // Domain will be define later.
               .domain([0, 100]); // Domain of Y is from 0 to the max seen in the data
@@ -138,7 +136,8 @@
                             "Répertoire : " + d.directory + '<br>' +
                             "Modèle : " + d.name + '<br>' +
                             "Note moyenne : " + (Math.round(d.mark * 100) / 100) + '<br>' +
-                            "Nombre de réponses soumises : " + d.total
+                            "Nombre d'exercices générés' : " + d.totalAtt + '<br>' +
+                            "Nombre de réponses soumises : " + d.totalAns
                         )
                   break;
                   case 1:
@@ -146,14 +145,17 @@
                       tooltip.html(
                             "Répertoire : " + d.name + '<br>' +
                             "Note moyenne : " + (Math.round(d.mark * 100) / 100) + '<br>' +
-                            "Nombre de réponses soumises : " + d.total
+                            "Nombre d'exercices générés' : " + d.totalAtt + '<br>' +
+                            "Nombre de réponses soumises : " + d.totalAns
                         )
                   break;
                   case 2:
                       tooltip.html(
                             "Modèle : " + d.name + '<br>' +
+                            "Type : " + d.type + '<br>' +
                             "Note moyenne : " + (Math.round(d.mark * 100) / 100) + '<br>' +
-                            "Nombre de réponses soumises : " + d.total
+                            "Nombre d'exercices générés' : " + d.totalAtt + '<br>' +
+                            "Nombre de réponses soumises : " + d.totalAns
                         )
                   break;
               }
@@ -182,7 +184,6 @@
                 while (element.firstChild) {
                   element.removeChild(element.firstChild);
                 }
-
               Sunburst("barplot_chart_model", d.models, 2, color(d.id));
               $('html,body').animate({scrollTop: $("#barplot_chart_model").offset().top},'slow');
           }
@@ -192,12 +193,18 @@
             .data(data)
             .enter()
             .append("path")
-              .attr("fill", d => (type !== 2 ? color(d.id) : _color))
+              .attr("fill", d => {
+                  switch(type){
+                      case 0: return color(d.mid);
+                      case 1: return color(d.id);
+                      case 2: return _color;
+                  }
+              })
               .attr("d", d3.arc()     // imagine your doing a part of a donut plot
                   .innerRadius(innerRadius)
                   .outerRadius(function(d) { return y(d['mark']|1); })
-                  .startAngle(function(d) { return x(d.name); })
-                  .endAngle(function(d) { return x(d.name) + x.bandwidth(); })
+                  .startAngle(function(d) { return x(d.id); })
+                  .endAngle(function(d) { return x(d.id) + x.bandwidth(); })
                   .padAngle(0.01)
                   .padRadius(innerRadius))
           .on("mouseover", showTooltip )
@@ -211,11 +218,11 @@
               .data(data)
               .enter()
               .append("g")
-                .attr("text-anchor", function(d) { return (x(d.name) + x.bandwidth() / 2 + Math.PI) % (2 * Math.PI) < Math.PI ? "end" : "start"; })
-                .attr("transform", function(d) { return "rotate(" + ((x(d.name) + x.bandwidth() / 2) * 180 / Math.PI - 90) + ")"+"translate(" + (y(d['mark'])+10) + ",0)";})
+                .attr("text-anchor", function(d) { return (x(d.id) + x.bandwidth() / 2 + Math.PI) % (2 * Math.PI) < Math.PI ? "end" : "start"; })
+                .attr("transform", function(d) { return "rotate(" + ((x(d.id) + x.bandwidth() / 2) * 180 / Math.PI - 90) + ")"+"translate(" + (y(d['mark'])+10) + ",0)";})
               .append("text")
                 .text(function(d){return(d.name)})
-                .attr("transform", function(d) { return (x(d.name) + x.bandwidth() / 2 + Math.PI) % (2 * Math.PI) < Math.PI ? "rotate(180)" : "rotate(0)"; })
+                .attr("transform", function(d) { return (x(d.id) + x.bandwidth() / 2 + Math.PI) % (2 * Math.PI) < Math.PI ? "rotate(180)" : "rotate(0)"; })
                 .style("font-size", "13px")
                 .attr("alignment-baseline", "middle")
 
@@ -230,7 +237,7 @@
 
         let types = data
             .filter(d => d.length !== 0)
-            .map(d => d[0].directory);
+            .map(d => ({'name': d[0].directory,'id': d[0].id}));
 
         let csv = data.map(array => {
             return array.map((d,i) => {
@@ -440,7 +447,7 @@
         .attr("x", 1120)
 
         types.forEach(function (type, i) {
-          onlyThisType = csv.filter(function(d) {return d.directory === type});
+          onlyThisType = csv.filter(function(d) {return d.id === type.id});
 
           let theseBands = timeline(onlyThisType);
           var showTooltip = function(d) {
@@ -505,7 +512,7 @@
           .attr("width", 20)
 
           svg.append("text")
-          .text(type)
+          .text(type.name)
           .attr("y", 20 + (i * 90))
           .attr("x", 50)
 
