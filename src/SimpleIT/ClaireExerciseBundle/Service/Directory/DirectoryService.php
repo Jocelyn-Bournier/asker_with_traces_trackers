@@ -462,21 +462,21 @@ class DirectoryService extends TransactionalService
         $stats = array();
         foreach ($users as $key => $user) {
             $stat = $this->directoryRepository->
-                getPreviewStats($directory->getId(),$user->getId(),$view)
+                getPreviewStats($directory->getId(),$user->getId(),$view)[0]
             ;
 
             $stats[$key]['user'] = $user;
-            $stats[$key]['count1'] = $stat[0]['count1'];
-            $stats[$key]['count2'] = $stat[0]['count2'];
+            $stats[$key]['count1'] = $stat['count1'];
+            $stats[$key]['count2'] = $stat['count2'];
             if($stats[$key]['count1'] > 0){
-                $stats[$key]['mark'] = round($stat[0]['mark'],2);
-                $stats[$key]['firstDate'] = $stat[0]['firstDate'];
-                $stats[$key]['lastDate'] = $stat[0]['lastDate'];
-                $stats[$key]['days'] = $stat[0]['days'];
+                $stats[$key]['mark'] = round($stat['mark'],2);
+                $stats[$key]['firstDate'] = $stat['firstDate'];
+                $stats[$key]['lastDate'] = $stat['lastDate'];
+                $stats[$key]['days'] = $stat['days'];
 
                 if($stats[$key]['count2'] > 0){
-                    $stats[$key]['firstDate2'] = $stat[0]['firstDate2'];
-                    $stats[$key]['lastDate2'] = $stat[0]['lastDate2'];
+                    $stats[$key]['firstDate2'] = $stat['firstDate2'];
+                    $stats[$key]['lastDate2'] = $stat['lastDate2'];
                 }
                 else{
                     $stats[$key]['firstDate2'] = "-";

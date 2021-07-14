@@ -439,8 +439,8 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
         );
 
         if($view != null){
-            $sql .= "and an.created_at > :start
-                     and an.created_at < :end";
+            $sql .= "and a.created_at >= :start
+                     and a.created_at <= :end";
 
             $params[':start'] = $view->getStartDate()->format('Y-m-d');
             $params[':end'] = $view->getEndDate()->format('Y-m-d');
@@ -483,8 +483,8 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
         );
 
         if($view != null){
-            $sql .= "and an.created_at > :start
-                     and an.created_at < :end";
+            $sql .= "and at.created_at >= :start
+                     and at.created_at <= :end";
 
             $params[':start'] = $view->getStartDate()->format('Y-m-d');
             $params[':end'] = $view->getEndDate()->format('Y-m-d');
@@ -568,8 +568,8 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
         );
 
         if($view != null){
-            $sql .= "and an.created_at > :start
-                     and an.created_at < :end";
+            $sql .= "and at.created_at >= :start
+                     and at.created_at <= :end";
 
             $params[':start'] = $view->getStartDate()->format('Y-m-d');
             $params[':end'] = $view->getEndDate()->format('Y-m-d');
@@ -611,8 +611,8 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
         );
 
         if($view != null){
-            $sql .= "and an.created_at > :start
-                     and an.created_at < :end";
+            $sql .= "and at.created_at >= :start
+                     and at.created_at <= :end";
 
             $params[':start'] = $view->getStartDate()->format('Y-m-d');
             $params[':end'] = $view->getEndDate()->format('Y-m-d');
@@ -654,8 +654,8 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
         );
 
         if($view != null){
-            $sql .= "and an.created_at > :start
-                     and an.created_at < :end";
+            $sql .= "and at.created_at >= :start
+                     and at.created_at <= :end";
 
             $params[':start'] = $view->getStartDate()->format('Y-m-d');
             $params[':end'] = $view->getEndDate()->format('Y-m-d');

@@ -66,6 +66,7 @@ pour un modéle par étudiant"></span>
             <th>Nom</th>
             <th>Prénom</th>
             <th>Nombre total d'exercices générés</th>
+            <th>Nombre total de réponses soumises</th>
             <th>Score moyen</th>
             <th>Date du premier exercice généré</th>
             <th>Date du dernier exercice généré</th>
@@ -88,6 +89,7 @@ pour un modéle par étudiant"></span>
           <td class="td-stat">{{stat.user.lastName}}</td>
           <td class="td-stat">{{stat.user.firstName}}</td>
           <td class="td-stat">{{stat.count1}}</td>
+          <td class="td-stat">{{stat.count2}}</td>
           <td class="td-stat">{{stat.mark}}</td>
           <td class="td-stat">{{stat.firstDate}}</td>
           <td class="td-stat">{{stat.lastDate}}</td>
@@ -126,7 +128,7 @@ document.querySelectorAll('table#users-array th')
 document.querySelectorAll('table#users-array th')
         .forEach(th => th.addEventListener("mouseenter", (e) => {
             if(th.innerHTML == 'Détail') return;
-            th.style.cursor = 'pointer';
+            th.style.cursor = 'pointer'; 
         }));
 
 function drawChart(selector,data){
