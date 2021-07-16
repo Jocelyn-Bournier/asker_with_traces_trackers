@@ -110,7 +110,7 @@ const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
     v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
     )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
 
-// do the work...
+// Tri du tableau d'étudiant
 document.querySelectorAll('table#users-array th')
         .forEach(th => th.addEventListener('click', () => {
             if(th.innerHTML == 'Détail') return;
@@ -124,11 +124,10 @@ document.querySelectorAll('table#users-array th')
                 .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
                 .forEach(td => document.getElementsByName('body-stats')[0].appendChild(td) );
         }))
-
 document.querySelectorAll('table#users-array th')
         .forEach(th => th.addEventListener("mouseenter", (e) => {
             if(th.innerHTML == 'Détail') return;
-            th.style.cursor = 'pointer'; 
+            th.style.cursor = 'pointer';
         }));
 
 function drawChart(selector,data){
@@ -178,6 +177,7 @@ function drawChart(selector,data){
   {% endfor %}
 {% endfor %}
 
+// Permet de gérer l'ancrage quand on revient sur la page pour retourner au tableau d'étudiants
 if(sessionStorage.getItem("ancrage")){
     $('html,body').animate({scrollTop: $(sessionStorage.getItem("ancrage")).offset().top},'slow');
     sessionStorage.removeItem('ancrage');

@@ -73,6 +73,7 @@
     <div id="content_stat"></div>
  </div>
  <script>
+ // on place l'ancrage quand on arrive sur cette page
     sessionStorage.setItem('ancrage', '#users-array');
 
      var url =  "{{path('admin_stats_detail',{'directory' : directory.id,'user':user.id})}}";

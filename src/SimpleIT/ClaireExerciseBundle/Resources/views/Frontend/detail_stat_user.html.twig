@@ -57,6 +57,7 @@
     {% endif %}
 </table>
 <script>
+// Dessine les diagrammes sunburst
     function Sunburst(selector, data, type, _color) {
         if(data.length == 0) return;
         var color = d3.scaleOrdinal(d3.schemeCategory20);
@@ -233,6 +234,7 @@
     data = {{json_sunburst|json_encode()|raw}};
     Sunburst("barplot_chart_directory", data, 1, null);
 
+// Dessine la timeline
     function Timeline(selector, data){
 
         let types = data

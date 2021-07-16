@@ -190,7 +190,6 @@ class DirectoryService extends TransactionalService
         $this->em->flush();
         return $dir;
     }
-
     public function JSONstats($repo,Directory $directory, $model, $view, $ids)
     {
         $datas = $repo->
@@ -202,6 +201,7 @@ class DirectoryService extends TransactionalService
         }
         return $json;
     }
+    // Permet de chercher les informations pour le diagrame sunburst
     public function JSONUserStats($directory,$user,$view)
     {
         $models = $this->directoryRepository->
@@ -452,7 +452,7 @@ class DirectoryService extends TransactionalService
             }
         }
     }
-
+    // Statistiques des étudiants dans le tableau
     public function getPreviewStats(Directory $directory, $users, $view)
     {
         $attempt = $this->em
@@ -521,6 +521,7 @@ class DirectoryService extends TransactionalService
         }
 
     }
+    // Permet de récupérer les informations de l'étudiant pour afficher un diagramme sunburst
     public function JSONUserModelsStats($directory,$user,$view)
     {
         $dirs = $this->directoryRepository->
@@ -535,15 +536,19 @@ class DirectoryService extends TransactionalService
 
         return $dirs;
     }
+    // Permet de récupérer les informations de l'étudiant pour afficher une timeline
     public function JSONUserTimeStats($directory,$user,$view)
     {
+        $answer = $this->em
+            ->getRepository('SimpleITClaireExerciseBundle:CreatedExercise\Answer')
+        ;
         $dirs = $this->directoryRepository->
             getSubDirs($directory->getId())
         ;
 
         $json = array();
         foreach ($dirs as $dir) {
-            $json[] = $this->directoryRepository->
+            $json[] = $answer->
                 getAllAnswers($dir['id'],$user->getId(),$view)
             ;
         }
