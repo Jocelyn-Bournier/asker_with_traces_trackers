@@ -8,15 +8,15 @@ Les pages ajoutées sont : "personal_stats.html.twig" et "detail_stat_user.html.
 
 **Fichiers modifiés**
 
-asker/src/SimpleIT/ClaireExerciseBundle/Controller/Frontend/StatController.php
-asker/src/SimpleIT/ClaireExerciseBundle/Repository/DirectoryRepository.php
-asker/src/SimpleIT/ClaireExerciseBundle/Repository/Exercise/CreatedExercise/AnswerRepository.php
-asker/src/SimpleIT/ClaireExerciseBundle/Repository/Exercise/CreatedExercise/AttemptRepository.php
-asker/src/SimpleIT/ClaireExerciseBundle/Resources/views/Frontend/ajax_detail_stat_directory.html.twig
-asker/src/SimpleIT/ClaireExerciseBundle/Resources/views/Frontend/detail_stat_user.html.twig
-asker/src/SimpleIT/ClaireExerciseBundle/Resources/views/Frontend/personal_stats.html.twig
-asker/src/SimpleIT/ClaireExerciseBundle/Resources/config/routing/frontend/stats.yml
-asker/src/SimpleIT/ClaireExerciseBundle/Service/Directory/DirectoryService.php
+- asker/src/SimpleIT/ClaireExerciseBundle/Controller/Frontend/StatController.php
+- asker/src/SimpleIT/ClaireExerciseBundle/Repository/DirectoryRepository.php
+- asker/src/SimpleIT/ClaireExerciseBundle/Repository/Exercise/CreatedExercise/AnswerRepository.php
+- asker/src/SimpleIT/ClaireExerciseBundle/Repository/Exercise/CreatedExercise/AttemptRepository.php
+- asker/src/SimpleIT/ClaireExerciseBundle/Resources/views/Frontend/ajax_detail_stat_directory.html.twig
+- asker/src/SimpleIT/ClaireExerciseBundle/Resources/views/Frontend/detail_stat_user.html.twig
+- asker/src/SimpleIT/ClaireExerciseBundle/Resources/views/Frontend/personal_stats.html.twig
+- asker/src/SimpleIT/ClaireExerciseBundle/Resources/config/routing/frontend/stats.yml
+- asker/src/SimpleIT/ClaireExerciseBundle/Service/Directory/DirectoryService.php
 
 ----
 
