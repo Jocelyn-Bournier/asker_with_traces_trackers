@@ -1,38 +1,22 @@
 **Résumé du stage**
 
 Toutes les fonctions ajoutées ont été commentés sur leur utilité, certaines ont été modifiés pour permettre le fonctionnement.
+
 Les pages ajoutées sont : "personal_stats.html.twig" et "detail_stat_user.html.twig".
 
 -----
 
-**Hiérarchie des fichiers modifiés**
+**Fichiers modifiés**
 
-asker/
-    |-> src/
-         |-> SimpleIT/
-              |->ClaireExerciseBundle/
-                   |-> Controller/
-                   |    |-> Frontend/
-                   |         |-> StatController.php
-                   |-> Repository/
-                   |    |-> DirectoryRepository.php
-                   |    |-> Exercise/
-                   |         |-> CreatedExercise/
-                   |              |-> AnswerRepository.php
-                   |              |-> AttemptRepository.php
-                   |-> Resources/
-                   |     |-> views/
-                   |     |    |-> Frontend/
-                   |     |         |-> ajax_detail_stat_directory.html.twig
-                   |     |         |-> detail_stat_user.html.twig
-                   |     |         |-> personal_stats.html.twig
-                   |     |-> config/
-                   |         |-> routing/
-                   |             |-> frontend/
-                   |                 |-> stats.yml
-                   |-> Service/
-                       |-> Directory/
-                           |-> DirectoryService.php
+asker/src/SimpleIT/ClaireExerciseBundle/Controller/Frontend/StatController.php
+asker/src/SimpleIT/ClaireExerciseBundle/Repository/DirectoryRepository.php
+asker/src/SimpleIT/ClaireExerciseBundle/Repository/Exercise/CreatedExercise/AnswerRepository.php
+asker/src/SimpleIT/ClaireExerciseBundle/Repository/Exercise/CreatedExercise/AttemptRepository.php
+asker/src/SimpleIT/ClaireExerciseBundle/Resources/views/Frontend/ajax_detail_stat_directory.html.twig
+asker/src/SimpleIT/ClaireExerciseBundle/Resources/views/Frontend/detail_stat_user.html.twig
+asker/src/SimpleIT/ClaireExerciseBundle/Resources/views/Frontend/personal_stats.html.twig
+asker/src/SimpleIT/ClaireExerciseBundle/Resources/config/routing/frontend/stats.yml
+asker/src/SimpleIT/ClaireExerciseBundle/Service/Directory/DirectoryService.php
 
 ----
 
