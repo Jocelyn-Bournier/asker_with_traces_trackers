@@ -8,7 +8,7 @@ Les pages ajoutées sont : "personal_stats.html.twig" et "detail_stat_user.html.
 
 **Hiérarchie des fichiers modifiés**
 
-asker/
+- asker/
     - src/
         - SimpleIT/
             - ClaireExerciseBundle/
