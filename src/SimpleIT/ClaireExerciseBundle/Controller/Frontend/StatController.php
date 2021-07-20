@@ -157,12 +157,16 @@ class StatController extends BaseController
         }
         return $this->redirectToRoute('admin_stats');
     }
+    /*
+        Charcge le filtre de temps de la page de l'étudiant
+    */
     public function statPersonalAction(Directory $directory, AskerUser $user, StatView $view = null)
     {
+        $_user = $this->get('security.context')->getToken()->getUser();
         if (
-            $directory->hasManager($user)
+            $directory->hasManager($_user)
             || $this->get('security.context')->isGranted('ROLE_ADMIN')
-            || $directory->getOwner() == $user
+            || $directory->getOwner() == $_user
         ){
             $this->get('simple_it.exercise.directory')->hasView($directory);
             if ($view == null){
@@ -184,31 +188,40 @@ class StatController extends BaseController
 
             );
         }
+        return $this->redirectToRoute('admin_stats');
     }
+    /*
+        Fonction qui charge la page de statistiques détaillées pour l'étudiant, une fois que le filtre de temps a été changé
+    */
     public function statDetailAction(Directory $directory, AskerUser $user, StatView $view = null)
     {
+        $_user = $this->get('security.context')->getToken()->getUser();
         if (
-            $directory->hasManager($user)
+            $directory->hasManager($_user)
             || $this->get('security.context')->isGranted('ROLE_ADMIN')
-            || $directory->getOwner() == $user
+            || $directory->getOwner() == $_user
         ){
             $this->get('simple_it.exercise.directory')->hasView($directory);
             if ($view == null){
                 $view = $directory->getLastView();
             }
 
+            // Quelques statistiques sur l'étudiant
             $stats = $this->get('simple_it.exercise.directory')->
                 getPreviewStats($directory,array('0' => $user),$view)[0]
             ;
 
+            // Informations pour le diagramme sunburst de tous les modèles
             $json = $this->get('simple_it.exercise.directory')->
                 JSONUserStats($directory, $user, $view)
             ;
 
+            // Informations pour les deux diagrammes sunburst (par sous-dossier et par modèle)
             $json_sunburst = $this->get('simple_it.exercise.directory')->
                 JSONUserModelsStats($directory, $user, $view)
             ;
 
+            // Informations pour la timeline
             $json_timeline = $this->get('simple_it.exercise.directory')->
                 JSONUserTimeStats($directory, $user, $view)
             ;

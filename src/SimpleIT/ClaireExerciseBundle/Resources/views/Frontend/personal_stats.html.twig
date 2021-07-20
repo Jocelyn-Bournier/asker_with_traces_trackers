@@ -49,9 +49,17 @@
           </button>
         {% endif %}
       </div>
+      <!--div class='col-xs-3 form-inline' style="margin-bottom:10px;">
+          <div class="form-group" style="margin-left:200px;">
+              <button type="button" class="btn btn-info"
+                aria-label="Right Aligne">
+                  Retour
+              </button>
+          </div>
+      </div-->
     </div>
     <div class="row">
-      <div class='col-xs-3' id='createForm'>
+      <div class='col-xs-6' id='createForm'>
         {% form_theme createForm 'bootstrap_3_layout.html.twig' %}
           {{ form_start(createForm) }}
             {{ form_widget(createForm) }}
@@ -65,6 +73,9 @@
     <div id="content_stat"></div>
  </div>
  <script>
+ // on place l'ancrage quand on arrive sur cette page
+    sessionStorage.setItem('ancrage', '#users-array');
+
      var url =  "{{path('admin_stats_detail',{'directory' : directory.id,'user':user.id})}}";
      $('#editForm').hide();
      $('#createForm').hide();

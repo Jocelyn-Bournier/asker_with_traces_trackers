@@ -190,7 +190,6 @@ class DirectoryService extends TransactionalService
         $this->em->flush();
         return $dir;
     }
-
     public function JSONstats($repo,Directory $directory, $model, $view, $ids)
     {
         $datas = $repo->
@@ -198,23 +197,25 @@ class DirectoryService extends TransactionalService
         ;
         $json = array();
         foreach($datas as $key=> $val){
-            $json[] = array('range' => $key, 'nb' => (int)$val);
+            $json[] = array('range' => $key, 'nb' => $val);
         }
         return $json;
     }
+    // Permet de chercher les informations pour le diagrame sunburst
     public function JSONUserStats($directory,$user,$view)
     {
         $models = $this->directoryRepository->
-            findAllModelsIds($directory->getId())
+            findAllModels($directory->getId())
         ;
 
         $json = array();
-
         foreach ($models as $key => $model) {
             $json[$key] = $this->directoryRepository->
-                JSONUserStats($model['id'], $user->getId(), $view)[0]
+                JSONUserStats($model['mid'],$model['did'], $user->getId(), $view)[0]
             ;
-            if($json[$key]['total'] == 0) unset($json[$key]);
+        }
+        foreach ($json as $key => $dir) {
+            if($json[$key]['totalAtt'] == 0) unset($json[$key]);
         }
         $json = array_values(array_filter($json));
 
@@ -451,24 +452,36 @@ class DirectoryService extends TransactionalService
             }
         }
     }
-
+    // Statistiques des étudiants dans le tableau
     public function getPreviewStats(Directory $directory, $users, $view)
     {
+        $attempt = $this->em
+            ->getRepository('SimpleITClaireExerciseBundle:CreatedExercise\Attempt')
+        ;
+
         $stats = array();
         foreach ($users as $key => $user) {
             $stat = $this->directoryRepository->
-                getPreviewStats($directory->getId(),$user->getId(),$view)
+                getPreviewStats($directory->getId(),$user->getId(),$view)[0]
             ;
 
             $stats[$key]['user'] = $user;
-            $stats[$key]['count1'] = $stat[0]['count1'];
-            $stats[$key]['count2'] = $stat[0]['count2'];
-            if($stat[0]['count1'] > 0){
-                $stats[$key]['mark'] = round($stat[0]['mark'],2);
-                $stats[$key]['firstDate'] = $stat[0]['firstDate'];
-                $stats[$key]['lastDate'] = $stat[0]['lastDate'];
-                $stats[$key]['firstDate2'] = $stat[0]['firstDate2'];
-                $stats[$key]['lastDate2'] = $stat[0]['lastDate2'];
+            $stats[$key]['count1'] = $stat['count1'];
+            $stats[$key]['count2'] = $stat['count2'];
+            if($stats[$key]['count1'] > 0){
+                $stats[$key]['mark'] = round($stat['mark'],2);
+                $stats[$key]['firstDate'] = $stat['firstDate'];
+                $stats[$key]['lastDate'] = $stat['lastDate'];
+                $stats[$key]['days'] = $stat['days'];
+
+                if($stats[$key]['count2'] > 0){
+                    $stats[$key]['firstDate2'] = $stat['firstDate2'];
+                    $stats[$key]['lastDate2'] = $stat['lastDate2'];
+                }
+                else{
+                    $stats[$key]['firstDate2'] = "-";
+                    $stats[$key]['lastDate2'] = "-";
+                }
             }
             else{
                 $stats[$key]['mark'] = "-";
@@ -476,6 +489,7 @@ class DirectoryService extends TransactionalService
                 $stats[$key]['lastDate'] = "-";
                 $stats[$key]['firstDate2'] = "-";
                 $stats[$key]['lastDate2'] = "-";
+                $stats[$key]['days'] = "-";
             }
         }
         return $stats;
@@ -507,11 +521,13 @@ class DirectoryService extends TransactionalService
         }
 
     }
+    // Permet de récupérer les informations de l'étudiant pour afficher un diagramme sunburst
     public function JSONUserModelsStats($directory,$user,$view)
     {
         $dirs = $this->directoryRepository->
             getSubDirsStats($directory->getId(),$user->getId(),$view)
         ;
+
         foreach ($dirs as $key => $dir) {
             $dirs[$key]['models'] = $this->directoryRepository->
                 getModelsStats($dir['id'],$user->getId(),$view)
@@ -520,14 +536,19 @@ class DirectoryService extends TransactionalService
 
         return $dirs;
     }
+    // Permet de récupérer les informations de l'étudiant pour afficher une timeline
     public function JSONUserTimeStats($directory,$user,$view)
     {
-        $dirs = $this->directoryRepository->
-            findChildrens($directory->getId())
+        $answer = $this->em
+            ->getRepository('SimpleITClaireExerciseBundle:CreatedExercise\Answer')
         ;
+        $dirs = $this->directoryRepository->
+            getSubDirs($directory->getId())
+        ;
+
         $json = array();
         foreach ($dirs as $dir) {
-            $json[] = $this->directoryRepository->
+            $json[] = $answer->
                 getAllAnswers($dir['id'],$user->getId(),$view)
             ;
         }

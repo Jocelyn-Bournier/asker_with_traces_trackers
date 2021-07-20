@@ -412,7 +412,8 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
         );
         return $stmt->fetchAll();
     }
-    public function getPreviewStats($model,$user,$view)
+    // Affichage dans le tableau d'étudiants dans les statistiques
+    public function getPreviewStats($id,$user,$view)
     {
         $sql = "
             select count(a.id) as count1,
@@ -421,25 +422,26 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
                 min(a.created_at) as firstDate,
                 max(a.created_at) as lastDate,
                 min(an.created_at) as firstDate2,
-                max(an.created_at) as lastDate2
+                max(an.created_at) as lastDate2,
+                datediff(max(a.created_at), min(a.created_at)) as days
             from claire_exercise_attempt a
-            join claire_exercise_answer an on a.id = an.attempt_id
+            left join claire_exercise_answer an on a.id = an.attempt_id
             join claire_exercise_stored_exercise se on a.exercise_id = se.id
             join claire_exercise_model m on se.exercise_model_id = m.id
             join directories_models dm on m.id = dm.model_id
             join directory d on dm.directory_id = d.id
             where a.user_id = :user
-                and d.parent_id = :model
+                and (d.id = :id or d.parent_id = :id)
         ";
 
         $params = array(
             ':user'=> $user,
-            ':model'=> $model
+            ':id'=> $id
         );
 
         if($view != null){
-            $sql .= "and an.created_at > :start
-                     and an.created_at < :end";
+            $sql .= "and a.created_at >= :start
+                     and a.created_at <= :end";
 
             $params[':start'] = $view->getStartDate()->format('Y-m-d');
             $params[':end'] = $view->getEndDate()->format('Y-m-d');
@@ -449,16 +451,19 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
         $stmt->execute($params);
         return $stmt->fetchAll();
     }
-    function JSONUserStats($model, $user, $view)
+    // Affichage dans le diagramme sunburst de tous les modèles
+    function JSONUserStats($model, $directory, $user, $view)
     {
         $sql = "
             SELECT AVG(an.mark) mark,
                 d.name directory,
-                d.id id,
+                m.id id,
+                d.id mid,
                 m.title name,
-                COUNT(at.id) total
-            FROM claire_exercise_answer an
-            JOIN claire_exercise_attempt at
+                COUNT(at.id) totalAtt,
+                COUNT(an.id) totalAns
+            FROM claire_exercise_attempt at
+            LEFT JOIN claire_exercise_answer an
                 ON an.attempt_id = at.id
             JOIN claire_exercise_stored_exercise st
                 ON at.exercise_id = st.id
@@ -469,17 +474,19 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
             JOIN directory d
                 ON d.id = dm.directory_id
             WHERE dm.model_id = :model
+                AND d.id = :directory
                 AND at.user_id = :user
         ";
 
         $params = array(
             'model'=>$model,
+            'directory'=>$directory,
             'user'=>$user
         );
 
         if($view != null){
-            $sql .= "and an.created_at > :start
-                     and an.created_at < :end";
+            $sql .= "and at.created_at >= :start
+                     and at.created_at <= :end";
 
             $params[':start'] = $view->getStartDate()->format('Y-m-d');
             $params[':end'] = $view->getEndDate()->format('Y-m-d');
@@ -506,15 +513,47 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
         $stmt->execute(array('id'=>$id));
         return $stmt->fetchAll();
     }
+    // Permet de récupérer tous les modèles assiciés au dossier
+    function findAllModels($id)
+    {
+        $sql = "
+            SELECT m.id mid, d.id did
+            FROM claire_exercise_model m
+            JOIN directories_models dm
+                ON dm.model_id = m.id
+            JOIN directory d
+                ON d.id = dm.directory_id
+            WHERE d.parent_id = :id or d.id = :id
+        ";
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(array('id'=>$id));
+        return $stmt->fetchAll();
+    }
+    // Permet de récupérer tous les sous-dossiers
+    function getSubDirs($id)
+    {
+        $sql = "
+            SELECT DISTINCT id
+            FROM directory
+            WHERE parent_id = :id or id = :id
+        ";
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(array(':id'=>$id));
+        return $stmt->fetchAll();
+    }
+    // Permet de récupérer les informations pour le diagramme sunburst par sous-dossiers
     function getSubDirsStats($id,$user,$view)
     {
         $sql = "
             SELECT d.id id,
                 d.name name,
-                COUNT(an.id) total,
-                AVG(an.mark) mark
-            FROM claire_exercise_answer an
-            JOIN claire_exercise_attempt at
+                AVG(an.mark) mark,
+                COUNT(at.id) totalAtt,
+                COUNT(an.id) totalAns
+            FROM claire_exercise_attempt at
+            LEFT JOIN claire_exercise_answer an
                 ON an.attempt_id = at.id
             JOIN claire_exercise_stored_exercise st
                 ON at.exercise_id = st.id
@@ -524,8 +563,8 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
                 ON m.id = dm.model_id
             JOIN directory d
                 ON d.id = dm.directory_id
-            WHERE d.parent_id = :id
-                AND at.user_id = :user
+            WHERE at.user_id = :user
+                AND (d.parent_id = :id or d.id = :id)
         ";
 
         $params = array(
@@ -534,8 +573,8 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
         );
 
         if($view != null){
-            $sql .= "and an.created_at > :start
-                     and an.created_at < :end";
+            $sql .= "and at.created_at >= :start
+                     and at.created_at <= :end";
 
             $params[':start'] = $view->getStartDate()->format('Y-m-d');
             $params[':end'] = $view->getEndDate()->format('Y-m-d');
@@ -547,14 +586,18 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
         $stmt->execute($params);
         return $stmt->fetchAll();
     }
+    // Permet de récupérer les informations pour le diagramme sunburst par modèles dans un sous-dossier
     function getModelsStats($id,$user,$view)
     {
         $sql = "
             SELECT m.title name,
-                COUNT(an.id) total,
-                AVG(an.mark) mark
+                m.id id,
+                AVG(an.mark) mark,
+                m.type type,
+                COUNT(at.id) totalAtt,
+                COUNT(an.id) totalAns
             FROM claire_exercise_answer an
-            JOIN claire_exercise_attempt at
+            RIGHT JOIN claire_exercise_attempt at
                 ON an.attempt_id = at.id
             JOIN claire_exercise_stored_exercise st
                 ON at.exercise_id = st.id
@@ -574,8 +617,8 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
         );
 
         if($view != null){
-            $sql .= "and an.created_at > :start
-                     and an.created_at < :end";
+            $sql .= "and at.created_at >= :start
+                     and at.created_at <= :end";
 
             $params[':start'] = $view->getStartDate()->format('Y-m-d');
             $params[':end'] = $view->getEndDate()->format('Y-m-d');
@@ -587,47 +630,5 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
         $stmt->execute($params);
         return $stmt->fetchAll();
     }
-    function getAllAnswers($id,$user,$view)
-    {
-        $sql = "
-            SELECT an.mark value,
-                an.created_at start,
-                an.created_at date,
-                m.title name,
-                d.name directory
-            FROM claire_exercise_answer an
-            JOIN claire_exercise_attempt at
-                ON an.attempt_id = at.id
-            JOIN claire_exercise_stored_exercise st
-                ON at.exercise_id = st.id
-            JOIN directories_models dm
-                ON st.exercise_model_id = dm.model_id
-            JOIN claire_exercise_model m
-                ON m.id = dm.model_id
-            JOIN directory d
-                ON d.id = dm.directory_id
-            WHERE d.id = :id
-                AND at.user_id = :user
-        ";
 
-        $params = array(
-            'id'=>$id,
-            'user'=>$user
-        );
-
-        if($view != null){
-            $sql .= "and an.created_at > :start
-                     and an.created_at < :end";
-
-            $params[':start'] = $view->getStartDate()->format('Y-m-d');
-            $params[':end'] = $view->getEndDate()->format('Y-m-d');
-        }
-
-        $sql .= " order by an.created_at asc";
-
-        $conn = $this->getEntityManager()->getConnection();
-        $stmt = $conn->prepare($sql);
-        $stmt->execute($params);
-        return $stmt->fetchAll();
-    }
 }

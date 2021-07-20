@@ -58,20 +58,24 @@ pour un modéle par étudiant"></span>
     {% endfor %}
   </table>
   <div class="col-xs-12">
-  <table class="table table-bordered">
+  <table class="table table-bordered" id="users-array">
     <thead>
-      <th>Détail</th>
-      <th>Username</th>
-      <th>Nom</th>
-      <th>Prénom</th>
-      <th>Nombre total d'exercices générés</th>
-      <th>Score moyen</th>
-      <th>Date du premier exercice généré</th>
-      <th>Date du dernier exercice généré</th>
-    </thead>
-    <tbody>
-      {% for stat in stats %}
         <tr>
+            <th>Détail</th>
+            <th>Username</th>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Nombre total d'exercices générés</th>
+            <th>Nombre total de réponses soumises</th>
+            <th>Score moyen</th>
+            <th>Date du premier exercice généré</th>
+            <th>Date du dernier exercice généré</th>
+            <th>Nombre de jours entre le premier et le dernier exercice</th>
+        </tr>
+    </thead>
+    <tbody name="body-stats">
+      {% for stat in stats %}
+        <tr name="user">
           <td>
               <a href="{{path('admin_stats_personal',
               {'directory':directory.id,'user':stat.user.id,'view':view})}}"
@@ -85,9 +89,11 @@ pour un modéle par étudiant"></span>
           <td class="td-stat">{{stat.user.lastName}}</td>
           <td class="td-stat">{{stat.user.firstName}}</td>
           <td class="td-stat">{{stat.count1}}</td>
+          <td class="td-stat">{{stat.count2}}</td>
           <td class="td-stat">{{stat.mark}}</td>
           <td class="td-stat">{{stat.firstDate}}</td>
           <td class="td-stat">{{stat.lastDate}}</td>
+          <td class="td-stat">{{stat.days}}</td>
         </tr>
       {% endfor %}
     </tbody>
@@ -98,6 +104,32 @@ pour un modéle par étudiant"></span>
 {% endif %}
 
 <script>
+const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+
+const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
+    v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+    )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+
+// Tri du tableau d'étudiant
+document.querySelectorAll('table#users-array th')
+        .forEach(th => th.addEventListener('click', () => {
+            if(th.innerHTML == 'Détail') return;
+
+            document.querySelectorAll('table#users-array th')
+                .forEach(_th => (_th.style.border = '1px solid #ddd'));
+            th.style.border = '3px solid black';
+
+            const table = document.getElementById('users-array');
+            Array.from(document.getElementsByName('user'))
+                .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+                .forEach(td => document.getElementsByName('body-stats')[0].appendChild(td) );
+        }))
+document.querySelectorAll('table#users-array th')
+        .forEach(th => th.addEventListener("mouseenter", (e) => {
+            if(th.innerHTML == 'Détail') return;
+            th.style.cursor = 'pointer';
+        }));
+
 function drawChart(selector,data){
   var margin = {top: 5, right: 0, bottom: 20, left: 25},
       width = 200 - margin.left - margin.right,
@@ -136,15 +168,18 @@ function drawChart(selector,data){
     svg.append("g")
         .attr("transform", "translate(0," + height + ")")
         .call(d3.axisBottom(x));
-    // add the y Axis
-    //svg.append("g")
-    //    .call(d3.axisLeft(y));
-    //})
 }
+
 {% for id in directories|keys %}
   {% for modelId, model in directories[id].models %}
     data = '{{model.json|json_encode()|raw}}';
     drawChart("model-{{modelId}}",data);
   {% endfor %}
 {% endfor %}
+
+// Permet de gérer l'ancrage quand on revient sur la page pour retourner au tableau d'étudiants
+if(sessionStorage.getItem("ancrage")){
+    $('html,body').animate({scrollTop: $(sessionStorage.getItem("ancrage")).offset().top},'slow');
+    sessionStorage.removeItem('ancrage');
+}
 </script>
