@@ -25,6 +25,7 @@ use SimpleIT\ClaireExerciseBundle\Entity\ComperProfileTrace;
  *
  * ANR COMPER
  * @author Rémi Casado <remi.casado@protonmail.com>
+ * @author Valentin Lachand-Pascal <valentin@lachand.net>
  */
 class ProfileController extends BaseController
 {
@@ -33,6 +34,8 @@ class ProfileController extends BaseController
      * ANR COMPER
      * Create a JWT token and request the profile of a learner.
      * Then simply return this profile.
+     * @param int $framework_id the identifier of the framework used
+     * @return JsonResponse the profile of a learner on Json format
      */
     public function requestProfileAction($framework_id)
     {
@@ -49,18 +52,25 @@ class ProfileController extends BaseController
             "platform" => 'asker',
             "homepage" => 'https://asker.univ-lyon1.fr/'
         ];
+
+        $user = $this->get('security.context')->getToken()->getUser();
+        setcookie("userRoleStudentOnly", json_encode($user->isOnlyStudent()), time() + (86400 * 30), "/");
+
         $token = $jwtEncoder->getToken($payload);
         
         $profileService = $this->container->get('app.profileService');
-        $result         = $profileService->requestProfile($token);
-        $response       = new JsonResponse($result);
-        return $response;
+        $profile = new JsonResponse($profileService->requestProfile($token));
+
+        return $profile;
     }
 
     /**
      * ANR COMPER
      * Creates a ComperProfileTrace corresponding to an "action" done by the learner regarding his profile.
-     * An action can be, for example, "request", for when the learner requests his profile. 
+     * An action can be, for example, "request", for when the learner requests his profile.
+     * @param $action string the kind of action performed by the learner
+     * @param $directoryId int the identifier of the directory where the action is applied
+     * @return JsonResponse return a JsonResponse 'Profile trace created' after the trace was added to the user's profile
      */
     public function traceAction($directoryId, $action)
     {

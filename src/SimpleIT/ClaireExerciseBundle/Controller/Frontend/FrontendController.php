@@ -44,6 +44,7 @@ class FrontendController extends BaseController
                 'action' => $this->generateUrl('frontend_password')
             )
         );
+
         return $this->render(
             'SimpleITClaireExerciseBundle:Frontend:main-layout.html.twig',
             array('currentUserId' => $userId, 'form' => $form->createView())
@@ -78,6 +79,7 @@ class FrontendController extends BaseController
             $error = $session->get(SecurityContext::AUTHENTICATION_ERROR);
             $session->remove(SecurityContext::AUTHENTICATION_ERROR);
         }
+        // We request user roles to change profile view according to user rights
         return $this->render('SimpleITClaireExerciseBundle:Frontend:login.html.twig', array(
             // last username entered by the user
             'last_username' => $session->get(SecurityContext::LAST_USERNAME),

@@ -76,7 +76,7 @@ class AnswerByItemByAttemptController extends BaseController
      */
     public function createAction($attemptId, $itemId, AnswerResource $answerResource)
     {
-        try {
+       try {
             $this->validateResource($answerResource, array('create', 'Default'));
 
             // send to the answer service in order to create the answer
@@ -92,6 +92,7 @@ class AnswerByItemByAttemptController extends BaseController
             $response         = $statementFactory->sendStatements($statement);
 
             return new ApiGotResponse($itemResource, array("corrected", 'Default'));
+
 
         } catch (NonExistingObjectException $neoe) {
             throw new ApiNotFoundException(AnswerResource::RESOURCE_NAME);

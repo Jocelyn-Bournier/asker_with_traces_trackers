@@ -482,3 +482,8 @@ itemControllers.controller('groupItemsController', ['$scope', 'Answer', '$routeP
             $scope.displayCorrection($scope.item);
         }
     }]);
+
+// TODO Complete with a call to the API
+sendStatement = function (item, mark){
+
+}

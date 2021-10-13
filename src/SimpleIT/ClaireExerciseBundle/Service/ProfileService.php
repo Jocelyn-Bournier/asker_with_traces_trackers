@@ -19,7 +19,7 @@
 namespace SimpleIT\ClaireExerciseBundle\Service;
 
 /**
- * Service which manages jwt tokens
+ * Service which manages profiles
  *
  * @author Rémi Casado <remi.casado@protonmail.com>
  */
@@ -36,7 +36,7 @@ class ProfileService
     /**
      * Request the profile from the profile engine.
      *
-     * @param string $token
+     * @param string $token the profile to request
      */
     public function requestProfile($token)
     {
@@ -45,17 +45,17 @@ class ProfileService
         $header[] = 'Response-Type: application/json';
         $header[] = 'Comper-origin: asker';
         $header[] = 'Authorization: Bearer '.$token;
-        
+
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $this->profileEndpoint);
         curl_setopt($curl, CURLOPT_POST, false);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
 
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
         $response = curl_exec($curl);
-        return $response;
+        echo $response;
     }
+
 
 }
 ?>

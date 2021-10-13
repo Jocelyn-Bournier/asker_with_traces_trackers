@@ -4,13 +4,16 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
     function ($scope,$stateParams,DirectoryModelList,$http) {
         $scope.directory= DirectoryModelList.get({id: $stateParams.dirId}, function () {
         });
-        //alert('hello'+$stateParams.dirId);
+
+        /**
+         * Récupère les recommendations d'exercices pour l'apprenant en fonction de son profil
+         * @param directory Le repertoire sur lequel les recommendations sont proposées
+         */
         $scope.requestRecommendations = function (directory) {
             let frameworkId  = directory.framework_id;
             let recommEngine = "https://traffic.irit.fr/comper/recommendations/api/generate/";
+            console.dir(BASE_CONFIG);
             $.ajax({
-                //url:         "app_dev.php/api/directories/jwt/"+frameworkId+'/learner',
-                //url:         "/api/directories/jwt/"+frameworkId+'/learner',
                 url:         `${BASE_CONFIG.urls.api.directories}jwt/${frameworkId}/learner`,
                 type:        "GET",
                 crossDomain: true,
@@ -34,12 +37,13 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                             let protocol  = location.protocol;
                             let slashes   = protocol.concat("//");
                             let host      = slashes.concat(window.location.hostname);
-                            let urlPrefix = `${host}/${tmpWay}/front/#/learner/model/`;
-                            //let urlPrefix = host+'/app.php/front/#/learner/model/';
+                            let urlPrefix = '/front/#/learner/model/';
                             let findModel = (resourceLocation, directory) =>{
-                                for(let i = 0; i < directory.models.length; i++){
-                                    model = directory.models[i];
-                                    if(urlPrefix+model.id === resourceLocation) return model;
+                                if(directory.models !== undefined) {
+                                    for (let i = 0; i < directory.models.length; i++) {
+                                        model = directory.models[i];
+                                        if (urlPrefix + model.id === resourceLocation) return model;
+                                    }
                                 }
                                 if(directory.subs !== undefined){
                                     for(let i = 0; i < directory.subs.length; i++){
@@ -50,7 +54,6 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                                 }
                                 return undefined;
                             }
-                            console.log(data);
                             data.map(x => {
                                 x.tag      = x.tag.replace('Tag_', '');
                                 x.weight   = (Math.round(x.weight * 10000)/100).toString()+' %';
@@ -79,38 +82,51 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                             $scope.$apply();
                         },
                         error: function(message, textStatus){
-                            console.log(message);
+                            console.error(message);
                         }
                     });
                 },
                 error: function(message, textStatus){
-                    console.log(message);
+                    console.error(message);
                 }
             });
         };
+
+        /**
+         * Envoie un recommendation
+         * @param directory
+         * @param recommendationLocation
+         * @param recommendationTitle
+         */
         $scope.sendRecommendationStatement = function (directory, recommendationLocation, recommendationTitle) {
             let encodedTitle    = encodeURIComponent(recommendationTitle);
             let encodedLocation = encodeURIComponent(recommendationLocation);
             $.ajax({
-                //url:         "/app_dev.php/api/recommendations/"+directory+'/'+encodedTitle+'?location='+encodedLocation,
                 url:         "/api/recommendations/"+directory+'/'+encodedTitle+'?location='+encodedLocation,
                 type:        "GET",
                 async:       true,
                 success: function(data, textStatus){}
             });
         };
+
+        /**
+         * Récupère le profil de l'apprenant sur un répertoire donné
+         * @param directory le répertoire sur lequel le profil récupéré correspond
+         */
         $scope.requestProfile = function (directory) {
 	    document.getElementById('olm-target').innerHTML = '';
             document.getElementById('olm-target-loader').classList.remove('hidden');
             let frameworkId   = directory.framework_id;
+            console.log(`${BASE_CONFIG.urls.api.profile}request/${frameworkId}`);
             $.ajax({
-                //url:         "app_dev.php/api/profile/request/"+frameworkId,
-                //url:         "/api/profile/request/"+frameworkId,
                 url:         `${BASE_CONFIG.urls.api.profile}request/${frameworkId}`,
                 type:        "GET",
                 crossDomain: true,
                 async:       true,
                 success: function(data, textStatus){
+                    // we removed an empty part in json
+                    data = data.replace('{}','');
+
                     document.getElementById('olm-target-loader').classList.add('hidden');
                     data = JSON.parse(data);
                     let OLM = document._OLM;
@@ -120,30 +136,45 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                     let fw_tree = new OLM.CORE.FrameworkTree();
                     fw_tree.buildFromFramework(framework);
                     document._OLM.currentTree = fw_tree;
-                    // Creates the treeIndented object. The config is editable on the right =>  
+                    // Creates the treeIndented object.
                     let treeIndented  = new OLM.TreeIndented(document.getElementById('olm-target'), fw_tree, {
                         "fontHoverColor":  "rgba(0, 0, 0, 1)",
                         "fontColor":       "rgba(0, 0, 0, .85)",
-                        "backgroundColor": "rgba(255, 255, 255, .95)"
+                        "backgroundColor": "rgba(255, 255, 255, .95)",
+                        "formatMastery": "percentage",
+                        "formatTrust": "percentage",
+                        "formatCover": "percentage",
+                        "showCover": $.cookie('userRoleStudentOnly') === 'false',
+                        "colors": [{
+                            "to": 0.25,
+                            "color": "#cf000f"
+                        }, {
+                            "to": 0.5,
+                            "color": "#f57f17"
+                        }, {
+                            "to": 0.75,
+                            "color": "#ffee58"
+                        }, {
+                            "color": "#4caf50"
+                        }],
                     });
-                    treeIndented.onClick = (node) => {
-                    // Your click behavior here. In the exemple below, we just pompt the node in the console.
-                    }
-                    // We chose an id for the svg element. Default behavior automatically creates a unique id.
                     treeIndented.draw(svgId = 'test-pack');
                     document.getElementById('olm-options').classList.remove('hidden');
                 }
             });
             $.ajax({
-                //url:     "/app_dev.php/api/profile/trace/"+directory.id+'/request',
                 url:     `${BASE_CONFIG.urls.api.profile}trace/${frameworkId}/request`,
                 type:    "POST",
                 async:   true,
-                success: function(data, textStatus){}
+                success: function(data, textStatus){
+                    console.log(data);
+                    console.log(textStatus);
+                }
             });
         }
     }
 ]);
+
 learnerControllers.controller('learnerController', ['$scope', 'User', 'AttemptByExercise', 'ExerciseByModel', 'AttemptList', '$routeParams', '$location', '$stateParams',
     function ($scope, User, AttemptByExercise, ExerciseByModel, AttemptList, $routeParams, $location, $stateParams) {
         $scope.section = 'attempts';

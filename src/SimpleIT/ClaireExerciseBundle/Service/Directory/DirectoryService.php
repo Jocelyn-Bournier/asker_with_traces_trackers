@@ -221,6 +221,7 @@ class DirectoryService extends TransactionalService
 
         return $json;
     }
+
     public function getModelStats(Directory $directory, $view, $ids)
     {
         $models = array();
