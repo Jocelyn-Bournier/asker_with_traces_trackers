@@ -12,11 +12,11 @@
     <thead>
       <tr>
         <th>
-          <span>Ressource</span>
+          <span>Exercices</span>
         </th>
-        <th>Connaissances / Savoir-faire</th>
-        <th>Objectif</th>
-        <th style="text-align: right;">Pertinence</th>
+        <th>Notions associées</th>
+        <th style="text-align: right;" ng-if="is_teacher">Objectif</th>
+        <th style="text-align: right;" ng-if="is_teacher">Pertinence</th>
       </tr>
     </thead>
     <tbody ng-repeat="recommendations in recommendations_list">
@@ -38,8 +38,8 @@
           <span ng-if="!recommendation.has_attempts" class="text-success" style="float: right;">nouveau !</span>
         </td>
         <td style="border-top: none">{{recommendation.node}}</td>
-        <td style="border-top: none">{{recommendation.tag}}</td>
-        <td style="border-top: none; text-align: right;">{{recommendation.weight}}</td>
+        <td style="border-top: none" ng-if="is_teacher">{{recommendation.tag}}</td>
+        <td style="border-top: none; text-align: right;" ng-if="is_teacher">{{recommendation.weight}}</td>
       </tr>
     </tbody>
   </table>

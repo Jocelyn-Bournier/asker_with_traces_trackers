@@ -53,9 +53,6 @@ class ProfileController extends BaseController
             "homepage" => 'https://asker.univ-lyon1.fr/'
         ];
 
-        $user = $this->get('security.context')->getToken()->getUser();
-        setcookie("userRoleStudentOnly", json_encode($user->isOnlyStudent()), time() + (86400 * 30), "/");
-
         $token = $jwtEncoder->getToken($payload);
         
         $profileService = $this->container->get('app.profileService');

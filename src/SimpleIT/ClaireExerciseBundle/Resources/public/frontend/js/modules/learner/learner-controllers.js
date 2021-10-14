@@ -79,6 +79,7 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                             });
                             console.log(recommendations);
                             $scope.recommendations_list = recommendations;
+                            $scope.is_teacher = $.cookie('userRoleStudentOnly') === 'false';
                             $scope.$apply();
                         },
                         error: function(message, textStatus){

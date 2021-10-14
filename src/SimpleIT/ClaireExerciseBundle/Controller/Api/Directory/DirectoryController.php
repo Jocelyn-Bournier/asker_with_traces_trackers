@@ -58,6 +58,7 @@ class DirectoryController extends BaseController
     public function viewAction(Directory $directoryId)
     {
         try {
+
             if (
                 $this->getUser()->getId() == $directoryId->getOwner()->getId()
                 || $directoryId->hasManager($this->getUser())
@@ -72,6 +73,7 @@ class DirectoryController extends BaseController
             throw new ApiNotFoundException(AttemptResource::RESOURCE_NAME);
         }
     }
+
     public function viewExercisesAction(Directory $directoryId)
     {
         $allowed = 0;
@@ -83,6 +85,10 @@ class DirectoryController extends BaseController
                 }
             }
             if ($allowed){
+                
+                $user = $this->get('security.context')->getToken()->getUser();
+                setcookie("userRoleStudentOnly", json_encode($user->isOnlyStudent()), time() + (86400 * 30), "/");
+
                 $directoryResource = DirectoryFactory::createProper($directoryId,true);
                 if (!empty($directoryResource->getModels())){
                     foreach($directoryResource->getModels() as $model){
