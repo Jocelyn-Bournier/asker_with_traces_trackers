@@ -46,9 +46,10 @@ directoryControllers.controller('directoryListController', ['$scope', 'MyDirecto
             $location.path('/teacher/directory/' + directory.id)
         }
         $scope.getComperJWT = function (frameworkId) {
+
             $.ajax({
                 //url:         "app_dev.php/api/directories/jwt/"+frameworkId+'/teacher',
-                url:         "/api/directories/jwt/"+frameworkId+'/teacher',
+                url:         BASE_CONFIG.urls.api.directories+"jwt/"+frameworkId+'/teacher',
                 type:        "GET",
                 crossDomain: true,
                 async:       false,

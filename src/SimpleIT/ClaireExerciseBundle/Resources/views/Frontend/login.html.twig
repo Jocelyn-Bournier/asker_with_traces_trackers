@@ -8,7 +8,7 @@
     <title>Asker</title>
     <link rel="shortcut icon" type="image/png" href="/favicon.png"/>
 
-    <!-- included styles -->
+  <!-- included styles -->
     <link rel="stylesheet" href="{{ asset('bundles/simpleitclaireexercise/frontend/css/bootstrap-combined.min.css') }}">
     <link rel="stylesheet" href="{{ asset('bundles/simpleitclaireexercise/frontend/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('bundles/simpleitclaireexercise/frontend/css/custom-style.css') }}">
@@ -34,6 +34,7 @@
               </div>
               <form action="{{ path('login_check') }}" method="post"
               class='form-horizontal'>
+                  {{ app.session.flashBag.has('target') }}
                 <div style="margin-bottom: 25px" class="input-group">
                   <span class="input-group-addon">
                     <i class="glyphicon glyphicon-user"></i>
@@ -57,6 +58,7 @@
                     </label>
                   </div>
                 </div>
+                  <input id="target_path" type="hidden" name="_target_path"/>
                 <button class="btn btn-lg btn-primary btn-block"
                 type="submit">
                   Authentification
@@ -80,5 +82,13 @@
         </div>
       </div>
     </div>
+    <script>
+        let url = document.URL;
+        url = url.split("#")[1];
+        url = '/front/#'+url;
+        document.getElementById('target_path').value = url;
+        console.log(url);
+    </script>
   </body>
+
 </html>

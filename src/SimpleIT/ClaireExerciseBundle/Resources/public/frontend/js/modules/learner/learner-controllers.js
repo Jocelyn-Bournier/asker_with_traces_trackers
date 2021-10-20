@@ -12,7 +12,6 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
         $scope.requestRecommendations = function (directory) {
             let frameworkId  = directory.framework_id;
             let recommEngine = "https://traffic.irit.fr/comper/recommendations/api/generate/";
-            console.dir(BASE_CONFIG);
             $.ajax({
                 url:         `${BASE_CONFIG.urls.api.directories}jwt/${frameworkId}/learner`,
                 type:        "GET",
@@ -32,7 +31,7 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                         },
                         beforeSend: function(xhr){
                           xhr.setRequestHeader("Authorization", "Bearer "+data['token']);
-                        },
+                          },
                         success: function(data, textStatus){
                             let protocol  = location.protocol;
                             let slashes   = protocol.concat("//");
@@ -142,22 +141,7 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                         "fontHoverColor":  "rgba(0, 0, 0, 1)",
                         "fontColor":       "rgba(0, 0, 0, .85)",
                         "backgroundColor": "rgba(255, 255, 255, .95)",
-                        "formatMastery": "percentage",
-                        "formatTrust": "percentage",
-                        "formatCover": "percentage",
                         "showCover": $.cookie('userRoleStudentOnly') === 'false',
-                        "colors": [{
-                            "to": 0.25,
-                            "color": "#cf000f"
-                        }, {
-                            "to": 0.5,
-                            "color": "#f57f17"
-                        }, {
-                            "to": 0.75,
-                            "color": "#ffee58"
-                        }, {
-                            "color": "#4caf50"
-                        }],
                     });
                     treeIndented.draw(svgId = 'test-pack');
                     document.getElementById('olm-options').classList.remove('hidden');

@@ -80,7 +80,6 @@ class DirectoryController extends BaseController
         try {
             foreach($this->getUser()->realDirectories() as $dir){
                 if ($dir->getId() == $directoryId->getId()){
-                //if ($dir->getDirectory()->getId() == $directoryId->getId()){
                     $allowed = 1;
                 }
             }
@@ -404,7 +403,6 @@ class DirectoryController extends BaseController
             "homepage" => 'https://asker.univ-lyon1.fr/'
         ];
         $token = $jwtEncoder->getToken($payload);
-        
         $response = new JsonResponse(array('token' => $token));
         return $response;
     }
