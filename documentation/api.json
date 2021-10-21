@@ -1,159 +1,117 @@
 {
-
-   "openapi": "3.0.0",
-
-   "info": {
-
-      "title": "AnswerByItemByAttempt API",
-
-      "version": "1.0"
-
-   },
-
-   "paths": {
-
-      "/api/attempts/{attemptId}/items/{itemId}/answers": {
-
-         "get": {
-
-            "operationId": "SimpleIT\\ClaireExerciseBundle\\Controller\\Api\\CreatedExercise\\AnswerByItemByAttemptController::listAction",
-
-            "responses": {
-
-               "200": {
-
-                  "description": "List of answers corresponding to an item"
-
-               }
-
+    "openapi": "3.0.0",
+    "info": {
+        "title": "AnswerByItemByAttempt API",
+        "version": "1.0"
+    },
+    "paths": {
+        "/api/attempts/{attemptId}/items/{itemId}/answers": {
+            "get": {
+                "summary": "List the answers fot this item",
+                "operationId": "SimpleIT\\ClaireExerciseBundle\\Controller\\Api\\CreatedExercise\\AnswerByItemByAttemptController::listAction",
+                "parameters": [
+                    {
+                        "parameter": "attemptId",
+                        "name": "attemptId",
+                        "in": "path"
+                    },
+                    {
+                        "parameter": "itemId",
+                        "name": "itemId",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of answers corresponding to an item"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Answer action. Create an answer for the given stored exercise.",
+                "operationId": "SimpleIT\\ClaireExerciseBundle\\Controller\\Api\\CreatedExercise\\AnswerByItemByAttemptController::createAction",
+                "parameters": [
+                    {
+                        "parameter": "attemptId",
+                        "name": "attemptId",
+                        "in": "path"
+                    },
+                    {
+                        "parameter": "itemId",
+                        "name": "itemId",
+                        "in": "path"
+                    },
+                    {
+                        "parameter": "answerResource",
+                        "name": "answerResource",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of answers corresponding to an item"
+                    }
+                }
             }
-
-         },
-
-         "post": {
-
-            "summary": "Answer action. Create an answer for the given stored exercise.",
-
-            "operationId": "SimpleIT\\ClaireExerciseBundle\\Controller\\Api\\CreatedExercise\\AnswerByItemByAttemptController::createAction",
-
-            "responses": {
-
-               "200": {
-
-                  "description": "List of answers corresponding to an item"
-
-               }
-
+        },
+        "/api/attempts/{attemptId}/": {
+            "get": {
+                "summary": "Get a specific Attempt resource",
+                "operationId": "SimpleIT\\ClaireExerciseBundle\\Controller\\Api\\CreatedExercise\\AttemptController::viewAction",
+                "parameters": [
+                    {
+                        "parameter": "attemptId",
+                        "name": "attemptId",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get a specific attempt resource"
+                    }
+                }
             }
-
-         }
-
-      },
-
-      "/api/attempts/{attemptId}/": {
-
-         "get": {
-
-            "summary": "Get a specific Attempt resource",
-
-            "operationId": "SimpleIT\\ClaireExerciseBundle\\Controller\\Api\\CreatedExercise\\AttemptController::viewAction",
-
-            "responses": {
-
-               "200": {
-
-                  "description": "Get a specific attempt resource"
-
-               }
-
+        },
+        "/api/attempts/{attemptId}/items/{itemId}/": {
+            "get": {
+                "summary": "View action. View an item with its solution. User's answer (is exists) is added inside to\nmake the correction possible.",
+                "operationId": "SimpleIT\\ClaireExerciseBundle\\Controller\\Api\\CreatedExercise\\ItemByAttemptController::viewAction",
+                "parameters": [
+                    {
+                        "parameter": "attemptId",
+                        "name": "attemptId",
+                        "in": "path"
+                    },
+                    {
+                        "parameter": "itemId",
+                        "name": "itemId",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get an item with its solution"
+                    }
+                }
             }
-
-         }
-
-      },
-
-      "/api/attempts/{attemptId}/items/{itemId}/": {
-
-         "get": {
-
-            "summary": "View action. View an item with its solution. User's answer (is exists) is added inside to\nmake the correction possible.",
-
-            "operationId": "SimpleIT\\ClaireExerciseBundle\\Controller\\Api\\CreatedExercise\\ItemByAttemptController::viewAction",
-
-            "responses": {
-
-               "200": {
-
-                  "description": "Get an item with its solution"
-
-               }
-
+        },
+        "/api/attempts/{attemptId}/items/": {
+            "get": {
+                "summary": "Get all items",
+                "operationId": "SimpleIT\\ClaireExerciseBundle\\Controller\\Api\\CreatedExercise\\ItemByAttemptController::listAction",
+                "parameters": [
+                    {
+                        "parameter": "attemptId",
+                        "name": "attemptId",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get all resources related to an attempt"
+                    }
+                }
             }
-
-         }
-
-      },
-
-      "/api/attempts/{attemptId}/items/": {
-
-         "get": {
-
-            "summary": "Get all items",
-
-            "operationId": "SimpleIT\\ClaireExerciseBundle\\Controller\\Api\\CreatedExercise\\ItemByAttemptController::listAction",
-
-            "responses": {
-
-               "200": {
-
-                  "description": "Get all resources related to an attempt"
-
-               }
-
-            }
-
-         }
-
-      }
-
-   },
-
-   "components": {
-
-      "parameters": {
-
-         "attemptId": {
-
-            "name": "attemptId",
-
-            "in": "path",
-
-            "description": "Id of the attempt"
-
-         },
-
-         "itemId": {
-
-            "name": "itemId",
-
-            "in": "path",
-
-            "description": "Id of the item"
-
-         },
-
-         "answerResource": {
-
-            "name": "answerResource",
-
-            "in": "path",
-
-            "description": "The answer resource"
-
-         }
-
-      }
-
-   }
-
+        }
+    }
 }
