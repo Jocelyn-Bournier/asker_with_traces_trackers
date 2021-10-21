@@ -126,7 +126,7 @@
 
             "name": "attemptId",
 
-            "in": "query",
+            "in": "path",
 
             "description": "Id of the attempt"
 
@@ -136,7 +136,7 @@
 
             "name": "itemId",
 
-            "in": "query",
+            "in": "path",
 
             "description": "Id of the item"
 
@@ -146,7 +146,7 @@
 
             "name": "answerResource",
 
-            "in": "query",
+            "in": "path",
 
             "description": "The answer resource"
 
