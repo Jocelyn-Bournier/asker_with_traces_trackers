@@ -6,31 +6,37 @@ use SimpleIT\ClaireExerciseBundle\Entity\ExerciseModel\ExerciseModel;
 
 /**
  * Directory
+ * @OA\Schema()
  */
 class Directory
 {
     /**
      * @var integer
+     * @OA\Property()
      */
     private $id;
 
     /**
      * @var string
+     * @OA\Property()
      */
     private $name;
 
     /**
      * @var string
+     * @OA\Property()
      */
     private $code;
 
     /**
      * @var string
+     * @OA\Property()
      */
     private $frameworkId;
 
     /**
      * @var boolean
+     * @OA\Property()
      */
     private $isVisible;
 

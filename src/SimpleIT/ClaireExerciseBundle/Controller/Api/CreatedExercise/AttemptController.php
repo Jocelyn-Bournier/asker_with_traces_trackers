@@ -37,6 +37,13 @@ class AttemptController extends BaseController
     /**
      * Get a specific Attempt resource
      *
+     * @OA\Get(
+     *     path="/api/attempts/{attemptId}/",
+     *     @OA\Parameter(in="path", name="attemptId", parameter="attemptId"),
+     *     @OA\Response(response="200", description="Get a specific attempt resource"),
+     *     tags={"attempts"},
+     * )
+     *
      * @param int $attemptId
      *
      * @throws ApiNotFoundException

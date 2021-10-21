@@ -36,6 +36,14 @@ class ItemByAttemptController extends BaseController
      * View action. View an item with its solution. User's answer (is exists) is added inside to
      * make the correction possible.
      *
+     * @OA\Get(
+     *     path="/api/attempts/{attemptId}/items/{itemId}/",
+     *     @OA\Parameter(in="path", name="attemptId", parameter="attemptId"),
+     *     @OA\Parameter(in="path", name="itemId", parameter="itemId"),
+     *     @OA\Response(response="200", description="Get an item with its solution"),
+     *     tags={"attempts"},
+     * )
+     *
      * @param int $itemId
      * @param int $attemptId
      *
@@ -58,6 +66,13 @@ class ItemByAttemptController extends BaseController
 
     /**
      * Get all items
+     *
+     * @OA\Get(
+     *     path="/api/attempts/{attemptId}/items/",
+     *     @OA\Parameter(in="path", name="attemptId", parameter="attemptId"),
+     *     @OA\Response(response="200", description="Get all resources related to an attempt"),
+     *     tags={"attempts"},
+     * )
      *
      * @param int $attemptId    Attempt id
      *

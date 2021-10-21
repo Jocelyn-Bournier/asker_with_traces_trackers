@@ -50,7 +50,13 @@ class DirectoryController extends BaseController
     /**
      * Get a specific Attempt resource
      *
-     * @param int $directoryId
+     * @OA\Get(
+     *     path="/api/directories/mine/{directoryId}",
+     *     @OA\Parameter(in="path", name="directoryId", parameter="directoryId"),
+     *     @OA\Response(response="200", description="Directory"),
+     *     tags={"directories"},
+     * )
+     * @param Directory $directoryId
      *
      * @throws ApiNotFoundException
      * @return ApiGotResponse
@@ -113,6 +119,11 @@ class DirectoryController extends BaseController
     }
     /**
      * Get the list of directories short
+     * @OA\Get(
+     *     path="/api/directories/",
+     *     @OA\Response(response="200", description="List of directories"),
+     *     tags={"directories"},
+     * )
      *
      * @param CollectionInformation $collectionInformation
      *
@@ -142,6 +153,11 @@ class DirectoryController extends BaseController
     /**
      * Get the list of directories longest
      *
+     * @OA\Get(
+     *     path="/api/directories/mine/",
+     *     @OA\Response(response="200", description="List of directories"),
+     *     tags={"directories"},
+     * )
      * @param CollectionInformation $collectionInformation
      *
      * @throws ApiBadRequestException
@@ -166,8 +182,14 @@ class DirectoryController extends BaseController
     }
 
     /**
-     * SAVE IT
+     * Save a model in a directory
      *
+     * @OA\Post(
+     *     path="/api/directories/model/{model}",
+     *     @OA\Parameter(in="path", name="model", parameter="model"),
+     *     @OA\Response(response="200", description="Confirmation of addition of model in directory"),
+     *     tags={"directories"},
+     * )
      * @param CollectionInformation $collectionInformation
      *
      * @throws ApiBadRequestException
@@ -184,8 +206,14 @@ class DirectoryController extends BaseController
         return new ApiGotResponse($directory, array('list', 'Default'));
     }
     /**
-     * Add Model in Directory
+     * Get model
      *
+     * @OA\Get(
+     *     path="/api/directories/model/{model}",
+     *     @OA\Parameter(in="path", name="model", parameter="model"),
+     *     @OA\Response(response="200", description="Model"),
+     *     tags={"directories"},
+     * )
      * @param CollectionInformation $collectionInformation
      *
      * @throws ApiBadRequestException
@@ -229,7 +257,13 @@ class DirectoryController extends BaseController
     /**
      * Delete a directory
      *
-     * @param int $directoryId
+     * @OA\Delete(
+     *     path="/api/directories/{directoryId}/",
+     *     @OA\Parameter(in="path", name="directoryId", parameter="directoryId"),
+     *     @OA\Response(response="200", description="Confirmation of directory delete"),
+     *     tags={"directories"},
+     * )
+     * @param Directory $directoryId
      *
      * @throws \SimpleIT\ClaireExerciseBundle\Exception\Api\ApiBadRequestException
      * @throws \SimpleIT\ClaireExerciseBundle\Exception\Api\ApiNotFoundException
@@ -252,10 +286,17 @@ class DirectoryController extends BaseController
         }
     }
     /**
-     * Edit a model
+     * Edit a directory
      *
-     * @param ExerciseModelResource $modelResource
-     * @param int                   $exerciseModelId
+     * @OA\Put(
+     *     path="/api/directories/{directoryId}",
+     *     @OA\Parameter(in="path", name="directoryId", parameter="directoryId"),
+     *     @OA\Parameter(in="query", name="directoryResource", parameter="directoryResource"),
+     *     @OA\Response(response="200", description="Confirmation of directory edition"),
+     *     tags={"directories"},
+     * )
+     * @param DirectoryResource $directoryResource
+     * @param int                   $directoryId
      *
      * @throws ApiBadRequestException
      * @throws ApiNotFoundException
@@ -287,7 +328,12 @@ class DirectoryController extends BaseController
     /**
      * Create a new directory (without metadata)
      *
-     * @param DirectoryResource $directoryResource
+     * @OA\Post(
+     *     path="/api/directories/create/{id}",
+     *     @OA\Parameter(in="path", name="id", parameter="id"),
+     *     @OA\Response(response="200", description="Directory created"),
+     *     tags={"directories"},
+     * )
      *
      * @throws ApiBadRequestException
      * @throws ApiNotFoundException
@@ -344,6 +390,17 @@ class DirectoryController extends BaseController
         return $model;
     }
 
+    /**
+     * Set a directory visible for students
+     * @OA\Put(
+     *     path="/api/directories/visible/{directory}",
+     *     @OA\Parameter(in="path", name="directory", parameter="directory"),
+     *     @OA\Response(response="200", description="Confirmation of activation of visibility for the directory"),
+     *     tags={"directories"},
+     * )
+     * @param Directory $directory
+     * @return ApiCreatedResponse
+     */
     public function visibleAction(Directory $directory)
     {
         try {
@@ -365,6 +422,15 @@ class DirectoryController extends BaseController
     }
 
 
+    /**
+     * Remove a directory for a student
+     * @OA\Get(
+     *          path="/api/directories/clear/student/{directory}/",
+     *          @OA\Parameter(in="path", name="directory", parameter="directory"),
+     *          @OA\Response(response="200", description="Confirmation that student is no more on directory"),
+     *     tags={"directories"},
+     *      )
+    * */
     public function clearStudentAction(Directory $directory)
     {
         $user = $this->get('security.context')->getToken()->getUser();
@@ -384,8 +450,15 @@ class DirectoryController extends BaseController
     }
 
     /**
-     * ANR COMPER
-     * Creates a Token JWT to send data to the COMPER services (profile & recommendations so far)
+     * Create a JWT Token for comper services
+     *
+     * @OA\Get(
+     *     path="/api/directories/jwt/{frameworkId}/{role}/",
+     *     @OA\Parameter(in="path", name="frameworkId", parameter="frameworkId"),
+     *     @OA\Parameter(in="path", name="role", parameter="role"),
+     *     @OA\Response(response="200", description="Token for COMPER Services"),
+     *     tags={"directories"},
+     * )
      */
     public function jwtAction($frameworkId, $role)
     {

@@ -38,6 +38,12 @@ class ExerciseModelAttemptedController extends BaseController
     /**
      * Get a specific exerciseModel resource
      *
+     * @OA\Get(
+     *     path="/api/attempted-models/{exerciceModelId}/",
+     *     @OA\Parameter(in="path", name="exerciseModelId", parameter="exerciseModelId"),
+     *     @OA\Response(response="200", description="A specific exerciseModel resource"),
+     *     tags={"attempted-models"},
+     * )
      * @param int $exerciseModelId Exercise Model id
      *
      * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
@@ -62,7 +68,12 @@ class ExerciseModelAttemptedController extends BaseController
 
     /**
      * Get the list of exercise models that the user answered
-     *
+     *  @OA\Get(
+     *     path="/api/attempted-models/",
+     *     @OA\Parameter(in="path", name="exerciseModelId", parameter="exerciseModelId"),
+     *     @OA\Response(response="200", description="List of exercise models that the user answered"),
+     *     tags={"attempted-models"},
+     * )
      * @throws \SimpleIT\ClaireExerciseBundle\Exception\Api\ApiBadRequestException
      * @return ApiGotResponse
      */

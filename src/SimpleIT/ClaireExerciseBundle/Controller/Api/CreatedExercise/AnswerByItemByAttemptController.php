@@ -31,6 +31,7 @@ use SimpleIT\ClaireExerciseBundle\Model\Resources\AnswerResourceFactory;
 
 /**
  * API AnswerByItemByAttempt Controller
+ * @OA\Info(title="AnswerByItemByAttempt API", version="1.0")
  *
  * @author Baptiste Cablé <baptiste.cable@liris.cnrs.fr>
  */
@@ -38,6 +39,14 @@ class AnswerByItemByAttemptController extends BaseController
 {
     /**
      * List the answers fot this item
+     *
+     * @OA\Get(
+     *     path="/api/attempts/{attemptId}/items/{itemId}/answers",
+     *     @OA\Parameter(in="path", name="attemptId", parameter="attemptId"),
+     *     @OA\Parameter(in="path", name="itemId", parameter="itemId"),
+     *     @OA\Response(response="200", description="List of answers corresponding to an item"),
+     *     tags={"attempts"},
+     * )
      *
      * @param int $attemptId
      * @param int $itemId
@@ -65,7 +74,14 @@ class AnswerByItemByAttemptController extends BaseController
 
     /**
      * Answer action. Create an answer for the given stored exercise.
-     *
+     * @OA\Post(
+     *     path="/api/attempts/{attemptId}/items/{itemId}/answers",
+     *     @OA\Parameter(in="path", name="attemptId", parameter="attemptId"),
+     *     @OA\Parameter(in="path", name="itemId", parameter="itemId"),
+     *     @OA\Parameter(in="query", name="answerResource", parameter="answerResource"),
+     *     @OA\Response(response="200", description="List of answers corresponding to an item"),
+     *     tags={"attempts"},
+     * )
      * @param int            $attemptId
      * @param int            $itemId
      * @param AnswerResource $answerResource
