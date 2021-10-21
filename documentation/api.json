@@ -4,12 +4,6 @@
         "title": "AnswerByItemByAttempt API",
         "version": "1.0"
     },
-    "servers": [
-        {
-            "url": "https://asker.univ-lyon1.fr/",
-            "description": "Production server of asker"
-        }
-    ],
     "paths": {
         "/api/attempts/{attemptId}/items/{itemId}/answers": {
             "get": {
