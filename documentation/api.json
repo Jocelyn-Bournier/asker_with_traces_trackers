@@ -4,9 +4,18 @@
         "title": "AnswerByItemByAttempt API",
         "version": "1.0"
     },
+    "servers": [
+        {
+            "url": "https://asker.univ-lyon1.fr/",
+            "description": "Production server of asker"
+        }
+    ],
     "paths": {
         "/api/attempts/{attemptId}/items/{itemId}/answers": {
             "get": {
+                "tags": [
+                    "attempts"
+                ],
                 "summary": "List the answers fot this item",
                 "operationId": "SimpleIT\\ClaireExerciseBundle\\Controller\\Api\\CreatedExercise\\AnswerByItemByAttemptController::listAction",
                 "parameters": [
@@ -28,6 +37,9 @@
                 }
             },
             "post": {
+                "tags": [
+                    "attempts"
+                ],
                 "summary": "Answer action. Create an answer for the given stored exercise.",
                 "operationId": "SimpleIT\\ClaireExerciseBundle\\Controller\\Api\\CreatedExercise\\AnswerByItemByAttemptController::createAction",
                 "parameters": [
@@ -56,6 +68,9 @@
         },
         "/api/attempts/{attemptId}/": {
             "get": {
+                "tags": [
+                    "attempts"
+                ],
                 "summary": "Get a specific Attempt resource",
                 "operationId": "SimpleIT\\ClaireExerciseBundle\\Controller\\Api\\CreatedExercise\\AttemptController::viewAction",
                 "parameters": [
@@ -74,6 +89,9 @@
         },
         "/api/attempts/{attemptId}/items/{itemId}/": {
             "get": {
+                "tags": [
+                    "attempts"
+                ],
                 "summary": "View action. View an item with its solution. User's answer (is exists) is added inside to\nmake the correction possible.",
                 "operationId": "SimpleIT\\ClaireExerciseBundle\\Controller\\Api\\CreatedExercise\\ItemByAttemptController::viewAction",
                 "parameters": [
@@ -97,6 +115,9 @@
         },
         "/api/attempts/{attemptId}/items/": {
             "get": {
+                "tags": [
+                    "attempts"
+                ],
                 "summary": "Get all items",
                 "operationId": "SimpleIT\\ClaireExerciseBundle\\Controller\\Api\\CreatedExercise\\ItemByAttemptController::listAction",
                 "parameters": [
@@ -111,6 +132,297 @@
                         "description": "Get all resources related to an attempt"
                     }
                 }
+            }
+        },
+        "/api/directories/mine/{directoryId}": {
+            "get": {
+                "tags": [
+                    "directories"
+                ],
+                "summary": "Get a specific Attempt resource",
+                "operationId": "SimpleIT\\ClaireExerciseBundle\\Controller\\Api\\Directory\\DirectoryController::viewAction",
+                "parameters": [
+                    {
+                        "parameter": "directoryId",
+                        "name": "directoryId",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Directory"
+                    }
+                }
+            }
+        },
+        "/api/directories/": {
+            "get": {
+                "tags": [
+                    "directories"
+                ],
+                "summary": "Get the list of directories short",
+                "operationId": "SimpleIT\\ClaireExerciseBundle\\Controller\\Api\\Directory\\DirectoryController::listAction",
+                "responses": {
+                    "200": {
+                        "description": "List of directories"
+                    }
+                }
+            }
+        },
+        "/api/directories/mine/": {
+            "get": {
+                "tags": [
+                    "directories"
+                ],
+                "summary": "Get the list of directories longest",
+                "operationId": "SimpleIT\\ClaireExerciseBundle\\Controller\\Api\\Directory\\DirectoryController::mineAction",
+                "responses": {
+                    "200": {
+                        "description": "List of directories"
+                    }
+                }
+            }
+        },
+        "/api/directories/model/{model}": {
+            "get": {
+                "tags": [
+                    "directories"
+                ],
+                "summary": "Get model",
+                "operationId": "SimpleIT\\ClaireExerciseBundle\\Controller\\Api\\Directory\\DirectoryController::modelAction",
+                "parameters": [
+                    {
+                        "parameter": "model",
+                        "name": "model",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Model"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "directories"
+                ],
+                "summary": "Save a model in a directory",
+                "operationId": "SimpleIT\\ClaireExerciseBundle\\Controller\\Api\\Directory\\DirectoryController::modelDirectoryAction",
+                "parameters": [
+                    {
+                        "parameter": "model",
+                        "name": "model",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Confirmation of addition of model in directory"
+                    }
+                }
+            }
+        },
+        "/api/directories/{directoryId}/": {
+            "delete": {
+                "tags": [
+                    "directories"
+                ],
+                "summary": "Delete a directory",
+                "operationId": "SimpleIT\\ClaireExerciseBundle\\Controller\\Api\\Directory\\DirectoryController::deleteAction",
+                "parameters": [
+                    {
+                        "parameter": "directoryId",
+                        "name": "directoryId",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Confirmation of directory delete"
+                    }
+                }
+            }
+        },
+        "/api/directories/{directoryId}": {
+            "put": {
+                "tags": [
+                    "directories"
+                ],
+                "summary": "Edit a directory",
+                "operationId": "SimpleIT\\ClaireExerciseBundle\\Controller\\Api\\Directory\\DirectoryController::editAction",
+                "parameters": [
+                    {
+                        "parameter": "directoryId",
+                        "name": "directoryId",
+                        "in": "path"
+                    },
+                    {
+                        "parameter": "directoryResource",
+                        "name": "directoryResource",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Confirmation of directory edition"
+                    }
+                }
+            }
+        },
+        "/api/directories/create/{id}": {
+            "post": {
+                "tags": [
+                    "directories"
+                ],
+                "summary": "Create a new directory (without metadata)",
+                "operationId": "SimpleIT\\ClaireExerciseBundle\\Controller\\Api\\Directory\\DirectoryController::createAction",
+                "parameters": [
+                    {
+                        "parameter": "id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Directory created"
+                    }
+                }
+            }
+        },
+        "/api/directories/visible/{directory}": {
+            "put": {
+                "tags": [
+                    "directories"
+                ],
+                "summary": "Set a directory visible for students",
+                "operationId": "SimpleIT\\ClaireExerciseBundle\\Controller\\Api\\Directory\\DirectoryController::visibleAction",
+                "parameters": [
+                    {
+                        "parameter": "directory",
+                        "name": "directory",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Confirmation of activation of visibility for the directory"
+                    }
+                }
+            }
+        },
+        "/api/directories/clear/student/{directory}/": {
+            "get": {
+                "tags": [
+                    "directories"
+                ],
+                "summary": "Remove a directory for a student",
+                "operationId": "SimpleIT\\ClaireExerciseBundle\\Controller\\Api\\Directory\\DirectoryController::clearStudentAction",
+                "parameters": [
+                    {
+                        "parameter": "directory",
+                        "name": "directory",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Confirmation that student is no more on directory"
+                    }
+                }
+            }
+        },
+        "/api/directories/jwt/{frameworkId}/{role}/": {
+            "get": {
+                "tags": [
+                    "directories"
+                ],
+                "summary": "Create a JWT Token for comper services",
+                "operationId": "SimpleIT\\ClaireExerciseBundle\\Controller\\Api\\Directory\\DirectoryController::jwtAction",
+                "parameters": [
+                    {
+                        "parameter": "frameworkId",
+                        "name": "frameworkId",
+                        "in": "path"
+                    },
+                    {
+                        "parameter": "role",
+                        "name": "role",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Token for COMPER Services"
+                    }
+                }
+            }
+        },
+        "/api/attempted-models/{exerciceModelId}/": {
+            "get": {
+                "tags": [
+                    "attempted-models"
+                ],
+                "summary": "Get a specific exerciseModel resource",
+                "operationId": "SimpleIT\\ClaireExerciseBundle\\Controller\\Api\\ExerciseModel\\ExerciseModelAttemptedController::viewAction",
+                "parameters": [
+                    {
+                        "parameter": "exerciseModelId",
+                        "name": "exerciseModelId",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A specific exerciseModel resource"
+                    }
+                }
+            }
+        },
+        "/api/attempted-models/": {
+            "get": {
+                "tags": [
+                    "attempted-models"
+                ],
+                "summary": "Get the list of exercise models that the user answered",
+                "operationId": "SimpleIT\\ClaireExerciseBundle\\Controller\\Api\\ExerciseModel\\ExerciseModelAttemptedController::listAction",
+                "parameters": [
+                    {
+                        "parameter": "exerciseModelId",
+                        "name": "exerciseModelId",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of exercise models that the user answered"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Directory": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "frameworkId": {
+                        "type": "string"
+                    },
+                    "isVisible": {
+                        "type": "boolean"
+                    }
+                },
+                "type": "object"
             }
         }
     }
