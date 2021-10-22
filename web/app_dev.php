@@ -30,7 +30,8 @@ Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('OA\Post');
 Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('OA\Delete');
 Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('OA\Parameter');
 Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('OA\Response');
-Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('OA\Infos');
+Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('OA\Info');
+Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('OA\Server');
 
 $kernel = new AppKernel('dev', true);
 $kernel->loadClassCache();
