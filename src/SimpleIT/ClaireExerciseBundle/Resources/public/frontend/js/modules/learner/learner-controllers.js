@@ -192,7 +192,6 @@ learnerControllers.controller('learnerController', ['$scope', 'User', 'AttemptBy
         };
 
         $scope.tryExercise = function (exercise) {
-            // create attempt from exercise
             console.log('create attempt...');
             attempt = AttemptByExercise.create({exerciseId: exercise.id},
                 function (attempt) {

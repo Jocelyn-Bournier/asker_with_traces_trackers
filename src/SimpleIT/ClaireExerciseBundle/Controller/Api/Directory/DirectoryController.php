@@ -40,6 +40,9 @@ use SimpleIT\ClaireExerciseBundle\Entity\ExerciseModel\ExerciseModel;
 use SimpleIT\ClaireExerciseBundle\Entity\Directory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+
+
+
 /**
  * API Attempt controller
  *

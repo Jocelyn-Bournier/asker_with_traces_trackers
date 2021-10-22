@@ -24,6 +24,14 @@ Debug::enable();
 
 require_once __DIR__.'/../app/AppKernel.php';
 
+Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('OA\Get');
+Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('OA\Put');
+Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('OA\Post');
+Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('OA\Delete');
+Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('OA\Parameter');
+Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('OA\Response');
+Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName('OA\Infos');
+
 $kernel = new AppKernel('dev', true);
 $kernel->loadClassCache();
 $request = Request::createFromGlobals();

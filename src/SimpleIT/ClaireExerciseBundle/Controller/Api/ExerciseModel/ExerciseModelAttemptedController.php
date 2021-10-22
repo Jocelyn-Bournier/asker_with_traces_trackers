@@ -28,6 +28,9 @@ use SimpleIT\ClaireExerciseBundle\Model\Api\ApiGotResponse;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModelResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModelResourceFactory;
 
+
+
+
 /**
  * API Exercise Model controller
  *

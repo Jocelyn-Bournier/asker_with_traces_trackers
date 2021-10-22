@@ -31,6 +31,9 @@ use SimpleIT\ClaireExerciseBundle\Model\Resources\AnswerResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\AttemptResourceFactory;
 use Symfony\Component\HttpFoundation\Request;
 
+
+
+
 /**
  * API AttemptByExercise controller
  *
@@ -41,6 +44,12 @@ class AttemptByExerciseController extends BaseController
     /**
      * List the attempts fot this exercise
      *
+     * @OA\Get(
+     *     path="/api/exercises/{exerciseId}/attempts/",
+     *     @OA\Parameter(in="path", name="exerciseId", parameter="exerciseId"),
+     *     @OA\Response(response="200", description="List of attempts for an exercise"),
+     *     tags={"exercises"},
+     * )
      * @param Request               $request
      * @param CollectionInformation $collectionInformation
      * @param int                   $exerciseId
@@ -86,6 +95,12 @@ class AttemptByExerciseController extends BaseController
     /**
      * Create a new attempt for this exercise
      *
+     * @OA\Post(
+     *     path="/api/exercises/{exerciseId}/attempts/",
+     *     @OA\Parameter(in="path", name="exerciseId", parameter="exerciseId"),
+     *     @OA\Response(response="200", description="Confirmation of attempt creation"),
+     *     tags={"exercises"},
+     * )
      * @param int $exerciseId
      *
      * @throws ApiBadRequestException
@@ -102,9 +117,7 @@ class AttemptByExerciseController extends BaseController
             $userId = $this->getUserId();
 
             $attempt = $this->get('simple_it.exercise.attempt')->add($exerciseId, $userId);
-
             $attemptResource = AttemptResourceFactory::create($attempt);
-
             return new ApiCreatedResponse($attemptResource, array("details", 'Default'));
 
         } catch (NonExistingObjectException $neoe) {

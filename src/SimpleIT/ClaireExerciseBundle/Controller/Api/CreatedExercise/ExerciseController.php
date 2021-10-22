@@ -27,6 +27,9 @@ use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResourceFactory;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
+
+
+
 /**
  * API Exercise controller
  *
@@ -37,6 +40,12 @@ class ExerciseController extends BaseController
     /**
      * View a stored exercise
      *
+     * @OA\Get(
+     *     path="/api/exercises/{exerciseId}/",
+     *     @OA\Parameter(in="path", name="exerciseId", parameter="exerciseId"),
+     *     @OA\Response(response="200", description="An exercise"),
+     *     tags={"exercises"},
+     * )
      * @param int $exerciseId Exercise id
      *
      * @return ApiGotResponse
@@ -57,7 +66,12 @@ class ExerciseController extends BaseController
 
     /**
      * Get all the exercises
-     *
+     * @OA\Get(
+     *     path="/api/exercises/{collectionInformation}/",
+     *     @OA\Parameter(in="path", name="collectionInformation", parameter="collectionInformation"),
+     *     @OA\Response(response="200", description="List of all exercises"),
+     *     tags={"exercises"},
+     * )
      * @param CollectionInformation $collectionInformation
      *
      * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException

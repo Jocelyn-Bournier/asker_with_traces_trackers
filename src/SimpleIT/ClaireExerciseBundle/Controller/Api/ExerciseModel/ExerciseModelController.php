@@ -39,6 +39,9 @@ use SimpleIT\ClaireExerciseBundle\Model\Collection\CollectionInformation;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModelResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModelResourceFactory;
 
+
+
+
 /**
  * API Exercise Model controller
  *
@@ -48,7 +51,12 @@ class ExerciseModelController extends BaseController
 {
     /**
      * Get a specific exerciseModel resource
-     *
+     * @OA\Get(
+     *          path="/api/exercise-models/{exerciseModelId}",
+     *          @OA\Parameter(in="path", name="exerciseModelId", parameter="exerciseModelId"),
+     *          @OA\Response(response="200", description="a resource corresponding to an exercise model"),
+     *     tags={"exercise-models"},
+     *      )
      * @param int $exerciseModelId Exercise Model id
      *
      * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
@@ -79,6 +87,12 @@ class ExerciseModelController extends BaseController
      * type is used for the type of the exercise and all other values are used to search in
      * metadata.
      *
+     * @OA\Get(
+     *          path="/api/exercise-models/",
+     *          @OA\Parameter(in="query", name="collectionInformation", parameter="collectionInformation"),
+     *          @OA\Response(response="200", description="List of exercise models"),
+     *     tags={"exercise-models"},
+     *      )
      * @param CollectionInformation $collectionInformation
      *
      * @throws ApiBadRequestException
@@ -111,7 +125,11 @@ class ExerciseModelController extends BaseController
 
     /**
      * Create a new model (without metadata)
-     *
+     * @OA\Post(
+     *          path="/api/exercise-models/",
+     *          @OA\Response(response="200", description="confirmation of creation of an empty exercise model"),
+     *     tags={"exercise-models"},
+     *      )
      * @param ExerciseModelResource $modelResource
      *
      * @throws ApiBadRequestException
@@ -154,6 +172,13 @@ class ExerciseModelController extends BaseController
     /**
      * Edit a model
      *
+     * @OA\Put(
+     *          path="/api/exercise-models/{exerciseModelId}",
+     *          @OA\Parameter(in="path", name="exerciseModelId", parameter="exerciseModelId"),
+     *          @OA\Parameter(in="query", name="modelResource", parameter="modelResource"),
+     *          @OA\Response(response="200", description="confirmation of model edition"),
+     *     tags={"exercise-models"},
+     *      )
      * @param ExerciseModelResource $modelResource
      * @param int                   $exerciseModelId
      *
@@ -192,7 +217,12 @@ class ExerciseModelController extends BaseController
 
     /**
      * Delete a model
-     *
+     * @OA\Delete(
+     *          path="/api/exercise-models/{exerciseModelId}",
+     *          @OA\Parameter(in="path", name="exerciseModelId", parameter="exerciseModelId"),
+     *          @OA\Response(response="200", description="confirmation model delete"),
+     *     tags={"exercise-models"},
+     *      )
      * @param int $exerciseModelId
      *
      * @throws \SimpleIT\ClaireExerciseBundle\Exception\Api\ApiNotFoundException
@@ -218,6 +248,12 @@ class ExerciseModelController extends BaseController
 
     /**
      * Subscribe to a model
+     * @OA\Post(
+     *          path="/api/exercise-models/{exerciseModelId}/subscribe",
+     *          @OA\Parameter(in="path", name="exerciseModelId", parameter="exerciseModelId"),
+     *          @OA\Response(response="200", description="confirmation of model subscription"),
+     *     tags={"exercise-models"},
+     *      )
      *
      * @param int $exerciseModelId
      *
@@ -252,6 +288,12 @@ class ExerciseModelController extends BaseController
 
     /**
      * Duplicate a model
+     * @OA\Post(
+     *          path="/api/exercise-models/{exerciseModelId}/duplicate",
+     *          @OA\Parameter(in="path", name="exerciseModelId", parameter="exerciseModelId"),
+     *          @OA\Response(response="200", description="confirmation of model duplication"),
+     *     tags={"exercise-models"},
+     *      )
      *
      * @param int $exerciseModelId
      *
@@ -287,7 +329,12 @@ class ExerciseModelController extends BaseController
 
     /**
      * Import a model
-     *
+     * @OA\Post(
+     *          path="/api/exercise-models/{exerciseModelId}/import",
+     *          @OA\Parameter(in="path", name="exerciseModelId", parameter="exerciseModelId"),
+     *          @OA\Response(response="200", description="confirmation of model importation"),
+     *     tags={"exercise-models"},
+     *      )
      * @param int $exerciseModelId
      *
      * @throws ApiBadRequestException

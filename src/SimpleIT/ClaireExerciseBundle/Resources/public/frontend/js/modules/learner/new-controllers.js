@@ -17,6 +17,8 @@ newControllers.controller('newController',
         $scope.tryExercise = function (exercise) {
             // create attempt from exercise
             console.log('create attempt...');
+            console.log(exercise.id);
+            console.log(exercise);
             attempt = AttemptByExercise.create({exerciseId: exercise.id},
                 function (attempt) {
                     console.log('redirection');

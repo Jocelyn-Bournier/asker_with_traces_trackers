@@ -25,6 +25,9 @@ use SimpleIT\ClaireExerciseBundle\Model\Api\ApiGotResponse;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ItemResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ItemResourceFactory;
 
+
+
+
 /**
  * API ItemByExercise controller
  *
@@ -35,6 +38,12 @@ class ItemByExerciseController extends BaseController
     /**
      * Get all items
      *
+     * @OA\Get(
+     *     path="/api/exercises/{exerciseId}/items/",
+     *     @OA\Parameter(in="path", name="exerciseId", parameter="exerciseId"),
+     *     @OA\Response(response="200", description="List of all items related to an exercise"),
+     *     tags={"exercises"},
+     * )
      * @param int $exerciseId    Exercise id
      *
      * @throws ApiNotFoundException

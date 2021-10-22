@@ -27,6 +27,9 @@ use SimpleIT\ClaireExerciseBundle\Model\Collection\CollectionInformation;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\AttemptResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\AttemptResourceFactory;
 
+
+
+
 /**
  * API Attempt controller
  *

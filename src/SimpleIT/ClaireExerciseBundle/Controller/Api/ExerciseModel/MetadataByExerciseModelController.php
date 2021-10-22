@@ -36,6 +36,9 @@ use SimpleIT\ClaireExerciseBundle\Model\Resources\MetadataResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\MetadataResourceFactory;
 use Symfony\Component\HttpFoundation\Request;
 
+
+
+
 /**
  * API MetadataByExerciseModel Controller
  *
@@ -45,6 +48,12 @@ class MetadataByExerciseModelController extends BaseController
 {
     /**
      * Get all metadata
+     * @OA\Get(
+     *          path="/api/exercise-models/{exerciseModelId}/metadatas/",
+     *          @OA\Parameter(in="path", name="exerciseModelId", parameter="exerciseModelId"),
+     *          @OA\Response(response="200", description="metadata of exercise model"),
+     *     tags={"exercise-models"},
+     *      )
      *
      * @param mixed                 $exerciseModelId
      * @param CollectionInformation $collectionInformation
@@ -75,6 +84,13 @@ class MetadataByExerciseModelController extends BaseController
     /**
      * Get a metadata
      *
+     * @OA\Get(
+     *          path="/api/exercise-models/{exerciseModelId}/metadatas/{metadataKey}/",
+     *          @OA\Parameter(in="path", name="exerciseModelId", parameter="exerciseModelId"),
+     *          @OA\Parameter(in="path", name="metadataKey", parameter="metadataKey"),
+     *          @OA\Response(response="200", description="metadata"),
+     *     tags={"exercise-models"},
+     *      )
      * @param mixed $exerciseModelId
      * @param mixed $metadataKey
      *
@@ -102,6 +118,13 @@ class MetadataByExerciseModelController extends BaseController
 
     /**
      * Create a metadata
+     * @OA\Post(
+     *          path="/api/exercise-models/{exerciseModelId}/metadatas/{metadataKey}/",
+     *          @OA\Parameter(in="path", name="exerciseModelId", parameter="exerciseModelId"),
+     *          @OA\Parameter(in="query", name="request", parameter="request"),
+     *          @OA\Response(response="200", description="confirmation of creation"),
+     *     tags={"exercise-models"},
+     *      )
      *
      * @param Request $request
      * @param mixed   $exerciseModelId
@@ -139,6 +162,14 @@ class MetadataByExerciseModelController extends BaseController
 
     /**
      * Edit a metadata
+     * @OA\Put(
+     *          path="/api/exercise-models/{exerciseModelId}/metadatas/{metadataKey}/",
+     *          @OA\Parameter(in="path", name="exerciseModelId", parameter="exerciseModelId"),
+     *          @OA\Parameter(in="path", name="metadataKey", parameter="metadataKey"),
+     *          @OA\Parameter(in="query", name="metadata", parameter="metadata"),
+     *          @OA\Response(response="200", description="confirmation of metadata edition"),
+     *     tags={"exercise-models"},
+     *      )
      *
      * @param MetadataResource $metadata
      * @param mixed            $exerciseModelId
@@ -177,7 +208,13 @@ class MetadataByExerciseModelController extends BaseController
 
     /**
      * Delete a metadata
-     *
+     * @OA\Delete(
+     *          path="/api/exercise-models/{exerciseModelId}/metadatas/{metadataKey}/",
+     *          @OA\Parameter(in="path", name="exerciseModelId", parameter="exerciseModelId"),
+     *          @OA\Parameter(in="path", name="metadataKey", parameter="metadataKey"),
+     *          @OA\Response(response="200", description="confirmation of metadata deletion"),
+     *     tags={"exercise-models"},
+     *      )
      * @param mixed $exerciseModelId
      * @param mixed $metadataKey
      *
@@ -203,6 +240,13 @@ class MetadataByExerciseModelController extends BaseController
     /**
      * Edit the list of metadata for this exercise model
      *
+     * @OA\Put(
+     *          path="/api/exercise-models/{exerciseModelId}/subscribe",
+     *          @OA\Parameter(in="path", name="exerciseModelId", parameter="exerciseModelId"),
+     *          @OA\Parameter(in="query", name="metadatas", parameter="metadatas"),
+     *          @OA\Response(response="200", description="confirmation of metadata's edition"),
+     *     tags={"exercise-models"},
+     *      )
      * @param ArrayCollection $metadatas
      * @param int             $exerciseModelId
      *

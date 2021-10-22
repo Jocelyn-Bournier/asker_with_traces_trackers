@@ -24,6 +24,9 @@ use SimpleIT\ClaireExerciseBundle\Exception\NonExistingObjectException;
 use SimpleIT\ClaireExerciseBundle\Model\Api\ApiGotResponse;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ItemResource;
 
+
+
+
 /**
  * API ItemByExercise controller
  *

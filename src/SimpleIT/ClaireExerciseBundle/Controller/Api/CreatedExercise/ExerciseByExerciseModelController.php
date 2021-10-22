@@ -28,6 +28,9 @@ use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModelResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResourceFactory;
 
+
+
+
 /**
  * Class ExerciseByExerciseModelController
  *
@@ -37,7 +40,12 @@ class ExerciseByExerciseModelController extends BaseController
 {
     /**
      * Generate an exercise from the model id
-     *
+     * @OA\Post(
+     *          path="/api/exercise-models/{exerciseModelId}/exercises/",
+     *          @OA\Parameter(in="path", name="exerciseModelId", parameter="exerciseModelId"),
+     *          @OA\Response(response="200", description="confirmation of exercise creation"),
+     *     tags={"exercise-models"},
+     *      )
      * @param int $exerciseModelId Exercise Model Id
      *
      * @throws ApiNotFoundException
@@ -60,6 +68,12 @@ class ExerciseByExerciseModelController extends BaseController
 
     /**
      * List the stored exercises of this model
+     * @OA\Get(
+     *     path="/api/exercise-models/{exerciseModelId}/exercises/",
+     *     @OA\Parameter(in="path", name="exerciseModelId", parameter="exerciseModelId"),
+     *     @OA\Response(response="200", description="list of exercises related to a model"),
+     *     tags={"exercise-models"},
+     * )
      *
      * @param CollectionInformation $collectionInformation
      * @param int                   $exerciseModelId
