@@ -36,6 +36,13 @@ class TestController extends BaseController
     /**
      * View a test
      *
+     * @OA\Get(
+     *          path="/api/tests/{testId}",
+     *          @OA\Parameter(in="path", name="testId", parameter="testId"),
+     *          @OA\Response(response="200", description="a test"),
+     *     tags={"tests"},
+     *      )
+     *
      * @param int $testId Exercise id
      *
      * @return ApiGotResponse
@@ -56,6 +63,12 @@ class TestController extends BaseController
 
     /**
      * Get all the tests
+     * @OA\Get(
+     *          path="/api/tests/",
+     *          @OA\Parameter(in="query", name="query", parameter="collectionInformation"),
+     *          @OA\Response(response="200", description="list of all the tests"),
+     *     tags={"tests"},
+     *      )
      *
      * @param CollectionInformation $collectionInformation
      *

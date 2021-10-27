@@ -35,6 +35,12 @@ class ItemController extends BaseController
 {
     /**
      * View action. View an item with its solution.
+     * @OA\Get(
+     *          path="/api/items/{itemId}/",
+     *          @OA\Parameter(in="path", name="itemId", parameter="itemId"),
+     *          @OA\Response(response="200", description="an item with its solution"),
+     *     tags={"items"},
+     *      )
      *
      * @param int $itemId
      *
@@ -59,6 +65,11 @@ class ItemController extends BaseController
 
     /**
      * Get all items
+     * @OA\Get(
+     *          path="/api/items/",
+     *          @OA\Response(response="200", description="list of all items"),
+     *     tags={"items"},
+     *      )
      *
      * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
      * @throws \SimpleIT\ClaireExerciseBundle\Exception\Api\ApiNotFoundException

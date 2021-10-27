@@ -35,7 +35,14 @@ use SimpleIT\ClaireExerciseBundle\Model\Resources\AttemptResourceFactory;
 class AttemptByTestAttemptController extends BaseController
 {
     /**
-     * List the attempts fot this exercise
+     * List the attempts for this exercise
+     * @OA\Get(
+     *          path="/api/tests-attempts/{testAttemptId}/attempts",
+     *          @OA\Parameter(in="path",name="testAttemptId",parameter="testAttemptId"),
+     *          @OA\Parameter(in="query",name="collectionInformation",parameter="collectionInformation"),
+     *          @OA\Response(response="200", description="list of attempts for the exercise"),
+     *     tags={"tests-attempts"},
+     *      )
      *
      * @param CollectionInformation $collectionInformation
      * @param int                   $testAttemptId

@@ -33,8 +33,8 @@ use SimpleIT\ClaireExerciseBundle\Model\Resources\AnswerResourceFactory;
 
 /**
  * API AnswerByItemByAttempt Controller
- * @OA\Info(title="AnswerByItemByAttempt API", version="1.0")
- * @OA\Server(url="http://asker.univ-lyon1.fr/")
+ * @OA\Info(title="Asker API", version="1.0")
+ * @OA\Server(url="https://asker.univ-lyon1.fr/")
  *
  * @author Baptiste Cablé <baptiste.cable@liris.cnrs.fr>
  */

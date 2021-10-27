@@ -44,6 +44,12 @@ class TestModelController extends BaseController
 {
     /**
      * Get a specific test Model resource
+     * @OA\Get(
+     *          path="/api/test-models/{testModelId}",
+     *          @OA\Parameter(in="path", name="testModelId", parameter="testModelId"),
+     *          @OA\Response(response="200", description="a specific test model resource"),
+     *     tags={"tests-models"},
+     *      )
      *
      * @param int $testModelId Exercise Model id
      *
@@ -66,6 +72,12 @@ class TestModelController extends BaseController
     /**
      * Get the list of test models.
      *
+     * @OA\Get(
+     *          path="/api/test-models/",
+     *          @OA\Parameter(in="query", name="collectionInformation", parameter="collectionInformation"),
+     *          @OA\Response(response="200", description="list of all test models"),
+     *     tags={"tests-models"},
+     *      )
      * @param CollectionInformation $collectionInformation
      *
      * @return ApiGotResponse
@@ -83,6 +95,13 @@ class TestModelController extends BaseController
 
     /**
      * Create a new test model
+     *
+     * @OA\Post(
+     *          path="/api/test-models/",
+     *          @OA\Parameter(in="query", name="testModelResource", parameter="testModelResource"),
+     *          @OA\Response(response="200", description="confirmation of test model creation"),
+     *     tags={"tests-models"},
+     *      )
      *
      * @param TestModelResource $testModelResource
      *
@@ -122,6 +141,14 @@ class TestModelController extends BaseController
     /**
      * Edit a model
      *
+     * @OA\Put(
+     *          path="/api/test-models/{testModelId}",
+     *          @OA\Parameter(in="path", name="testModelId", parameter="testModelId"),
+     *          @OA\Parameter(in="query", name="testModelResource", parameter="testModelResource"),
+     *          @OA\Response(response="200", description="confirmation of test model edition"),
+     *     tags={"tests-models"},
+     *      )
+     *
      * @param TestModelResource $testModelResource
      * @param int               $testModelId
      *
@@ -155,6 +182,13 @@ class TestModelController extends BaseController
 
     /**
      * Delete a model
+     *
+     * @OA\Delete(
+     *          path="/api/test-models/{testModelId}",
+     *          @OA\Parameter(in="path", name="testModelId", parameter="testModelId"),
+     *          @OA\Response(response="200", description="confirmation of test model deletion"),
+     *     tags={"tests-models"},
+     *      )
      *
      * @param int $testModelId
      *

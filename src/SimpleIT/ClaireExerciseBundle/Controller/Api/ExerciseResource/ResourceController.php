@@ -286,6 +286,12 @@ class ResourceController extends BaseController
 
     /**
      * Upload an image in a picture resource (no resource update)
+     * @OA\Post(
+     *          path="/api/upload-image/",
+     *          @OA\Parameter(in="query", name="request", parameter="request"),
+     *          @OA\Response(response="200", description="confirmation of image transfert"),
+     *     tags={"upload-image"},
+     *      )
      *
      * @param Request $request
      *

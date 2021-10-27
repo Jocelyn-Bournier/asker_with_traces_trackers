@@ -34,6 +34,12 @@ class ExerciseByTestAttemptController extends BaseController
 {
     /**
      * List all the Exercises for a test attempt
+     * @OA\Get(
+     *          path="/api/tests-attempts/{testAttemptId}/exercises",
+     *          @OA\Parameter(in="path",name="testAttemptId",parameter="testAttemptId"),
+     *          @OA\Response(response="200", description="list of all exercises for the test attempt"),
+     *     tags={"tests-attempts"},
+     *      )
      *
      * @param $testAttemptId
      *

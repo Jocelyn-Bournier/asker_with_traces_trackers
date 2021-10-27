@@ -38,6 +38,13 @@ class TestAttemptByTestController extends BaseController
     /**
      * Create a test attempt for a test
      *
+     * @OA\Post(
+     *          path="/api/tests/{testId}/test-attempts/",
+     *          @OA\Parameter(in="path", name="testId", parameter="testId"),
+     *          @OA\Response(response="200", description="confirmation of attempt for the test"),
+     *     tags={"tests"},
+     *      )
+     *
      * @param int $testId
      *
      * @return ApiCreatedResponse
@@ -63,6 +70,13 @@ class TestAttemptByTestController extends BaseController
 
     /**
      * List the test attempts for this test
+     *
+     * @OA\Get(
+     *          path="/api/tests/{testId}/test-attempts",
+     *          @OA\Parameter(in="path", name="testId", parameter="testId"),
+     *          @OA\Response(response="200", description="attempts corresponding to a test"),
+     *     tags={"tests"},
+     *      )
      *
      * @param CollectionInformation $collectionInformation
      * @param int                   $testId

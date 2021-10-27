@@ -37,6 +37,13 @@ class UserController extends BaseController
     /**
      * Get a specific user resource
      *
+     * @OA\Get(
+     *          path="/api/users/{userId}",
+     *          @OA\Parameter(in="path", name="userId", parameter="userId"),
+     *          @OA\Response(response="200", description="specific user"),
+     *     tags={"users"},
+     *      )
+     *
      * @param int $userId
      *
      * @throws \SimpleIT\ClaireExerciseBundle\Exception\Api\ApiNotFoundException
@@ -59,6 +66,11 @@ class UserController extends BaseController
 
     /**
      * Get all the users
+     * @OA\Get(
+     *          path="/api/users",
+     *          @OA\Response(response="200", description="list of all users"),
+     *     tags={"users"},
+     *      )
      *
      * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
      * @throws \SimpleIT\ClaireExerciseBundle\Exception\Api\ApiNotFoundException
@@ -81,6 +93,14 @@ class UserController extends BaseController
         }
     }
 
+    /**
+     * @OA\Get(
+     *          path="/api/users/available/managers",
+     *          @OA\Response(response="200", description=""),
+     *     tags={"users"},
+     *      )
+     *
+     */
     public function availableManagersAction()
     {
         try {

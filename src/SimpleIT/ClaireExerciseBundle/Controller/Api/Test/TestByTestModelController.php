@@ -38,6 +38,13 @@ class TestByTestModelController extends BaseController
     /**
      * Generate a test from a test model
      *
+     * @OA\Post(
+     *          path="/api/test-models/{testModelId}/tests/",
+     *          @OA\Parameter(in="path", name="testModelId", parameter="testModelId"),
+     *          @OA\Response(response="200", description="confirmation of test creation"),
+     *     tags={"tests-models"},
+     *      )
+     *
      * @param $testModelId
      *
      * @return ApiCreatedResponse
@@ -59,6 +66,14 @@ class TestByTestModelController extends BaseController
 
     /**
      * List the tests for a test model
+     *
+     * @OA\Get(
+     *          path="/api/test-models/{testModelId}/tests/",
+     *          @OA\Parameter(in="query", name="collectionInformation", parameter="collectionInformation"),
+     *          @OA\Parameter(in="path", name="testModelId", parameter="testModelId"),
+     *          @OA\Response(response="200", description="confirmation of test creation"),
+     *     tags={"tests-models"},
+     *      )
      *
      * @param CollectionInformation $collectionInformation
      * @param int                   $testModelId

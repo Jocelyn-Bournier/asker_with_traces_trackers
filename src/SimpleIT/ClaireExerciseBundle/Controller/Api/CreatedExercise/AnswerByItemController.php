@@ -35,6 +35,12 @@ class AnswerByItemController extends BaseController
     /**
      * List the answers fot this item
      *
+     * @OA\Get(
+     *          path="/api/items/{itemId}/answers",
+     *          @OA\Parameter(in="path", name="itemId", parameter="itemId"),
+     *          @OA\Response(response="200", description="list of all answers corresponding to an item"),
+     *     tags={"items"},
+     *      )
      * @param $itemId
      *
      * @return ApiGotResponse
@@ -59,7 +65,13 @@ class AnswerByItemController extends BaseController
 
     /**
      * View action. View an item with its solution and the user's answer.
-     *
+     * @OA\Get(
+     *          path="/api/items/{itemId}/answers/{answerId}",
+     *          @OA\Parameter(in="path", name="itemId", parameter="itemId"),
+     *          @OA\Parameter(in="path", name="answerId", parameter="answerId"),
+     *          @OA\Response(response="200", description="an item with its solution and the user's answer"),
+     *     tags={"items"},
+     *      )
      * @param $itemId
      * @param $answerId
      *

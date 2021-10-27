@@ -33,6 +33,14 @@ class RecommendationController extends BaseController
      * ANR COMPER
      * 
      * Save a ComperRecommendationTrace corresponding to the action of clicking on a recommendation link as a learner.
+     *
+     * @OA\Post(
+     *          path="/api/recommendations/{directoryId}/{title}",
+     *          @OA\Parameter(in="path", name="directoryId", parameter="directoryId"),
+     *          @OA\Parameter(in="path", name="title", parameter="title"),
+     *          @OA\Response(response="200", description="confirmation of trace creation"),
+     *     tags={"recommendations"},
+     *      )
      * 
      * Note : Originally sent a statement to the comper LRS.
      */

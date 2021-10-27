@@ -1,4 +1,3 @@
----
 api_profile_root:
     pattern: /
 api_profile_request:

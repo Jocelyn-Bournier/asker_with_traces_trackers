@@ -37,6 +37,13 @@ class TestAttemptController extends BaseController
     /**
      * Get a specific Attempt resource
      *
+     * @OA\Get(
+     *          path="/api/tests-attempts/{testAttemptId}",
+     *          @OA\Parameter(in="path",name="testAttemptId",parameter="testAttemptId"),
+     *          @OA\Response(response="200", description="a specific attempt for a test"),
+     *     tags={"tests-attempts"},
+     *      )
+     *
      * @param int $testAttemptId
      *
      * @throws ApiNotFoundException
@@ -60,6 +67,13 @@ class TestAttemptController extends BaseController
 
     /**
      * List the test attempts for this test
+     *
+     * @OA\Get(
+     *          path="/api/tests-attempts/",
+     *          @OA\Parameter(in="query",name="collectionInformation",parameter="collectionInformation"),
+     *          @OA\Response(response="200", description="list of all attempts for a test"),
+     *     tags={"tests-attempts"},
+     *      )
      *
      * @param CollectionInformation $collectionInformation
      *

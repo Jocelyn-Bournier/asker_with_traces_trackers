@@ -34,6 +34,12 @@ class ProfileController extends BaseController
      * ANR COMPER
      * Create a JWT token and request the profile of a learner.
      * Then simply return this profile.
+     * @OA\Post(
+     *          path="/api/profile/request/{frameworkId}",
+     *          @OA\Parameter(in="path", name="frameworkId", parameter="frameworkId"),
+     *          @OA\Response(response="200", description="profile of an user"),
+     *     tags={"profile"},
+     *      )
      * @param int $framework_id the identifier of the framework used
      * @return JsonResponse the profile of a learner on Json format
      */
@@ -65,6 +71,13 @@ class ProfileController extends BaseController
      * ANR COMPER
      * Creates a ComperProfileTrace corresponding to an "action" done by the learner regarding his profile.
      * An action can be, for example, "request", for when the learner requests his profile.
+     * @OA\Get(
+     *          path="/api/profile/trace/{directoryId}/{action}",
+     *          @OA\Parameter(in="path", name="directoryId", parameter="directoryId"),
+     *          @OA\Parameter(in="path", name="action", parameter="action"),
+     *          @OA\Response(response="200", description="confirmation of trace creation"),
+     *     tags={"profile"},
+     *      )
      * @param $action string the kind of action performed by the learner
      * @param $directoryId int the identifier of the directory where the action is applied
      * @return JsonResponse return a JsonResponse 'Profile trace created' after the trace was added to the user's profile
