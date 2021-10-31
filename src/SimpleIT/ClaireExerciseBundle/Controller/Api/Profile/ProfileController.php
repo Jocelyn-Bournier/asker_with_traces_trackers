@@ -17,6 +17,9 @@
  */
 
 namespace SimpleIT\ClaireExerciseBundle\Controller\Api\Profile;
+use SimpleIT\ClaireExerciseBundle\Entity\AskerUser;
+use SimpleIT\ClaireExerciseBundle\Repository\AskerUserRepository;
+use SimpleIT\ClaireExerciseBundle\Service\User\UserService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use SimpleIT\ClaireExerciseBundle\Controller\BaseController;
 use SimpleIT\ClaireExerciseBundle\Entity\ComperProfileTrace;

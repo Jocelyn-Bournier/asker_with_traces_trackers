@@ -23,6 +23,8 @@ use SimpleIT\ClaireExerciseBundle\Entity\AskerUser;
 use SimpleIT\ClaireExerciseBundle\Entity\AskerUserDirectory;
 use SimpleIT\ClaireExerciseBundle\Entity\Directory;
 use SimpleIT\ClaireExerciseBundle\Entity\Pedagogic;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\SecurityContext;
@@ -154,6 +156,17 @@ class AdminController extends BaseController
                     $em->remove($aud);
                 }
             }
+
+            // We add profile if the directory is linked with a framework
+            foreach($user->getDirectories() as $dir){
+                if ($originalDirectories->contains($dir) === false
+                    && $dir->getDirectory()->getOwner()->getId() !== $user->getId() && $dir->getDirectory()->getFrameworkId() !== null
+                ){
+                    $response = $this->addComperToUser($dir->getDirectory()->getFrameworkId(), $user->getId());
+                }
+
+            }
+
             $this->get('simple_it.exercise.asker_user_directory')->deleteChildrens($user, $deleted);
             $this->get('simple_it.exercise.asker_user_directory')->updateForUser($user);
 
@@ -207,6 +220,29 @@ class AdminController extends BaseController
         } else {
             die("the file does not exist");
         }
+    }
+
+    public function addComperToUser($frameworkId, $userId){
+        $jwtEncoder = $this->container->get('app.jwtService');
+        $user       = $this->container->get('simple_it.exercise.user');
+        $timestamp  = new \DateTime();
+        $timestamp  = $timestamp->getTimestamp()+30;
+        $payload    = [
+            "user"     => "asker:".$userId,
+            "fwid"     => intval($frameworkId),
+            "username" => $user->get($userId)->getUsername(),
+            "role"     => 'learner',
+            "exp"      => $timestamp,
+            "platform" => 'asker',
+            "homepage" => 'https://asker.univ-lyon1.fr/'
+        ];
+
+        $token = $jwtEncoder->getToken($payload);
+
+        $profileService = $this->container->get('app.profileService');
+        $profile = new JsonResponse($profileService->createProfile($token));
+
+        //return $profile;
     }
 
 }

@@ -5,7 +5,13 @@ api_profile_request:
     defaults: {_controller: SimpleITClaireExerciseBundle:Api/Profile/Profile:requestProfile}
     methods: [GET]
 
+api_profile_specific_request:
+    pattern: /request/{framework_id}/user/{userId}
+    defaults: {_controller: SimpleITClaireExerciseBundle:Api/Profile/Profile:requestSpecificProfile}
+    methods: [GET]
+
 api_profile_trace:
     pattern: /trace/{directoryId}/{action}
     defaults: {_controller: SimpleITClaireExerciseBundle:Api/Profile/Profile:trace}
     methods: [POST]
+
