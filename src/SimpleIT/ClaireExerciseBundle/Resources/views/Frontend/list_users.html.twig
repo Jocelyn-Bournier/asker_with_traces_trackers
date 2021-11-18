@@ -14,7 +14,7 @@
               <th>Username</th>
               <th>Statut</th>
               <th>LDAP</th>
-              <th>Répertoires</th>
+              <th>Dossiers</th>
               <th>Roles</th>
               <th>Actions</th>
             </thead>
@@ -40,6 +40,7 @@
                     {% endif %}
                   </td>
                   <td>
+                  {#
                     {% for dir in user.realDirectories %}
                       {% if not dir.getParent() %}
                         {% if dir.owner == user %}
@@ -51,6 +52,7 @@
                         {% endif %}
                       {% endif %}
                     {% endfor %}
+                  #}
                   </td>
                   <td>
                     {% for role in user.roles %}
@@ -90,9 +92,11 @@
             </p>
             <div>
               <select name='directory'>
+              {#}
                 {% for dir in dirs %}
                   <option value="{{dir.id}}">{{dir.name}}</option>
                 {% endfor %}
+                #}
               </select>
             </div>
             <div style='margin-top:10px;'>
