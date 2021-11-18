@@ -11,7 +11,7 @@ namespace SimpleIT\ClaireExerciseBundle\Repository;
 class AskerUserRepository extends \Doctrine\ORM\EntityRepository
 {
 
-    public function  nativeAll(){
+    public function nativeAll(){
         $sql = "
             SELECT  au.id,au.username, au.isEnable, au.isLdap, group_concat(r.public) as roles
             FROM asker_user au
