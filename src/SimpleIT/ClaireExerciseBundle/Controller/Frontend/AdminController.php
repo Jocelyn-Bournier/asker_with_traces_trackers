@@ -72,7 +72,7 @@ class AdminController extends BaseController
         return $this->render(
             'SimpleITClaireExerciseBundle:Frontend:list_users.html.twig',
             array(
-                'users' => $this->get('simple_it.exercise.user')->getAll(),
+                'users' => $this->get('simple_it.exercise.user')->getNativeAll(),
                 'dirs' => $dirs,
             )
         );

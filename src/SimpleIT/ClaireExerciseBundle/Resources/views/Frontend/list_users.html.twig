@@ -41,6 +41,8 @@
                   </td>
                   <td>
                   {#
+                        comment old way to get roles
+                        because it's very slow
                     {% for dir in user.realDirectories %}
                       {% if not dir.getParent() %}
                         {% if dir.owner == user %}
@@ -55,8 +57,8 @@
                   #}
                   </td>
                   <td>
-                    {% for role in user.roles %}
-                      <span class="label label-default">{{role.public}}</span>
+                    {% for role in user.roles|split(',') %}
+                      <span class="label label-default">{{role}}</span>
                     {% endfor %}
                   </td>
                   <td class="btn-grp-vertical btn-group-xs">
@@ -91,13 +93,13 @@
               Ajout d'un répertoire par défaut.
             </p>
             <div>
+              {# disable enable dir temporary
               <select name='directory'>
-              {#}
                 {% for dir in dirs %}
                   <option value="{{dir.id}}">{{dir.name}}</option>
                 {% endfor %}
-                #}
               </select>
+              #}
             </div>
             <div style='margin-top:10px;'>
               <button class='btn btn-success'>Activer</button>
