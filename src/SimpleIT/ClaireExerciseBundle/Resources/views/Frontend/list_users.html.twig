@@ -40,21 +40,11 @@
                     {% endif %}
                   </td>
                   <td>
-                  {#
-                        comment old way to get roles
-                        because it's very slow
-                    {% for dir in user.realDirectories %}
-                      {% if not dir.getParent() %}
-                        {% if dir.owner == user %}
-                          <div class="label label-primary"><span class="glyphicon glyphicon-home"></span> {{dir.name}}</div>
-                        {% elseif dir.hasManager(user) %}
-                          <div class="label label-primary"><span class="glyphicon glyphicon-pencil"></span> {{dir.name}}</div>
-                        {% else %}
-                          <div class="label label-primary">{{dir.name}}</div>
-                        {% endif %}
-                      {% endif %}
-                    {% endfor %}
-                  #}
+                    <a class='btn btn-primary btn-xs' role="button"  tabindex="0"
+                    onclick="showAUR('{{path('admin_show_aur',{'user':user.id})}}',$(this))"
+                    title="Afficher les dossiers de l'utilisateur {{user.username}}" type="button">
+                      <span class="glyphicon glyphicon-search"></span>
+                    </a>
                   </td>
                   <td>
                     {% for role in user.roles|split(',') %}
@@ -93,13 +83,11 @@
               Ajout d'un répertoire par défaut.
             </p>
             <div>
-              {# disable enable dir temporary
               <select name='directory'>
                 {% for dir in dirs %}
                   <option value="{{dir.id}}">{{dir.name}}</option>
                 {% endfor %}
               </select>
-              #}
             </div>
             <div style='margin-top:10px;'>
               <button class='btn btn-success'>Activer</button>
@@ -118,7 +106,7 @@
   </div>
 
   <!-- Modal -->
-  <div class="modal fade " id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
       <div class="modal-content" style="width:80%;" >
         <div class="modal-header">
@@ -134,6 +122,11 @@
     </div>
   </div>
   <script>
+    options = {
+      html:true,
+      placement:'bottom',
+      trigger: 'focus',
+    }
     $('.preview').on('click',function(){
       $.ajax({
         url : "{{path('admin_preview_user')}}"+"/" + $(this).data('user'),
@@ -145,6 +138,20 @@
         }
       });
     });
+    function showAUR (url, element) {
+      fetch(url)
+        .then( function (response) {
+          if (!response.ok) {
+            throw Error(`Error${response.status}:${response.text()}`)
+          }
+          return response.text()
+        })
+        .then( function (data) {
+          element.popover(options)
+          element.attr('data-content', data)
+          element.popover('show')
+        })
+    }
     function toggle(source) {
       checkboxes = document.getElementsByName('usersCheck[]');
       for(var i=0, n=checkboxes.length;i<n;i++) {
