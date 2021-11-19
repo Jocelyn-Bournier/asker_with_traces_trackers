@@ -148,6 +148,9 @@ option {
     width: 1200px;
 }
 
+.popover {
+    max-width: 512px !important;
+}
 .td-stat{
   vertical-align:middle !important;
   text-align:center;
