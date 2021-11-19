@@ -144,5 +144,22 @@ class AskerUserDirectoryService extends TransactionalService
         $this->em->persist($aud);
         $this->em->flush($aud);
     }
+
+    public function getArrayByUser(AskerUser $user)
+    {
+        $dirs = array();
+        foreach($this->askerUserDirectoryRepository->findByUser($user) as $aur){
+            $owner = ($user->getId() === $aur->getDirectory()->getOwner()->getId()) ? true : false;
+            $dirs[] = array(
+                'name' => $aur->getDirectory()->getName(),
+                'manager' => $aur->getIsManager(),
+                'owner' => $owner
+
+            );
+
+        }
+        return $dirs;
+
+    }
 }
 
