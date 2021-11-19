@@ -10,6 +10,25 @@ namespace SimpleIT\ClaireExerciseBundle\Repository;
  */
 class AskerUserRepository extends \Doctrine\ORM\EntityRepository
 {
+
+    public function nativeAll(){
+        $sql = "
+            SELECT  au.id,au.username, au.isEnable, au.isLdap, group_concat(r.public) as roles
+            FROM asker_user au
+            JOIN asker_user_role aur
+            ON aur.asker_user_id = au.id
+            JOIN role r
+            ON aur.role_id = r.id
+            GROUP BY au.username
+            ORDER BY au.id
+        ";
+       $stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+       $stmt->execute();
+       return $stmt->fetchAll();
+       # new version is doctine is up to date
+       #return $stmt->executeQuery()->fetchAllAssociative();
+
+    }
     public function findTeachers()
     {
         return $this->createQueryBuilder('a')

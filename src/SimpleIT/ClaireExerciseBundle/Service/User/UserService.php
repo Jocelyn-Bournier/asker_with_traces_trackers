@@ -63,10 +63,20 @@ class UserService extends TransactionalService implements UserServiceInterface
      */
     public function getAll()
     {
-        $exerciseModel = null;
-
         return $this->userRepository->findAll();
     }
+
+
+    /**
+     * Get all users as userView
+     *
+     * @return array
+     */
+    public function getNativeAll()
+    {
+        return $this->userRepository->nativeAll();
+    }
+
 
     /**
      * @param AskerUser   $user

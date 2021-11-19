@@ -88,6 +88,10 @@ class DirectoryService extends TransactionalService
         return $this->directoryRepository->countOldStudents($dir, $teachers);
     }
 
+    public function nativeParents(){
+        return $this->directoryRepository->findNativeParents();
+
+    }
     public function allParents($user = 0)
     {
         return $this->directoryRepository->findParents($user);
