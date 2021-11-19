@@ -123,6 +123,20 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
         //;
     }
 
+    public function findNativeParents(){
+        $sql = "
+            SELECT  d.id, d.name
+            FROM directory d
+            WHERE parent_id is NULL
+            ORDER BY d.name
+        ";
+       $stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+       $stmt->execute();
+       return $stmt->fetchAll();
+       # new version is doctine is up to date
+       #return $stmt->executeQuery()->fetchAllAssociative();
+    }
+
     public function findParents($user = 0)
     {
         $sql = "
