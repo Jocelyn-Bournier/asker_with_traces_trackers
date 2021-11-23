@@ -25,7 +25,7 @@ class AskerUserRepository extends \Doctrine\ORM\EntityRepository
        $stmt = $this->getEntityManager()->getConnection()->prepare($sql);
        $stmt->execute();
        return $stmt->fetchAll();
-       # new version is doctine is up to date
+       # new version is doctine if up to date
        #return $stmt->executeQuery()->fetchAllAssociative();
 
     }
