@@ -5,6 +5,7 @@ namespace SimpleIT\ClaireExerciseBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use SimpleIT\ClaireExerciseBundle\Repository\DirectoryRepository;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -42,9 +43,9 @@ class AskerUserDirectoryType extends AbstractType
     }
     
     /**
-     * @param OptionsResolverInterface $resolver
+     * @param OptionsResolver $resolver
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
             'data_class' => 'SimpleIT\ClaireExerciseBundle\Entity\AskerUserDirectory'
@@ -57,7 +58,7 @@ class AskerUserDirectoryType extends AbstractType
     /**
      * @return string
      */
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'simpleit_claireexercisebundle_askeruserdirectory';
     }

@@ -27,6 +27,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\HttpFoundation\Request;
 //use Symfony\Component\Security\Core\SecurityContext;
 
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
@@ -92,9 +93,9 @@ class AdminController extends BaseController
         );
     }
 
-    public function updatePasswordAction(AskerUser $user)
+    public function updatePasswordAction(AskerUser $user, Request $request)
     {
-        $request = $this->getRequest();
+        //$request = $this->getRequest();
         $form = $this->createForm(AskerPasswordType::class, $user);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -149,9 +150,9 @@ class AdminController extends BaseController
         return $this->redirectToRoute($request->get('current'));
     }
 
-    public function editAction(AskerUser $user)
+    public function editAction(AskerUser $user, Request $request)
     {
-        $request = $this->getRequest();
+        //$request = $this->getRequest();
         //load old datas before binding
         $originalDirectories = new ArrayCollection();
         foreach ($user->getDirectories() as $aud) {
@@ -195,10 +196,10 @@ class AdminController extends BaseController
             )
         );
     }
-    public function importLocalAction(){
+    public function importLocalAction(Request $request){
         $handle = fopen(__DIR__."/datas.csv", "r");
         $datas=array();
-        $request = $this->getRequest();
+        //$request = $this->getRequest();
         $role = "ROLE_USER";
         $userService = $this->get('simple_it.exercise.user');
         if ($handle) {
