@@ -10,6 +10,21 @@ namespace SimpleIT\ClaireExerciseBundle\Repository;
  */
 class AskerUserDirectoryRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function nativeAll(){
+        $sql = "
+            SELECT d.name, user_id, isManager, d.owner_id
+            FROM asker_user_directory aud
+            JOIN directory d
+            ON d.id = aud.directory_id
+            WHERE d.parent_id is null
+            ORDER BY user_id, d.name
+        ";
+       $stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+       $stmt->execute();
+       return $stmt->fetchAll();
+       # new version is doctine is up to date
+       #return $stmt->executeQuery()->fetchAllAssociative();
+    }
     public function findObjectParents()
     {
         return $this->createQueryBuilder('aud')

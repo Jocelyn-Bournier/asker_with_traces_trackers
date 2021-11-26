@@ -22,6 +22,10 @@ admin_update_password:
 admin_migrate:
     pattern: /migrate
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Admin:migrate }
+admin_show_aur:
+    pattern: /users/aur/
+    #defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Admin:showAUR, user:null }
+    defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Admin:showAUR}
 
 admin_importlocal:
     pattern: /import/local

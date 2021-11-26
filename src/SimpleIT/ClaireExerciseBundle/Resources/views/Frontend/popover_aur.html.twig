@@ -1,0 +1,9 @@
+{% for data in aurs %}
+  {% if data.owner %}
+    <div class="label label-primary"><span class="glyphicon glyphicon-home"></span> {{data.name}}</div>
+  {% elseif data.manager %}
+    <div class="label label-primary"><span class="glyphicon glyphicon-pencil"></span> {{data.name}}</div>
+  {% else %}
+    <div class="label label-primary">{{data.name}}</div>
+  {% endif %}
+{% endfor %}

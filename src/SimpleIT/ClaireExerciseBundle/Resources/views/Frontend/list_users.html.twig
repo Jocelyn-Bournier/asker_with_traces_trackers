@@ -3,18 +3,25 @@
   <div class="container">
     <div class="row">
       <h2>Gestion des utilisateurs</h2>
+        <input type="hidden" id="filter0" placeholder="Filter By tous">
+        <input type="hidden" id="filter2" placeholder="Filter By Status">
+        <input type="hidden" id="filter3" placeholder="Filter By LDAP">
       <form method='post' action="{{path('admin_change')}}">
         <input type='hidden' name='current' value="{{app.request.get('_route')}}">
         <div class="col-xs-12">
-          <table class='table table-bordered'>
+          <table class='table table-bordered' id='filter'>
             <thead>
               <th>
                 <input type="checkbox" name='toggleAll' onClick="toggle(this)"> Tous
               </th>
-              <th>Username</th>
+              <th>
+                <input type="text" id="filter1" placeholder="Filtrer par username">
+              </th>
               <th>Statut</th>
               <th>LDAP</th>
-              <th>Répertoires</th>
+              <th>
+                <input type="text" id="filter4" placeholder="Filtrer par dossier">
+              </th>
               <th>Roles</th>
               <th>Actions</th>
             </thead>
@@ -39,23 +46,21 @@
                       <span class="label label-danger">Non</span>
                     {% endif %}
                   </td>
-                  <td>
-                    {% for dir in user.realDirectories %}
-                      {% if not dir.getParent() %}
-                        {% if dir.owner == user %}
-                          <div class="label label-primary"><span class="glyphicon glyphicon-home"></span> {{dir.name}}</div>
-                        {% elseif dir.hasManager(user) %}
-                          <div class="label label-primary"><span class="glyphicon glyphicon-pencil"></span> {{dir.name}}</div>
-                        {% else %}
-                          <div class="label label-primary">{{dir.name}}</div>
-                        {% endif %}
-                      {% endif %}
-                    {% endfor %}
+                  <td id="{{user.id}}-directories">
+                    {#
+                    <a class='btn btn-primary btn-xs' role="button"  tabindex="0"
+                    onclick="showAUR('{{path('admin_show_aur',{'user':user.id})}}',$(this))"
+                    title="Dossiers de l'utilisateur {{user.username}}" type="button">
+                      <span class="glyphicon glyphicon-search"></span>
+                    </a>
+                    #}
                   </td>
                   <td>
-                    {% for role in user.roles %}
-                      <span class="label label-default">{{role.public}}</span>
-                    {% endfor %}
+                    {% if user.roles is not empty %}
+                      {% for role in user.roles|split(',') %}
+                        <span class="label label-default">{{role}}</span>
+                      {% endfor %}
+                    {% endif %}
                   </td>
                   <td class="btn-grp-vertical btn-group-xs">
                     <a class='btn btn-warning' href="{{path('admin_edit',
@@ -112,7 +117,7 @@
   </div>
 
   <!-- Modal -->
-  <div class="modal fade " id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
       <div class="modal-content" style="width:80%;" >
         <div class="modal-header">
@@ -127,7 +132,42 @@
       </div>
     </div>
   </div>
+  <script  type="text/javascript"  src="{{ asset('bundles/simpleitclaireexercise/frontend/js/vendors/tablefilter.js') }}" defer></script>
   <script>
+    options = {
+      html:true,
+      placement:'bottom',
+      trigger: 'focus',
+    }
+    function templateDirectories(user_id, directories){
+      msg = ""
+      for(var key in directories){
+        if (directories[key].isOwner) {
+          msg += `<div class="label label-primary"><span class="glyphicon glyphicon-home"></span> ${directories[key].name}</div> `
+        } else if (directories[key].isManager) {
+          msg += `<div class="label label-primary"><span class="glyphicon glyphicon-pencil"></span> ${directories[key].name}</div> `
+        } else{
+          msg += `<div class="label label-primary">${directories[key].name}</div> `
+        }
+      }
+      return msg;
+    }
+    document.addEventListener("DOMContentLoaded", function() {
+      fetch("{{path('admin_show_aur')}}")
+        .then( function (response) {
+          if (!response.ok) {
+            throw Error(`Error${response.status}:${response.text()}`)
+          }
+          return response.json()
+        })
+        .then( function (data) {
+          for (var user_id in data) {
+            directories = data[user_id];
+            document.getElementById(`${user_id}-directories`).innerHTML = templateDirectories(user_id,directories);
+          }
+        })
+    });
+
     $('.preview').on('click',function(){
       $.ajax({
         url : "{{path('admin_preview_user')}}"+"/" + $(this).data('user'),
@@ -139,6 +179,20 @@
         }
       });
     });
+    //function showAUR (url, element) {
+    //  fetch(url)
+    //    .then( function (response) {
+    //      if (!response.ok) {
+    //        throw Error(`Error${response.status}:${response.text()}`)
+    //      }
+    //      return response.text()
+    //    })
+    //    .then( function (data) {
+    //      element.popover(options)
+    //      element.attr('data-content', data)
+    //      element.popover('show')
+    //    })
+    //}
     function toggle(source) {
       checkboxes = document.getElementsByName('usersCheck[]');
       for(var i=0, n=checkboxes.length;i<n;i++) {

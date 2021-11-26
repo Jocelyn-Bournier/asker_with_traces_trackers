@@ -42,6 +42,17 @@ use SimpleIT\ClaireExerciseBundle\Form\AskerPasswordType;
 class AdminController extends BaseController
 {
 
+    public function showAURAction()
+    {
+        return new JsonResponse($this->get('simple_it.exercise.asker_user_directory')->getArrayAllUser());
+        return $this->render(
+            'SimpleITClaireExerciseBundle:Frontend:popover_aur.html.twig',
+            array(
+                'aurs' => $this->get('simple_it.exercise.asker_user_directory')->getArrayByUser($user)
+            )
+        );
+    }
+
     public function previewAction(AskerUser $user = null)
     {
         return $this->render(
@@ -71,11 +82,11 @@ class AdminController extends BaseController
     }
     public function allAction()
     {
-        $dirs = $this->get('simple_it.exercise.directory')->allParents();
+        $dirs = $this->get('simple_it.exercise.directory')->nativeParents();
         return $this->render(
             'SimpleITClaireExerciseBundle:Frontend:list_users.html.twig',
             array(
-                'users' => $this->get('simple_it.exercise.user')->getAll(),
+                'users' => $this->get('simple_it.exercise.user')->getNativeAll(),
                 'dirs' => $dirs,
             )
         );
