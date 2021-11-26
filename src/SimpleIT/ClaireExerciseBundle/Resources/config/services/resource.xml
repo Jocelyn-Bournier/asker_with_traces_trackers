@@ -14,11 +14,13 @@
 
     <services>
         <!-- Repositories -->
-        <service id="simple_it.exercise.repository.exercise_resource" factory-service="doctrine.orm.entity_manager" factory-method="getRepository" class="%simple_it.exercise.repository.exercise_resource.class%">
+        <service id="simple_it.exercise.repository.exercise_resource" class="%simple_it.exercise.repository.exercise_resource.class%">
+            <factory method="getRepository"/>
             <argument>%simple_it.exercise.entity.exercise_resource.class%</argument>
         </service>
 
-        <service id="simple_it.exercise.repository.resource_metadata" factory-service="doctrine.orm.entity_manager" factory-method="getRepository" class="%simple_it.exercise.repository.resource_metadata.class%">
+        <service id="simple_it.exercise.repository.resource_metadata" class="%simple_it.exercise.repository.resource_metadata.class%">
+            <factory method="getRepository"/>
             <argument>%simple_it.exercise.entity.resource_metadata.class%</argument>
         </service>
 

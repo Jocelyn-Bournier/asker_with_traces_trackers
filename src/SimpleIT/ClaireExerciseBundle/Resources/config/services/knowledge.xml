@@ -16,11 +16,13 @@
 
     <services>
         <!-- Repository -->
-        <service id="simple_it.exercise.repository.knowledge" factory-service="doctrine.orm.entity_manager" factory-method="getRepository" class="%simple_it.exercise.repository.knowledge.class%">
+        <service id="simple_it.exercise.repository.knowledge" class="%simple_it.exercise.repository.knowledge.class%">
+            <factory method="getRepository"/>
             <argument>%simple_it.exercise.entity.knowledge.class%</argument>
         </service>
 
-        <service id="simple_it.exercise.repository.knowledge_metadata" factory-service="doctrine.orm.entity_manager" factory-method="getRepository" class="%simple_it.exercise.repository.knowledge_metadata.class%">
+        <service id="simple_it.exercise.repository.knowledge_metadata" class="%simple_it.exercise.repository.knowledge_metadata.class%">
+            <factory method="getRepository"/>
             <argument>%simple_it.exercise.entity.knowledge_metadata.class%</argument>
         </service>
 

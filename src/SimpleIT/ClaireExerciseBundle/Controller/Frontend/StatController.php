@@ -27,7 +27,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use SimpleIT\ClaireExerciseBundle\Model\Api\ApiDeletedResponse;
 use SimpleIT\ClaireExerciseBundle\Form\StatViewType;
-use Symfony\Component\Security\Core\SecurityContext;
+//use Symfony\Component\Security\Core\SecurityContext;
+
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 /**
  * Class StatController
  *
@@ -37,10 +40,10 @@ class StatController extends BaseController
 {
     public function statAction()
     {
-        if ($this->get('security.context')->isGranted('ROLE_ADMIN')){
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')){
             $dirs = $this->get('simple_it.exercise.directory')->allParents();
-        }else if ($this->get('security.context')->isGranted('ROLE_WS_CREATOR')){
-            $user = $this->get('security.context')->getToken()->getUser();
+        }else if ($this->get('security.authorization_checker')->isGranted('ROLE_WS_CREATOR')){
+            $user = $this->get('security.token_storage')->getToken()->getUser();
             $dirs = $this->get('simple_it.exercise.directory')->allParents($user);
         }
         $teachers = $this->get('simple_it.exercise.user')->allTeachers();
@@ -62,10 +65,10 @@ class StatController extends BaseController
 
     public function fullFillAction(Directory $directory, StatView $view = null)
     {
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
         if (
             $directory->hasManager($user)
-            || $this->get('security.context')->isGranted('ROLE_ADMIN')
+            || $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')
             || $directory->getOwner() == $user
         ){
             if ($view == null){
@@ -98,10 +101,10 @@ class StatController extends BaseController
     }
     public function statDirectoryAction(Directory $directory, StatView $view = null)
     {
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
         if (
             $directory->hasManager($user)
-            || $this->get('security.context')->isGranted('ROLE_ADMIN')
+            || $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')
             || $directory->getOwner() == $user
         ){
             if ($view == null){
@@ -133,10 +136,10 @@ class StatController extends BaseController
     }
     public function filterDirectoryAction(Directory $directory, StatView $view = null)
     {
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
         if (
             $directory->hasManager($user)
-            || $this->get('security.context')->isGranted('ROLE_ADMIN')
+            || $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')
             || $directory->getOwner() == $user
         ){
             $this->get('simple_it.exercise.directory')->hasView($directory);
@@ -162,10 +165,10 @@ class StatController extends BaseController
     */
     public function statPersonalAction(Directory $directory, AskerUser $user, StatView $view = null)
     {
-        $_user = $this->get('security.context')->getToken()->getUser();
+        $_user = $this->get('security.token_storage')->getToken()->getUser();
         if (
             $directory->hasManager($_user)
-            || $this->get('security.context')->isGranted('ROLE_ADMIN')
+            || $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')
             || $directory->getOwner() == $_user
         ){
             $this->get('simple_it.exercise.directory')->hasView($directory);
@@ -195,10 +198,10 @@ class StatController extends BaseController
     */
     public function statDetailAction(Directory $directory, AskerUser $user, StatView $view = null)
     {
-        $_user = $this->get('security.context')->getToken()->getUser();
+        $_user = $this->get('security.token_storage')->getToken()->getUser();
         if (
             $directory->hasManager($_user)
-            || $this->get('security.context')->isGranted('ROLE_ADMIN')
+            || $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')
             || $directory->getOwner() == $_user
         ){
             $this->get('simple_it.exercise.directory')->hasView($directory);
@@ -315,14 +318,14 @@ class StatController extends BaseController
 
     public function exportModelAction(Directory $directory, ExerciseModel $model, StatView $view)
     {
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
         #permissions are fixed in parent directory
         if ($directory->getParent()){
             $directory = $directory->getParent();
         }
         if (
             $directory->hasManager($user)
-            || $this->get('security.context')->isGranted('ROLE_ADMIN')
+            || $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')
             || $directory->getOwner() == $user
         ){
             if ($view == null){

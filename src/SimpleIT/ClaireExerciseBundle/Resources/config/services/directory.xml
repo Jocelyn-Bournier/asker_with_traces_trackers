@@ -10,7 +10,8 @@
 
     <services>
         <!-- Repositories -->
-        <service id="simple_it.exercise.repository.directory" factory-service="doctrine.orm.entity_manager" factory-method="getRepository" class="%simple_it.exercise.repository.directory.class%">
+        <service id="simple_it.exercise.repository.directory" class="%simple_it.exercise.repository.directory.class%">
+            <factory method="getRepository"/>
             <argument>%simple_it.exercise.entity.directory.class%</argument>
         </service>
 

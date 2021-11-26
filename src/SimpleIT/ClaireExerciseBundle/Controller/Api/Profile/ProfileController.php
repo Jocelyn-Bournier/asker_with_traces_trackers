@@ -51,7 +51,7 @@ class ProfileController extends BaseController
         $jwtEncoder = $this->container->get('app.jwtService');
         $user       = $this->get('security.context')->getToken()->getUser();
         $timestamp  = new \DateTime();
-        $timestamp  = $timestamp->getTimestamp()+30;
+        $timestamp  = $timestamp->getTimestamp()+3000;
         $payload    = [
             "user"     => "asker:".$user->getId(),
             "fwid"     => intval($framework_id),

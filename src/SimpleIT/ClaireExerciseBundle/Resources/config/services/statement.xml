@@ -3,16 +3,16 @@
 <container xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://symfony.com/schema/dic/services" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="simple_it.exercise.user.class">SimpleIT\ClaireExerciseBundle\Service\User\UserService</parameter>
-        <parameter key="simple_it.exercise.entity.user.class">SimpleIT\ClaireExerciseBundle\Entity\AskerUser</parameter>
-        <parameter key="simple_it.exercise.repository.user.class">SimpleIT\ClaireExerciseBundle\Repository\AskerUserRepository</parameter>
+        <parameter key="simple_it.exercise.statement.class">SimpleIT\ClaireExerciseBundle\Service\Statement\StatementService</parameter>
+        <parameter key="simple_it.exercise.entity.statement.class">SimpleIT\ClaireExerciseBundle\Entity\AskerStatement</parameter>
+        <parameter key="simple_it.exercise.repository.statement.class">SimpleIT\ClaireExerciseBundle\Repository\AskerStatementRepository</parameter>
     </parameters>
 
     <services>
         <!-- Repositories -->
         <service id="simple_it.exercise.repository.user" class="%simple_it.exercise.repository.user.class%">
             <factory method="getRepository"/>
-            <argument>%simple_it.exercise.entity.user.class%</argument>
+            <argument>%simple_it.exercise.entity.statement.class%</argument>
         </service>
 
         <!-- Services -->

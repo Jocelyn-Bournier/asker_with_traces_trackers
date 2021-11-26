@@ -25,7 +25,10 @@ use SimpleIT\ClaireExerciseBundle\Entity\Directory;
 use SimpleIT\ClaireExerciseBundle\Entity\CreatedExercise\StoredExercise;
 use SimpleIT\ClaireExerciseBundle\Entity\CreatedExercise\Item;
 use SimpleIT\ClaireExerciseBundle\Model\Api\ApiDeletedResponse;
-use Symfony\Component\Security\Core\SecurityContext;
+//use Symfony\Component\Security\Core\SecurityContext;
+
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResourceFactory;
 use SimpleIT\ClaireExerciseBundle\Model\Api\ApiCreatedResponse;
 use SimpleIT\ClaireExerciseBundle\Model\Api\ApiGotResponse;
@@ -44,10 +47,10 @@ class ExportController extends BaseController
 {
     public function exportAction()
     {
-        if ($this->get('security.context')->isGranted('ROLE_ADMIN')){
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')){
             $dirs = $this->get('simple_it.exercise.directory')->allParents();
-        }else if ($this->get('security.context')->isGranted('ROLE_WS_CREATOR')){
-            $user = $this->get('security.context')->getToken()->getUser();
+        }else if ($this->get('security.authorization_checker')->isGranted('ROLE_WS_CREATOR')){
+            $user = $this->get('security.token_storage')->getToken()->getUser();
             $dirs = $this->get('simple_it.exercise.directory')->allParents($user);
         }
         $teachers = $this->get('simple_it.exercise.user')->allTeachers();
@@ -70,9 +73,9 @@ class ExportController extends BaseController
 
     public function filterDirectoryAction(Directory $directory,  $view = null)
     {
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
         if ($directory->hasUser($user)
-            || $this->get('security.context')->isGranted('ROLE_WS_CREATOR')
+            || $this->get('security.authorization_checker')->isGranted('ROLE_WS_CREATOR')
         ){
             $users = $this->get('simple_it.exercise.directory')->getIdUsers($directory, $view);
             $this->get('simple_it.exercise.directory')->hasView($directory);

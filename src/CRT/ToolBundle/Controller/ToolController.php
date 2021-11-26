@@ -3,16 +3,18 @@
 namespace CRT\ToolBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Security\Core\SecurityContext;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
 use CRT\ToolBundle\Form\RequestType;
-use CRT\ToolBundle\Entity\Request;
+//use CRT\ToolBundle\Entity\Request;
+use Symfony\Component\HttpFoundation\Request;
 
 class ToolController extends Controller
 {
-    public function loginAction()
+    public function loginAction(Request $request)
     {
-        $request = $this->getRequest();
+        //$request = $this->getRequest();
         $session = $request->getSession();
         // get the login error if there is one
         if ($request->attributes->has(SecurityContext::AUTHENTICATION_ERROR)) {
@@ -285,7 +287,7 @@ class ToolController extends Controller
     public function dashBoardAction()
     {
         $roleAdmin = $this->container->getParameter('crtres_admins');
-        if ($this->get('security.context')->isGranted($roleAdmin)) {
+        if ($this->get('security.authorization_checker')->isGranted($roleAdmin)) {
             return $this->render(
                 'CRTToolBundle:Content:dashBoard.html.twig'
             );
@@ -298,7 +300,7 @@ class ToolController extends Controller
     {
         $request = $this->get('request');
         if ($request->getMethod() == 'POST'){
-            $username = $this->get('security.context')->getToken()->getUser()->getUsername();
+            $username = $this->get('security.token_storage')->getToken()->getUser()->getUsername();
             $params = $request->request->all();
 
             $regCriteres = "/((?=.*[a-z])(?=.*[A-Z])(?=.*\\d)|(?=.*[a-z])(?=.*\\d)(?=.*\\W)|(?=.*[a-z])(?=.*[A-Z])(?=.*\\W)|(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)|(?=.*[A-Z])(?=.*\\d)(?=.*\\W])){8,}/";

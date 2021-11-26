@@ -27,7 +27,10 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Component\Security\Core\SecurityContext;
+//use Symfony\Component\Security\Core\SecurityContext;
+
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use SimpleIT\ClaireExerciseBundle\Form\AskerUserDirectoryType;
 use SimpleIT\ClaireExerciseBundle\Form\AskerUserType;
 use SimpleIT\ClaireExerciseBundle\Form\AskerPasswordType;
@@ -226,7 +229,7 @@ class AdminController extends BaseController
         $jwtEncoder = $this->container->get('app.jwtService');
         $user       = $this->container->get('simple_it.exercise.user');
         $timestamp  = new \DateTime();
-        $timestamp  = $timestamp->getTimestamp()+30;
+        $timestamp  = $timestamp->getTimestamp()+3000;
         $payload    = [
             "user"     => "asker:".$userId,
             "fwid"     => intval($frameworkId),

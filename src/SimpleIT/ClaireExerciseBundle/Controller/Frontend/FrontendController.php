@@ -20,8 +20,13 @@ namespace SimpleIT\ClaireExerciseBundle\Controller\Frontend;
 
 use SimpleIT\ClaireExerciseBundle\Controller\BaseController;
 use SimpleIT\ClaireExerciseBundle\Entity\AskerUser;
-use Symfony\Component\Security\Core\SecurityContext;
+use Symfony\Component\HttpFoundation\Request;
+//use Symfony\Component\Security\Core\SecurityContext;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use SimpleIT\ClaireExerciseBundle\Form\AskerPasswordType;
+use Symfony\Component\Security\Core\Security;
+
 /**
  * Class FrontendController
  *
@@ -50,9 +55,9 @@ class FrontendController extends BaseController
             array('currentUserId' => $userId, 'form' => $form->createView())
         );
     }
-    public function updatePasswordAction()
+    public function updatePasswordAction(Request $request)
     {
-        $request = $this->getRequest();
+        //$request = $this->getRequest();
         $user = $this->getUser();
         $form = $this->createForm(AskerPasswordType::class, $user);
         $form->handleRequest($request);
@@ -62,34 +67,34 @@ class FrontendController extends BaseController
                 password_hash($user->getPassword(), PASSWORD_DEFAULT)
             );
             $em->flush();
-            $this->get('security.context')->setToken(null);
+            $this->get('security.token_storage')->setToken(null);
             $this->get('request')->getSession()->invalidate();
         }
         return $this->redirectToRoute('frontend_index');
     }
 
-    public function loginAction()
+    public function loginAction(Request $request)
     {
-        $request = $this->getRequest();
+        //$request = $this->getRequest();
         $session = $request->getSession();
         // get the login error if there is one
-        if ($request->attributes->has(SecurityContext::AUTHENTICATION_ERROR)) {
-            $error = $request->attributes->get(SecurityContext::AUTHENTICATION_ERROR);
+        if ($request->attributes->has(Security::AUTHENTICATION_ERROR)) {
+            $error = $request->attributes->get(Security::AUTHENTICATION_ERROR);
         } else {
-            $error = $session->get(SecurityContext::AUTHENTICATION_ERROR);
-            $session->remove(SecurityContext::AUTHENTICATION_ERROR);
+            $error = $session->get(Security::AUTHENTICATION_ERROR);
+            $session->remove(Security::AUTHENTICATION_ERROR);
         }
         // We request user roles to change profile view according to user rights
         return $this->render('SimpleITClaireExerciseBundle:Frontend:login.html.twig', array(
             // last username entered by the user
-            'last_username' => $session->get(SecurityContext::LAST_USERNAME),
+            'last_username' => $session->get(Security::LAST_USERNAME),
             'error'         => $error,
         ));
 
     }
-    public function signAction()
+    public function signAction(Request $request)
     {
-        $request = $this->getRequest();
+        //$request = $this->getRequest();
         if ($request->isMethod('POST')){
             $user = new AskerUser();
             $user->setFirstName($request->get('firstName'));
