@@ -97,7 +97,6 @@ class AnswerByItemByAttemptController extends BaseController
     {
        try {
             $this->validateResource($answerResource, array('create', 'Default'));
-
             // send to the answer service in order to create the answer
             $itemResource = $this->get('simple_it.exercise.answer')
                 ->add($itemId, $answerResource, $attemptId, $this->getUserId());
@@ -108,7 +107,8 @@ class AnswerByItemByAttemptController extends BaseController
             $user             = $this->get('security.context')->getToken()->getUser();
             $statementFactory = $this->container->get('app.statementFactoryService');
             $statement        = $statementFactory->generateAnswerStatement($user, $itemResource, $attemptId, $answerResource, $this->getDoctrine());
-            $response         = $statementFactory->sendStatements($statement);
+
+           $response         = $statementFactory->sendStatements($statement);
 
             return new ApiGotResponse($itemResource, array("corrected", 'Default'));
 

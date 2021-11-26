@@ -37,7 +37,7 @@ class KnowledgeRepository extends SharedEntityRepository
      * @return Knowledge
      * @throws NonExistingObjectException
      */
-    public function find($knowledgeId)
+    public function find($knowledgeId, $lockMode = null, $lockVersion = null)
     {
         $knowledge = parent::find($knowledgeId);
         if ($knowledge === null) {

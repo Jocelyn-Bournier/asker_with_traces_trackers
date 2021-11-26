@@ -42,7 +42,7 @@ class ExerciseResourceRepository extends SharedEntityRepository
      * @return ExerciseResource
      * @throws NonExistingObjectException
      */
-    public function find($resourceId)
+    public function find($resourceId, $lockMode = null, $lockVersion = null)
     {
         $resource = parent::find($resourceId);
         if ($resource === null) {

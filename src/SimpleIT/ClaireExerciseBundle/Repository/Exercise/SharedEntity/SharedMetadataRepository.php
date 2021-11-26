@@ -46,7 +46,7 @@ class SharedMetadataRepository extends BaseRepository
      * @return Metadata
      * @throws NonExistingObjectException
      */
-    public function find($parameters)
+    public function find($parameters, $lockMode = null, $lockVersion = null)
     {
         $metadata = parent::find($parameters);
         if ($metadata === null) {

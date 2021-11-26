@@ -3,9 +3,8 @@
 </div>
 <div ng-if="recommendations_list" class="col-md-6">
   <button ng-click="requestRecommendations(directory)" class="btn btn-primary" style="width: 100%;" >Actualiser mes recommandations</button>
-</div>
-<div class="col-md-6">
-  <button class="btn btn-primary" style="width: 100%; margin-bottom: 1.5em;" data-toggle="modal" data-target="#profileModal">Visualiser mon profil</button>
+</div><div class="col-md-6">
+  <button class="btn btn-primary" style="width: 100%; margin-bottom: 1.5em;" data-toggle="modal" data-target="#profileModal" ng-click="requestProfile(directory)">Visualiser mon profil</button>
 </div>
 <div ng-if="recommendations_list" class="col-md-12 table-responsive" style="max-height: 250px; overflow-y: auto; margin-bottom: 1.5em;">
   <table class="table table-condensed">

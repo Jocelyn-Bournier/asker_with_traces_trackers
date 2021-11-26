@@ -39,7 +39,7 @@ class AnswerRepository extends BaseRepository
      * @return Answer
      * @throws NonExistingObjectException
      */
-    public function find($itemId)
+    public function find($itemId, $lockMode = null, $lockVersion = null)
     {
         $item = parent::find($itemId);
         if ($item === null) {

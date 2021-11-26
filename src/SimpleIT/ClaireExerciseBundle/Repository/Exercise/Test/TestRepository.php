@@ -79,7 +79,7 @@ class TestRepository extends BaseRepository
      * @return object
      * @throws NonExistingObjectException
      */
-    public function find($testAttemptId)
+    public function find($testAttemptId, $lockMode = null, $lockVersion = null)
     {
         $test = parent::find($testAttemptId);
         if ($test === null) {

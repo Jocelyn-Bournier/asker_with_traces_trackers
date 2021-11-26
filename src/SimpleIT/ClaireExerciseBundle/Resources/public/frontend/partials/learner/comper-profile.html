@@ -59,6 +59,7 @@
       </div>
       <div id="olm-target" style="position: relative; height: 100%; width: 100%;"></div>
     </div>
+
     <div class="modal-footer">
       <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
       <button ng-click="requestProfile(directory)" type="button" class="btn btn-primary">Calculer mon profil</button>
@@ -72,6 +73,7 @@
   </div>
 </div>
 <script>
+
   function ChangeOLMVisu(elem, directory){
     let value = parseInt(elem.value);
     let directoryId = elem.dataset.directoryId;

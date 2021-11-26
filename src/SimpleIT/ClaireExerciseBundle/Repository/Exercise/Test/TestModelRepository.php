@@ -39,7 +39,7 @@ class TestModelRepository extends BaseRepository
      * @return TestModel
      * @throws NonExistingObjectException
      */
-    public function find($testModelId)
+    public function find($testModelId, $lockMode = null, $lockVersion = null)
     {
         $resource = parent::find($testModelId);
         if ($resource === null) {

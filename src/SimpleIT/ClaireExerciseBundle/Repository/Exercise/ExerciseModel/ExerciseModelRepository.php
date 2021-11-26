@@ -37,7 +37,7 @@ class ExerciseModelRepository extends SharedEntityRepository
      * @return ExerciseModel
      * @throws NonExistingObjectException
      */
-    public function find($exerciseModelId)
+    public function find($exerciseModelId, $lockMode = null, $lockVersion = null)
     {
         $exerciseModel = parent::find($exerciseModelId);
         if ($exerciseModel === null) {
