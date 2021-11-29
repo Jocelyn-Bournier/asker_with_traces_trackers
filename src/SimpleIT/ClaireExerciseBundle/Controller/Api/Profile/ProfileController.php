@@ -46,7 +46,7 @@ class ProfileController extends BaseController
     public function requestProfileAction($framework_id)
     {
         $jwtEncoder = $this->container->get('app.jwtService');
-        $user       = $this->get('security.context')->getToken()->getUser();
+        $user       = $this->get('security.token_storage')->getToken()->getUser();
         $timestamp  = new \DateTime();
         $timestamp  = $timestamp->getTimestamp()+3000;
         $payload    = [
@@ -84,7 +84,7 @@ class ProfileController extends BaseController
      */
     public function traceAction($directoryId, $action)
     {
-        $user     = $this->get('security.context')->getToken()->getUser();
+        $user     = $this->get('security.token_storage')->getToken()->getUser();
         $profile  = new ComperProfileTrace();
         $profile->setCreatedAt(new \DateTime());
         $profile->setUser($user);

@@ -109,7 +109,7 @@ class ResourceResource extends SharedResource
      * @var boolean $complete
      * @Serializer\Type("boolean")
      * @Serializer\Groups({"details", "list", "resource_list"})
-     * @Assert\Null(groups={"create"})
+     * @Assert\IsNull(groups={"create"})
      */
     protected $complete;
 
@@ -125,7 +125,7 @@ class ResourceResource extends SharedResource
      * @var boolean $removable
      * @Serializer\Type("boolean")
      * @Serializer\Groups({"details", "list", "resource_list"})
-     * @Assert\Null(groups={"create"})
+     * @Assert\IsNull(groups={"create"})
      */
     protected $removable;
 
@@ -133,7 +133,7 @@ class ResourceResource extends SharedResource
      * @var array $requiredExerciseResources
      * @Serializer\Type("array")
      * @Serializer\Groups({"details"})
-     * @Assert\Null()
+     * @Assert\IsNull()
      */
     private $requiredExerciseResources;
 
@@ -141,7 +141,7 @@ class ResourceResource extends SharedResource
      * @var array $requiredKnowledges
      * @Serializer\Type("array")
      * @Serializer\Groups({"details"})
-     * @Assert\Null()
+     * @Assert\IsNull()
      */
     private $requiredKnowledges;
 

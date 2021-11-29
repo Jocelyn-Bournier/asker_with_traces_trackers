@@ -77,7 +77,7 @@ class ItemController extends BaseController
      */
     public function listAction()
     {
-        if (!$this->get('security.context')->getToken()->getUser()->hasRole('ROLE_WS_CREATOR')) {
+        if (!$this->get('security.token_storage')->getToken()->getUser()->hasRole('ROLE_WS_CREATOR')) {
             throw new AccessDeniedException();
         }
 

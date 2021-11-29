@@ -84,7 +84,7 @@ class KnowledgeResource extends SharedResource
      * @var boolean $complete
      * @Serializer\Type("boolean")
      * @Serializer\Groups({"details", "list", "knowledge_list"})
-     * @Assert\Null(groups={"create"})
+     * @Assert\IsNull(groups={"create"})
      */
     protected $complete;
 
@@ -100,7 +100,7 @@ class KnowledgeResource extends SharedResource
      * @var boolean $removable
      * @Serializer\Type("boolean")
      * @Serializer\Groups({"details", "list", "knowledge_list"})
-     * @Assert\Null(groups={"create"})
+     * @Assert\IsNull(groups={"create"})
      */
     protected $removable;
 
@@ -108,7 +108,7 @@ class KnowledgeResource extends SharedResource
      * @var array $requiredKnowledges
      * @Serializer\Type("array")
      * @Serializer\Groups({"details"})
-     * @Assert\Null()
+     * @Assert\IsNull()
      */
     private $requiredKnowledges;
 

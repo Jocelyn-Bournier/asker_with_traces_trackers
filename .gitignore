@@ -20,3 +20,8 @@
 /composer.lock
 /src/SimpleIT/ClaireExerciseBundle/Controller/Frontend/datas.csv
 /src/SimpleIT/ClaireExerciseBundle/Controller/Frontend/newdatas.csv
+/var/bootstrap.php.cache
+/var/cache/*
+!var/cache/.gitkeep
+/var/logs/*
+!var/logs/.gitkeep

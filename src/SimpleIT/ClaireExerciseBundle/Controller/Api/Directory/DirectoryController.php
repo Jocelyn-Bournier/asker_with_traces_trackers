@@ -93,7 +93,7 @@ class DirectoryController extends BaseController
             }
             if ($allowed){
                 
-                $user = $this->get('security.context')->getToken()->getUser();
+                $user = $this->get('security.token_storage')->getToken()->getUser();
                 setcookie("userRoleStudentOnly", json_encode($user->isOnlyStudent()), time() + (86400 * 30), "/");
 
                 $directoryResource = DirectoryFactory::createProper($directoryId,true);
@@ -134,7 +134,7 @@ class DirectoryController extends BaseController
      */
     public function listAction(CollectionInformation $collectionInformation)
     {
-        $user = $this->get('security.context')->getToken()->getUser()->getId();
+        $user = $this->get('security.token_storage')->getToken()->getUser()->getId();
         $directories = $this->getDoctrine()
             ->getRepository('SimpleITClaireExerciseBundle:Directory')
             ->findAllApi($user);
@@ -167,7 +167,7 @@ class DirectoryController extends BaseController
      */
     public function mineAction(CollectionInformation $collectionInformation)
     {
-        $user = $this->get('security.context')->getToken()->getUser()->getId();
+        $user = $this->get('security.token_storage')->getToken()->getUser()->getId();
         $repo = $this->getDoctrine()
             ->getRepository('SimpleITClaireExerciseBundle:Directory')
         ;
@@ -435,7 +435,7 @@ class DirectoryController extends BaseController
     * */
     public function clearStudentAction(Directory $directory)
     {
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
         if ($directory->getOwner()->getId() ==  $user->getId()
         || $user->isAdmin()){
             foreach($directory->getUsers() as $aud){
@@ -465,7 +465,7 @@ class DirectoryController extends BaseController
     public function jwtAction($frameworkId, $role)
     {
         $jwtEncoder = $this->container->get('app.jwtService');
-        $user       = $this->get('security.context')->getToken()->getUser();
+        $user       = $this->get('security.token_storage')->getToken()->getUser();
         $timestamp  = new \DateTime();
         $timestamp  = $timestamp->getTimestamp()+3000;
         $payload    = [

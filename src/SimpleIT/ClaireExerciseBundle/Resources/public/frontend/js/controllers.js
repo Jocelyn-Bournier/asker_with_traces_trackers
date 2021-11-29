@@ -81,7 +81,7 @@ mainAppControllers.controller('mainManagerController', ['$scope', '$sce', '$rout
                 }
                 $scope.resources = privateResources;
 
-                Resource.query({'public-except-user': BASE_CONFIG.currentUserId}, function (data) {
+                /**Resource.query({'public-except-user': BASE_CONFIG.currentUserId}, function (data) {
                     // load an id indexed array of the resources
                     var publicResources = [];
                     for (var i = 0; i < data.length; ++i) {
@@ -92,6 +92,7 @@ mainAppControllers.controller('mainManagerController', ['$scope', '$sce', '$rout
 
                     $scope.loadUsers($scope.resources);
                 });
+                 **/
             });
         };
 

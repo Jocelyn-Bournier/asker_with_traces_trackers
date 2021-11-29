@@ -131,7 +131,7 @@ class ExerciseModelListener implements ContainerAwareInterface
         /** @var ExerciseModel $copy */
         $copy = $this->container->get('simple_it.exercise.exercise_model')->duplicate(
             $original->getId(),
-            $this->container->get('security.context')->getToken()->getUser()->getId()
+            $this->container->get('security.token_storage')->getToken()->getUser()->getId()
         );
 
         $event->setCopy($copy);

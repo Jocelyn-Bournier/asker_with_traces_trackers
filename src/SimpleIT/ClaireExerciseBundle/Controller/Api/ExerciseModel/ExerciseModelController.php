@@ -110,9 +110,6 @@ class ExerciseModelController extends BaseController
                     ->get('simple_it.exercise.exercise_model')
                     ->getAllContentFullResourcesFromEntityList($exerciseModels)
             ;
-            #return new Response(
-            #    "<html><body>".var_dump($exerciseModelResources)." </body></html>"
-            #);
             return new ApiGotResponse($exerciseModelResources, array(
                 'details',
                 'Default'

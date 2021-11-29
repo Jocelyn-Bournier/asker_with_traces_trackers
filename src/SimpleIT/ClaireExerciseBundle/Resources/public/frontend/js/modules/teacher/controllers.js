@@ -1018,6 +1018,109 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
     }])
 ;
 
+modelControllers.filter('myFilters', function () {
+    return function (collection, filters) {
+        var items = []; // collection to be returned
+        var ids = []; // temporary IDs collection to maintain atomic items in collection to be returned
+        angular.forEach(collection, function (value) { // iterate on each item in given collection
+            angular.forEach(filters.type, function (type) { // iterate on each filter type specified by user to keep match users parameters.
+                // remove archived items by default
+                if (value.type == type && ((filters.archived && value.archived) || !value.archived)) {
+                    // remove public items by default. Allow to display private user's items or public only items.
+                    if ((filters.public && value.owner != BASE_CONFIG.currentUserId) || (!filters.public && value.owner == BASE_CONFIG.currentUserId)) {
+                        // Check if user specified keywords filter
+                        if (filters.keywords.length) {
+                            // Check if the current item as at least one keyword
+                            if (value.keywords.length) {
+                                angular.forEach(filters.keywords, function (keyword) {
+                                    if ($.inArray(keyword, value.keywords) != -1) {
+                                        // So check if user specify at least one metadata filter
+                                        if (filters.metadata.length) {
+                                            // Check if the current item as at least one metadata
+                                            if (value.metadata.length) {
+                                                angular.forEach(filters.metadata, function (meta1) {
+                                                    angular.forEach(value.metadata, function (meta2) {
+                                                        // Metadata keys and values matchs
+                                                        if (meta1.key.toLowerCase() == meta2.key.toLowerCase() && meta1.value.toLowerCase() == meta2.value.toLowerCase()) {
+                                                            if ($.inArray(value.id, ids) == -1) {
+                                                                items.push(value);
+                                                                ids.push(value.id)
+                                                            }
+                                                        }
+                                                        // Metadata keys matchs
+                                                        if (meta1.key.toLowerCase() == meta2.key.toLowerCase() && meta1.value == '') {
+                                                            if ($.inArray(value.id, ids) == -1) {
+                                                                items.push(value);
+                                                                ids.push(value.id)
+                                                            }
+                                                        }
+                                                        // Metadata values matchs
+                                                        if (meta1.value.toLowerCase() == meta2.value.toLowerCase() && meta1.key == '') {
+                                                            if ($.inArray(value.id, ids) == -1) {
+                                                                items.push(value);
+                                                                ids.push(value.id)
+                                                            }
+                                                        }
+                                                    });
+                                                });
+                                            }
+                                        } else {
+                                            if ($.inArray(value.id, ids) == -1) {
+                                                items.push(value);
+                                                ids.push(value.id)
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        } else {
+                            // User did not specify keyword filter
+                            // So check if user specify at least one metadata filter
+                            if (filters.metadata.length) {
+                                // Check if the current item as at least one metadata
+                                if (value.metadata.length) {
+                                    angular.forEach(filters.metadata, function (meta1) {
+                                        angular.forEach(value.metadata, function (meta2) {
+                                            // Metadata keys and values matchs
+                                            if (meta1.key.toLowerCase() == meta2.key.toLowerCase() && meta1.value.toLowerCase() == meta2.value.toLowerCase()) {
+                                                if ($.inArray(value.id, ids) == -1) {
+                                                    items.push(value);
+                                                    ids.push(value.id)
+                                                }
+                                            }
+                                            // Metadata keys matchs
+                                            if (meta1.key.toLowerCase() == meta2.key.toLowerCase() && meta1.value == '') {
+                                                if ($.inArray(value.id, ids) == -1) {
+                                                    items.push(value);
+                                                    ids.push(value.id)
+                                                }
+                                            }
+                                            // Metadata values matchs
+                                            if (meta1.value.toLowerCase() == meta2.value.toLowerCase() && meta1.key == '') {
+                                                if ($.inArray(value.id, ids) == -1) {
+                                                    items.push(value);
+                                                    ids.push(value.id)
+                                                }
+                                            }
+                                        });
+                                    });
+                                }
+                            } else {
+                                // User did not specity metadata filter
+                                if ($.inArray(value.id, ids) == -1) {
+                                    items.push(value);
+                                    ids.push(value.id)
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+        return items; // returns filtered collection
+    };
+});
+
 modelControllers.controller('modelListController', ['$scope', 'Model', '$location', '$rootScope',
     function ($scope, Model, $location,$rootScope) {
 
@@ -1081,7 +1184,7 @@ modelControllers.controller('modelListController', ['$scope', 'Model', '$locatio
                 }
                 //$rootScope.models = privateModels;
                 //comment below if you are bored with heavy loading
-                Model.query({'public-except-user': BASE_CONFIG.currentUserId}, function (data) {
+                /**Model.query({'public-except-user': BASE_CONFIG.currentUserId}, function (data) {
                     // load an id indexed array of the models
                     var publicModels = [];
                     for (var i = 0; i < data.length; ++i) {
@@ -1090,7 +1193,7 @@ modelControllers.controller('modelListController', ['$scope', 'Model', '$locatio
                     $rootScope.models =jQuery.extend(publicModels, privateModels);
 
                     $scope.loadUsers($rootScope.models);
-                });
+                });**/
             });
         }
 

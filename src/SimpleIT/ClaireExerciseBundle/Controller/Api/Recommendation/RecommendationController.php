@@ -47,7 +47,7 @@ class RecommendationController extends BaseController
     public function sendStatementAction($directoryId, $title)
     {
         $location = $this->get('request')->get('location');
-        $user     = $this->get('security.context')->getToken()->getUser();
+        $user     = $this->get('security.token_storage')->getToken()->getUser();
         $recomm   = new ComperRecommendationTrace();
         $recomm->setCreatedAt(new \DateTime());
         $recomm->setUser($user);
