@@ -7,7 +7,6 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use SimpleIT\ClaireExerciseBundle\Repository\DirectoryRepository;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 
 class AskerUserDirectoryType extends AbstractType

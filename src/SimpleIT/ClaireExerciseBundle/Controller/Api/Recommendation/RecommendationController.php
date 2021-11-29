@@ -54,8 +54,8 @@ class RecommendationController extends BaseController
         $recomm->setContextDirectory($directoryId);
         $recomm->setResourceLocation($location);
         $recomm->setResourceTitle($title);
-        $this->getDoctrine()->getEntityManager()->persist($recomm);
-        $this->getDoctrine()->getEntityManager()->flush();
+        $this->getDoctrine()->getManager()->persist($recomm);
+        $this->getDoctrine()->getManager()->flush();
         $response         = new JsonResponse('Recommendation trace created');
         return $response;
     }

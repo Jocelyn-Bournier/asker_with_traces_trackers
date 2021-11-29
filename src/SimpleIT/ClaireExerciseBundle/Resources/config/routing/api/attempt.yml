@@ -1,12 +1,12 @@
 api_attempt_list:
-    pattern:  /
+    path:  /
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/CreatedExercise/Attempt:list }
     methods: [GET]
     requirements:
         _format: json
 
 api_attempt_view:
-    pattern:  /{attemptId}
+    path:  /{attemptId}
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/CreatedExercise/Attempt:view }
     methods: [GET]
     requirements:
@@ -14,7 +14,7 @@ api_attempt_view:
         attemptId: \d+
 
 api_item_list_by_attempt:
-    pattern:  /{attemptId}/items/
+    path:  /{attemptId}/items/
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/CreatedExercise/ItemByAttempt:list }
     methods: [GET]
     requirements:
@@ -22,7 +22,7 @@ api_item_list_by_attempt:
         attemptId: \d+
 
 api_item_view_by_attempt:
-    pattern:  /{attemptId}/items/{itemId}
+    path:  /{attemptId}/items/{itemId}
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/CreatedExercise/ItemByAttempt:view }
     methods: [GET]
     requirements:
@@ -30,7 +30,7 @@ api_item_view_by_attempt:
         attemptId: \d+
 
 api_answer_list_by_item_by_attempt:
-    pattern:  /{attemptId}/items/{itemId}/answers/
+    path:  /{attemptId}/items/{itemId}/answers/
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/CreatedExercise/AnswerByItemByAttempt:list }
     methods: [GET]
     requirements:
@@ -39,7 +39,7 @@ api_answer_list_by_item_by_attempt:
         itemId: \d+
 
 api_answer_create_by_item_by_attempt:
-    pattern:  /{attemptId}/items/{itemId}/answers/
+    path:  /{attemptId}/items/{itemId}/answers/
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/CreatedExercise/AnswerByItemByAttempt:create }
     methods: [POST]
     requirements:

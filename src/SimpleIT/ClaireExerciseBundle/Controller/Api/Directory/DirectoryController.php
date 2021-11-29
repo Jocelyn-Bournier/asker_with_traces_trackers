@@ -19,7 +19,6 @@
 namespace SimpleIT\ClaireExerciseBundle\Controller\Api\Directory;
 
 #TODEL
-use Symfony\Component\HttpFoundation\Response;
 
 use SimpleIT\ClaireExerciseBundle\Controller\BaseController;
 use SimpleIT\ClaireExerciseBundle\Model\Api\ApiCreatedResponse;
@@ -204,7 +203,7 @@ class DirectoryController extends BaseController
         ExerciseModel $model)
     {
         $directory->addModel($model);
-        $this->getDoctrine()->getEntityManager()->flush();
+        $this->getDoctrine()->getManager()->flush();
 
         return new ApiGotResponse($directory, array('list', 'Default'));
     }
@@ -444,7 +443,7 @@ class DirectoryController extends BaseController
                     $aud->setEndDate(new \DateTime());
                 }
             }
-            $this->getDoctrine()->getEntityManager()->flush();
+            $this->getDoctrine()->getManager()->flush();
             return $this->redirectToRoute('admin_stats');
 
         }else{

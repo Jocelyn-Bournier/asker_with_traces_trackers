@@ -18,8 +18,6 @@
 
 namespace SimpleIT\ClaireExerciseBundle\Entity\Test;
 
-use SimpleIT\ClaireExerciseBundle\Entity\AskerUser;
-
 /**
  * Class Test for the test sessions containing stored exercises.
  *

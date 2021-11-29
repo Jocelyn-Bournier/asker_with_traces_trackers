@@ -1,12 +1,12 @@
 api_test_model_list:
-    pattern:  /
+    path:  /
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/Test/TestModel:list }
     methods: [GET]
     requirements:
         _format: json
 
 api_test_model_view:
-    pattern:  /{testModelId}
+    path:  /{testModelId}
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/Test/TestModel:view }
     methods: [GET]
     requirements:
@@ -14,14 +14,14 @@ api_test_model_view:
         testModelId: \d+
 
 api_test_model_create:
-    pattern:  /
+    path:  /
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/Test/TestModel:create }
     methods: [POST]
     requirements:
         _format: json
 
 api_test_model_edit:
-    pattern:  /{testModelId}
+    path:  /{testModelId}
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/Test/TestModel:edit }
     methods: [PUT]
     requirements:
@@ -29,7 +29,7 @@ api_test_model_edit:
         testModelId: \d+
 
 api_test_model_delete:
-    pattern:  /{testModelId}
+    path:  /{testModelId}
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/Test/TestModel:delete }
     methods: [DELETE]
     requirements:
@@ -37,7 +37,7 @@ api_test_model_delete:
         testModelId: \d+
 
 api_test_generate:
-    pattern:  /{testModelId}/tests/
+    path:  /{testModelId}/tests/
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/Test/TestByTestModel:create }
     methods: [POST]
     requirements:
@@ -45,7 +45,7 @@ api_test_generate:
         testModelId: \d+
 
 api_test_list_by_test_model:
-    pattern:  /{testModelId}/tests/
+    path:  /{testModelId}/tests/
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/Test/TestByTestModel:list }
     methods: [GET]
     requirements:

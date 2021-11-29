@@ -21,18 +21,12 @@ namespace SimpleIT\ClaireExerciseBundle\Controller\Frontend;
 use SimpleIT\ClaireExerciseBundle\Controller\BaseController;
 use SimpleIT\ClaireExerciseBundle\Entity\AskerUser;
 use SimpleIT\ClaireExerciseBundle\Entity\AskerUserDirectory;
-use SimpleIT\ClaireExerciseBundle\Entity\Directory;
-use SimpleIT\ClaireExerciseBundle\Entity\Pedagogic;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Request;
 //use Symfony\Component\Security\Core\SecurityContext;
 
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
-use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
-use SimpleIT\ClaireExerciseBundle\Form\AskerUserDirectoryType;
 use SimpleIT\ClaireExerciseBundle\Form\AskerUserType;
 use SimpleIT\ClaireExerciseBundle\Form\AskerPasswordType;
 /**
@@ -99,7 +93,7 @@ class AdminController extends BaseController
         $form = $this->createForm(AskerPasswordType::class, $user);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getEntityManager();
+            $em = $this->getDoctrine()->getManager();
             $user->setPassword(
                 password_hash($user->getPassword(), PASSWORD_DEFAULT)
             );
@@ -120,7 +114,7 @@ class AdminController extends BaseController
         $request =  $this->get('request');
         if ($request->get('usersCheck') !== null){
             $userService = $this->get('simple_it.exercise.user');
-            $em = $this->getDoctrine()->getEntityManager();
+            $em = $this->getDoctrine()->getManager();
             if ($request->get('delete')!==null){
                 foreach($request->get('usersCheck') as $checked ){
                     $user = $userService->get($checked);
@@ -161,7 +155,7 @@ class AdminController extends BaseController
         $form = $this->createForm(AskerUserType::class, $user);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getEntityManager();
+            $em = $this->getDoctrine()->getManager();
             $deleted = array();
             foreach($originalDirectories as $aud){
                 if ($user->getDirectories()->contains($aud) === false

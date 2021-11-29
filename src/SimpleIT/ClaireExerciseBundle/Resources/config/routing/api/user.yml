@@ -1,12 +1,12 @@
 api_user_list:
-    pattern:  /
+    path:  /
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/User/User:list }
     methods: [GET]
     requirements:
         _format: json
 
 api_user_view:
-    pattern:  /{userId}
+    path:  /{userId}
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/User/User:view }
     methods: [GET]
     requirements:
@@ -14,7 +14,7 @@ api_user_view:
         userId: \d+
 
 api_user_available_managers:
-    pattern:  /available/managers
+    path:  /available/managers
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/User/User:availableManagers }
     methods: [GET]
     requirements:

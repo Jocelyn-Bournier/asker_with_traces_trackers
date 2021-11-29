@@ -19,8 +19,6 @@
 namespace SimpleIT\ClaireExerciseBundle\Model\Resources;
 
 use SimpleIT\ClaireExerciseBundle\Entity\Test\TestAttempt;
-use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseObject;
-use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource;
 
 /**
  * Class TestAttemptResourceFactory

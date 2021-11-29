@@ -18,22 +18,12 @@
 
 namespace SimpleIT\ClaireExerciseBundle\Service\Directory;
 
-use JMS\Serializer\SerializationContext;
-use SimpleIT\ClaireExerciseBundle\Entity\AnswerFactory;
 use SimpleIT\ClaireExerciseBundle\Entity\StatView;
 use SimpleIT\ClaireExerciseBundle\Entity\AskerUser;
-use SimpleIT\ClaireExerciseBundle\Entity\CreatedExercise\Item;
-use SimpleIT\ClaireExerciseBundle\Exception\AnswerAlreadyExistsException;
-use SimpleIT\ClaireExerciseBundle\Model\Resources\AnswerResource;
-use SimpleIT\ClaireExerciseBundle\Model\Resources\ItemResource;
-use SimpleIT\ClaireExerciseBundle\Repository\Exercise\CreatedExercise\AnswerRepository;
-use SimpleIT\ClaireExerciseBundle\Service\Exercise\ExerciseCreation\ExerciseService;
-use SimpleIT\ClaireExerciseBundle\Service\Serializer\SerializerInterface;
 use SimpleIT\ClaireExerciseBundle\Service\TransactionalService;
 use SimpleIT\ClaireExerciseBundle\Entity\Directory;
 use SimpleIT\ClaireExerciseBundle\Entity\AskerUserDirectory;
 use Symfony\Component\HttpFoundation\Response;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -219,7 +209,7 @@ class DirectoryService extends TransactionalService
             ;
         }
         foreach ($json as $key => $dir) {
-            if($json[$key]['totalAtt'] == 0) unset($json[$key]);
+            if($dir['totalAtt'] == 0) unset($json[$key]);
         }
         $json = array_values(array_filter($json));
 

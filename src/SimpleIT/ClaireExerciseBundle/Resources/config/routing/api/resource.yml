@@ -1,19 +1,19 @@
 api_exercise_resource_list:
-    pattern:  /
+    path:  /
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/ExerciseResource/Resource:list }
     methods: [GET]
     requirements:
         _format: json
 
 api_exercise_resource_create:
-    pattern:  /
+    path:  /
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/ExerciseResource/Resource:create }
     methods: [POST]
     requirements:
         _format: json
 
 api_exercise_resource_view:
-    pattern:  /{resourceId}
+    path:  /{resourceId}
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/ExerciseResource/Resource:view }
     methods: [GET]
     requirements:
@@ -21,7 +21,7 @@ api_exercise_resource_view:
         resourceId: \d+
 
 api_exercise_resource_edit:
-    pattern:  /{resourceId}
+    path:  /{resourceId}
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/ExerciseResource/Resource:edit }
     methods: [PUT]
     requirements:
@@ -29,7 +29,7 @@ api_exercise_resource_edit:
         resourceId: \d+
 
 api_exercise_resource_delete:
-    pattern:  /{resourceId}
+    path:  /{resourceId}
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/ExerciseResource/Resource:delete }
     methods: [DELETE]
     requirements:
@@ -37,7 +37,7 @@ api_exercise_resource_delete:
         resourceId: \d+
 
 api_exercise_resource_subscribe:
-    pattern:  /{resourceId}/subscribe
+    path:  /{resourceId}/subscribe
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/ExerciseResource/Resource:subscribe }
     methods: [POST]
     requirements:
@@ -45,7 +45,7 @@ api_exercise_resource_subscribe:
         resourceId: \d+
 
 api_exercise_resource_duplicate:
-    pattern:  /{resourceId}/duplicate
+    path:  /{resourceId}/duplicate
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/ExerciseResource/Resource:duplicate }
     methods: [POST]
     requirements:
@@ -53,7 +53,7 @@ api_exercise_resource_duplicate:
         resourceId: \d+
 
 api_exercise_resource_import:
-    pattern:  /{resourceId}/import
+    path:  /{resourceId}/import
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/ExerciseResource/Resource:import }
     methods: [POST]
     requirements:
@@ -61,7 +61,7 @@ api_exercise_resource_import:
         resourceId: \d+
 
 api_exercise_resource_add_required_resource:
-    pattern:  /{resourceId}/required-resources/{reqResId}
+    path:  /{resourceId}/required-resources/{reqResId}
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/ExerciseResource/RequiredResourceByResource:add }
     methods: [POST]
     requirements:
@@ -70,7 +70,7 @@ api_exercise_resource_add_required_resource:
         reqResId: \d+
 
 api_exercise_resource_delete_required_resource:
-    pattern:  /{resourceId}/required-resources/{reqResId}
+    path:  /{resourceId}/required-resources/{reqResId}
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/ExerciseResource/RequiredResourceByResource:delete }
     methods: [DELETE]
     requirements:
@@ -79,7 +79,7 @@ api_exercise_resource_delete_required_resource:
         reqResId: \d+
 
 api_exercise_resource_update_required_resources:
-    pattern:  /{resourceId}/required-resources/
+    path:  /{resourceId}/required-resources/
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/ExerciseResource/RequiredResourceByResource:edit }
     methods: [PUT]
     requirements:
@@ -87,7 +87,7 @@ api_exercise_resource_update_required_resources:
         resourceId: \d+
 
 api_exercise_resource_add_required_knowledge:
-    pattern:  /{resourceId}/required-knowledges/{reqKnoId}
+    path:  /{resourceId}/required-knowledges/{reqKnoId}
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/ExerciseResource/RequiredKnowledgeByResource:add }
     methods: [POST]
     requirements:
@@ -96,7 +96,7 @@ api_exercise_resource_add_required_knowledge:
         reqKnoId: \d+
 
 api_exercise_resource_delete_required_knowledge:
-    pattern:  /{resourceId}/required-knowledges/{reqKnoId}
+    path:  /{resourceId}/required-knowledges/{reqKnoId}
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/ExerciseResource/RequiredKnowledgeByResource:delete }
     methods: [DELETE]
     requirements:
@@ -105,7 +105,7 @@ api_exercise_resource_delete_required_knowledge:
         reqKnoId: \d+
 
 api_exercise_resource_update_required_knowledges:
-    pattern:  /{resourceId}/required-knowledges/
+    path:  /{resourceId}/required-knowledges/
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/ExerciseResource/RequiredKnowledgeByResource:edit }
     methods: [PUT]
     requirements:
@@ -113,7 +113,7 @@ api_exercise_resource_update_required_knowledges:
         resourceId: \d+
 
 api_metadata_list_by_resource:
-    pattern:  /{resourceId}/metadatas/
+    path:  /{resourceId}/metadatas/
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/ExerciseResource/MetadataByResource:list }
     methods: [GET]
     requirements:
@@ -121,7 +121,7 @@ api_metadata_list_by_resource:
         resourceId: \d+
 
 api_metadata_edit_all_by_resource:
-    pattern:  /{resourceId}/metadatas/
+    path:  /{resourceId}/metadatas/
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/ExerciseResource/MetadataByResource:editAll }
     methods: [PUT]
     requirements:
@@ -129,7 +129,7 @@ api_metadata_edit_all_by_resource:
         resourceId: \d+
 
 api_metadata_view_by_resource:
-    pattern:  /{resourceId}/metadatas/{metadataKey}
+    path:  /{resourceId}/metadatas/{metadataKey}
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/ExerciseResource/MetadataByResource:view }
     methods: [GET]
     requirements:
@@ -137,7 +137,7 @@ api_metadata_view_by_resource:
         resourceId: \d+
 
 api_metadata_create_by_resource:
-    pattern:  /{resourceId}/metadatas/
+    path:  /{resourceId}/metadatas/
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/ExerciseResource/MetadataByResource:create }
     methods: [POST]
     requirements:
@@ -145,7 +145,7 @@ api_metadata_create_by_resource:
         resourceId: \d+
 
 api_metadata_update_by_resource:
-    pattern:  /{resourceId}/metadatas/{metadataKey}
+    path:  /{resourceId}/metadatas/{metadataKey}
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/ExerciseResource/MetadataByResource:edit }
     methods: [PUT]
     requirements:
@@ -153,7 +153,7 @@ api_metadata_update_by_resource:
         resourceId: \d+
 
 api_metadata_delete_by_resource:
-    pattern:  /{resourceId}/metadatas/{metadataKey}
+    path:  /{resourceId}/metadatas/{metadataKey}
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/ExerciseResource/MetadataByResource:delete }
     methods: [DELETE]
     requirements:

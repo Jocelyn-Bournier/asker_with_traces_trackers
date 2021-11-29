@@ -1,5 +1,5 @@
 api_upload_image:
-    pattern:  /upload-image
+    path:  /upload-image
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/ExerciseResource/Resource:uploadImage }
     methods: [POST]
     requirements:

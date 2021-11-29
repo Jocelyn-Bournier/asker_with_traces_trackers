@@ -19,7 +19,6 @@
 namespace SimpleIT\ClaireExerciseBundle\Model\Resources\DomainKnowledge\Formula;
 
 use JMS\Serializer\Annotation as Serializer;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class Variable, is used in a formula

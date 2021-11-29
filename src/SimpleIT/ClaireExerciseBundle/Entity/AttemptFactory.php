@@ -18,7 +18,6 @@
 
 namespace SimpleIT\ClaireExerciseBundle\Entity;
 
-use SimpleIT\ClaireExerciseBundle\Entity\AskerUser;
 use SimpleIT\ClaireExerciseBundle\Entity\CreatedExercise\Attempt;
 use SimpleIT\ClaireExerciseBundle\Entity\CreatedExercise\StoredExercise;
 use SimpleIT\ClaireExerciseBundle\Entity\Test\TestAttempt;

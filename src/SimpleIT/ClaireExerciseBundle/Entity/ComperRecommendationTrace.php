@@ -19,7 +19,6 @@
 namespace SimpleIT\ClaireExerciseBundle\Entity;
 
 use Claroline\CoreBundle\Entity\User;
-use SimpleIT\ClaireExerciseBundle\Entity\Directory;
 
 /**
  * Comper Recommandation click trace

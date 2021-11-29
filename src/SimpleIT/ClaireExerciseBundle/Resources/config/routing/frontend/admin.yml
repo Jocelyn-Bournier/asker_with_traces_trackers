@@ -1,32 +1,32 @@
 admin_index:
-    pattern: /
+    path: /
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Admin:index }
 admin_list_disable:
-    pattern: /users/disable
+    path: /users/disable
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Admin:listDisable }
 admin_preview_user:
-    pattern: /preview/user/{user}
+    path: /preview/user/{user}
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Admin:preview , user:null}
 admin_list_users:
-    pattern: /users/all
+    path: /users/all
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Admin:all }
 admin_change:
-    pattern: /users/change
+    path: /users/change
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Admin:change }
 admin_edit:
-    pattern: /users/change/{user}
+    path: /users/change/{user}
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Admin:edit }
 admin_update_password:
-    pattern: /users/password/{user}
+    path: /users/password/{user}
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Admin:updatePassword }
 admin_migrate:
-    pattern: /migrate
+    path: /migrate
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Admin:migrate }
 admin_show_aur:
-    pattern: /users/aur/
+    path: /users/aur/
     #defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Admin:showAUR, user:null }
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Admin:showAUR}
 
 admin_importlocal:
-    pattern: /import/local
+    path: /import/local
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Admin:importLocal }

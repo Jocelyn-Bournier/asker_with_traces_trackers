@@ -18,12 +18,8 @@
 
 namespace SimpleIT\ClaireExerciseBundle\Model\Directory;
 
-use JMS\Serializer\Handler\HandlerRegistry;
-use JMS\Serializer\SerializerBuilder;
 use SimpleIT\ClaireExerciseBundle\Entity\Directory;
-use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseObject;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\DirectoryResource;
-use SimpleIT\ClaireExerciseBundle\Serializer\Handler\AbstractClassForExerciseHandler;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModelResourceFactory;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\AskerUserResourceFactory;
 

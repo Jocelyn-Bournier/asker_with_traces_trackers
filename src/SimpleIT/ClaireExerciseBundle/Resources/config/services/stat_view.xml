@@ -10,7 +10,8 @@
 
     <services>
         <!-- Repositories -->
-        <service id="simple_it.exercise.repository.stat_view" factory-service="doctrine.orm.entity_manager" factory-method="getRepository" class="%simple_it.exercise.repository.stat_view.class%">
+        <service id="simple_it.exercise.repository.stat_view" class="%simple_it.exercise.repository.stat_view.class%">
+            <factory service="doctrine.orm.entity_manager" method="getRepository" class="%simple_it.exercise.repository.stat_view.class%"/>
             <argument>%simple_it.exercise.entity.stat_view.class%</argument>
         </service>
 

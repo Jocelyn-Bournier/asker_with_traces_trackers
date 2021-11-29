@@ -61,7 +61,7 @@ frontend:
     prefix:   /front/
 
 sign:
-    pattern: /sign/
+    path: /sign/
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Frontend:sign }
 admin:
     resource: "@SimpleITClaireExerciseBundle/Resources/config/routing/frontend/admin.yml"

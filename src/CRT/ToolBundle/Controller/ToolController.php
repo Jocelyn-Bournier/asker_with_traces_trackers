@@ -3,8 +3,6 @@
 namespace CRT\ToolBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
-use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
 use CRT\ToolBundle\Form\RequestType;
 //use CRT\ToolBundle\Entity\Request;

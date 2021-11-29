@@ -1,19 +1,19 @@
 api_knowledge_list:
-    pattern:  /
+    path:  /
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/DomainKnowledge/Knowledge:list }
     methods: [GET]
     requirements:
         _format: json
 
 api_knowledge_create:
-    pattern:  /
+    path:  /
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/DomainKnowledge/Knowledge:create }
     methods: [POST]
     requirements:
         _format: json
 
 api_knowledge_view:
-    pattern:  /{knowledgeId}
+    path:  /{knowledgeId}
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/DomainKnowledge/Knowledge:view }
     methods: [GET]
     requirements:
@@ -21,7 +21,7 @@ api_knowledge_view:
         knowledgeId: \d+
 
 api_knowledge_edit:
-    pattern:  /{knowledgeId}
+    path:  /{knowledgeId}
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/DomainKnowledge/Knowledge:edit }
     methods: [PUT]
     requirements:
@@ -29,7 +29,7 @@ api_knowledge_edit:
         knowledgeId: \d+
 
 api_knowledge_delete:
-    pattern:  /{knowledgeId}
+    path:  /{knowledgeId}
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/DomainKnowledge/Knowledge:delete }
     methods: [DELETE]
     requirements:
@@ -37,7 +37,7 @@ api_knowledge_delete:
         knowledgeId: \d+
 
 api_knowledge_subscribe:
-    pattern:  /{knowledgeId}/subscribe
+    path:  /{knowledgeId}/subscribe
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/DomainKnowledge/Knowledge:subscribe }
     methods: [POST]
     requirements:
@@ -45,7 +45,7 @@ api_knowledge_subscribe:
         knowledgeId: \d+
 
 api_knowledge_duplicate:
-    pattern:  /{knowledgeId}/duplicate
+    path:  /{knowledgeId}/duplicate
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/DomainKnowledge/Knowledge:duplicate }
     methods: [POST]
     requirements:
@@ -53,7 +53,7 @@ api_knowledge_duplicate:
         knowledgeId: \d+
 
 api_knowledge_import:
-    pattern:  /{knowledgeId}/import
+    path:  /{knowledgeId}/import
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/DomainKnowledge/Knowledge:import }
     methods: [POST]
     requirements:
@@ -61,7 +61,7 @@ api_knowledge_import:
         knowledgeId: \d+
 
 api_knowledge_add_requirement:
-    pattern:  /{knowledgeId}/required-knowledges/{reqKnoId}
+    path:  /{knowledgeId}/required-knowledges/{reqKnoId}
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/DomainKnowledge/RequiredKnowledgeByKnowledge:add }
     methods: [POST]
     requirements:
@@ -70,7 +70,7 @@ api_knowledge_add_requirement:
         reqResId: \d+
 
 api_knowledge_delete_requirement:
-    pattern:  /{knowledgeId}/required-knowledges/{reqKnoId}
+    path:  /{knowledgeId}/required-knowledges/{reqKnoId}
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/DomainKnowledge/RequiredKnowledgeByKnowledge:delete }
     methods: [DELETE]
     requirements:
@@ -79,7 +79,7 @@ api_knowledge_delete_requirement:
         reqResId: \d+
 
 api_knowledge_update_required_knowledge:
-    pattern:  /{knowledgeId}/required-knowledges/
+    path:  /{knowledgeId}/required-knowledges/
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/DomainKnowledge/RequiredKnowledgeByKnowledge:edit }
     methods: [PUT]
     requirements:
@@ -88,7 +88,7 @@ api_knowledge_update_required_knowledge:
         reqResId: \d+
 
 api_metadata_list_by_knowledge:
-    pattern:  /{knowledgeId}/metadatas/
+    path:  /{knowledgeId}/metadatas/
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/DomainKnowledge/MetadataByKnowledge:list }
     methods: [GET]
     requirements:
@@ -96,7 +96,7 @@ api_metadata_list_by_knowledge:
         knowledgeId: \d+
 
 api_metadata_edit_all_by_knowledge:
-    pattern:  /{knowledgeId}/metadatas/
+    path:  /{knowledgeId}/metadatas/
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/DomainKnowledge/MetadataByKnowledge:editAll }
     methods: [PUT]
     requirements:
@@ -104,7 +104,7 @@ api_metadata_edit_all_by_knowledge:
         knowledgeId: \d+
 
 api_metadata_view_by_knowledge:
-    pattern:  /{knowledgeId}/metadatas/{metadataKey}
+    path:  /{knowledgeId}/metadatas/{metadataKey}
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/DomainKnowledge/MetadataByKnowledge:view }
     methods: [GET]
     requirements:
@@ -112,7 +112,7 @@ api_metadata_view_by_knowledge:
         knowledgeId: \d+
 
 api_metadata_create_by_knowledge:
-    pattern:  /{knowledgeId}/metadatas/
+    path:  /{knowledgeId}/metadatas/
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/DomainKnowledge/MetadataByKnowledge:create }
     methods: [POST]
     requirements:
@@ -120,7 +120,7 @@ api_metadata_create_by_knowledge:
         knowledgeId: \d+
 
 api_metadata_update_by_knowledge:
-    pattern:  /{knowledgeId}/metadatas/{metadataKey}
+    path:  /{knowledgeId}/metadatas/{metadataKey}
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/DomainKnowledge/MetadataByKnowledge:edit }
     methods: [PUT]
     requirements:
@@ -128,7 +128,7 @@ api_metadata_update_by_knowledge:
         knowledgeId: \d+
 
 api_metadata_delete_by_knowledge:
-    pattern:  /{knowledgeId}/metadatas/{metadataKey}
+    path:  /{knowledgeId}/metadatas/{metadataKey}
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/DomainKnowledge/MetadataByKnowledge:delete }
     methods: [DELETE]
     requirements:

@@ -30,7 +30,6 @@ use SimpleIT\ClaireExerciseBundle\Model\Resources\Exercise\OpenEndedQuestion\Que
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModel\Common\CommonModel;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModel\OpenEndedQuestion\Model;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModel\OpenEndedQuestion\QuestionBlock;
-use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\CommonResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ItemResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ItemResourceFactory;

@@ -1,4 +1,4 @@
 api_recommendation_send_statement:
-    pattern: /{directoryId}/{title}
+    path: /{directoryId}/{title}
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/Recommendation/Recommendation:sendStatement}
     methods: [GET]

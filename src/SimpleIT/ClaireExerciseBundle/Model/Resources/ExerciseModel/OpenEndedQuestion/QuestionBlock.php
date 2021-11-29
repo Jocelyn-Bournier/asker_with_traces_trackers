@@ -18,7 +18,6 @@
 
 namespace SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModel\OpenEndedQuestion;
 
-use JMS\Serializer\Annotation as Serializer;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModel\Common\ResourceBlock;
 
 /**

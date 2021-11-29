@@ -1,12 +1,12 @@
 admin_export:
-    pattern: /
+    path: /
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Export:export }
 
 export_filters_directory:
-    pattern: /directory/filter/{directory}/
+    path: /directory/filter/{directory}/
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Export:filterDirectory}
 
 
 export_create_qcm:
-    pattern: /directory/export/{model}
+    path: /directory/export/{model}
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Export:createQcm }

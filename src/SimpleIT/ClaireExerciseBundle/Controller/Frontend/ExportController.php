@@ -19,23 +19,12 @@
 namespace SimpleIT\ClaireExerciseBundle\Controller\Frontend;
 
 use SimpleIT\ClaireExerciseBundle\Controller\BaseController;
-use SimpleIT\ClaireExerciseBundle\Controller\Api\CreatedExercise;
-use SimpleIT\ClaireExerciseBundle\Entity\AskerUser;
 use SimpleIT\ClaireExerciseBundle\Entity\Directory;
-use SimpleIT\ClaireExerciseBundle\Entity\CreatedExercise\StoredExercise;
-use SimpleIT\ClaireExerciseBundle\Entity\CreatedExercise\Item;
-use SimpleIT\ClaireExerciseBundle\Model\Api\ApiDeletedResponse;
+
 //use Symfony\Component\Security\Core\SecurityContext;
 
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
-use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResourceFactory;
-use SimpleIT\ClaireExerciseBundle\Model\Api\ApiCreatedResponse;
-use SimpleIT\ClaireExerciseBundle\Model\Api\ApiGotResponse;
-use SimpleIT\ClaireExerciseBundle\Model\Resources\AnswerResourceFactory;
-use Doctrine\ORM\Query\ResultSetMapping;
 use Symfony\Component\HttpFoundation\Response;
-use SimpleIT\ClaireExerciseBundle\Entity\ExerciseModel\ExerciseModel;
 
 
 /**
@@ -178,7 +167,7 @@ Duration : 10 minutes.
                     $model
                 );
                 $exerciseResource = ExerciseResourceFactory::create($exercise);
-                $em = $this->getDoctrine()->getEntityManager();
+                $em = $this->getDoctrine()->getManager();
 
                 // gets the newly created exercise's id
                 $dql = 'SELECT s.id, s.content FROM SimpleIT\ClaireExerciseBundle\Entity\CreatedExercise\StoredExercise s WHERE s.id = :id';

@@ -5,14 +5,14 @@ asker:
      resource: "@SimpleITClaireExerciseBundle/Resources/config/routing.yml"
      prefix: /
 logout:
-    pattern: /front/logout
+    path: /front/logout
 login:
-    pattern: /
+    path: /
     defaults : {_controller: SimpleITClaireExerciseBundle:Frontend\Frontend:login}
 login_t:
-    pattern: /front/dashboard
+    path: /front/dashboard
     defaults : {_controller: SimpleITClaireExerciseBundle:Frontend\Frontend:test}
 login_check:
-    pattern: /front/login_check
+    path: /front/login_check
 
 

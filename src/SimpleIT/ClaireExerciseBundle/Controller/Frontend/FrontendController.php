@@ -22,8 +22,6 @@ use SimpleIT\ClaireExerciseBundle\Controller\BaseController;
 use SimpleIT\ClaireExerciseBundle\Entity\AskerUser;
 use Symfony\Component\HttpFoundation\Request;
 //use Symfony\Component\Security\Core\SecurityContext;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
-use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use SimpleIT\ClaireExerciseBundle\Form\AskerPasswordType;
 use Symfony\Component\Security\Core\Security;
 
@@ -62,7 +60,7 @@ class FrontendController extends BaseController
         $form = $this->createForm(AskerPasswordType::class, $user);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getEntityManager();
+            $em = $this->getDoctrine()->getManager();
             $user->setPassword(
                 password_hash($user->getPassword(), PASSWORD_DEFAULT)
             );

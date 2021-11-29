@@ -18,8 +18,6 @@
 
 namespace SimpleIT\ClaireExerciseBundle\Model\DomainKnowledge\Formula;
 
-use SimpleIT\ClaireExerciseBundle\Exception\NotEvaluableException;
-
 /**
  * Class BitwiseAnd
  *

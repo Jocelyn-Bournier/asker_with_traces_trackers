@@ -25,7 +25,6 @@ use SimpleIT\ClaireExerciseBundle\Model\Api\ApiCreatedResponse;
 use SimpleIT\ClaireExerciseBundle\Model\Api\ApiGotResponse;
 use SimpleIT\ClaireExerciseBundle\Model\Collection\CollectionInformation;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModelResource;
-use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResourceFactory;
 
 

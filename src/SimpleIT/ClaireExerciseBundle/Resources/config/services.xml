@@ -67,44 +67,50 @@
         <!-- REPOSITORIES -->
 
         <!-- Stored exercise Repository -->
-        <service id="simple_it.exercise.repository.stored_exercise" factory-service="doctrine.orm.entity_manager" factory-method="getRepository" class="%simple_it.exercise.repository.stored_exercise.class%">
+        <service id="simple_it.exercise.repository.stored_exercise" class="%simple_it.exercise.repository.stored_exercise.class%">
+            <factory service="doctrine.orm.entity_manager" method="getRepository" class="%simple_it.exercise.repository.stored_exercise.class%"/>
             <argument>%simple_it.exercise.entity.stored_exercise.class%</argument>
         </service>
 
         <!-- Answer Repository -->
-        <service id="simple_it.exercise.repository.answer" factory-service="doctrine.orm.entity_manager" factory-method="getRepository" class="%simple_it.exercise.repository.answer.class%">
+        <service id="simple_it.exercise.repository.answer" class="%simple_it.exercise.repository.answer.class%">
+            <factory service="doctrine.orm.entity_manager" method="getRepository" class="%simple_it.exercise.repository.answer.class%"/>
             <argument>%simple_it.exercise.entity.answer.class%</argument>
         </service>
 
         <!-- Attempt Repository -->
-        <service id="simple_it.exercise.repository.attempt" factory-service="doctrine.orm.entity_manager" factory-method="getRepository" class="%simple_it.exercise.repository.attempt.class%">
+        <service id="simple_it.exercise.repository.attempt" class="%simple_it.exercise.repository.attempt.class%">
+            <factory service="doctrine.orm.entity_manager" method="getRepository" class="%simple_it.exercise.repository.attempt.class%"/>
             <argument>%simple_it.exercise.entity.attempt.class%</argument>
         </service>
 
         <!-- Exercise Item Repository -->
-        <service id="simple_it.exercise.repository.item" factory-service="doctrine.orm.entity_manager" factory-method="getRepository" class="%simple_it.exercise.repository.item.class%">
+        <service id="simple_it.exercise.repository.item" class="%simple_it.exercise.repository.item.class%">
+            <factory service="doctrine.orm.entity_manager" method="getRepository" class="%simple_it.exercise.repository.item.class%"/>
             <argument>%simple_it.exercise.entity.item.class%</argument>
         </service>
 
         <!-- Test Repository -->
-        <service id="simple_it.exercise.repository.test" factory-service="doctrine.orm.entity_manager" factory-method="getRepository" class="%simple_it.exercise.repository.test.class%">
+        <service id="simple_it.exercise.repository.test" class="%simple_it.exercise.repository.test.class%">
+            <factory service="doctrine.orm.entity_manager" method="getRepository" class="%simple_it.exercise.repository.test.class%"/>
             <argument>%simple_it.exercise.entity.test.class%</argument>
         </service>
 
         <!-- Test Model Repository -->
-        <service id="simple_it.exercise.repository.test_model" factory-service="doctrine.orm.entity_manager" factory-method="getRepository" class="%simple_it.exercise.repository.test_model.class%">
+        <service id="simple_it.exercise.repository.test_model" class="%simple_it.exercise.repository.test_model.class%">
+            <factory service="doctrine.orm.entity_manager" method="getRepository" class="%simple_it.exercise.repository.test_model.class%"/>
             <argument>%simple_it.exercise.entity.test_model.class%</argument>
         </service>
 
         <!-- Test Model Position Repository -->
-        <service id="simple_it.exercise.repository.test_model_position"
-                 factory-service="doctrine.orm.entity_manager" factory-method="getRepository"
-                 class="%simple_it.exercise.repository.test_model_position.class%">
+        <service id="simple_it.exercise.repository.test_model_position" class="%simple_it.exercise.repository.test_model_position.class%">
+            <factory service="doctrine.orm.entity_manager" method="getRepository" class="%simple_it.exercise.repository.test_model_position.class%"/>
             <argument>%simple_it.exercise.entity.test_model_position.class%</argument>
         </service>
 
         <!-- Test Attempt Repository -->
-        <service id="simple_it.exercise.repository.test_attempt" factory-service="doctrine.orm.entity_manager" factory-method="getRepository" class="%simple_it.exercise.repository.test_attempt.class%">
+        <service id="simple_it.exercise.repository.test_attempt" class="%simple_it.exercise.repository.test_attempt.class%">
+            <factory service="doctrine.orm.entity_manager" method="getRepository" class="%simple_it.exercise.repository.test_attempt.class%"/>
             <argument>%simple_it.exercise.entity.test_attempt.class%</argument>
         </service>
 

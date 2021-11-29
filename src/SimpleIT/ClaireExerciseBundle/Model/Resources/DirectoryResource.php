@@ -184,7 +184,6 @@ class DirectoryResource
     /**
      * Set managers.
      *
-     * @return managers.
      */
     public function setManagers($managers)
     {

@@ -19,7 +19,6 @@
 namespace SimpleIT\ClaireExerciseBundle\Service\User;
 
 use SimpleIT\ClaireExerciseBundle\Entity\AskerUser;
-use SimpleIT\ClaireExerciseBundle\Repository\AskerUserRepository;
 use SimpleIT\ClaireExerciseBundle\Service\TransactionalService;
 
 /**

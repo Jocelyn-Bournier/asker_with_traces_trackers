@@ -24,15 +24,11 @@ use SimpleIT\ClaireExerciseBundle\Entity\Directory;
 use SimpleIT\ClaireExerciseBundle\Entity\StatView;
 use SimpleIT\ClaireExerciseBundle\Entity\ExerciseModel\ExerciseModel;
 use Symfony\Component\HttpFoundation\Response;
-use CRT\ToolBundle\Form\RequestType;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use SimpleIT\ClaireExerciseBundle\Model\Api\ApiDeletedResponse;
 use SimpleIT\ClaireExerciseBundle\Form\StatViewType;
 use Symfony\Component\HttpFoundation\Request;
 //use Symfony\Component\Security\Core\SecurityContext;
 
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
-use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 /**
  * Class StatController
  *
@@ -96,7 +92,7 @@ class StatController extends BaseController
                     }
                 }
             }
-            $em = $this->getDoctrine()->getEntityManager()->flush();
+            $em = $this->getDoctrine()->getManager()->flush();
             echo "au total : $count";
             die('!');
         }
@@ -261,7 +257,7 @@ class StatController extends BaseController
         );
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getEntityManager();
+            $em = $this->getDoctrine()->getManager();
             $em->persist($view);
             $em->flush();
             return $this->redirectToRoute('admin_filters_directory',
@@ -285,7 +281,7 @@ class StatController extends BaseController
         );
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getEntityManager();
+            $em = $this->getDoctrine()->getManager();
             $em->flush();
             return $this->redirectToRoute('admin_filters_directory',
                 array(

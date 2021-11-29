@@ -20,8 +20,6 @@ namespace SimpleIT\ClaireExerciseBundle\Model\Resources;
 
 use SimpleIT\ClaireExerciseBundle\Entity\Test\TestModel;
 use SimpleIT\ClaireExerciseBundle\Entity\Test\TestModelPosition;
-use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseObject;
-use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource;
 
 /**
  * Class TestModelResourceFactory

@@ -24,7 +24,6 @@ use SimpleIT\ClaireExerciseBundle\Entity\CreatedExercise\StoredExercise;
 use SimpleIT\ClaireExerciseBundle\Exception\Api\ApiNotFoundException;
 use SimpleIT\ClaireExerciseBundle\Exception\NonExistingObjectException;
 use SimpleIT\ClaireExerciseBundle\Model\Collection\CollectionInformation;
-use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource;
 use SimpleIT\ClaireExerciseBundle\Repository\BaseRepository;
 
 /**

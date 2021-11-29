@@ -20,7 +20,6 @@ namespace SimpleIT\ClaireExerciseBundle\Entity\ExerciseResource;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use SimpleIT\ClaireExerciseBundle\Entity\AskerUser;
 use SimpleIT\ClaireExerciseBundle\Entity\SharedEntity\SharedEntity;
 
 /**

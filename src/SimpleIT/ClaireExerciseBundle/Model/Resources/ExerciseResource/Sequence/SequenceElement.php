@@ -20,7 +20,6 @@ namespace SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\Sequenc
 
 use JMS\Serializer\Annotation as Serializer;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\Validable;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class SequenceElement

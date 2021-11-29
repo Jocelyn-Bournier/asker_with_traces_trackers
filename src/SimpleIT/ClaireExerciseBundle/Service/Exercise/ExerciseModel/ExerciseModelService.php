@@ -415,7 +415,7 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
      * @param ExerciseModel $entity
      * @param string $type
      * @param int $parentId
-     * @param               $content
+     * @param $content
      *
      * @throws \SimpleIT\ClaireExerciseBundle\Exception\InconsistentEntityException
      * @return boolean True if the model is complete
@@ -1522,8 +1522,6 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
      *
      * @param ExerciseModel $entity The duplicata
      * @param ExerciseModel $original
-     *
-     * @return Knowledge
      */
     protected function duplicateDetail($entity, $original)
     {

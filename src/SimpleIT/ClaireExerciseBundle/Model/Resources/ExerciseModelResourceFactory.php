@@ -18,9 +18,7 @@
 
 namespace SimpleIT\ClaireExerciseBundle\Model\Resources;
 
-use SimpleIT\ClaireExerciseBundle\Entity\DomainKnowledge\Knowledge;
 use SimpleIT\ClaireExerciseBundle\Entity\ExerciseModel\ExerciseModel;
-use SimpleIT\ClaireExerciseBundle\Model\Directory\DirectoryFactory;
 
 /**
  * Class ExerciseModelResourceFactory

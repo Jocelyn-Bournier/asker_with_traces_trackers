@@ -234,8 +234,6 @@ class ExerciseResourceRepository extends SharedEntityRepository
      * @param string $metaKey The metadata key
      * @param string $comparison Name of a comparison function of Expr from queryBuilder ('in', 'eq', 'lte', 'lt', 'gte' or 'gt')
      * @param mixed $value The value or array of value
-     *
-     * @return int The number of criteria that are added to the request part
      */
     private function addMetadataConstraint(
         &$qb,

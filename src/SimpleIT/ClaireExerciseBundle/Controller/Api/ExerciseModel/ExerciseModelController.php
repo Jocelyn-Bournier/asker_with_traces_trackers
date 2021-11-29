@@ -18,7 +18,6 @@
 
 namespace SimpleIT\ClaireExerciseBundle\Controller\Api\ExerciseModel;
 
-use Symfony\Component\HttpFoundation\Response;
 use Doctrine\DBAL\DBALException;
 use SimpleIT\ClaireExerciseBundle\Controller\BaseController;
 use SimpleIT\ClaireExerciseBundle\Entity\ExerciseModel\ExerciseModel;

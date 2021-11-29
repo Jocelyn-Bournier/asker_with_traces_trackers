@@ -19,7 +19,6 @@
 namespace SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource;
 
 use JMS\Serializer\Annotation as Serializer;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class OpenEndedQuestionResource

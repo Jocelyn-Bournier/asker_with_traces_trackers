@@ -25,7 +25,6 @@ use SimpleIT\ClaireExerciseBundle\Model\Api\ApiGotResponse;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\UserResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\UserResourceFactory;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\AskerUserResourceFactory;
-use SimpleIT\ClaireExerciseBundle\Service\User\UserService;
 
 /**
  * API user controller

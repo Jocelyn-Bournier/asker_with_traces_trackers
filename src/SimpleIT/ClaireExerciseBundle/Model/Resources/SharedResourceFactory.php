@@ -18,7 +18,6 @@
 
 namespace SimpleIT\ClaireExerciseBundle\Model\Resources;
 
-use JMS\Serializer\Annotation as Serializer;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\SerializerBuilder;
 use SimpleIT\ClaireExerciseBundle\Entity\DomainKnowledge\Knowledge;
@@ -27,7 +26,6 @@ use SimpleIT\ClaireExerciseBundle\Entity\SharedEntity\Metadata;
 use SimpleIT\ClaireExerciseBundle\Entity\SharedEntity\SharedEntity;
 use SimpleIT\ClaireExerciseBundle\Exception\InvalidTypeException;
 use SimpleIT\ClaireExerciseBundle\Serializer\Handler\AbstractClassForExerciseHandler;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class SharableResourceFactory

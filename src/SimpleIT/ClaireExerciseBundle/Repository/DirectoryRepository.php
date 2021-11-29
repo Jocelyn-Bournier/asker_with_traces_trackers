@@ -1,7 +1,6 @@
 <?php
 
 namespace SimpleIT\ClaireExerciseBundle\Repository;
-use Doctrine\ORM\Query\ResultSetMapping;
 
 /**
  * DirectoryRepository

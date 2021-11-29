@@ -1,40 +1,40 @@
 admin_stats:
-    pattern: /
+    path: /
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Stat:stat }
 
 admin_filters_directory:
-    pattern: /filter/{directory}/{view}
+    path: /filter/{directory}/{view}
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Stat:filterDirectory, view:0 }
 
 admin_stats_directory:
-    pattern: /directory/frame/{directory}/{view}
+    path: /directory/frame/{directory}/{view}
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Stat:statDirectory, view:0 }
 
 admin_stats_personal:
-    pattern: /personal/{directory}/{user}/{view}
+    path: /personal/{directory}/{user}/{view}
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Stat:statPersonal, view:0 }
 
 admin_stats_detail:
-    pattern: /detail/{directory}/{user}/{view}
+    path: /detail/{directory}/{user}/{view}
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Stat:statDetail, view:0 }
 
 admin_stats_create_view:
-    pattern: /directory/createView/{directory}
+    path: /directory/createView/{directory}
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Stat:createView}
 admin_stats_delete_view:
-    pattern: /directory/deleteView/{view}
+    path: /directory/deleteView/{view}
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Stat:deleteView, view:0}
     methods: [DELETE]
 admin_stats_fullfill:
-    pattern: /directory/fullfill/{directory}/{view}
+    path: /directory/fullfill/{directory}/{view}
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Stat:fullFill, directory:0,view:0}
     methods: [GET]
 admin_stats_edit_view:
-    pattern: /directory/editView/{view}
+    path: /directory/editView/{view}
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Stat:editView}
 admin_stats_export_directory:
-    pattern: /directory/export-directory/{directory}/{model}/{view}
+    path: /directory/export-directory/{directory}/{model}/{view}
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Stat:exportModel, view:0}
 admin_test_dunno:
-    pattern: /directory/export-directory/{view}/
+    path: /directory/export-directory/{view}/
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Stat:exportModel, view:0}

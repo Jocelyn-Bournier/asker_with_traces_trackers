@@ -1,12 +1,12 @@
 api_item_list:
-    pattern:  /
+    path:  /
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/CreatedExercise/Item:list }
     methods: [GET]
     requirements:
         _format: json
 
 api_item_view:
-    pattern:  /{itemId}
+    path:  /{itemId}
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/CreatedExercise/Item:view }
     methods: [GET]
     requirements:
@@ -14,7 +14,7 @@ api_item_view:
         itemId: \d+
 
 api_item_add_answer:
-    pattern:  /{itemId}/answers/
+    path:  /{itemId}/answers/
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/CreatedExercise/AnswerByItem:create }
     methods: [POST]
     requirements:
@@ -22,7 +22,7 @@ api_item_add_answer:
         itemId: \d+
 
 api_answer_list_by_item:
-    pattern:  /{itemId}/answers/
+    path:  /{itemId}/answers/
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/CreatedExercise/AnswerByItem:list }
     methods: [GET]
     requirements:
@@ -30,7 +30,7 @@ api_answer_list_by_item:
         itemId: \d+
 
 api_answer_by_item_view:
-    pattern:  /{itemId}/answers/{answerId}
+    path:  /{itemId}/answers/{answerId}
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/CreatedExercise/AnswerByItem:view }
     methods: [GET]
     requirements:
