@@ -24,9 +24,11 @@ use SimpleIT\ClaireExerciseBundle\Entity\Directory;
 use SimpleIT\ClaireExerciseBundle\Entity\StatView;
 use SimpleIT\ClaireExerciseBundle\Entity\ExerciseModel\ExerciseModel;
 use Symfony\Component\HttpFoundation\Response;
+use CRT\ToolBundle\Form\RequestType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use SimpleIT\ClaireExerciseBundle\Model\Api\ApiDeletedResponse;
 use SimpleIT\ClaireExerciseBundle\Form\StatViewType;
+use Symfony\Component\HttpFoundation\Request;
 //use Symfony\Component\Security\Core\SecurityContext;
 
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
@@ -245,9 +247,9 @@ class StatController extends BaseController
         return $this->redirectToRoute('admin_stats');
     }
 
-    public function createViewAction(Directory $directory)
+    public function createViewAction(Directory $directory, Request $request)
     {
-        $request = $this->getRequest();
+        //$request = $this->getRequest();
         $view = new StatView();
         $view->setDirectory($directory);
         $form = $this->createForm(StatViewType::class, $view,
@@ -271,9 +273,9 @@ class StatController extends BaseController
         }
         return $form->createView();
     }
-    public function editViewAction(StatView $view)
+    public function editViewAction(StatView $view, Request $request)
     {
-        $request = $this->getRequest();
+        //$request = $this->getRequest();
         $form = $this->createForm(StatViewType::class, $view,
             array(
                 'action' => $this->generateUrl(

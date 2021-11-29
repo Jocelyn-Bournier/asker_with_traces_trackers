@@ -1,10 +1,9 @@
-<?php
+<?php /** @noinspection PhpDeprecationInspection */
 
 namespace CRT\ToolBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use CRT\ToolBundle\Validator\Constraints\UserNotExist;
 
 class AccountType extends AbstractType

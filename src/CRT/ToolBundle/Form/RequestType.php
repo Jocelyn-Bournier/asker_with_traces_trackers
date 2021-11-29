@@ -4,9 +4,7 @@ namespace CRT\ToolBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use CRT\ToolBundle\Validator\Constraints\UserNotExist;
-use CRT\ToolBundle\Entity\AcademyRepository;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RequestType extends AbstractType
 {
@@ -99,9 +97,9 @@ class RequestType extends AbstractType
     }
     
     /**
-     * @param OptionsResolverInterface $resolver
+     * @param OptionsResolver $resolver
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function setDefaultOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
             'data_class' => 'CRT\ToolBundle\Entity\Request'

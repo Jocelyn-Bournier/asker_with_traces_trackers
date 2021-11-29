@@ -5,16 +5,11 @@ namespace SimpleIT\ClaireExerciseBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
-use SimpleIT\ClaireExerciseBundle\Repository\DirectoryRepository;
-use SimpleIT\ClaireExerciseBundle\Repository\AskerUserDirectoryRepository;
-use SimpleIT\ClaireExerciseBundle\Entity\AskerUserDirectory;
 use Doctrine\Common\Collections\ArrayCollection;
 
 class AskerUserType extends AbstractType
