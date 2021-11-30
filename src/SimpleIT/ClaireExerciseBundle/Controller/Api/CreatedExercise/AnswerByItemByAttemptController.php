@@ -96,8 +96,7 @@ class AnswerByItemByAttemptController extends BaseController
     public function createAction($attemptId, $itemId, AnswerResource $answerResource)
     {
        try {
-           //TODO : Understand why i need to comment this line
-            ////$this->validateResource($answerResource, array('create', 'Default'));
+            //$this->validateResource($answerResource, array('create', 'Default'));
 
             // send to the answer service in order to create the answer
             $itemResource = $this->get('simple_it.exercise.answer')
