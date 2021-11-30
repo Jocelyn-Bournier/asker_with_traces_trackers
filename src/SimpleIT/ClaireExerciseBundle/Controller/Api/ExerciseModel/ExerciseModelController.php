@@ -140,7 +140,7 @@ class ExerciseModelController extends BaseController
             $userId = $this->getUserId();
             $user = $this->get('simple_it.exercise.user')->get($userId);
 
-            $this->validateResource($modelResource, array('create', 'Default'));
+            //$this->validateResource($modelResource, array('create', 'Default'));
 
             $modelResource->setAuthor($userId);
             $modelResource->setOwner($userId);
@@ -186,7 +186,7 @@ class ExerciseModelController extends BaseController
     public function editAction(ExerciseModelResource $modelResource, $exerciseModelId)
     {
         try {
-            $this->validateResource($modelResource, array('edit', 'Default'));
+            //$this->validateResource($modelResource, array('edit', 'Default'));
 
             $modelResource->setId($exerciseModelId);
 

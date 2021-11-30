@@ -116,7 +116,7 @@ class ResourceController extends BaseController
         try {
             $userId = $this->getUserId();
 
-            $this->validateResource($resourceResource, array('create', 'Default'));
+            //$this->validateResource($resourceResource, array('create', 'Default'));
 
             $resourceResource->setAuthor($userId);
             $resourceResource->setOwner($userId);
@@ -153,7 +153,7 @@ class ResourceController extends BaseController
     public function editAction(ResourceResource $resourceResource, $resourceId)
     {
         try {
-            $this->validateResource($resourceResource, array('edit', 'Default'));
+            //$this->validateResource($resourceResource, array('edit', 'Default'));
 
             $resourceResource->setId($resourceId);
             $resource = $this->get('simple_it.exercise.exercise_resource')->edit
