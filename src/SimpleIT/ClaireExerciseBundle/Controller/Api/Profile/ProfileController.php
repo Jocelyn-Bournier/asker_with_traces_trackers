@@ -53,7 +53,7 @@ class ProfileController extends BaseController
             "user"     => "asker:".$user->getId(),
             "fwid"     => intval($framework_id),
             "username" => $user->getUsername(),
-            "role"     => 'learner',
+            "role"     => $_COOKIE['userRoleStudentOnly'] === 'true' ? 'learner' : 'teacher',
             "exp"      => $timestamp,
             "platform" => 'asker',
             "homepage" => 'https://asker.univ-lyon1.fr/'

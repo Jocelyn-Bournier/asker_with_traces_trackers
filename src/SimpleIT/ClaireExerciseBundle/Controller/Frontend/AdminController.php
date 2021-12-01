@@ -240,7 +240,7 @@ class AdminController extends BaseController
             "user"     => "asker:".$userId,
             "fwid"     => intval($frameworkId),
             "username" => $user->get($userId)->getUsername(),
-            "role"     => 'learner',
+            "role"     => $_COOKIE['userRoleStudentOnly'] === 'true' ? 'learner' : 'teacher',
             "exp"      => $timestamp,
             "platform" => 'asker',
             "homepage" => 'https://asker.univ-lyon1.fr/'
@@ -250,8 +250,5 @@ class AdminController extends BaseController
 
         $profileService = $this->container->get('app.profileService');
         $profile = new JsonResponse($profileService->createProfile($token));
-
-        //return $profile;
     }
-
 }
