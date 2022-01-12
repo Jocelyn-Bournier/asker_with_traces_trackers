@@ -1,0 +1,31 @@
+<style>
+    a.link-no-style{
+        all: unset;
+    }
+</style>
+<div ng-click="performRecommendation(directory, recommendation.title, recommendation.location)" class="link-no-style">
+    <div ng-class="recommendation.completed ? 'panel-default' : 'panel-warning'">
+        <div class="panel-heading">
+            <div class="" ng-switch="recommendation.learning_type" style="float:left;margin-left:10px;">
+                <div ng-switch-when="multiple-choice">
+                    <span title="QCM" class="glyphicon glyphicon-check" style="font-size: 260%"></span>
+                </div>
+                <div ng-switch-when="open-ended-question">
+                    <span class="glyphicon glyphicon-question-sign" style="font-size: 260%"></span>
+                </div>
+                <div ng-switch-when="pair-items">
+                    <span title="Exercice d'appariement" title="Exercice d'appariement" class="glyphicon glyphicon-random" style="font-size: 260%"></span>
+                </div>
+                <div ng-switch-when="order-items">
+                    <span title="Exercice d'ordonnancement" class="glyphicon glyphicon-sort" style="font-size: 260%"></span>
+                </div>
+                <div ng-switch-when="group-items">
+                    <span title="Exercice de groupement" class="glyphicon glyphicon-link" style="font-size: 260%"></span>
+                </div>
+            </div>
+                <div class="" style="cursor:pointer; margin-left: 60px;">
+                    <h4>{{ recommendation.title }}</h4>
+                </div>
+        </div>
+    </div>
+</div>

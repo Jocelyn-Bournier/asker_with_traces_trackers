@@ -25,6 +25,7 @@ use SimpleIT\ClaireExerciseBundle\Model\Api\ApiCreatedResponse;
 use SimpleIT\ClaireExerciseBundle\Exception\Api\ApiBadRequestException;
 use SimpleIT\ClaireExerciseBundle\Exception\Api\ApiAccessDeniedException;
 use SimpleIT\ClaireExerciseBundle\Exception\Api\ApiNotFoundException;
+use SimpleIT\ClaireExerciseBundle\Service\Directory\DirectoryService;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use SimpleIT\ClaireExerciseBundle\Exception\NonExistingObjectException;
 use SimpleIT\ClaireExerciseBundle\Model\Api\ApiGotResponse;
@@ -480,5 +481,22 @@ class DirectoryController extends BaseController
         $token = $jwtEncoder->getToken($payload);
         $response = new JsonResponse(array('token' => $token));
         return $response;
+    }
+
+    /**
+     * Create a JWT Token for comper services
+     *
+     * @OA\Get(
+     *     path="/api/directories/comper/{directoryId}",
+     *     @OA\Parameter(in="path", name="directoryId", parameter="directoryId"),
+     *     @OA\Response(response="200", description="Number of profiles created"),
+     *     tags={"directories"},
+     * )
+     */
+    public function activateComperAction($directoryId)
+    {
+        $dir = $this->get('simple_it.exercise.directory')->find($directoryId);
+        $usersCreated = $this->get('simple_it.exercise.directory')->activateComper($dir);
+        return new JsonResponse(array('usersCreated' => $usersCreated));
     }
 }

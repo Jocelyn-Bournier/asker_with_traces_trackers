@@ -225,6 +225,12 @@
         title="Sauvegarder les modifications. Ne peut pas être annulé.">
           Sauvegarder
         </button>
+        <button
+                ng-if="directory.framework_id !== null"
+                ng-click="activateComper(directory)" class="btn btn-default"
+                title="Créer les profils comper">
+          Créer les profils comper
+        </button>
         <button 
         ng-if="directory.total_subs ===0"
         ng-click="deleteDirectory(directory)" back-Button

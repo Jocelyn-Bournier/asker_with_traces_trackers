@@ -63,18 +63,31 @@ directoryControllers.controller('directoryListController', ['$scope', 'MyDirecto
     }
 ]);
 directoryControllers.controller('directoryEditController', ['$scope','$stateParams', 'MyDirectory', 'AvailableManagers',
-    function ($scope, $stateParams, MyDirectory, AvailableManagers) {
+    function ($scope, $stateParams, MyDirectory, AvailableManagers, users) {
 
         $scope.directory = MyDirectory.get({id: $stateParams.directoryid}, function () {
         });
         $scope.availableManagers = AvailableManagers.query({}, function(){
         });
-            //var newResource = jQuery.extend(true, {}, $scope.editedResource);
         $scope.updateDirectory = function (directory) {
             directory.$update({id: directory.id}, function (dir) {
                 $scope.directory = dir;
             });
         };
+        $scope.activateComper = function (directory) {
+            console.log("creation of compere profiles :");
+            let directoryId = directory.id;
+            $.ajax({
+                url:         `${BASE_CONFIG.urls.api.directories}comper/${directoryId}`,
+                type:        "GET",
+                crossDomain: true,
+                async:       false,
+                success: function(data, textStatus){
+                    console.log("Creation of: " + data['usersCreated'] + " users profiles.");
+                }
+            });
+            return true;
+        }
         $scope.filterAlreadyAdded = function(item) {
                 if(item.username !== $scope.users[$scope.directory.owner].user_name){
                     if($scope.directory.managers.map(

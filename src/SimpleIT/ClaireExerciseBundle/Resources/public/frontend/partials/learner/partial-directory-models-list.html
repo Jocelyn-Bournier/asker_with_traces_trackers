@@ -1,72 +1,13 @@
 <div data-ng-controller="learnerController">
   <div class="panel-body" data-ng-controller="directoryModelListController">
-    <div ng-if="directory.framework_id != null && directory.framework_id != ''"  ng-include="BASE_CONFIG.urls.partials.learner+'/comper-recommandations.html'" class="row">
-      
-    </div>
-    <div id="profileModal" ng-if="directory.framework_id != null && directory.framework_id != ''"  ng-include="BASE_CONFIG.urls.partials.learner+'/comper-profile.html'" class="modal fade"
-         tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="background: transparent; overflow-y: auto; width: 100vw;">
-      
-    </div>
-    <!-- every models in directory -->
-    <div ng-repeat="model in directory.models  track by $index">
-      <!-- every models if attempts in directory -->
-      <div ng-if="model.has_attempts">
-        <accordion>
-          <accordion-group
-          class="panel panel-default">
-              <div ng-include="BASE_CONFIG.urls.partials.learner+'/fragment-accordion-models.html'">
-              </div>
-          </accordion-group>
-        </accordion>
+      <div ng-if="directory.framework_id != null && directory.framework_id != ''">
+          <ul class="nav nav-tabs">
+              <li id="li-activities" role="presentation" class="li-tab active"><a ng-click="_selectTab('activities')">Exercices</a></li>
+              <li id="li-management" role="presentation" class="li-tab"><a ng-click="_selectTab('management')">Compétences et recommandations </a></li>
+          </ul>
       </div>
-      <!-- every models if no attempts in directory -->
-      <div ng-if="model.has_attempts == 0" >
-          <div class="margin-fix">
-              <div ng-include="BASE_CONFIG.urls.partials.learner+'/fragment-models.html'">
-              </div>
-          </div>
-      </div>
-    </div>
-    <accordion>
-      <accordion-group class="panel panel-primary"
-      ng-repeat="sub in directory.subs  track by $index " ng-if="sub.is_visible">
-        <accordion-heading class="panel-heading">
-          <div class="row" title="Voir les exercices générés pour ce modèle">
-            <div class="col-xs-3 col-sm-1">
-              <span
-                class="glyphicon glyphicon-folder-open"
-                style="font-size:320%;"
-                title="Répertoire">
-              </span>
-            </div>
-            <div class="col-xs-9 col-sm-9">
-              <div class="col-centered">
-                <h4>
-                  {{sub.name}}
-                </h4>
-              </div>
-            </div>
-          </div>
-        </accordion-heading>
-        <div ng-repeat="model in sub.models  track by $index">
-          <div ng-if="model.has_attempts">
-            <accordion>
-              <accordion-group
-              class="panel panel-default">
-                  <div ng-include="BASE_CONFIG.urls.partials.learner+'/fragment-accordion-models.html'">
-                  </div>
-              </accordion-group>
-            </accordion>
-          </div>
-          <div ng-if="model.has_attempts == 0">
 
-              <div class="margin-fix">
-                  <div ng-include="BASE_CONFIG.urls.partials.learner+'/fragment-models.html'">
-                  </div>
-              </div>
-          </div>
-        </div>
-      </accordion-group>
-    </accordion>
+      <div id="activities" class="tab" ng-include="BASE_CONFIG.urls.partials.learner+'/partial-directory-activities.html'" class="row"> </div>
+      <div id="management" class="tab d-none" ng-include="BASE_CONFIG.urls.partials.learner+'/partial-directory-activity-management.html'" class="row" style="display: flex; height: 75vh;"> </div>
   </div>
 </div>

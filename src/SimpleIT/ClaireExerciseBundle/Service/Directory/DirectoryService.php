@@ -18,6 +18,7 @@
 
 namespace SimpleIT\ClaireExerciseBundle\Service\Directory;
 
+use SimpleIT\ClaireExerciseBundle\Controller\Frontend\AdminController;
 use SimpleIT\ClaireExerciseBundle\Entity\StatView;
 use SimpleIT\ClaireExerciseBundle\Entity\AskerUser;
 use SimpleIT\ClaireExerciseBundle\Service\TransactionalService;
@@ -126,6 +127,26 @@ class DirectoryService extends TransactionalService
         }
     }
 
+    public function activateComper($resource){
+        $entity = $this->find($resource->getId());
+        $userCreated = 0;
+        if (!$entity->getParent()){
+            // Create comper profile if they doesn't exist
+            if($entity->getFrameworkId() !== null){
+                $userIds = $this->getIdUsers($entity, null);
+                $adminController = new AdminController();
+
+                foreach($userIds as $userId){
+                    $profileCreated = $adminController->addComperToUser($resource->getFrameworkId(), $userId);
+                    if ($profileCreated){
+                        $userCreated = $userCreated + 1;
+                    }
+                }
+            }
+        }
+        return $userCreated;
+    }
+
     public function edit($resource,AskerUser $user)
     {
         $userId = $user->getId();
@@ -142,11 +163,22 @@ class DirectoryService extends TransactionalService
         $entity->setIsVisible($resource->getIsVisible());
         $entity->setName($resource->getName());
         if (!$entity->getParent()){
+            // Check difference between frameworkId
+            $frameworkChanged = ($resource->getFrameworkId() !== $entity->getFrameworkId());
+
             $entity->setCode($resource->getCode());
             $entity->setFrameworkId($resource->getFrameworkId());
             $this->askerUserDirectoryService->updateManager($entity,$resource);
             foreach($entity->getSubs() as $dir){
                 $this->askerUserDirectoryService->updateManager($dir, $resource);
+            }
+            // Create comper profile if they doesn't exist
+            if($resource->getFrameworkId() !== null && $frameworkChanged){
+                $userIds = $this->getIdUsers($entity, null);
+                $adminController = new AdminController();
+                foreach($userIds as $userId){
+                    $profileCreated = $adminController->addComperToUser($resource->getFrameworkId(), $userId);
+                }
             }
         }
         foreach($entity->getModels() as $model){
@@ -276,7 +308,6 @@ class DirectoryService extends TransactionalService
     }
     public function getIdUsers(Directory $directory, $view)
     {
-        $this->getEntityManager();
         $ids = array();
         $users =$directory->realUsers();
         #return  array_column($this->em->getRepository('SimpleITClaireExerciseBundle:AskerUser')

@@ -71,6 +71,7 @@
                     resources: "{{ path('api_exercise_resource_list') }}",
                     models: "{{ path('api_exercise_model_list') }}",
                     directories: "{{ path('api_directory_list') }}",
+                    recommendations: "{{ path('api_recommendation_list') }}",
                   {% if not app.user.isOnlyStudent %}
                     mydirs: "{{path('api_directory_mine')}}",
                   {% endif %}

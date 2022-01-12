@@ -2,3 +2,38 @@ api_recommendation_send_statement:
     path: /{directoryId}/{title}
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/Recommendation/Recommendation:sendStatement}
     methods: [GET]
+
+api_recommendation_list:
+    path: request
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Recommendation/Recommendation:obtainRecommendations}
+    methods: [GET]
+
+api_recommendation_obtain:
+    path: request/{directoryId}/{fwid}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Recommendation/Recommendation:obtainRecommendations}
+    methods: [GET]
+
+api_recommendation_request:
+    path: request/{directoryId}/{fwid}/{objectives}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Recommendation/Recommendation:requestRecommendations}
+    methods: [POST]
+
+api_objectives_class_retrieve:
+    path: request/{directoryId}/{fwid}/classObjectives
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Recommendation/Recommendation:retrieveClassObjectives}
+    methods: [GET]
+
+api_objectives_retrieve:
+    path: request/{directoryId}/{fwid}/objectives
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Recommendation/Recommendation:retrieveObjectives}
+    methods: [GET]
+
+api_objectives_save:
+    path: request/{directoryId}/{fwid}/objectives/{objectives}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Recommendation/Recommendation:saveObjectives}
+    methods: [POST]
+
+api_recommendation_perform:
+    path: request/{directoryId}/{fwid}/perform/{recommendation}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Recommendation/Recommendation:performRecommendation}
+    methods: [POST]

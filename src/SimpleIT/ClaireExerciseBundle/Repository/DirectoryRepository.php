@@ -2,6 +2,9 @@
 
 namespace SimpleIT\ClaireExerciseBundle\Repository;
 
+use SimpleIT\ClaireExerciseBundle\Entity\Test\TestModel;
+use SimpleIT\ClaireExerciseBundle\Exception\NonExistingObjectException;
+
 /**
  * DirectoryRepository
  *
@@ -22,6 +25,25 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
         )
         ->getResult();
     }
+
+    /**
+     * Find a directory by its id
+     *
+     * @param mixed $directoryId
+     *
+     * @return Directory
+     * @throws NonExistingObjectException
+     */
+    public function find($directoryId, $lockMode = null, $lockVersion = null)
+    {
+        $resource = parent::find($directoryId);
+        if ($resource === null) {
+            throw new NonExistingObjectException();
+        }
+
+        return $resource;
+    }
+
     public function findNews($user)
     {
         $attemptedModels = $this->getEntityManager()->createQuery(

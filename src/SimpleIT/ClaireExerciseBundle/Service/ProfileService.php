@@ -55,9 +55,11 @@ class ProfileService
         $response = curl_exec($curl);
         if($response === false)
         {
-            echo 'Erreur Curl : ' . curl_error($curl);
+            echo 'Erreur Curl asker: ' . curl_error($curl);
+        } else {
+            //echo $response;
+            return $response;
         }
-        echo $response;
     }
 
     /**
@@ -79,8 +81,11 @@ class ProfileService
         curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
 
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($curl);
-        echo $response;
+        if (curl_exec($curl) !== null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**

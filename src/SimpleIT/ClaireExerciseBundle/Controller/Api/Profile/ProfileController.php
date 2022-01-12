@@ -41,7 +41,7 @@ class ProfileController extends BaseController
      *     tags={"profile"},
      *      )
      * @param int $framework_id the identifier of the framework used
-     * @return JsonResponse the profile of a learner on Json format
+     * @return string the profile of a learner on Json format
      */
     public function requestProfileAction($framework_id)
     {
@@ -62,7 +62,8 @@ class ProfileController extends BaseController
         $token = $jwtEncoder->getToken($payload);
         
         $profileService = $this->container->get('app.profileService');
-        $profile = new JsonResponse($profileService->requestProfile($token));
+        $profile = JsonResponse::fromJsonString($profileService->requestProfile($token));
+        //$profile = new JsonResponse(['data' => $profileService->requestProfile($token)]);
 
         return $profile;
     }

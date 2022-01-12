@@ -27,7 +27,7 @@ class ToolController extends Controller
             'error'         => $error,
         ));
     }
-    public function accountRequestAction()
+    public function accountRequestAction(Request $request)
     {
         //variable
         $exit = 'FAILED';
@@ -47,7 +47,7 @@ class ToolController extends Controller
         $type = new RequestType($academies);
         $requestObject = new Request();
         $form = $this->createForm($type, $requestObject);
-        $request = $this->get('request');
+        //$request = $this->get('request');
 
 
         $form->handleRequest($request);
@@ -294,9 +294,9 @@ class ToolController extends Controller
         }
     }
 
-    public function passwordUpdateAction()
+    public function passwordUpdateAction(Request $request)
     {
-        $request = $this->get('request');
+        //$request = $this->get('request');
         if ($request->getMethod() == 'POST'){
             $username = $this->get('security.token_storage')->getToken()->getUser()->getUsername();
             $params = $request->request->all();

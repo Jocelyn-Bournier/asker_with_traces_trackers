@@ -76,3 +76,8 @@ api_directory_jwt:
     path: /jwt/{frameworkId}/{role}
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/Directory/Directory:jwt}
     methods: [GET]
+
+api_directory_comper:
+    path: /comper/{directoryId}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Directory/Directory:activateComper }
+    methods: [ GET ]

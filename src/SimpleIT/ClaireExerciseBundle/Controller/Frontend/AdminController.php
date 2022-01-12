@@ -18,9 +18,11 @@
 
 namespace SimpleIT\ClaireExerciseBundle\Controller\Frontend;
 
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use SimpleIT\ClaireExerciseBundle\Controller\BaseController;
 use SimpleIT\ClaireExerciseBundle\Entity\AskerUser;
 use SimpleIT\ClaireExerciseBundle\Entity\AskerUserDirectory;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -36,6 +38,12 @@ use SimpleIT\ClaireExerciseBundle\Form\AskerPasswordType;
  */
 class AdminController extends BaseController
 {
+
+    // TODO : find a better practice
+    public function __construct() {
+        global $kernel;
+        $this->container = $kernel->getContainer();
+    }
 
     public function showAURAction()
     {
@@ -89,7 +97,6 @@ class AdminController extends BaseController
 
     public function updatePasswordAction(AskerUser $user, Request $request)
     {
-        //$request = $this->getRequest();
         $form = $this->createForm(AskerPasswordType::class, $user);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -108,10 +115,8 @@ class AdminController extends BaseController
         );
     }
 
-
-    public function changeAction()
+    public function changeAction(Request $request)
     {
-        $request =  $this->get('request');
         if ($request->get('usersCheck') !== null){
             $userService = $this->get('simple_it.exercise.user');
             $em = $this->getDoctrine()->getManager();
@@ -121,22 +126,25 @@ class AdminController extends BaseController
                     $em->remove($user);
                 }
             }else{
-                $roleService = $this->get('simple_it.exercise.role');
+                //$roleService = $this->get('simple_it.exercise.role');
                 $directoryService = $this->get('simple_it.exercise.directory');
-                $roleUser = $roleService->getRoleUser();
+                //$roleUser = $roleService->getRoleUser();
                 $dir = $directoryService->find(
                     $request->get('directory')
                 );
                 foreach($request->get('usersCheck') as $checked ){
                     $user = $userService->get($checked);
                     $dirUser = new AskerUserDirectory();
-                    $user->addRole($roleUser);
+                    //$user->addRole($roleUser);
                     $user->setIsEnable(1);
                     #$dir->addUser($user);
                     $dirUser->setUser($user);
                     $dirUser->setIsManager(false);
                     $dirUser->setDirectory($dir);
                     $em->persist($dirUser);
+                    if($dir->getFrameworkId() !== null){
+                        $profileCreated = $this->addComperToUser($dir->getFrameworkId(), $user->getId());
+                    }
                 }
             }
             $em->flush();
@@ -146,7 +154,6 @@ class AdminController extends BaseController
 
     public function editAction(AskerUser $user, Request $request)
     {
-        //$request = $this->getRequest();
         //load old datas before binding
         $originalDirectories = new ArrayCollection();
         foreach ($user->getDirectories() as $aud) {
@@ -171,7 +178,7 @@ class AdminController extends BaseController
                 if ($originalDirectories->contains($dir) === false
                     && $dir->getDirectory()->getOwner()->getId() !== $user->getId() && $dir->getDirectory()->getFrameworkId() !== null
                 ){
-                    $response = $this->addComperToUser($dir->getDirectory()->getFrameworkId(), $user->getId());
+                    $profileCreated = $this->addComperToUser($dir->getDirectory()->getFrameworkId(), $user->getId());
                 }
 
             }
@@ -193,7 +200,6 @@ class AdminController extends BaseController
     public function importLocalAction(Request $request){
         $handle = fopen(__DIR__."/datas.csv", "r");
         $datas=array();
-        //$request = $this->getRequest();
         $role = "ROLE_USER";
         $userService = $this->get('simple_it.exercise.user');
         if ($handle) {
@@ -232,8 +238,8 @@ class AdminController extends BaseController
     }
 
     public function addComperToUser($frameworkId, $userId){
-        $jwtEncoder = $this->container->get('app.jwtService');
-        $user       = $this->container->get('simple_it.exercise.user');
+        $jwtEncoder = $this->get('app.jwtService');
+        $user       = $this->get('simple_it.exercise.user');
         $timestamp  = new \DateTime();
         $timestamp  = $timestamp->getTimestamp()+3000;
         $payload    = [
@@ -249,6 +255,7 @@ class AdminController extends BaseController
         $token = $jwtEncoder->getToken($payload);
 
         $profileService = $this->container->get('app.profileService');
-        $profile = new JsonResponse($profileService->createProfile($token));
+        $profileCreated = $profileService->createProfile($token);
+        return $profileCreated;
     }
 }
