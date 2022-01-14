@@ -104,7 +104,7 @@ class ExerciseModelResource extends SharedResource
      * @var boolean $complete
      * @Serializer\Groups({"details", "list"})
      * @Serializer\Type("boolean")
-     * @Assert\Null(groups={"create"})
+     * @Assert\IsNull(groups={"create"})
      */
     protected $complete;
 
@@ -120,7 +120,7 @@ class ExerciseModelResource extends SharedResource
      * @var boolean $removable
      * @Serializer\Groups({"details", "list"})
      * @Serializer\Type("boolean")
-     * @Assert\Null(groups={"create"})
+     * @Assert\IsNull(groups={"create"})
      */
     protected $removable;
 
@@ -136,7 +136,7 @@ class ExerciseModelResource extends SharedResource
      * @var array $requiredExerciseResources
      * @Serializer\Type("array")
      * @Serializer\Groups({"details"})
-     * @Assert\Null()
+     * @Assert\IsNull()
      */
     private $requiredExerciseResources;
 
@@ -144,7 +144,7 @@ class ExerciseModelResource extends SharedResource
      * @var array $requiredKnowledges
      * @Serializer\Type("array")
      * @Serializer\Groups({"details"})
-     * @Assert\Null()
+     * @Assert\IsNull()
      */
     private $requiredKnowledges;
 

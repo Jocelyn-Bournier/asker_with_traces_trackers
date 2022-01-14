@@ -115,11 +115,11 @@ class TestModelController extends BaseController
     {
         try {
             $userId = null;
-            if ($this->get('security.context')->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+            if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
                 $userId = $this->getUserId();
             }
 
-            $this->validateResource($testModelResource, array('create', 'Default'));
+            //$this->validateResource($testModelResource, array('create', 'Default'));
 
             $model = $this->get('simple_it.exercise.test_model')->createAndAdd
                 (
@@ -160,7 +160,7 @@ class TestModelController extends BaseController
     public function editAction(TestModelResource $testModelResource, $testModelId)
     {
         try {
-            $this->validateResource($testModelResource, array('edit', 'Default'));
+            //$this->validateResource($testModelResource, array('edit', 'Default'));
 
             $resource = $this->get('simple_it.exercise.test_model')->edit
                 (

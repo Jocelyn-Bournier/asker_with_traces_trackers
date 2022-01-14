@@ -41,19 +41,19 @@ class ProfileController extends BaseController
      *     tags={"profile"},
      *      )
      * @param int $framework_id the identifier of the framework used
-     * @return JsonResponse the profile of a learner on Json format
+     * @return string the profile of a learner on Json format
      */
     public function requestProfileAction($framework_id)
     {
         $jwtEncoder = $this->container->get('app.jwtService');
-        $user       = $this->get('security.context')->getToken()->getUser();
+        $user       = $this->get('security.token_storage')->getToken()->getUser();
         $timestamp  = new \DateTime();
         $timestamp  = $timestamp->getTimestamp()+3000;
         $payload    = [
             "user"     => "asker:".$user->getId(),
             "fwid"     => intval($framework_id),
             "username" => $user->getUsername(),
-            "role"     => 'learner',
+            "role"     => $_COOKIE['userRoleStudentOnly'] === 'true' ? 'learner' : 'teacher',
             "exp"      => $timestamp,
             "platform" => 'asker',
             "homepage" => 'https://asker.univ-lyon1.fr/'
@@ -62,7 +62,8 @@ class ProfileController extends BaseController
         $token = $jwtEncoder->getToken($payload);
         
         $profileService = $this->container->get('app.profileService');
-        $profile = new JsonResponse($profileService->requestProfile($token));
+        $profile = JsonResponse::fromJsonString($profileService->requestProfile($token));
+        //$profile = new JsonResponse(['data' => $profileService->requestProfile($token)]);
 
         return $profile;
     }
@@ -84,7 +85,7 @@ class ProfileController extends BaseController
      */
     public function traceAction($directoryId, $action)
     {
-        $user     = $this->get('security.context')->getToken()->getUser();
+        $user     = $this->get('security.token_storage')->getToken()->getUser();
         $profile  = new ComperProfileTrace();
         $profile->setCreatedAt(new \DateTime());
         $profile->setUser($user);

@@ -2,6 +2,8 @@
 
 namespace SimpleIT\ClaireExerciseBundle\Repository;
 
+use SimpleIT\ClaireExerciseBundle\Exception\NonExistingObjectException;
+
 /**
  * AskerUserDirectoryRepository
  *
@@ -25,6 +27,25 @@ class AskerUserDirectoryRepository extends \Doctrine\ORM\EntityRepository
        # new version is doctine is up to date
        #return $stmt->executeQuery()->fetchAllAssociative();
     }
+
+    /**
+     * Find a directory by its id
+     *
+     * @param mixed $userDirectoryId
+     *
+     * @return UserDirectory
+     * @throws NonExistingObjectException
+     */
+    public function find($userDirectoryId, $lockMode = null, $lockVersion = null)
+    {
+        $resource = parent::find($userDirectoryId);
+        if ($resource === null) {
+            throw new NonExistingObjectException();
+        }
+
+        return $resource;
+    }
+
     public function findObjectParents()
     {
         return $this->createQueryBuilder('aud')

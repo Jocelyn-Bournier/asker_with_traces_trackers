@@ -70,7 +70,7 @@ class AttemptByExerciseController extends BaseController
 
             $userId = null;
             if (is_null($user) || $user === 'me') {
-                if (!$this->get('security.context')->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+                if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
                     throw new ApiBadRequestException("A user must be authenticated");
                 }
                 $userId = $this->getUserId();
@@ -111,7 +111,7 @@ class AttemptByExerciseController extends BaseController
     {
         try {
             // get the user
-            if (!$this->get('security.context')->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+            if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
                 throw new ApiBadRequestException("A user must be authenticated");
             }
             $userId = $this->getUserId();

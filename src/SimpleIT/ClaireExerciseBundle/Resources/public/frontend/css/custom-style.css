@@ -160,5 +160,8 @@ option {
 }
 ul.brand-size * {
   font-size:18px;
+}
 
+.d-none {
+    display: none !important;
 }

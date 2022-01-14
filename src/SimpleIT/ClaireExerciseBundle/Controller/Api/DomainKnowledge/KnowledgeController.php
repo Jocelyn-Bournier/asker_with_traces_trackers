@@ -107,7 +107,7 @@ class KnowledgeController extends BaseController
     public function createAction(KnowledgeResource $knowledgeResource)
     {
         try {
-            $this->validateResource($knowledgeResource, array('create'));
+            //$this->validateResource($knowledgeResource, array('create'));
 
             $userId = $this->getUserId();
             $knowledgeResource->setAuthor($userId);
@@ -146,7 +146,7 @@ class KnowledgeController extends BaseController
     public function editAction(KnowledgeResource $knowledgeResource, $knowledgeId)
     {
         try {
-            $this->validateResource($knowledgeResource, array('edit', 'Default'));
+            //$this->validateResource($knowledgeResource, array('edit', 'Default'));
 
             $knowledgeResource->setId($knowledgeId);
             $knowledge = $this->get('simple_it.exercise.knowledge')->edit

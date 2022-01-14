@@ -81,7 +81,7 @@ class ExerciseController extends BaseController
     public function listAction(CollectionInformation $collectionInformation)
     {
         try {
-            if (!$this->get('security.context')->getToken()->getUser()->hasRole(
+            if (!$this->get('security.token_storage')->getToken()->getUser()->hasRole(
                 'ROLE_WS_CREATOR'
             )
             ) {

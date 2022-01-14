@@ -2,6 +2,8 @@
 
 namespace SimpleIT\ClaireExerciseBundle\Repository;
 
+use SimpleIT\ClaireExerciseBundle\Exception\NonExistingObjectException;
+
 /**
  * AskerUser2Repository
  *
@@ -29,6 +31,25 @@ class AskerUserRepository extends \Doctrine\ORM\EntityRepository
        #return $stmt->executeQuery()->fetchAllAssociative();
 
     }
+
+    /**
+     * Find an user by its id
+     *
+     * @param mixed $userId
+     *
+     * @return User
+     * @throws NonExistingObjectException
+     */
+    public function find($userId, $lockMode = null, $lockVersion = null)
+    {
+        $resource = parent::find($userId);
+        if ($resource === null) {
+            throw new NonExistingObjectException();
+        }
+
+        return $resource;
+    }
+
     public function findTeachers()
     {
         return $this->createQueryBuilder('a')

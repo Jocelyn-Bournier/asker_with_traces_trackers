@@ -4,7 +4,6 @@ mainApp.config(
 
             $resourceProvider.defaults.stripTrailingSlashes = false;
 
-            //$urlRouterProvider.otherwise('/learner/directories/news/');
             $urlRouterProvider.otherwise('/learner/');
 
 

@@ -151,7 +151,7 @@ class MetadataByResourceController extends BaseController
     )
     {
         try {
-            $this->validateResource($metadata, array('edit'));
+            //$this->validateResource($metadata, array('edit'));
 
             $metadata = $this->get('simple_it.exercise.resource_metadata')
                 ->saveFromEntity(

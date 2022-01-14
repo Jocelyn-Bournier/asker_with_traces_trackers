@@ -61,12 +61,14 @@ abstract class BaseController extends Controller
         $deep = false
     )
     {
-        $violations = $this->get('validator')->validate(
+        /*$violations = $this->get('validator')->validate(
             $resource,
             $validationGroups,
             $traverse,
             $deep
         );
+        */
+        $violations = $this->get('validator')->validate($resource);
 
         $formatedErrors = array();
         if (count($violations) > 0) {

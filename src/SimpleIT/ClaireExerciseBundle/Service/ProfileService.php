@@ -55,9 +55,11 @@ class ProfileService
         $response = curl_exec($curl);
         if($response === false)
         {
-            echo 'Erreur Curl : ' . curl_error($curl);
+            echo 'Erreur Curl asker: ' . curl_error($curl);
+        } else {
+            //echo $response;
+            return $response;
         }
-        echo $response;
     }
 
     /**
@@ -79,10 +81,35 @@ class ProfileService
         curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
 
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        if (curl_exec($curl) !== null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Add the profile as a teacher for a repository in the profile engine.
+     *
+     * @param string $token the profile to request
+     */
+    public function addFrameworkTeacher($token)
+    {
+        $header = array();
+        $header[] = 'Content-Type: application/json';
+        $header[] = 'Response-Type: application/json';
+        $header[] = 'Comper-origin: asker';
+        $header[] = 'Authorization: Bearer '.$token;
+
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $this->profileEndpoint);
+        curl_setopt($curl, CURLOPT_POST, false);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
+
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         $response = curl_exec($curl);
         echo $response;
     }
-
 
 }
 ?>

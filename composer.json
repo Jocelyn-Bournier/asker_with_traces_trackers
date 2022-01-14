@@ -5,25 +5,31 @@
     "autoload": {
         "psr-4": {
             "": "src/"
-        }
+        },
+        "files": [
+            "app/AppKernel.php"
+        ]
     },
     "require": {
-        "php": ">=5.3.9",
-        "symfony/symfony": "2.8.*",
-        "doctrine/orm": "^2.4.8",
-        "doctrine/doctrine-bundle": "~1.4",
-        "symfony/assetic-bundle": "~2.3",
-        "symfony/swiftmailer-bundle": "~2.3",
-        "symfony/monolog-bundle": "~2.11.3",
-        "sensio/distribution-bundle": "~4.0",
-        "sensio/framework-extra-bundle": "^3.0.2",
-        "incenteev/composer-parameter-handler": "~2.0",
+        "php": ">=7.4",
+        "symfony/symfony": "3.4.*",
+        "doctrine/orm": "^2.5",
+        "doctrine/doctrine-bundle": "^1.6",
+        "doctrine/doctrine-cache-bundle": "^1.2",
+        "symfony/assetic-bundle": "^2.7",
+        "symfony/swiftmailer-bundle": "^2.6.4",
+        "symfony/monolog-bundle": "^3.1.0",
+        "symfony/polyfill-apcu": "~1.0",
+        "sensio/distribution-bundle": "^5.0.19",
+        "sensio/framework-extra-bundle": "^5.0.0",
+        "incenteev/composer-parameter-handler": "^2.0",
         "jms/serializer": "^1.4",
-	"firebase/php-jwt": "^5.2"
+	    "firebase/php-jwt": "^5.2",
+        "twig/twig": "^1.0||^2.0"
     },
     "require-dev": {
-        "sensio/generator-bundle": "~2.3",
-        "symfony/phpunit-bridge": "~2.7"
+        "sensio/generator-bundle": "^3.0",
+        "symfony/phpunit-bridge": "^3.0"
     },
     "scripts": {
         "symfony-scripts": [
@@ -41,11 +47,10 @@
             "@symfony-scripts"
         ]
     },
-    "config": {
-        "bin-dir": "bin"
-    },
     "extra": {
         "symfony-app-dir": "app",
+        "symfony-bin-dir": "bin",
+        "symfony-var-dir": "var",
         "symfony-web-dir": "web",
         "symfony-assets-install": "relative",
         "incenteev-parameters": {

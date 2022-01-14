@@ -20,6 +20,8 @@ namespace SimpleIT\ClaireExerciseBundle\Controller\Api\Recommendation;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use SimpleIT\ClaireExerciseBundle\Controller\BaseController;
 use SimpleIT\ClaireExerciseBundle\Entity\ComperRecommendation;
+use Symfony\Component\HttpFoundation\Request;
+
 /**
  * Recommendation Controller
  *
@@ -30,34 +32,207 @@ class RecommendationController extends BaseController
 {
 
     /**
-     * ANR COMPER
-     * 
-     * Save a ComperRecommendationTrace corresponding to the action of clicking on a recommendation link as a learner.
-     *
-     * @OA\Post(
-     *          path="/api/recommendations/{directoryId}/{title}",
-     *          @OA\Parameter(in="path", name="directoryId", parameter="directoryId"),
-     *          @OA\Parameter(in="path", name="title", parameter="title"),
-     *          @OA\Response(response="200", description="confirmation of trace creation"),
-     *     tags={"recommendations"},
-     *      )
-     * 
-     * Note : Originally sent a statement to the comper LRS.
+     * Récupère les recommendations d'exercices pour l'apprenant en fonction de son profil
+     * @param directory Le repertoire sur lequel les recommendations sont proposées
      */
-    public function sendStatementAction($directoryId, $title)
-    {
-        $location = $this->get('request')->get('location');
-        $user     = $this->get('security.context')->getToken()->getUser();
-        $recomm   = new ComperRecommendationTrace();
-        $recomm->setCreatedAt(new \DateTime());
-        $recomm->setUser($user);
-        $recomm->setContextDirectory($directoryId);
-        $recomm->setResourceLocation($location);
-        $recomm->setResourceTitle($title);
-        $this->getDoctrine()->getManager()->persist($recomm);
-        $this->getDoctrine()->getManager()->flush();
-        $response         = new JsonResponse('Recommendation trace created');
-        return $response;
+    function requestRecommendationsAction($directoryId = null, $fwid, $objectives) {
+        $recommEngineUrl = "https://comper.projet.liris.cnrs.fr/sites/profile-engine/api/recommandations/generate/";
+        $objectives = json_decode($objectives);
+        return $this->saveObjectivesOrRequestRecommendations($recommEngineUrl, $fwid, $objectives);
+    }
+
+    /**
+     * Récupère les recommendations d'exercices pour l'apprenant en fonction de son profil
+     * @param directory Le repertoire sur lequel les recommendations sont proposées
+     */
+    function obtainRecommendationsAction($directoryId = null, $fwid) {
+        $recommEngineUrl = "https://comper.projet.liris.cnrs.fr/sites/profile-engine/api/recommandations/retrieve/";
+        return $this->getObjectivesOrRecommendations($recommEngineUrl, $fwid);
+    }
+
+    /**
+     * Récupère les objectifs de la classe
+     * @param directory Le repertoire sur lequel les recommendations sont proposées
+     */
+    function retrieveClassObjectivesAction($directoryId = null, $fwid) {
+        $recommEngineUrl = "https://comper.projet.liris.cnrs.fr/sites/profile-engine/api/recommandations/classObjectives/";
+        return $this->getObjectivesOrRecommendations($recommEngineUrl, $fwid);
+    }
+
+    /**
+     * Récupère les objectifs de l'élève
+     * @param directory Le repertoire sur lequel les recommendations sont proposées
+     */
+    function retrieveObjectivesAction($directoryId = null, $fwid) {
+        $recommEngineUrl = "https://comper.projet.liris.cnrs.fr/sites/profile-engine/api/recommandations/objectives/";
+        return $this->getObjectivesOrRecommendations($recommEngineUrl, $fwid);
+    }
+
+    /**
+     * Récupère les objectifs de l'élève
+     * @param directory Le repertoire sur lequel les recommendations sont proposées
+     */
+    function retrieveGenerationObjectivesAction($directoryId = null, $fwid) {
+        $recommEngineUrl = "https://comper.projet.liris.cnrs.fr/sites/profile-engine/api/recommandations/generationObjectives/";
+        return $this->getObjectivesOrRecommendations($recommEngineUrl, $fwid);
+    }
+
+    function getObjectivesOrRecommendations($recommEngineUrl, $fwid){
+        $jwtEncoder = $this->container->get('app.jwtService');
+        $user       = $this->get('security.token_storage')->getToken()->getUser();
+        $timestamp  = new \DateTime();
+        $timestamp  = $timestamp->getTimestamp()+3000;
+        $payload    = [
+            "user"     => "asker:".$user->getId(),
+            "role"     => 'learner',
+            "fwid"     => intval($fwid),
+            "username" => $user->getUsername(),
+            "exp"      => $timestamp,
+            "platform" => 'asker',
+            "homepage" => 'https://asker.univ-lyon1.fr/'
+        ];
+        $token = $jwtEncoder->getToken($payload);
+
+        $header = array();
+        $header[] = 'Content-Type: application/json';
+        $header[] = 'Response-Type: application/json';
+        $header[] = 'Comper-origin: asker';
+        $header[] = 'Accept-Language : *';
+        $header[] = 'Accept-Charset : *';
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $recommEngineUrl,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+            CURLOPT_HTTPHEADER => array(
+                'Authorization: Bearer '.$token,
+                'Accept: application/json'
+            ),
+        ));
+        $response = curl_exec($curl);
+        if($response === false)
+        {
+            echo 'Erreur Curl asker : ' . curl_error($curl);
+        }
+        return new JsonResponse($response);
+    }
+
+    /**
+     * Enregistre les objectifs de l'élève
+     * @param directory Le repertoire sur lequel les recommendations sont proposées
+     */
+    function saveObjectivesAction($directoryId = null, $fwid, $objectives) {
+        $recommEngineUrl = "https://comper.projet.liris.cnrs.fr/sites/profile-engine/api/recommandations/saveObjectives/";
+        return $this->saveObjectivesOrRequestRecommendations($recommEngineUrl, $fwid, $objectives);
+    }
+
+    function saveObjectivesOrRequestRecommendations($recommEngineUrl, $fwid, $objectives) {
+        $jwtEncoder = $this->container->get('app.jwtService');
+        $user       = $this->get('security.token_storage')->getToken()->getUser();
+        $timestamp  = new \DateTime();
+        $timestamp  = $timestamp->getTimestamp()+3000;
+        $payload    = [
+            "user"     => "asker:".$user->getId(),
+            "role"     => 'learner',
+            "fwid"     => intval($fwid),
+            "username" => $user->getUsername(),
+            "exp"      => $timestamp,
+            "platform" => 'asker',
+            "homepage" => 'https://asker.univ-lyon1.fr/',
+            "objectives" => $objectives
+        ];
+        $token = $jwtEncoder->getToken($payload);
+
+        $header = array();
+        $header[] = 'Content-Type: application/json';
+        $header[] = 'Response-Type: application/json';
+        $header[] = 'Comper-origin: asker';
+        $header[] = 'Accept-Language : *';
+        $header[] = 'Accept-Charset : *';
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $recommEngineUrl,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_HTTPHEADER => array(
+                'Authorization: Bearer '.$token,
+                'Accept: application/json'
+            ),
+        ));
+        $response = curl_exec($curl);
+        if($response === false)
+        {
+            echo 'Erreur Curl asker : ' . curl_error($curl);
+        }
+        return new JsonResponse($response);
+    }
+
+    /**
+     * Réalise une recommandation
+     * @param directory Le repertoire sur lequel les recommendations sont proposées
+     */
+    function performRecommendationAction($directoryId = null, $fwid, $recommendation) {
+        $recommEngineUrl = "https://comper.projet.liris.cnrs.fr/sites/profile-engine/api/recommandations/perform/";
+
+        $jwtEncoder = $this->container->get('app.jwtService');
+        $user       = $this->get('security.token_storage')->getToken()->getUser();
+        $timestamp  = new \DateTime();
+        $timestamp  = $timestamp->getTimestamp()+3000;
+        $payload    = [
+            "user"     => "asker:".$user->getId(),
+            "role"     => 'learner',
+            "fwid"     => intval($fwid),
+            "username" => $user->getUsername(),
+            "exp"      => $timestamp,
+            "platform" => 'asker',
+            "homepage" => 'https://asker.univ-lyon1.fr/',
+            "recommendation" => $recommendation
+        ];
+        $token = $jwtEncoder->getToken($payload);
+
+        $header = array();
+        $header[] = 'Content-Type: application/json';
+        $header[] = 'Response-Type: application/json';
+        $header[] = 'Comper-origin: asker';
+        $header[] = 'Accept-Language : *';
+        $header[] = 'Accept-Charset : *';
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $recommEngineUrl,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_HTTPHEADER => array(
+                'Authorization: Bearer '.$token,
+                'Accept: application/json'
+            ),
+        ));
+        $response = curl_exec($curl);
+        if($response === false)
+        {
+            echo 'Erreur Curl asker : ' . curl_error($curl);
+        }
+        return new JsonResponse($response);
     }
 
 }
