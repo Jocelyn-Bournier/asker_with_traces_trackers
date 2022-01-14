@@ -11,6 +11,7 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
         $scope.selectedTab = $.cookie('exerciseGeneratedFrom');
         $scope.profileComputed = false;
         $scope.recommendationsRequested = false;
+        $scope.selectionIntention;
 
         /**
          * Génère un exercise en enregistrant la source de génération
@@ -264,6 +265,7 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
         }
 
         $scope.freeAddIntention = function () {
+            $scope.selectionIntention = document.getElementById("selection-intention");
             $scope.selectionIntention.style.display = "none";
             $scope.currentIntention = null;
             $scope.selectedNode = null;
@@ -275,6 +277,7 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
         }
 
         $scope.drawProfile = function () {
+            $scope.selectionIntention = document.getElementById("selection-intention");
             document.getElementById('olm-target').innerHTML = '';
             document.getElementById('olm-target-loader').classList.remove('hidden');
             document.getElementById('olm-target-loader').classList.add('hidden');
