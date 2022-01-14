@@ -77,7 +77,8 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                         for (let i = 0; i < $scope.recommendations.length; i++) {
                             $scope.recommendations[i].learning_type = $scope.typeToAsker($scope.recommendations[i].learning_type);
                         }
-                        console.log($scope.recommendations)
+                        console.log($scope.recommendations);
+                        $scope.retrieveGenerationObjectives(directory);
                         $scope.$apply();
                     }
                 },
@@ -131,6 +132,23 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
         $scope.retrieveLearnerObjectives = function (directory) {
             $.ajax({
                 url: `${BASE_CONFIG.urls.api.recommendations}/${directory.id}/${directory.framework_id}/objectives`,
+                type: "GET",
+                async: true,
+                success: function (data, textStatus) {
+                    $scope.objectives = JSON.parse(data);
+                    console.log($scope.objectives);
+                    $scope.$apply();
+                }
+            });
+        };
+
+        /**
+         * Récupère les objectifs ayant permis la génération des recommandations
+         * @param directory Le repertoire sur lequel les objectifs sont liés
+         */
+        $scope.retrieveGenerationObjectives = function (directory) {
+            $.ajax({
+                url: `${BASE_CONFIG.urls.api.recommendations}/${directory.id}/${directory.framework_id}/generationObjectives`,
                 type: "GET",
                 async: true,
                 success: function (data, textStatus) {

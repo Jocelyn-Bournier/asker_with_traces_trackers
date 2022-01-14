@@ -37,3 +37,8 @@ api_recommendation_perform:
     path: request/{directoryId}/{fwid}/perform/{recommendation}
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/Recommendation/Recommendation:performRecommendation}
     methods: [POST]
+
+api_objectives_generation_retrieve:
+    path: request/{directoryId}/{fwid}/generationObjectives
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Recommendation/Recommendation:retrieveGenerationObjectives}
+    methods: [GET]
