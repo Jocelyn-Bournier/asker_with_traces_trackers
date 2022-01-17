@@ -350,6 +350,7 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
         }
 
         $scope.typeToAsker = function (type) {
+            console.log(type);
             switch (type) {
                 case 'choice':
                     return "multipe-choice";
