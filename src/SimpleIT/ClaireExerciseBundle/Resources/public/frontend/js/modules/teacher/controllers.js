@@ -3,8 +3,8 @@
  * Created by bryan on 25/06/14.
  */
 var directoryControllers = angular.module('directoryControllers', ['ui.router']);
-directoryControllers.controller('directoryController',  ['$scope', '$modal',  
-    function ($scope, $modal) { 
+directoryControllers.controller('directoryController',  ['$scope', '$modal',
+    function ($scope, $modal) {
         $scope.section = 'directory';
         $scope.directories = {};
     }
@@ -1245,7 +1245,7 @@ modelControllers.controller('modelListController', ['$scope', 'Model', '$locatio
             console.log('archiving...');
             var archived = new Model;
             archived.archived = true;
-	    archived.metadata = model.metadata;
+            archived.metadata = model.metadata;
             archived.directories = model.directories;
             archived.$update({id: model.id}, function () {
                 model.archived = true;
@@ -1264,15 +1264,15 @@ modelControllers.controller('modelListController', ['$scope', 'Model', '$locatio
         //};
 
         $scope.restoreModel = function (model) {
-        console.log('restoring...');
-        var archived = new Model;
-        archived.archived = false;
-        archived.directories = model.directories;
-        archived.metadata = model.metadata;
-        archived.$update({id: model.id}, function () {
-        //model.archived = archived.metadata;
-        model.archived = false;
-        //model.archved = archived.directories;
+            console.log('restoring...');
+            var archived = new Model;
+            archived.archived = false;
+            archived.directories = model.directories;
+            archived.metadata = model.metadata;
+            archived.$update({id: model.id}, function () {
+                //model.archived = archived.metadata;
+                model.archived = false;
+                //model.archved = archived.directories;
             });
         };
 
