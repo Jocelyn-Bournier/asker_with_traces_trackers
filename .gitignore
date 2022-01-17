@@ -11,7 +11,6 @@
 /app/phpunit.xml
 /build/
 /vendor/
-/bin/
 /src/SimpleIT/ClaireExerciseBundle/Resources/public/frontend/js/modules/utils/build.js
 /app/config/version.yml
 /app/config/comper.yml
@@ -25,3 +24,13 @@
 !var/cache/.gitkeep
 /var/logs/*
 !var/logs/.gitkeep
+
+/.web-server-pid
+/phpunit.xml
+/var/*
+!/var/cache
+!/var/logs
+!/var/sessions
+/var/sessions/*
+!var/sessions/.gitkeep
+!var/SymfonyRequirements.php
