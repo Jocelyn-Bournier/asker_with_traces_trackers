@@ -63,7 +63,7 @@ directoryControllers.controller('directoryListController', ['$scope', 'MyDirecto
     }
 ]);
 directoryControllers.controller('directoryEditController', ['$scope','$stateParams', 'MyDirectory', 'AvailableManagers',
-    function ($scope, $stateParams, MyDirectory, AvailableManagers, users) {
+    function ($scope, $stateParams, MyDirectory, AvailableManagers) {
 
         $scope.directory = MyDirectory.get({id: $stateParams.directoryid}, function () {
         });
@@ -89,12 +89,16 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
             return true;
         }
         $scope.filterAlreadyAdded = function(item) {
-                if(item.username !== $scope.users[$scope.directory.owner].user_name){
-                    if($scope.directory.managers.map(
-                        function(manager){return manager.username}).indexOf(item.username) == -1){
+            if ($scope.users != null ) {
+                if (item.username !== $scope.users[$scope.directory.owner].user_name) {
+                    if ($scope.directory.managers.map(
+                        function (manager) {
+                            return manager.username
+                        }).indexOf(item.username) == -1) {
                         return item;
                     }
                 }
+            }
         };
         $scope.directoryAddModel = function (collection, id) {
             var isAlreadyAdded = false;
@@ -313,6 +317,8 @@ resourceControllers.controller('resourceViewController', ['$scope', 'BASE_CONFIG
         $scope.BASE_CONFIG = BASE_CONFIG;
         $scope.resource = resource;
         $scope.users = users;
+
+        console.log(users);
     }]);
 
 
@@ -1196,8 +1202,8 @@ modelControllers.controller('modelListController', ['$scope', 'Model', '$locatio
                     privateModels[data[i].id] = data[i];
                 }
                 //$rootScope.models = privateModels;
-                //comment below if you are bored with heavy loading
-                /**Model.query({'public-except-user': BASE_CONFIG.currentUserId}, function (data) {
+                //uncomment below if you are bored with heavy loading
+                Model.query({'public-except-user': BASE_CONFIG.currentUserId}, function (data) {
                     // load an id indexed array of the models
                     var publicModels = [];
                     for (var i = 0; i < data.length; ++i) {
@@ -1206,7 +1212,7 @@ modelControllers.controller('modelListController', ['$scope', 'Model', '$locatio
                     $rootScope.models =jQuery.extend(publicModels, privateModels);
 
                     $scope.loadUsers($rootScope.models);
-                });**/
+                });
             });
         }
 
