@@ -135,9 +135,7 @@ class AdminController extends BaseController
                 foreach($request->get('usersCheck') as $checked ){
                     $user = $userService->get($checked);
                     $dirUser = new AskerUserDirectory();
-                    //$user->addRole($roleUser);
                     $user->setIsEnable(1);
-                    #$dir->addUser($user);
                     $dirUser->setUser($user);
                     $dirUser->setIsManager(false);
                     $dirUser->setDirectory($dir);

@@ -151,11 +151,12 @@ class DirectoryService extends TransactionalService
 
     public function listUsers($resource){
         $entity = $this->find($resource->getId());
+        $view = $resource->getLastView();
         if (!$entity->getParent()){
             if($entity->getFrameworkId() !== null){
-                return $this->getIdUsers($entity, null);
+                return $this->getIdUsers($entity, $view);
+                }
             }
-        }
         return [];
     }
 
