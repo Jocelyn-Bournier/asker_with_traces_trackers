@@ -246,6 +246,8 @@ class AdminController extends BaseController
             "user"     => "asker:".$userId,
             "fwid"     => intval($frameworkId),
             "username" => $user->get($userId)->getUsername(),
+            "forename" => $user->get($userId)->getFirstName(),
+            "name"     => $user->get($userId)->getLastName(),
             "role"     => $_COOKIE['userRoleStudentOnly'] === 'true' ? 'learner' : 'teacher',
             "exp"      => $timestamp,
             "platform" => 'asker',

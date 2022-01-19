@@ -27,10 +27,12 @@ class ProfileService
 {
 
     private $profileEndpoint;
+    private $profileCreateEndpoint;
 
-    function __construct($profileEndpoint)
+    function __construct($profileEndpoint, $profileCreateEndpoint)
     {
         $this->profileEndpoint = $profileEndpoint;
+        $this->profileCreateEndpoint = $profileCreateEndpoint;
     }
 
     /**
@@ -75,8 +77,10 @@ class ProfileService
         $header[] = 'Comper-origin: asker';
         $header[] = 'Authorization: Bearer '.$token;
 
+        echo $this->profileCreateEndpoint;
+
         $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $this->profileEndpoint);
+        curl_setopt($curl, CURLOPT_URL, $this->profileCreateEndpoint);
         curl_setopt($curl, CURLOPT_POST, false);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
 
@@ -86,6 +90,7 @@ class ProfileService
         } else {
             return false;
         }
+
     }
 
     /**

@@ -53,6 +53,8 @@ class ProfileController extends BaseController
             "user"     => "asker:".$user->getId(),
             "fwid"     => intval($framework_id),
             "username" => $user->getUsername(),
+            "forename" => $user->getFirstName(),
+            "name"     => $user->getLastName(),
             "role"     => $_COOKIE['userRoleStudentOnly'] === 'true' ? 'learner' : 'teacher',
             "exp"      => $timestamp,
             "platform" => 'asker',
@@ -63,7 +65,6 @@ class ProfileController extends BaseController
         
         $profileService = $this->container->get('app.profileService');
         $profile = JsonResponse::fromJsonString($profileService->requestProfile($token));
-        //$profile = new JsonResponse(['data' => $profileService->requestProfile($token)]);
 
         return $profile;
     }
