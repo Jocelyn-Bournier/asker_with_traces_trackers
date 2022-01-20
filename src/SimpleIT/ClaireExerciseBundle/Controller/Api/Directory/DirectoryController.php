@@ -533,4 +533,17 @@ class DirectoryController extends BaseController
         $userCreated = $this->get('simple_it.exercise.directory')->activateComperUser($dir, $userId);
         return new JsonResponse(array('userCreated' => $userCreated));
     }
+
+    public function activateComperManagersAction($directoryId){
+        $dir = $this->get('simple_it.exercise.directory')->find($directoryId);
+        $managers = $this->get('simple_it.exercise.directory')->listManagers($dir);
+        $owner = $dir->getOwner()->getId();
+        $this->get('simple_it.exercise.directory')->activateComperUser($dir, $owner, "teacher");
+        $cpt = 1;
+        foreach($managers as $manager){
+            $this->get('simple_it.exercise.directory')->activateComperUser($dir, $manager->getUser()->getId(), "teacher");
+            $cpt ++;
+        }
+        return new JsonResponse(array('managersCreated' => $cpt));
+    }
 }

@@ -160,14 +160,24 @@ class DirectoryService extends TransactionalService
         return [];
     }
 
-    public function activateComperUser($resource, $userId){
+    public function listManagers($resource){
+        $entity = $this->find($resource->getId());
+        if (!$entity->getParent()){
+            if($entity->getFrameworkId() !== null){
+                return $entity->getManagers();
+            }
+        }
+        return [];
+    }
+
+    public function activateComperUser($resource, $userId, $role = "learner"){
         $entity = $this->find($resource->getId());
         $profileCreated = false;
         if (!$entity->getParent()){
             // Create comper profile if they doesn't exist
             if($entity->getFrameworkId() !== null){
                 $adminController = new AdminController();
-                $profileCreated = $adminController->addComperToUser($resource->getFrameworkId(), $userId);
+                $profileCreated = $adminController->addComperToUser($resource->getFrameworkId(), $userId, $role);
             }
         }
         return $profileCreated;

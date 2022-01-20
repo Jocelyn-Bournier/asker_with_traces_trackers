@@ -59,7 +59,6 @@ class ProfileService
         {
             echo 'Erreur Curl asker: ' . curl_error($curl);
         } else {
-            //echo $response;
             return $response;
         }
     }
