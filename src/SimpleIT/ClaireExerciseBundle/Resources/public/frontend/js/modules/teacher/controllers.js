@@ -83,6 +83,14 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
                 crossDomain: true,
                 async:       false,
                 success: function(data, textStatus){
+                        $.ajax({
+                            url:         `${BASE_CONFIG.urls.api.directories}comper/${directoryId}/managers/addManagers`,
+                            type:        "GET",
+                            crossDomain: true,
+                            async:       false,
+                            success: function(data, textStatus){
+                            }
+                        });
                     let cpt = 1;
                     let nbUsers = data["users"].length;
                     document.getElementById("progress-bar-comper-creation").style.minWidth = "3em;"

@@ -91,3 +91,8 @@ api_directory_comper_user:
     path: /comper/{directoryId}/{userId}
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/Directory/Directory:activateComperUser }
     methods: [ GET ]
+
+api_directory_comper_add_managers:
+    path: /comper/{directoryId}/managers/addManagers/
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Directory/Directory:activateComperManagers }
+    methods: [ GET ]
