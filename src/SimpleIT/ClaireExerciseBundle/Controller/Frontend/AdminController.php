@@ -135,9 +135,7 @@ class AdminController extends BaseController
                 foreach($request->get('usersCheck') as $checked ){
                     $user = $userService->get($checked);
                     $dirUser = new AskerUserDirectory();
-                    //$user->addRole($roleUser);
                     $user->setIsEnable(1);
-                    #$dir->addUser($user);
                     $dirUser->setUser($user);
                     $dirUser->setIsManager(false);
                     $dirUser->setDirectory($dir);
@@ -246,6 +244,8 @@ class AdminController extends BaseController
             "user"     => "asker:".$userId,
             "fwid"     => intval($frameworkId),
             "username" => $user->get($userId)->getUsername(),
+            "forename" => $user->get($userId)->getFirstName(),
+            "name"     => $user->get($userId)->getLastName(),
             "role"     => $_COOKIE['userRoleStudentOnly'] === 'true' ? 'learner' : 'teacher',
             "exp"      => $timestamp,
             "platform" => 'asker',

@@ -2,7 +2,7 @@ var learnerControllers = angular.module('learnerControllers', ['ui.router']);
 
 learnerControllers.controller('directoryModelListController', ['$scope', '$stateParams','DirectoryModelList','ExerciseByModel','$http',
     function ($scope,$stateParams,DirectoryModelList,ExerciseByModel,$http) {
-        $scope.recommendations = [];
+        $scope.recommendations = new Array();
         $scope.objectives = [];
         $scope.directory = DirectoryModelList.get({id: $stateParams.dirId}, function () {
         });
@@ -12,6 +12,18 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
         $scope.profileComputed = false;
         $scope.recommendationsRequested = false;
         $scope.selectionIntention;
+        $scope.recommendationsNodes = new Array();
+
+        $scope.collapse = function (nodeName) {
+            let panel = document.getElementById("panel-"+nodeName);
+            let content = document.getElementById("content-"+nodeName);
+            panel.classList.toggle("active");
+            if (content.style.display === "block") {
+                content.style.display = "none";
+            } else {
+                content.style.display = "block";
+            }
+        }
 
         /**
          * Génère un exercise en enregistrant la source de génération
@@ -77,8 +89,15 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                         for (let i = 0; i < $scope.recommendations.length; i++) {
                             $scope.recommendations[i].learning_type = $scope.typeToAsker($scope.recommendations[i].learning_type);
                         }
-                        console.log($scope.recommendations);
                         $scope.retrieveGenerationObjectives(directory);
+                        $scope.recommendationsNodes = new Array();
+                        Object.values($scope.recommendations).filter(function(item){
+                            var i = $scope.recommendationsNodes.findIndex(x => (x == item.objectiveNode));
+                            if(i <= -1){
+                                $scope.recommendationsNodes.push(item.objectiveNode);
+                            }
+                            return null;
+                        });
                         $scope.$apply();
                     }
                 },
@@ -103,8 +122,20 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                     for (let i = 0; i < $scope.recommendations.length; i++) {
                         $scope.recommendations[i].learning_type = $scope.typeToAsker($scope.recommendations[i].learning_type);
                     }
+                    $scope.sortRecomendations();
                     $scope.$apply();
                 }
+            });
+        };
+
+        $scope.sortRecomendations = function () {
+            $scope.recommendationsNodes = new Array();
+            Object.values($scope.recommendations).filter(function (item) {
+                var i = $scope.recommendationsNodes.findIndex(x => (x == item.objectiveNode));
+                if (i <= -1) {
+                    $scope.recommendationsNodes.push(item.objectiveNode);
+                }
+                return null;
             });
         };
 
@@ -153,7 +184,6 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                 async: true,
                 success: function (data, textStatus) {
                     $scope.objectives = JSON.parse(data);
-                    console.log($scope.objectives);
                     $scope.$apply();
                 }
             });
@@ -352,7 +382,7 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
         $scope.typeToAsker = function (type) {
             switch (type) {
                 case 'choice':
-                    return "multipe-choice";
+                    return "multiple-choice";
                 case 'fill-in':
                     return "open-ended-question";
                 case 'matching':
@@ -360,6 +390,7 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                 case 'sequencing':
                     return "order-items";
                 default :
+                    console.log(type);
                     return type;
             }
         };

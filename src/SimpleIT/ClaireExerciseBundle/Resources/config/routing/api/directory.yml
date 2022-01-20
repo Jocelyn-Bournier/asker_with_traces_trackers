@@ -77,7 +77,17 @@ api_directory_jwt:
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/Directory/Directory:jwt}
     methods: [GET]
 
+api_directory_users:
+    path: /comper/{directoryId}/users
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Directory/Directory:listUsers }
+    methods: [ GET ]
+
 api_directory_comper:
     path: /comper/{directoryId}
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/Directory/Directory:activateComper }
+    methods: [ GET ]
+
+api_directory_comper_user:
+    path: /comper/{directoryId}/{userId}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Directory/Directory:activateComperUser }
     methods: [ GET ]

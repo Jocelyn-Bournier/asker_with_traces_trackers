@@ -484,6 +484,23 @@ class DirectoryController extends BaseController
     }
 
     /**
+     * List users related to a directory
+     *
+     * @OA\Get(
+     *     path="/api/directories/comper/{directoryId}",
+     *     @OA\Parameter(in="path", name="directoryId", parameter="directoryId"),
+     *     @OA\Response(response="200", description="List of users"),
+     *     tags={"directories"},
+     * )
+     */
+    public function listUsersAction($directoryId)
+    {
+        $dir = $this->get('simple_it.exercise.directory')->find($directoryId);
+        $users = $this->get('simple_it.exercise.directory')->listUsers($dir);
+        return new JsonResponse(array('users' => $users));
+    }
+
+    /**
      * Create a JWT Token for comper services
      *
      * @OA\Get(
@@ -498,5 +515,22 @@ class DirectoryController extends BaseController
         $dir = $this->get('simple_it.exercise.directory')->find($directoryId);
         $usersCreated = $this->get('simple_it.exercise.directory')->activateComper($dir);
         return new JsonResponse(array('usersCreated' => $usersCreated));
+    }
+
+    /**
+     * Create a JWT Token for comper services
+     *
+     * @OA\Get(
+     *     path="/api/directories/comper/{directoryId}",
+     *     @OA\Parameter(in="path", name="directoryId", parameter="directoryId"),
+     *     @OA\Response(response="200", description="Number of profiles created"),
+     *     tags={"directories"},
+     * )
+     */
+    public function activateComperUserAction($directoryId, $userId)
+    {
+        $dir = $this->get('simple_it.exercise.directory')->find($directoryId);
+        $userCreated = $this->get('simple_it.exercise.directory')->activateComperUser($dir, $userId);
+        return new JsonResponse(array('userCreated' => $userCreated));
     }
 }

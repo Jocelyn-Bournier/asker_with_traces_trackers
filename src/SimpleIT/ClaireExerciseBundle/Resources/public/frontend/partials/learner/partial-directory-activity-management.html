@@ -1,6 +1,23 @@
 <div style="float:left; flex:1; display:flex; margin-right: 2em;">
     <style>
 
+        .collapsible:after {
+            content: '\2227';
+            margin-right: 0.5em;
+            float:right;
+        }
+
+        .collapsible.active:after {
+            content: "\2228";
+            margin-right: 0.5em;
+            float:right;
+        }
+        .collapsible{
+            cursor: pointer;
+            height:3em;
+        }
+
+
         .pr-2{
             padding-right: 0.5em;
         }
@@ -95,10 +112,19 @@
         <h4>Mes recommandations</h4>
         <div class=""><button id="retrieve-recommandations-button" ng-click="requestRecommendations(directory, objectives)" class="btn btn-primary w-100 mb-2">Obtenir de nouvelles recommandations</button> </div>
         <div style="flex:1;">
-        <div ng-repeat="recommendation in recommendations">
-            <div class="panel">
-                <div ng-include="BASE_CONFIG.urls.partials.learner+'/fragment-recommendation.html'">
+                <div ng-repeat="recommendationNode in recommendationsNodes" class="panel panel-default">
+                    <div id="panel-{{recommendationNode}}" class="panel-heading collapsible active" ng-click="collapse(recommendationNode);">
+                        <h3 class="panel-title" style="float:left;">{{recommendationNode.replaceAll("_"," ");}}</h3>
+                    </div>
+                    <div id="content-{{recommendationNode}}" class="panel-body content" style="display:block;">
+                        <div ng-repeat="recommendation in recommendations" ng-if="recommendationNode == recommendation.objectiveNode">
+                            <div class="panel">
+                                <div ng-include="BASE_CONFIG.urls.partials.learner+'/fragment-recommendation.html'">
+                                </div>
+                            </div>
+                    </div>
                 </div>
+
             </div>
         </div>
             </div>

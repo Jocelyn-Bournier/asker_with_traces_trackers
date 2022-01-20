@@ -137,7 +137,9 @@ class DirectoryService extends TransactionalService
                 $adminController = new AdminController();
 
                 foreach($userIds as $userId){
+                    echo "add comper ?";
                     $profileCreated = $adminController->addComperToUser($resource->getFrameworkId(), $userId);
+                    echo "comper added";
                     if ($profileCreated){
                         $userCreated = $userCreated + 1;
                     }
@@ -146,6 +148,32 @@ class DirectoryService extends TransactionalService
         }
         return $userCreated;
     }
+
+    public function listUsers($resource){
+        $entity = $this->find($resource->getId());
+        $view = $resource->getLastView();
+        if (!$entity->getParent()){
+            if($entity->getFrameworkId() !== null){
+                return $this->getIdUsers($entity, $view);
+                }
+            }
+        return [];
+    }
+
+    public function activateComperUser($resource, $userId){
+        $entity = $this->find($resource->getId());
+        $profileCreated = false;
+        if (!$entity->getParent()){
+            // Create comper profile if they doesn't exist
+            if($entity->getFrameworkId() !== null){
+                $adminController = new AdminController();
+                $profileCreated = $adminController->addComperToUser($resource->getFrameworkId(), $userId);
+            }
+        }
+        return $profileCreated;
+    }
+
+
 
     public function edit($resource,AskerUser $user)
     {
