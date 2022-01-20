@@ -235,7 +235,7 @@ class AdminController extends BaseController
         }
     }
 
-    public function addComperToUser($frameworkId, $userId){
+    public function addComperToUser($frameworkId, $userId, $role = "learner"){
         $jwtEncoder = $this->get('app.jwtService');
         $user       = $this->get('simple_it.exercise.user');
         $timestamp  = new \DateTime();
@@ -246,7 +246,7 @@ class AdminController extends BaseController
             "username" => $user->get($userId)->getUsername(),
             "forename" => $user->get($userId)->getFirstName(),
             "name"     => $user->get($userId)->getLastName(),
-            "role"     => $_COOKIE['userRoleStudentOnly'] === 'true' ? 'learner' : 'teacher',
+            "role"     => $role,
             "exp"      => $timestamp,
             "platform" => 'asker',
             "homepage" => 'https://asker.univ-lyon1.fr/'
