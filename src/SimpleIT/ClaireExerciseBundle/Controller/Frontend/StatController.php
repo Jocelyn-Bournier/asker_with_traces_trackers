@@ -132,7 +132,7 @@ class StatController extends BaseController
         }
         return $this->redirectToRoute('admin_stats');
     }
-    public function filterDirectoryAction(Directory $directory, StatView $view = null)
+    public function filterDirectoryAction(Directory $directory, StatView $view = null, Request $request)
     {
         $user = $this->get('security.token_storage')->getToken()->getUser();
         if (
@@ -147,10 +147,10 @@ class StatController extends BaseController
             $params = array(
                 'directory' => $directory,
                 'selectView' => $view,
-                'createForm' => $this->createViewAction($directory),
+                'createForm' => $this->createViewAction($directory, $request),
             );
             if ($view){
-                $params['editForm'] = $this->editViewAction($view);
+                $params['editForm'] = $this->editViewAction($view, $request);
             }
             return $this->render(
                 'SimpleITClaireExerciseBundle:Frontend:list_stat_view.html.twig',$params
