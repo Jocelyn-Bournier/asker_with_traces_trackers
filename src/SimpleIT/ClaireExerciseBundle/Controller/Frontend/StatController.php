@@ -161,7 +161,7 @@ class StatController extends BaseController
     /*
         Charcge le filtre de temps de la page de l'étudiant
     */
-    public function statPersonalAction(Directory $directory, AskerUser $user, StatView $view = null)
+    public function statPersonalAction(Directory $directory, AskerUser $user, StatView $view = null, Request $request)
     {
         $_user = $this->get('security.token_storage')->getToken()->getUser();
         if (
@@ -178,10 +178,10 @@ class StatController extends BaseController
                 'user' => $user,
                 'directory' => $directory,
                 'selectView' => $view,
-                'createForm' => $this->createViewAction($directory),
+                'createForm' => $this->createViewAction($directory, $request),
             );
             if ($view){
-                $params['editForm'] = $this->editViewAction($view);
+                $params['editForm'] = $this->editViewAction($view, $request);
             }
 
             return $this->render(
