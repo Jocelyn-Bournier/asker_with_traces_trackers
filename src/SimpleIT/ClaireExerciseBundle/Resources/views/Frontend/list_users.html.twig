@@ -161,9 +161,14 @@
           return response.json()
         })
         .then( function (data) {
-          for (var user_id in data) {
+          for (const user_id in data) {
             directories = data[user_id];
-            document.getElementById(`${user_id}-directories`).innerHTML = templateDirectories(user_id,directories);
+            const element = document.getElementById(`${user_id}-directories`);
+            if(typeof element !== 'undefined' && element !== null) {
+              element.innerHTML = templateDirectories(user_id,directories);
+            } else {
+            console.log(`badly created user: ${user_id}`)
+            }
           }
         })
     });
