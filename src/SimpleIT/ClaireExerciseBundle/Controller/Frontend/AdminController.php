@@ -126,9 +126,9 @@ class AdminController extends BaseController
                     $em->remove($user);
                 }
             }else{
-                //$roleService = $this->get('simple_it.exercise.role');
+                $roleService = $this->get('simple_it.exercise.role');
                 $directoryService = $this->get('simple_it.exercise.directory');
-                //$roleUser = $roleService->getRoleUser();
+                $roleUser = $roleService->getRoleUser();
                 $dir = $directoryService->find(
                     $request->get('directory')
                 );
@@ -136,6 +136,7 @@ class AdminController extends BaseController
                     $user = $userService->get($checked);
                     $dirUser = new AskerUserDirectory();
                     $user->setIsEnable(1);
+                    $user->addRole($roleUser);
                     $dirUser->setUser($user);
                     $dirUser->setIsManager(false);
                     $dirUser->setDirectory($dir);
