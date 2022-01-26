@@ -17,9 +17,10 @@
  */
 
 namespace SimpleIT\ClaireExerciseBundle\Controller\Api\Recommendation;
+use SimpleIT\ClaireExerciseBundle\Entity\ComperRecommendationTrace;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use SimpleIT\ClaireExerciseBundle\Controller\BaseController;
-use SimpleIT\ClaireExerciseBundle\Entity\ComperRecommendation;
+//use SimpleIT\ClaireExerciseBundle\Entity\ComperRecommendation;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -233,6 +234,38 @@ class RecommendationController extends BaseController
             echo 'Erreur Curl asker : ' . curl_error($curl);
         }
         return new JsonResponse($response);
+    }
+
+    /**
+     * ANR COMPER
+     * Creates a ComperRecommendationTrace corresponding to an "action" done by the learner regarding recommendations.
+     * An action can be, for example, "request", for when the learner requests his profile.
+     * @OA\Get(
+     *          path="/api/profile/trace/{directoryId}/{action}",
+     *          @OA\Parameter(in="path", name="directoryId", parameter="directoryId"),
+     *          @OA\Parameter(in="path", name="action", parameter="action"),
+     *          @OA\Parameter(in="path", name="exerciceId", parameter="exerciceId"),
+     *          @OA\Response(response="200", description="confirmation of trace creation"),
+     *     tags={"profile"},
+     *      )
+     * @param $action string the kind of action performed by the learner
+     * @param $directoryId int the identifier of the directory where the action is applied
+     * @return JsonResponse return a JsonResponse 'Profile trace created' after the trace was added to the user's profile
+     */
+    public function traceAction($directoryId, $action, $resourceLocation, $resourceTitle)
+    {
+        $user     = $this->get('security.token_storage')->getToken()->getUser();
+        $recommendation  = new ComperRecommendationTrace();
+        $recommendation->setCreatedAt(new \DateTime());
+        $recommendation->setUser($user);
+        $recommendation->setContextDirectory($directoryId);
+        $recommendation->setAction($action);
+        $recommendation->setResourceLocation($resourceLocation);
+        $recommendation->setResourceTitle($resourceTitle);
+        $this->getDoctrine()->getManager()->persist($recommendation);
+        $this->getDoctrine()->getManager()->flush();
+        $response         = new JsonResponse('Recommendation trace created');
+        return $response;
     }
 
 }

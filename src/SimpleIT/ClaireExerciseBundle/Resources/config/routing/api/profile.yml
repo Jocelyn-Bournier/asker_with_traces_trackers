@@ -5,6 +5,11 @@ api_profile_request:
     defaults: {_controller: SimpleITClaireExerciseBundle:Api/Profile/Profile:requestProfile}
     methods: [GET]
 
+api_profile_update:
+    path: /update/{framework_id}
+    defaults: {_controller: SimpleITClaireExerciseBundle:Api/Profile/Profile:updateProfile}
+    methods: [GET]
+
 api_profile_specific_request:
     path: /request/{framework_id}/user/{userId}
     defaults: {_controller: SimpleITClaireExerciseBundle:Api/Profile/Profile:requestSpecificProfile}

@@ -64,9 +64,37 @@ class ProfileService
     }
 
     /**
-     * Request the profile from the profile engine.
+     * Request the updated profile from the profile engine.
      *
      * @param string $token the profile to request
+     */
+    public function updateProfile($token)
+    {
+        $header = array();
+        $header[] = 'Content-Type: application/json';
+        $header[] = 'Response-Type: application/json';
+        $header[] = 'Comper-origin: asker';
+        $header[] = 'Authorization: Bearer '.$token;
+
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $this->profileEndpoint.'?update=true');
+        curl_setopt($curl, CURLOPT_POST, false);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
+
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($curl);
+        if($response === false)
+        {
+            echo 'Erreur Curl asker: ' . curl_error($curl);
+        } else {
+            return $response;
+        }
+    }
+
+    /**
+     * Create a profile from the profile engine.
+     *
+     * @param string $token the profile to create
      */
     public function createProfile($token)
     {

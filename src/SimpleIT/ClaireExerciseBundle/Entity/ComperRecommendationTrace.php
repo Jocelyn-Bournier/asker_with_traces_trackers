@@ -60,6 +60,11 @@ class ComperRecommendationTrace
     private $resourceTitle;
 
     /**
+     * @var string
+     */
+    private $action;
+
+    /**
      * Set createdAt
      *
      * @param \DateTime $createdAt
@@ -117,6 +122,16 @@ class ComperRecommendationTrace
     public function setResourceTitle($resourceTitle)
     {
         $this->resourceTitle = $resourceTitle;
+    }
+
+    /**
+     * Set action
+     *
+     * @param string $action
+     */
+    public function setAction($action)
+    {
+        $this->action = $action;
     }
 
 }

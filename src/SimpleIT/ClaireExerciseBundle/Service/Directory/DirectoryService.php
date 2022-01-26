@@ -211,6 +211,7 @@ class DirectoryService extends TransactionalService
                 $this->askerUserDirectoryService->updateManager($dir, $resource);
             }
             // Create comper profile if they doesn't exist
+            /*
             if($resource->getFrameworkId() !== null && $frameworkChanged){
                 $userIds = $this->getIdUsers($entity, null);
                 $adminController = new AdminController();
@@ -218,6 +219,14 @@ class DirectoryService extends TransactionalService
                     $profileCreated = $adminController->addComperToUser($resource->getFrameworkId(), $userId);
                 }
             }
+            */
+            // Update sub-dirs with frameworkId
+            if($resource->getFrameworkId() !== null && $frameworkChanged){
+                foreach($entity->getSubs() as $dir ){
+                    $this->updateFrameworkDir($dir, $resource->getFrameworkId());
+                }
+            }
+
         }
         foreach($entity->getModels() as $model){
             $entity->removeModel($model);
@@ -232,6 +241,13 @@ class DirectoryService extends TransactionalService
         }
         $this->em->flush();
         return $entity;
+    }
+    public function updateFrameworkDir($dir, $frameworkId)
+    {
+        $entity = $this->find($dir->getId());
+        $entity->setFrameworkId($frameworkId);
+        $this->em->persist($entity);
+        //$this->em->flush($entity);
     }
     public function create($user, $directory)
     {

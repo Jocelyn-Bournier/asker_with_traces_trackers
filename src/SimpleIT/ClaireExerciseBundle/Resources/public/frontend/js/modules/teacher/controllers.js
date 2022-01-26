@@ -340,8 +340,6 @@ resourceControllers.controller('resourceViewController', ['$scope', 'BASE_CONFIG
         $scope.BASE_CONFIG = BASE_CONFIG;
         $scope.resource = resource;
         $scope.users = users;
-
-        console.log(users);
     }]);
 
 
