@@ -1,4 +1,4 @@
-<div style="float:left; flex:1; display:flex; margin-right: 2em;">
+<div style="float:left; flex:0.45; display:flex; margin-right: 2em;">
     <style>
 
         .collapsible:after {
@@ -86,6 +86,49 @@
                 transform: rotate(360deg);
             }
         }
+         a.link-no-style{
+             all: unset;
+         }
+
+        /* Tooltip container */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+            opacity: 100 !important;
+            font-size: 14px !important;
+        }
+
+        .tooltip .tooltiptext {
+            width: 150px;
+            bottom: 100%;
+            left: 30%;
+            margin-left: -75px; /* Use half of the width (120/2 = 60), to center the tooltip */
+        }
+
+        .tooltip:hover{
+            cursor: help;
+        }
+
+        /* Tooltip text */
+        .tooltiptext {
+            visibility: hidden;
+            width: 250px;
+            background-color: black;
+            color: #fff;
+            text-align: center;
+            padding: 5px 0;
+            border-radius: 6px;
+
+            /* Position the tooltip text - see examples below! */
+            position: absolute;
+            z-index: 1;
+        }
+
+        /* Show the tooltip text when you mouse over the tooltip container */
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+        }
 
     </style>
     <div style="display: flex; flex: 1; flex-direction: column; overflow-y: scroll; overflow-x: hidden; padding-right: 1em;">
@@ -110,13 +153,19 @@
         <hr style="margin: 5px !important;"/>
 
         <h4>Mes recommandations</h4>
-        <div class=""><button id="retrieve-recommandations-button" ng-click="requestRecommendations(directory, objectives)" class="btn btn-primary w-100 mb-2">Obtenir de nouvelles recommandations</button> </div>
+        <div class="tooltip">
+            <button id="retrieve-recommandations-button" ng-click="requestRecommendations(directory, objectives)" class="btn btn-primary w-100 mb-2" ng-disabled="objectives.length === 0">Obtenir de nouvelles recommandations</button>
+            <span class="tooltiptext">
+                <span ng-if="objectives.length === 0">Vous devez avoir au moins un objectif pour demander des recommandations</span>
+            </span>
+        </div>
         <div style="flex:1;">
+            <div ng-if="recommendations.length === 0">Vous n'avez pas de recommendations proposées.</div>
                 <div ng-repeat="recommendationNode in recommendationsNodes" class="panel panel-default">
-                    <div id="panel-{{recommendationNode}}" class="panel-heading collapsible active" ng-click="collapse(recommendationNode);">
+                    <div id="panel-{{recommendationNode}}" class="panel-recommendation panel-heading collapsible active" ng-click="collapse(recommendationNode);">
                         <h3 class="panel-title" style="float:left;">{{recommendationNode.replaceAll("_"," ");}}</h3>
                     </div>
-                    <div id="content-{{recommendationNode}}" class="panel-body content" style="display:block;">
+                    <div id="content-{{recommendationNode}}" class="content-recommendation panel-body content" style="display:block;">
                         <div ng-repeat="recommendation in recommendations" ng-if="recommendationNode == recommendation.objectiveNode">
                             <div class="panel">
                                 <div ng-include="BASE_CONFIG.urls.partials.learner+'/fragment-recommendation.html'">
@@ -134,8 +183,10 @@
 <div class="right" style="flex: 1; display:flex;flex-direction: column;">
     <h4>Mon profil</h4>
     <div style="padding-bottom: 1em;">
-        <button ng-click="requestProfile(directory)" type="button" class="btn btn-primary">Mettre à jour mon profil</button>
-        <select id="olm-options" data-directory-id="{{directory.id}}" class="hidden" onchange="ChangeOLMVisu(this)">
+        <button ng-click="updateProfile(directory, true)" type="button" class="btn btn-primary">Mettre à jour mon profil</button>
+        <!--<button ng-click="hideResource()" id="buttonShowExercises" type="button" class="btn btn-primary">Cacher les resources</button>
+
+        --><select id="olm-options" data-directory-id="{{directory.id}}" class="hidden" onchange="ChangeOLMVisu(this)">
             <option value="0" selected>Arborescent</option>
             <option value="1">Stalactite </option>
             <option value="2">Bulles     </option>
@@ -143,7 +194,7 @@
         </select>
     </div>
 
-    <div style="flex:1; overflow-y: scroll; overflow-x: hidden;">
+    <div style="flex:1; overflow-y: scroll; overflow-x: hidden; display: flex; flex-direction: column;">
         <div id="olm-target-loader">
             <div class='olm-loader'></div>
             <p>
@@ -151,7 +202,7 @@
                 Cette opéridation peut prendre plusieurs secondes, notamment lors de l'initialisation du profil...
             </p>
         </div>
-        <div id="olm-target"></div>
+        <div id="olm-target" style="flex:1;"></div>
     </div>
 
 </div>
@@ -177,31 +228,33 @@
                 treeIndented.onClick = (node) => {}
                 treeIndented.onMouseEnter = (node) => {}
                 treeIndented.draw(svgId = 'olm-target-indented');
-                action = 'change to treeIndented';
+                action = 'change_to_treeIndented';
                 break;
             case 1:
                 let treePartition = new OLM.TreePartition(document.getElementById('olm-target'), fw_tree, config);
+                treePartition.onClick = (node) => {}
                 treePartition.onMouseOver = (node) => {}
                 treePartition.draw(svgId = 'olm-target-partition');
-                action = 'change to treePartition';
+                action = 'change_to_treePartition';
                 break;
             case 2:
                 let treePack = new OLM.TreePack(document.getElementById('olm-target'), fw_tree, config);
-                console.log(treePack.viewBoxWidth+' : '+treePack.viewBoxHeight);
+                treePack.onClick = (node) => {}
                 treePack.onMouseOver = (node) => {}
                 treePack.draw(svgId = 'olm-target-pack');
-                action = 'change to treePack';
+                action = 'change_to_treePack';
                 break;
             case 3:
                 let treeSunburst = new OLM.TreeSunburst(document.getElementById('olm-target'), fw_tree, config);
+                treeSunburst.onClick = (node) => {}
                 treeSunburst.onMouseOver = (node) => {}
                 treeSunburst.draw(svgId = 'olm-target-sunburst');
-                action = 'change to treeSunburst';
+                action = 'change_to_treeSunburst';
                 break;
         }
         $.ajax({
             //url:     "/app_dev.php/api/profile/trace/"+directoryId+'/'+action,
-            url:     "/api/profile/trace/"+directoryId+'/'+action,
+            url:     `${BASE_CONFIG.urls.api.profile}trace/${directoryId}/${action}`,
             type:    "POST",
             async:   true,
             success: function(data, textStatus){}

@@ -13,6 +13,8 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
         $scope.recommendationsRequested = false;
         $scope.selectionIntention;
         $scope.recommendationsNodes = new Array();
+        $scope.selectedOption = 0;
+        $scope.showResources = true;
 
         $scope.collapse = function (nodeName) {
             let panel = document.getElementById("panel-"+nodeName);
@@ -21,6 +23,17 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
             if (content.style.display === "block") {
                 content.style.display = "none";
             } else {
+                content.style.display = "block";
+            }
+        }
+
+        $scope.expandAllRecommendations = function () {
+            let panels = document.getElementsByClassName("panel-recommendation");
+            let contents = document.getElementsByClassName("content-recommendation");
+            for(let panel of panels){
+                panel.classList.add("active");
+            }
+            for(let content of contents){
                 content.style.display = "block";
             }
         }
@@ -50,7 +63,7 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
             if (tab === "management") {
                 let profileAlreadyComputed = document.getElementById('olm-target-loader').classList.contains('hidden');
                 if (!profileAlreadyComputed) {
-                    $scope.requestProfile($scope.directory);
+                    $scope.requestProfile($scope.directory, true);
                 }
                 if ($scope.recommendations.length === 0) {
                     $scope.obtainRecommendations($scope.directory);
@@ -87,7 +100,7 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                         $scope.recommendations = [];
                     } else {
                         for (let i = 0; i < $scope.recommendations.length; i++) {
-                            $scope.recommendations[i].learning_type = $scope.typeToAsker($scope.recommendations[i].learning_type);
+                            $scope.recommendations[i].learning_type = $scope.typeToAsker($scope.recommendations[i].title);
                         }
                         $scope.retrieveGenerationObjectives(directory);
                         $scope.recommendationsNodes = new Array();
@@ -106,26 +119,60 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
             });
         };
 
+        $scope._nbRecommendations = function (nodename){
+            let contentContainer = document.getElementById('content-'+nodename);
+            return contentContainer.childElementCount < 3;
+        };
+
         /**
          * Récupère les recommendations d'exercices pour l'apprenant en fonction de son profil
          * @param directory Le repertoire sur lequel les recommendations sont proposées
          */
         $scope.requestRecommendations = function (directory, objectives) {
+            let frameworkId = directory.framework_id;
             $.ajax({
-                url: `${BASE_CONFIG.urls.api.recommendations}/${directory.id}/${directory.framework_id}/${JSON.stringify(objectives)}`,
+                url: `${BASE_CONFIG.urls.api.profile}update/${frameworkId}`,
+                type: "GET",
+                crossDomain: true,
+                async: true,
+                success: function (data, textStatus) {
+                    $scope.profileComputed = true;
+                    $scope.framework = data;
+                    $scope.drawProfile();
+                    $.ajax({
+                        url: `${BASE_CONFIG.urls.api.recommendations}/${directory.id}/${directory.framework_id}/${JSON.stringify(objectives)}`,
+                        type: "POST",
+                        async: true,
+                        success: function (data, textStatus) {
+                            $scope.recommendationsRequested = true;
+                            $scope.recommendations = JSON.parse(data);
+                            for (let i = 0; i < $scope.recommendations.length; i++) {
+                                $scope.recommendations[i].learning_type = $scope.typeToAsker($scope.recommendations[i].title);
+                            }
+                            $scope.sortRecomendations();
+                            $scope.expandAllRecommendations();
+                            $scope.$apply();
+                        }
+                    });
+                }
+            });
+            for(let recommendation of $scope.recommendations){
+                $.ajax({
+                    url: `${BASE_CONFIG.urls.api.recommendations}/trace/${directory.id}/generate?url=${encodeURIComponent(recommendation.location)}&title=${recommendation.title}`,
+                    type: "POST",
+                    async: true,
+                    success: function (data, textStatus) {
+                    }
+                });
+            }
+            /*$.ajax({
+                url: `${BASE_CONFIG.urls.api.profile}trace/${frameworkId}/viewProfile`,
                 type: "POST",
                 async: true,
                 success: function (data, textStatus) {
-                    $scope.recommendationsRequested = true;
-                    $scope.recommendations = JSON.parse(data);
-                    console.log($scope.recommendations);
-                    for (let i = 0; i < $scope.recommendations.length; i++) {
-                        $scope.recommendations[i].learning_type = $scope.typeToAsker($scope.recommendations[i].learning_type);
-                    }
-                    $scope.sortRecomendations();
-                    $scope.$apply();
                 }
             });
+            */
         };
 
         $scope.sortRecomendations = function () {
@@ -150,7 +197,6 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                 async: true,
                 success: function (data, textStatus) {
                     $scope.objectives = JSON.parse(data);
-                    console.log($scope.objectives);
                     $scope.$apply();
                 }
             });
@@ -167,7 +213,6 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                 async: true,
                 success: function (data, textStatus) {
                     $scope.objectives = JSON.parse(data);
-                    console.log($scope.objectives);
                     $scope.$apply();
                 }
             });
@@ -200,7 +245,6 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                 type: "POST",
                 async: true,
                 success: function (data, textStatus) {
-                    console.log(data);
                 }
             });
 
@@ -209,14 +253,21 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
         /**
          * Enregistre le nouvel état d'une recommendation
          */
-        $scope.performRecommendation = function (directory, recommendation, location) {
+        $scope.performRecommendation = function (directory, recommendation, exerciseLocation, exerciseTitle) {
             $.ajax({
                 url: `${BASE_CONFIG.urls.api.recommendations}/${directory.id}/${directory.framework_id}/perform/${recommendation}`,
                 type: "POST",
                 async: true,
                 success: function (data, textStatus) {
                     $scope.obtainRecommendations(directory);
-                    $scope._createExercise(location);
+                    $scope._createExercise(exerciseLocation);
+                }
+            });
+            $.ajax({
+                url: `${BASE_CONFIG.urls.api.recommendations}/trace/${directory.id}/perform?url=${encodeURIComponent(exerciseLocation)}&title=${ecerciseTitle}`,
+                type: "POST",
+                async: true,
+                success: function (data, textStatus) {
                 }
             });
         }
@@ -340,6 +391,7 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                 "fontColor": "rgba(0, 0, 0, .85)",
                 "backgroundColor": "rgba(255, 255, 255, .95)",
                 "showCover": $.cookie('userRoleStudentOnly') === 'false',
+                "showExercises": $scope.showResources
             });
             treeIndented.onClick = (node) => {
                 $scope.selectedNode = node.data.name;
@@ -353,10 +405,11 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
          * Récupère le profil de l'apprenant sur un répertoire donné
          * @param directory le répertoire sur lequel le profil récupéré correspond
          */
-        $scope.requestProfile = function (directory) {
+        $scope.requestProfile = function (directory, userInitiated = false) {
+
+                let action = userInitiated ? "viewProfileFromUser" : "viewProfile";
 
                 let frameworkId = directory.framework_id;
-                console.log(`${BASE_CONFIG.urls.api.profile}request/${frameworkId}`);
                 $.ajax({
                     url: `${BASE_CONFIG.urls.api.profile}request/${frameworkId}`,
                     type: "GET",
@@ -369,29 +422,75 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                     }
                 });
                 $.ajax({
-                    url: `${BASE_CONFIG.urls.api.profile}trace/${frameworkId}/request`,
+                    url: `${BASE_CONFIG.urls.api.profile}trace/${frameworkId}/${action}`,
                     type: "POST",
                     async: true,
                     success: function (data, textStatus) {
-                        console.log(data);
-                        console.log(textStatus);
                     }
                 });
         }
 
+        /**
+         * Récupère le profil de l'apprenant sur un répertoire donné
+         * @param directory le répertoire sur lequel le profil récupéré correspond
+         */
+        $scope.updateProfile = function (directory, userInitiated = false) {
+
+            let action = userInitiated ? "updateProfileFromUser" : "updateProfile";
+
+            let frameworkId = directory.framework_id;
+            $.ajax({
+                url: `${BASE_CONFIG.urls.api.profile}update/${frameworkId}`,
+                type: "GET",
+                crossDomain: true,
+                async: true,
+                success: function (data, textStatus) {
+                    $scope.profileComputed = true;
+                    $scope.framework = data;
+                    $scope.drawProfile();
+                }
+            });
+            $.ajax({
+                url: `${BASE_CONFIG.urls.api.profile}trace/${frameworkId}/${action}`,
+                type: "POST",
+                async: true,
+                success: function (data, textStatus) {
+                }
+            });
+        }
+
+        $scope.hideResource = function () {
+            $scope.showResources = !$scope.showResources;
+            $scope.drawProfile();
+            document.getElementById('buttonShowExercises').innerHTML = "Afficher les resources";
+            document.getElementById('buttonShowExercises').onclick = $scope.showResource;
+        }
+
+        $scope.showResource = function() {
+            $scope.showResources = !$scope.showResources;
+            $scope.drawProfile();
+            document.getElementById('buttonShowExercises').innerHTML = "Cacher les resources";
+            document.getElementById('buttonShowExercises').onclick = $scope.hideResource;
+        }
+
         $scope.typeToAsker = function (type) {
-            switch (type) {
-                case 'choice':
-                    return "multiple-choice";
-                case 'fill-in':
-                    return "open-ended-question";
-                case 'matching':
-                    return "pair-items";
-                case 'sequencing':
-                    return "order-items";
-                default :
-                    console.log(type);
-                    return type;
+            if ($scope.directory.models != null){
+                for(let model of $scope.directory.models){
+                    if (type == model.title){
+                        return model.type;
+                    }
+                }
+            }
+            if($scope.directory.subs != null){
+                for(let sub of $scope.directory.subs){
+                    if (sub.models != null){
+                        for(let model of sub.models){
+                            if (type == model.title){
+                                return model.type;
+                            }
+                        }
+                    }
+                }
             }
         };
 
@@ -404,14 +503,11 @@ learnerControllers.controller('learnerController', ['$scope', 'User', 'AttemptBy
         $scope.imageUrl = BASE_CONFIG.urls.images.uploads;
         $scope.imageExoUrl = BASE_CONFIG.urls.images.exercise;
 
-        console.log('attempts loading...');
-
         // retrieve attempts
         if ($stateParams.modelId == '' || $stateParams.modelId == null) {
             $scope.models = AttemptList.query(
                 function () {
                     // when data loaded
-                    console.log('attempts loaded');
                     $scope.loadUsers($scope.models);
                 });
         } else {
@@ -419,7 +515,6 @@ learnerControllers.controller('learnerController', ['$scope', 'User', 'AttemptBy
             $scope.models[0] = AttemptList.get({modelId: $stateParams.modelId},
                 function () {
                     // when data loaded
-                    console.log('attempt loaded');
                     $scope.loadUsers($scope.models);
                 });
 
@@ -430,18 +525,14 @@ learnerControllers.controller('learnerController', ['$scope', 'User', 'AttemptBy
         };
 
         $scope.tryExercise = function (exercise) {
-            console.log('create attempt...');
             attempt = AttemptByExercise.create({exerciseId: exercise.id},
                 function (attempt) {
-                    console.log('redirection');
                     $scope.viewAttempt(attempt);
                 });
         };
 
         $scope.tryModel = function (model) {
             // create exercise from model
-            console.log(model);
-            console.log('create exercise...');
             $.cookie('exerciseGeneratedFrom', 'activities');
             exercise = ExerciseByModel.try({modelId: model.id},
                 function (exercise) {

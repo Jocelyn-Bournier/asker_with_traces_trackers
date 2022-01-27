@@ -3,10 +3,10 @@
         all: unset;
     }
 </style>
-<div ng-click="performRecommendation(directory, recommendation.title, recommendation.location)" class="link-no-style">
+<div ng-click="performRecommendation(directory, recommendation.title, recommendation.location, recommendation.title)" class="link-no-style">
     <div ng-class="recommendation.completed ? 'panel-default' : 'panel-warning'">
         <div class="panel-heading">
-            <div class="" ng-switch="typeToAsker(recommendation.learning_type)" style="float:left;margin-left:10px;">
+            <div class="" ng-switch="recommendation.learning_type" style="float:left;margin-left:10px;">
                 <div ng-switch-when="multiple-choice">
                     <span title="QCM" class="glyphicon glyphicon-check" style="font-size: 260%"></span>
                 </div>

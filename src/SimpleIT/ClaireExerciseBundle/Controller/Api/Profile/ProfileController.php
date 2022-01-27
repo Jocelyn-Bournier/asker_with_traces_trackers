@@ -71,6 +71,45 @@ class ProfileController extends BaseController
 
     /**
      * ANR COMPER
+     * Create a JWT token and request the updated profile of a learner.
+     * Then simply return this profile.
+     * @OA\Post(
+     *          path="/api/profile/request/{frameworkId}",
+     *          @OA\Parameter(in="path", name="frameworkId", parameter="frameworkId"),
+     *          @OA\Response(response="200", description="profile of an user"),
+     *     tags={"profile"},
+     *      )
+     * @param int $framework_id the identifier of the framework used
+     * @return string the profile of a learner on Json format
+     */
+    public function updateProfileAction($framework_id)
+    {
+        $jwtEncoder = $this->container->get('app.jwtService');
+        $user       = $this->get('security.token_storage')->getToken()->getUser();
+        $timestamp  = new \DateTime();
+        $timestamp  = $timestamp->getTimestamp()+3000;
+        $payload    = [
+            "user"     => "asker:".$user->getId(),
+            "fwid"     => intval($framework_id),
+            "username" => $user->getUsername(),
+            "forename" => $user->getFirstName(),
+            "name"     => $user->getLastName(),
+            "role"     => $_COOKIE['userRoleStudentOnly'] === 'true' ? 'learner' : 'teacher',
+            "exp"      => $timestamp,
+            "platform" => 'asker',
+            "homepage" => 'https://asker.univ-lyon1.fr/'
+        ];
+
+        $token = $jwtEncoder->getToken($payload);
+
+        $profileService = $this->container->get('app.profileService');
+        $profile = JsonResponse::fromJsonString($profileService->updateProfile($token));
+
+        return $profile;
+    }
+
+    /**
+     * ANR COMPER
      * Creates a ComperProfileTrace corresponding to an "action" done by the learner regarding his profile.
      * An action can be, for example, "request", for when the learner requests his profile.
      * @OA\Get(
@@ -97,6 +136,7 @@ class ProfileController extends BaseController
         $response         = new JsonResponse('Profile trace created');
         return $response;
     }
+
 
 }
 ?>

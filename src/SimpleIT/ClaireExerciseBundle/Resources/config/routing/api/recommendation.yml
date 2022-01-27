@@ -42,3 +42,8 @@ api_objectives_generation_retrieve:
     path: request/{directoryId}/{fwid}/generationObjectives
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/Recommendation/Recommendation:retrieveGenerationObjectives}
     methods: [GET]
+
+api_recommendation_trace:
+    path: request/trace/{directoryId}/{action}?url={resourceLocation}?title={resourceTitle}
+    defaults: {_controller: SimpleITClaireExerciseBundle:Api/Recommendation/Recommendation:trace}
+    methods: [POST]
