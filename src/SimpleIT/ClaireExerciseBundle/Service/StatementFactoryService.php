@@ -88,7 +88,6 @@ class StatementFactoryService
      */
     public function generateAnswerStatement($user, $itemResource, $attemptId, $answerResource, $doctrine)
     {
-        echo "generation of statement";
         // The main entry to retrieve all the informations needed to build the statement
         $item = $doctrine->getRepository('SimpleITClaireExerciseBundle:CreatedExercise\Item')->find($itemResource->getItemId());
 
@@ -97,14 +96,10 @@ class StatementFactoryService
 
         // This will check if the answer is linked with at least one directory with a frameworkId, and if the user is linked with that directory.
         // If not, this means that the exercise done has nothing to do with the comper project and does not need to create a new xAPI statement.
-        echo $user->getID();
-        echo $item->getStoredExercise()->getId();
         $frameworkIds = $doctrine->getRepository('SimpleITClaireExerciseBundle:Directory')->getFrameworkIdsFromUserAndModel($user->getID(), $item->getStoredExercise()->getId());
 
         // COMMENT FOR DEBUG PURPOSE
-        echo count($frameworkIds);
         if(count($frameworkIds) === 0) return null;
-        echo "going to create trace";
 
         // TODO : Pour chaque retrieve<type> fonction, ajouter le calcu de l'extension "correct" (voir livrable)
         //        Cette extension va permettre de définir pour chaque réponse d'un ensemble de réponse (QCM, Appariement) quelle réponse atomique est juste ou fausse.
