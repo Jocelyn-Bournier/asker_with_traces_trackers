@@ -4,6 +4,7 @@
     <id name="id" type="integer" column="id">
       <generator strategy="AUTO"/>
     </id>
+    <field name="action"           type="string" column="action"            length="250"/>
     <field name="resourceLocation" type="string" column="resource_location" length="250"/>
     <field name="resourceTitle"    type="string" column="resource_title" length="250"/>
     <field name="createdAt" column="created_at" type="datetime" nullable="false"/>
@@ -11,5 +12,6 @@
             <join-column name="user_id" referenced-column-name="id" on-delete="CASCADE"/>
     </many-to-one>
     <field name="contextDirectory" type="integer" column="context_directory"/>
+    <field name="exerciseId" type="string" column="exerciseId" length="250" nullable="true"/>
   </entity>
 </doctrine-mapping>

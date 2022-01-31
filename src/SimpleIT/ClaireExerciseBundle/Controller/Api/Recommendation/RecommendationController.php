@@ -168,7 +168,7 @@ class RecommendationController extends BaseController
             CURLOPT_TIMEOUT => 0,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_CUSTOMREQUEST => 'PUT',
             CURLOPT_HTTPHEADER => array(
                 'Authorization: Bearer '.$token,
                 'Accept: application/json'
@@ -252,7 +252,7 @@ class RecommendationController extends BaseController
      * @param $directoryId int the identifier of the directory where the action is applied
      * @return JsonResponse return a JsonResponse 'Profile trace created' after the trace was added to the user's profile
      */
-    public function traceAction($directoryId, $action, $resourceLocation, $resourceTitle)
+    public function traceAction($directoryId, $action, $exerciseTitle, $exerciseId = null)
     {
         $user     = $this->get('security.token_storage')->getToken()->getUser();
         $recommendation  = new ComperRecommendationTrace();
@@ -260,13 +260,13 @@ class RecommendationController extends BaseController
         $recommendation->setUser($user);
         $recommendation->setContextDirectory($directoryId);
         $recommendation->setAction($action);
-        $recommendation->setResourceLocation($resourceLocation);
-        $recommendation->setResourceTitle($resourceTitle);
+        $recommendation->setResourceLocation('');
+        $recommendation->setResourceTitle($exerciseTitle);
+        $recommendation->setexerciseId($exerciseId);
         $this->getDoctrine()->getManager()->persist($recommendation);
         $this->getDoctrine()->getManager()->flush();
         $response         = new JsonResponse('Recommendation trace created');
         return $response;
     }
-
 }
 ?>

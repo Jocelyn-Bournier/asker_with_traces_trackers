@@ -157,8 +157,10 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                 }
             });
             for(let recommendation of $scope.recommendations){
+                console.log(BASE_CONFIG.urls.api.recommendationsTrace);
+                let action = "generate";
                 $.ajax({
-                    url: `${BASE_CONFIG.urls.api.recommendations}/trace/${directory.id}/generate?url=${encodeURIComponent(recommendation.location)}&title=${recommendation.title}`,
+                    url: `${BASE_CONFIG.urls.api.recommendationsTrace}/${directory.id}/${action}/${recommendation.title}`,
                     type: "POST",
                     async: true,
                     success: function (data, textStatus) {
@@ -263,8 +265,11 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                     $scope._createExercise(exerciseLocation);
                 }
             });
+
+            let action = "perform";
+            let exerciseId = $scope.titleToAskerId(exerciseTitle);
             $.ajax({
-                url: `${BASE_CONFIG.urls.api.recommendations}/trace/${directory.id}/perform?url=${encodeURIComponent(exerciseLocation)}&title=${ecerciseTitle}`,
+                url: `${BASE_CONFIG.urls.api.recommendationsTrace}/${directory.id}/${action}/${exerciseTitle}/${exerciseId}`,
                 type: "POST",
                 async: true,
                 success: function (data, textStatus) {
@@ -421,13 +426,15 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                         $scope.drawProfile();
                     }
                 });
-                $.ajax({
-                    url: `${BASE_CONFIG.urls.api.profile}trace/${frameworkId}/${action}`,
-                    type: "POST",
-                    async: true,
-                    success: function (data, textStatus) {
-                    }
-                });
+                if (userInitiated) {
+                    $.ajax({
+                        url: `${BASE_CONFIG.urls.api.profile}trace/${frameworkId}/${action}`,
+                        type: "POST",
+                        async: true,
+                        success: function (data, textStatus) {
+                        }
+                    });
+                }
         }
 
         /**
@@ -450,25 +457,32 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                     $scope.drawProfile();
                 }
             });
-            $.ajax({
-                url: `${BASE_CONFIG.urls.api.profile}trace/${frameworkId}/${action}`,
-                type: "POST",
-                async: true,
-                success: function (data, textStatus) {
-                }
-            });
+            if(userInitiated) {
+                $.ajax({
+                    url: `${BASE_CONFIG.urls.api.profile}trace/${frameworkId}/${action}`,
+                    type: "POST",
+                    async: true,
+                    success: function (data, textStatus) {
+                    }
+                });
+            }
         }
+
 
         $scope.hideResource = function () {
             $scope.showResources = !$scope.showResources;
-            $scope.drawProfile();
+            $scope.profileComputed = true;
+            $scope.framework = $scope.framework;
+            $scope.updateProfile($scope.directory, false);
             document.getElementById('buttonShowExercises').innerHTML = "Afficher les resources";
             document.getElementById('buttonShowExercises').onclick = $scope.showResource;
         }
 
         $scope.showResource = function() {
             $scope.showResources = !$scope.showResources;
-            $scope.drawProfile();
+            $scope.profileComputed = true;
+            $scope.framework = $scope.framework;
+            $scope.updateProfile($scope.directory, false);
             document.getElementById('buttonShowExercises').innerHTML = "Cacher les resources";
             document.getElementById('buttonShowExercises').onclick = $scope.hideResource;
         }
@@ -487,6 +501,27 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                         for(let model of sub.models){
                             if (type == model.title){
                                 return model.type;
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        $scope.titleToAskerId = function (title) {
+            if ($scope.directory.models != null){
+                for(let model of $scope.directory.models){
+                    if (title == model.title){
+                        return "asker"+model.id;
+                    }
+                }
+            }
+            if($scope.directory.subs != null){
+                for(let sub of $scope.directory.subs){
+                    if (sub.models != null){
+                        for(let model of sub.models){
+                            if (title == model.title){
+                                return "asker"+model.id;
                             }
                         }
                     }

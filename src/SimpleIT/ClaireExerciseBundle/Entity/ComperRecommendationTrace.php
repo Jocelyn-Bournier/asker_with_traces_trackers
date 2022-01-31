@@ -35,6 +35,11 @@ class ComperRecommendationTrace
     private $id;
 
     /**
+     * @var string
+     */
+    private $exerciseId;
+
+    /**
      * @var \DateTime
      */
     private $createdAt;
@@ -102,6 +107,16 @@ class ComperRecommendationTrace
     public function setContextDirectory($contextDirectory)
     {
         $this->contextDirectory = $contextDirectory;
+    }
+
+    /**
+     * Set exerciseId
+     *
+     * @param string $exerciseId
+     */
+    public function setexerciseId($exerciseId)
+    {
+        $this->exerciseId = $exerciseId;
     }
 
     /**

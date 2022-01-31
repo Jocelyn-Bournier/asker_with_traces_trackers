@@ -184,9 +184,9 @@
     <h4>Mon profil</h4>
     <div style="padding-bottom: 1em;">
         <button ng-click="updateProfile(directory, true)" type="button" class="btn btn-primary">Mettre à jour mon profil</button>
-        <!--<button ng-click="hideResource()" id="buttonShowExercises" type="button" class="btn btn-primary">Cacher les resources</button>
+        <button ng-if="selectedOption == 0" ng-click="hideResource()" id="buttonShowExercises" type="button" class="btn btn-primary">Cacher les resources</button>
 
-        --><select id="olm-options" data-directory-id="{{directory.id}}" class="hidden" onchange="ChangeOLMVisu(this)">
+        <select id="olm-options" ng-model="selectedOption" data-directory-id="{{directory.id}}" class="hidden" onchange="ChangeOLMVisu(this)">
             <option value="0" selected>Arborescent</option>
             <option value="1">Stalactite </option>
             <option value="2">Bulles     </option>
