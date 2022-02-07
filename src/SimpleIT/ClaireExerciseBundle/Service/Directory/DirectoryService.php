@@ -277,7 +277,7 @@ class DirectoryService extends TransactionalService
         ;
         $json = array();
         foreach($datas as $key=> $val){
-            $json[] = array('range' => $key, 'nb' => $val);
+            $json[] = array('range' => $key, 'nb' => (int)$val);
         }
         return $json;
     }
