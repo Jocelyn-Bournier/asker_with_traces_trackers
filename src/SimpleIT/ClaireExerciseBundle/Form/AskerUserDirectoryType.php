@@ -7,6 +7,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use SimpleIT\ClaireExerciseBundle\Repository\DirectoryRepository;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
 
 class AskerUserDirectoryType extends AbstractType
@@ -19,7 +20,11 @@ class AskerUserDirectoryType extends AbstractType
     {
         $userId = $options['userId'];
         $builder
-            ->add('isManager')
+            ->add('isManager', CheckboxType::class,
+                array(
+                    'label' => " ", # do not display "is Manager"
+                )
+            )
             #->add('startDate', HiddenType::class,
             #    array(
             #        'data' => new \DateTime()
@@ -39,7 +44,7 @@ class AskerUserDirectoryType extends AbstractType
 
         ;
     }
-    
+
     /**
      * @param OptionsResolver $resolver
      */
