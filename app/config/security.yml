@@ -8,7 +8,7 @@ security:
     providers:
         chain_provider:
             chain:
-                providers: [db_provider,ldap_provider]
+                providers: [ldap_provider,db_provider]
         db_provider:
             entity:
                 class: SimpleIT\ClaireExerciseBundle\Entity\AskerUser

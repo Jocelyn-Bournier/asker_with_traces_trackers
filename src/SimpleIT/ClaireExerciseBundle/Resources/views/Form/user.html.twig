@@ -56,13 +56,13 @@
             <label>Roles</label>
             {% for role in form.roles %}
               <div class="checkbox">
-                  {{form_row(role)}}
+                {{form_row(role)}}
               </div>
             {% endfor %}
           </div>
           <table class="table" data-prototype="{{ form_widget(form.directories.vars.prototype)|e('html_attr') }}">
             <thead>
-              <th>Répertoires 
+              <th>Répertoires
                 <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"
                 title="Affiche uniquement les répertoires dont l'utilisateur n'est pas proprietaire">
                 </span>
@@ -71,7 +71,7 @@
               <th>Action</th>
             </thead>
             {% for key, directory in form.directories %}
-              {% if directory.vars.data.directory.owner.id == user.id 
+              {% if directory.vars.data.directory.owner.id == user.id
                 or directory.vars.data.directory.parent is not null%}
                 {% set style = "display:none;" %}
               {% else %}
@@ -105,7 +105,7 @@ jQuery(document).ready(function() {
         addDirectoryFormDeleteLink($(this));
     });
 
-    // append "add a directory" into collectionHolder (table here) 
+    // append "add a directory" into collectionHolder (table here)
     $collectionHolder.append($newLinkLi);
 
     // count the current form inputs we have (e.g. 2), use that as the new

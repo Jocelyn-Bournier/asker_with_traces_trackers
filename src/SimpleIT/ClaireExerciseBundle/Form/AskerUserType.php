@@ -89,7 +89,7 @@ class AskerUserType extends AbstractType
             )
         ;
     }
-    
+
     /**
      * @param OptionsResolver $resolver
      */
