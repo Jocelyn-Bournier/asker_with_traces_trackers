@@ -15,6 +15,7 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
         $scope.recommendationsNodes = new Array();
         $scope.selectedOption = 0;
         $scope.showResources = true;
+        $scope.profileVisu = null;
 
         $scope.collapse = function (nodeName) {
             let panel = document.getElementById("panel-"+nodeName);
@@ -390,20 +391,57 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
             let fw_tree = new OLM.CORE.FrameworkTree();
             fw_tree.buildFromFramework($scope.framework);
             document._OLM.currentTree = fw_tree;
+            let config = {
+                "fontHoverColor": "rgba(0, 0, 0, 1)",
+                "fontColor": "rgba(0, 0, 0, .85)",
+                "backgroundColor": "rgba(255, 255, 255, .95)",
+                "showCover": $.cookie('userRoleStudentOnly') === 'false',
+                "showExercises": $scope.showResources
+            }
+
+            switch($scope.selectedOption){
+                case 0:
+                    $scope.profileVisu = new OLM.TreeIndented(document.getElementById('olm-target'), fw_tree, config);
+                    action = 'change_to_treeIndented';
+                    break;
+                case 1:
+                    $scope.profileVisu = new OLM.TreePartition(document.getElementById('olm-target'), fw_tree, config);
+                    action = 'change_to_treePartition';
+                    break;
+                case 2:
+                    $scope.profileVisu = new OLM.TreePack(document.getElementById('olm-target'), fw_tree, config);
+                    action = 'change_to_treePack';
+                    break;
+                case 3:
+                    $scope.profileVisu = new OLM.TreeSunburst(document.getElementById('olm-target'), fw_tree, config);
+                    action = 'change_to_treeSunburst';
+                    break;
+            }
+            $scope.profileVisu.onClick = (node) => {
+                $scope.selectedNode = node.data.name;
+                $scope.selectionIntention.style.display = "block";
+            };
+            $scope.profileVisu.onMouseEnter = (node) => {};
+            $scope.profileVisu.draw();
+            document.getElementById('olm-options').classList.remove('hidden');
+
+            /*
             // Creates the treeIndented object.
-            let treeIndented = new OLM.TreeIndented(document.getElementById('olm-target'), fw_tree, {
+            $scope.profileVisu = new OLM.TreeIndented(document.getElementById('olm-target'), fw_tree, {
                 "fontHoverColor": "rgba(0, 0, 0, 1)",
                 "fontColor": "rgba(0, 0, 0, .85)",
                 "backgroundColor": "rgba(255, 255, 255, .95)",
                 "showCover": $.cookie('userRoleStudentOnly') === 'false',
                 "showExercises": $scope.showResources
             });
-            treeIndented.onClick = (node) => {
+            $scope.profileVisu.onClick = (node) => {
                 $scope.selectedNode = node.data.name;
                 $scope.selectionIntention.style.display = "block";
             }
-            treeIndented.draw(svgId = 'test-pack');
+            $scope.profileVisu.draw(svgId = 'test-pack');
             document.getElementById('olm-options').classList.remove('hidden');
+
+             */
         }
 
         /**
@@ -528,6 +566,50 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                 }
             }
         };
+
+        $scope._changeOLMVisu = function (){
+            $scope.selectedOption = parseInt(document.getElementById("olm-options").value);
+            document.getElementById('olm-target').innerHTML = '';
+            document.getElementById('olm-target-loader').classList.remove('hidden');
+            document.getElementById('olm-target-loader').classList.add('hidden');
+            let OLM = document._OLM;
+            // Creates a tree based on the framework.
+            let fw_tree = document._OLM.currentTree;
+
+            let config = {
+                "fontHoverColor": "rgba(0, 0, 0, 1)",
+                "fontColor": "rgba(0, 0, 0, .85)",
+                "backgroundColor": "rgba(255, 255, 255, .95)",
+                "showCover": $.cookie('userRoleStudentOnly') === 'false',
+                "showExercises": $scope.showResources
+            }
+            switch($scope.selectedOption){
+                case 0:
+                    console.log("here");
+                    $scope.profileVisu = new OLM.TreeIndented(document.getElementById('olm-target'), fw_tree, config);
+                    action = 'change_to_treeIndented';
+                    break;
+                case 1:
+                    $scope.profileVisu = new OLM.TreePartition(document.getElementById('olm-target'), fw_tree, config);
+                    action = 'change_to_treePartition';
+                    break;
+                case 2:
+                    $scope.profileVisu = new OLM.TreePack(document.getElementById('olm-target'), fw_tree, config);
+                    action = 'change_to_treePack';
+                    break;
+                case 3:
+                    $scope.profileVisu = new OLM.TreeSunburst(document.getElementById('olm-target'), fw_tree, config);
+                    action = 'change_to_treeSunburst';
+                    break;
+            }
+            $scope.profileVisu.onClick = (node) => {
+                $scope.selectedNode = node.data.name;
+                $scope.selectionIntention.style.display = "block";
+            };
+            $scope.profileVisu.onMouseEnter = (node) => {};
+            $scope.profileVisu.draw();
+            document.getElementById('olm-options').classList.remove('hidden');
+        }
 
     }
 ]);
