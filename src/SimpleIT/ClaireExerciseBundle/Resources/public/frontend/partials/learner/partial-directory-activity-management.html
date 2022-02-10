@@ -155,8 +155,8 @@
         <h4>Mes recommandations</h4>
         <div class="tooltip">
             <button id="retrieve-recommandations-button" ng-click="requestRecommendations(directory, objectives)" class="btn btn-primary w-100 mb-2" ng-disabled="objectives.length === 0">Obtenir de nouvelles recommandations</button>
-            <span class="tooltiptext">
-                <span ng-if="objectives.length === 0">Vous devez avoir au moins un objectif pour demander des recommandations</span>
+            <span ng-if="objectives.length === 0"class="tooltiptext">
+                <span>Vous devez avoir au moins un objectif pour demander des recommandations</span>
             </span>
         </div>
         <div style="flex:1;">
@@ -184,9 +184,9 @@
     <h4>Mon profil</h4>
     <div style="padding-bottom: 1em;">
         <button ng-click="updateProfile(directory, true)" type="button" class="btn btn-primary">Mettre à jour mon profil</button>
-        <!--<button ng-click="hideResource()" id="buttonShowExercises" type="button" class="btn btn-primary">Cacher les resources</button>
+        <button ng-if="selectedOption == 0" ng-click="hideResource()" id="buttonShowExercises" type="button" class="btn btn-primary">Cacher les resources</button>
 
-        --><select id="olm-options" data-directory-id="{{directory.id}}" class="hidden" onchange="ChangeOLMVisu(this)">
+        <select id="olm-options" ng-model="selectedOption" ng-change="_changeOLMVisu()" onchange="ChangeOLMVisu(this)" data-directory-id="{{directory.id}}" class="hidden"><!-- ng-change="_ChangeOLMVisu()" -->
             <option value="0" selected>Arborescent</option>
             <option value="1">Stalactite </option>
             <option value="2">Bulles     </option>
@@ -210,7 +210,7 @@
 </div>
 <script>
 
-    function ChangeOLMVisu(elem, directory){
+    function ChangeOLMVisu(elem, profileVisu){
         let value = parseInt(elem.value);
         let directoryId = elem.dataset.directoryId;
         let fw_tree = document._OLM.currentTree;
@@ -220,7 +220,7 @@
             "backgroundColor": "rgba(255, 255, 255, .95)"
         };
         let OLM = document._OLM;
-        document.getElementById('olm-target').innerHTML = '';
+        //document.getElementById('olm-target').innerHTML = '';
         let action = '';
         switch(value){
             case 0:
