@@ -84,3 +84,11 @@ swiftmailer:
     username:  "%mailer_user%"
     password:  "%mailer_password%"
     spool:     { type: memory }
+monolog:
+    channels: ['ldap']
+    handlers:
+      ldap:
+        type: stream
+        path:     '%kernel.logs_dir%/ldap.log'
+        channels: ['ldap']
+        max_files: 10
