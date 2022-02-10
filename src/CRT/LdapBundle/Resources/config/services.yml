@@ -22,6 +22,7 @@ services:
         arguments:
             - "@ldap_server"
             - "@doctrine.orm.entity_manager"
+            - "@simple_it.exercise.asker_user_directory"
     ldap.security.check.provider:
         class: CRT\LdapBundle\Security\Authentication\LdapAuthenticationProvider
         arguments:
