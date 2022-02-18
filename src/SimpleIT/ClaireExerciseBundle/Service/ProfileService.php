@@ -104,7 +104,8 @@ class ProfileService
         $header[] = 'Comper-origin: asker';
         $header[] = 'Authorization: Bearer '.$token;
 
-        echo $this->profileCreateEndpoint;
+        # is it mandatory? Romain CHANU 2022/02/18
+        #echo $this->profileCreateEndpoint;
 
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $this->profileCreateEndpoint);
