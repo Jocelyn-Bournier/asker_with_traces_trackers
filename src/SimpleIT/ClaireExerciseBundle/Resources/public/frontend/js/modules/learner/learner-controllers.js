@@ -381,9 +381,15 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
             }
         }
 
+        $scope.removeChilds = function (parent) {
+                while (parent.lastChild) {
+                    parent.removeChild(parent.lastChild);
+                }
+        }
+
         $scope.drawProfile = function () {
             $scope.selectionIntention = document.getElementById("selection-intention");
-            document.getElementById('olm-target').innerHTML = '';
+            $scope.removeChilds(document.getElementById('olm-target'));//.innerHTML = '';
             document.getElementById('olm-target-loader').classList.remove('hidden');
             document.getElementById('olm-target-loader').classList.add('hidden');
             let OLM = document._OLM;
@@ -425,23 +431,6 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
             $scope.profileVisu.draw();
             document.getElementById('olm-options').classList.remove('hidden');
 
-            /*
-            // Creates the treeIndented object.
-            $scope.profileVisu = new OLM.TreeIndented(document.getElementById('olm-target'), fw_tree, {
-                "fontHoverColor": "rgba(0, 0, 0, 1)",
-                "fontColor": "rgba(0, 0, 0, .85)",
-                "backgroundColor": "rgba(255, 255, 255, .95)",
-                "showCover": $.cookie('userRoleStudentOnly') === 'false',
-                "showExercises": $scope.showResources
-            });
-            $scope.profileVisu.onClick = (node) => {
-                $scope.selectedNode = node.data.name;
-                $scope.selectionIntention.style.display = "block";
-            }
-            $scope.profileVisu.draw(svgId = 'test-pack');
-            document.getElementById('olm-options').classList.remove('hidden');
-
-             */
         }
 
         /**
@@ -452,7 +441,7 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
 
                 let action = userInitiated ? "viewProfileFromUser" : "viewProfile";
 
-                let frameworkId = directory.framework_id;
+                let frameworkIdediterg = directory.framework_id;
                 $.ajax({
                     url: `${BASE_CONFIG.urls.api.profile}request/${frameworkId}`,
                     type: "GET",

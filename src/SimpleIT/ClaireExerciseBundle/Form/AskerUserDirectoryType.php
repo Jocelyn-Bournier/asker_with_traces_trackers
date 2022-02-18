@@ -23,6 +23,7 @@ class AskerUserDirectoryType extends AbstractType
             ->add('isManager', CheckboxType::class,
                 array(
                     'label' => " ", # do not display "is Manager"
+                    'required' => false,
                 )
             )
             #->add('startDate', HiddenType::class,
