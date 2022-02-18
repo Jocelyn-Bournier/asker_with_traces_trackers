@@ -29,14 +29,14 @@ class AskerUserDirectory
 
 
     /**
-     * @var \DateTime 
+     * @var \DateTime
      *
      * @ORM\Column(name="startDate", type="datetime")
      */
     private $startDate;
 
     /**
-     * @var \DateTime 
+     * @var \DateTime
      *
      * @ORM\Column(name="endDate", type="datetime")
      */
@@ -83,7 +83,7 @@ class AskerUserDirectory
     {
         return $this->directory;
     }
-    
+
     /**
      * Set directory.
      *
@@ -93,7 +93,7 @@ class AskerUserDirectory
     {
         $this->directory = $directory;
     }
-    
+
     /**
      * Get user.
      *
@@ -103,7 +103,7 @@ class AskerUserDirectory
     {
         return $this->user;
     }
-    
+
     /**
      * Set user.
      *
@@ -133,7 +133,7 @@ class AskerUserDirectory
 
     public function __toString()
     {
-        return "objet AskerUserDirectory:".$this->getDirectory()->getName();
+        return "objet AskerUserDirectory: dName:".$this->getDirectory()->getName(). "id:" .$this->getId(). "uname:" .$this->getUser()->getUsername();
     }
     /**
      * Get isManager.
@@ -144,7 +144,7 @@ class AskerUserDirectory
     {
         return $this->isManager;
     }
-    
+
     /**
      * Set isManager.
      *
@@ -163,7 +163,7 @@ class AskerUserDirectory
     {
         return $this->startDate;
     }
-    
+
     /**
      * Set startDate.
      *
@@ -173,7 +173,7 @@ class AskerUserDirectory
     {
         $this->startDate = $startDate;
     }
-    
+
     /**
      * Get endDate.
      *
@@ -183,7 +183,7 @@ class AskerUserDirectory
     {
         return $this->endDate;
     }
-    
+
     /**
      * Set endDate.
      *
