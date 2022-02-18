@@ -44,7 +44,7 @@
   <div class='row'>
     <br>
     <div class='col-xs-5 col-xs-offset-3'>
-        {{ form_start(form) }}
+        {{ form_start(form) }}tabbody
           {{ form_errors(form) }}
           {{ form_row(form.username,{'attr':{'class':'form-control'}})}}
           {{ form_row(form.firstName,{'attr':{'class':'form-control'}})}}
@@ -60,7 +60,7 @@
               </div>
             {% endfor %}
           </div>
-          <table class="table" data-prototype="{{ form_widget(form.directories.vars.prototype)|e('html_attr') }}">
+          <table class="table">
             <thead>
               <th>Répertoires
                 <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"
@@ -70,17 +70,19 @@
               <th>Gestionnaire</th>
               <th>Action</th>
             </thead>
-            {% for key, directory in form.directories %}
-              {% if directory.vars.data.directory.owner.id == user.id
-                or directory.vars.data.directory.parent is not null%}
-                {% set style = "display:none;" %}
-              {% else %}
-                {% set style = "" %}
-              {% endif %}
-              <tr  style="{{style}}">
-                {{ form_widget(directory)}}
+            <tbody id="tabbody" data-prototype="{{ form_widget(form.directories.vars.prototype)|e('html_attr') }}">
+              {% for key, directory in form.directories %}
+                {% if directory.vars.data.directory.owner.id == user.id
+                  or directory.vars.data.directory.parent is not null%}
+                  {% set style = "display:none;" %}
+                {% else %}
+                  {% set style = "" %}
+                {% endif %}
+                <tr style="{{style}}">
+                  {{ form_widget(directory)}}
                 </tr>
-            {% endfor %}
+              {% endfor %}
+            </tbody>
           </table>
           <button type="button" id="add_directory_button" class="btn btn-success">Ajouter un répertoire</button>
           <input type="submit" value="Editer"
@@ -97,11 +99,13 @@ var $addDirectoryButton = $("#add_directory_button");
 var $newLinkLi = $("<div id='div_button' style='margin:5px;'></div>").append($addDirectoryButton);
 
 jQuery(document).ready(function() {
+    //var childrens = $('#tabbody').children('select').prop( "disabled", true );
+    $('#tabbody select').attr('disabled', true);
     // Get the element that holds the collection of directories
-    $collectionHolder = $('table')
+    $collectionHolder = $('#tabbody')
 
     // add delete link into each elements
-    $collectionHolder.find("tbody tr").each(function() {
+    $collectionHolder.find("tr").each(function() {
         addDirectoryFormDeleteLink($(this));
     });
 
@@ -149,5 +153,10 @@ function addDirectoryFormDeleteLink($tagFormLi) {
         $tagFormLi.remove();
     });
 }
+  $('form').submit(function(e) {
+    $(':disabled').each(function(e) {
+        $(this).removeAttr('disabled');
+    })
+});
 </script>
 {% endblock %}
