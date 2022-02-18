@@ -161,8 +161,10 @@ class AdminController extends BaseController
         $form = $this->createForm(AskerUserType::class, $user);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+
             $em = $this->getDoctrine()->getManager();
             $deleted = array();
+            $comper = 0;
             foreach($originalDirectories as $aud){
                 if ($user->getDirectories()->contains($aud) === false
                 && $aud->getDirectory()->getOwner()->getId() !== $user->getId()
@@ -175,17 +177,26 @@ class AdminController extends BaseController
             // We add profile if the directory is linked with a framework
             foreach($user->getDirectories() as $dir){
                 if ($originalDirectories->contains($dir) === false
-                    && $dir->getDirectory()->getOwner()->getId() !== $user->getId() && $dir->getDirectory()->getFrameworkId() !== null
+                    && $dir->getDirectory()->getOwner()->getId() !== $user->getId()
+                    && $dir->getDirectory()->getFrameworkId() !== null
                 ){
+                    $comper = 1;
                     $profileCreated = $this->addComperToUser($dir->getDirectory()->getFrameworkId(), $user->getId());
                 }
 
             }
 
             $this->get('simple_it.exercise.asker_user_directory')->deleteChildrens($user, $deleted);
-            $this->get('simple_it.exercise.asker_user_directory')->updateForUser($user);
-
+            // If comper updateForuser is called, flush will trig a constraint exception
+            if(!$comper){
+                $this->get('simple_it.exercise.asker_user_directory')->updateForUser($user);
+            }
             $em->flush();
+            #try {
+            #    $em->flush();
+            #} catch (UniqueConstraintViolationException $e) {
+            #    die($e->getMessage());
+            #}
             return $this->redirectToRoute('admin_list_users');
         }
         return $this->render(
