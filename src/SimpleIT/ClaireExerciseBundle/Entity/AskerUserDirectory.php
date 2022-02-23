@@ -193,4 +193,10 @@ class AskerUserDirectory
     {
         $this->endDate = $endDate;
     }
+    public function isOwner(){
+        if ($this->getDirectory()->getOwner()->getId() == $this->getUser()->getId()){
+            return true;
+        }
+        return false;
+    }
 }
