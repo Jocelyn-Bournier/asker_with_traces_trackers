@@ -61,6 +61,7 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
          * @param tab L'onglet à ouvrir'
          */
         $scope._selectTab = function (tab) {
+            console.log($scope.directory);
             if (tab === "management") {
                 let profileAlreadyComputed = document.getElementById('olm-target-loader').classList.contains('hidden');
                 if (!profileAlreadyComputed) {
@@ -438,10 +439,8 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
          * @param directory le répertoire sur lequel le profil récupéré correspond
          */
         $scope.requestProfile = function (directory, userInitiated = false) {
-
+                let frameworkId = directory.framework_id;
                 let action = userInitiated ? "viewProfileFromUser" : "viewProfile";
-
-                let frameworkIdediterg = directory.framework_id;
                 $.ajax({
                     url: `${BASE_CONFIG.urls.api.profile}request/${frameworkId}`,
                     type: "GET",
