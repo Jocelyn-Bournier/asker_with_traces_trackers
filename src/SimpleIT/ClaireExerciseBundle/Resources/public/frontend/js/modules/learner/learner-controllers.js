@@ -442,7 +442,7 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                 let frameworkId = directory.framework_id;
                 let action = userInitiated ? "viewProfileFromUser" : "viewProfile";
                 $.ajax({
-                    url: `${BASE_CONFIG.urls.api.profile}request/${frameworkId}`,
+                    url: `${BASE_CONFIG.urls.api.profile}request/${frameworkId}/${directory.id}`,
                     type: "GET",
                     crossDomain: true,
                     async: true,
@@ -473,7 +473,7 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
 
             let frameworkId = directory.framework_id;
             $.ajax({
-                url: `${BASE_CONFIG.urls.api.profile}update/${frameworkId}`,
+                url: `${BASE_CONFIG.urls.api.profile}update/${frameworkId}/${directory.id}`,
                 type: "GET",
                 crossDomain: true,
                 async: true,

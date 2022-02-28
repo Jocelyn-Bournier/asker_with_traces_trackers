@@ -1,12 +1,12 @@
 api_profile_root:
     path: /
 api_profile_request:
-    path: /request/{framework_id}
+    path: /request/{framework_id}/{directory_id}
     defaults: {_controller: SimpleITClaireExerciseBundle:Api/Profile/Profile:requestProfile}
     methods: [GET]
 
 api_profile_update:
-    path: /update/{framework_id}
+    path: /update/{framework_id}/{directory_id}
     defaults: {_controller: SimpleITClaireExerciseBundle:Api/Profile/Profile:updateProfile}
     methods: [GET]
 

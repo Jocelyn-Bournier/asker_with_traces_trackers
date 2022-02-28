@@ -142,7 +142,7 @@ class AdminController extends BaseController
                     $dirUser->setDirectory($dir);
                     $em->persist($dirUser);
                     if($dir->getFrameworkId() !== null){
-                        $profileCreated = $this->addComperToUser($dir->getFrameworkId(), $user->getId());
+                        $profileCreated = $this->addComperToUser($dir->getFrameworkId(), $user->getId(), 'learner', $dir->getId());
                     }
                 }
             }
@@ -177,7 +177,7 @@ class AdminController extends BaseController
                 if ($originalDirectories->contains($dir) === false
                     && $dir->getDirectory()->getOwner()->getId() !== $user->getId() && $dir->getDirectory()->getFrameworkId() !== null
                 ){
-                    $profileCreated = $this->addComperToUser($dir->getDirectory()->getFrameworkId(), $user->getId());
+                    $profileCreated = $this->addComperToUser($dir->getDirectory()->getFrameworkId(), $user->getId(), $dir->getDirectory()->getId());
                 }
 
             }
@@ -236,7 +236,25 @@ class AdminController extends BaseController
         }
     }
 
-    public function addComperToUser($frameworkId, $userId, $role = "learner"){
+    public function createGroup($frameworkId, $directoryId){
+        $jwtEncoder = $this->get('app.jwtService');
+        $timestamp  = new \DateTime();
+        $timestamp  = $timestamp->getTimestamp()+3000;
+        $payload    = [
+            "fwid"     => intval($frameworkId),
+            "platform" => 'asker',
+            "platformGroupId" => 'asker:group-'.$directoryId.'-'.$frameworkId,
+            "groupName" => 'Asker, dossier '.$directoryId.', framework '.$frameworkId
+        ];
+
+        $token = $jwtEncoder->getToken($payload);
+
+        $profileService = $this->container->get('app.profileService');
+        $groupCreated = $profileService->createGroup($token);
+        return $groupCreated;
+    }
+
+    public function addComperToUser($frameworkId, $userId, $role = "learner", $directoryId = null){
         $jwtEncoder = $this->get('app.jwtService');
         $user       = $this->get('simple_it.exercise.user');
         $timestamp  = new \DateTime();
@@ -250,9 +268,9 @@ class AdminController extends BaseController
             "role"     => $role,
             "exp"      => $timestamp,
             "platform" => 'asker',
+            "platformGroupId" => $directoryId != null ? 'asker:group-'.$directoryId.'-'.$frameworkId : null,
             "homepage" => 'https://asker.univ-lyon1.fr/'
         ];
-
         $token = $jwtEncoder->getToken($payload);
 
         $profileService = $this->container->get('app.profileService');
