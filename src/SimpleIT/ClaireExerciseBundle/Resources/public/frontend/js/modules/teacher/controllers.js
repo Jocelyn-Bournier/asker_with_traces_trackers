@@ -81,6 +81,9 @@ directoryControllers.controller('directoryListController', ['$scope', 'MyDirecto
 ]);
 directoryControllers.controller('directoryEditController', ['$scope','$stateParams', 'MyDirectory', 'AvailableManagers',
     function ($scope, $stateParams, MyDirectory, AvailableManagers) {
+        document.getElementById("progress-bar-comper-creation").style.width= '100%';
+        document.getElementById("progress-bar-comper-creation").classList.add("progress-bar-striped");
+        document.getElementById("progress-bar-comper-creation").classList.add("active");
 
         $scope.directory = MyDirectory.get({id: $stateParams.directoryid}, function () {
         });
