@@ -132,11 +132,11 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
                                     crossDomain: true,
                                     async: false,
                                     success: function (data, textStatus) {
-                                        document.getElementById("progress-bar-comper-creation").style.width = parseInt((cpt / nbUsers) * 100) + "%";
-                                        document.getElementById("progress-bar-comper-creation").innerHTML = parseInt((cpt / nbUsers) * 100) + "%";
-                                    }
+                                        }
                                 });
-                                cpt++;
+                document.getElementById("progress-bar-comper-creation").style.width = parseInt((cpt / nbUsers) * 100) + "%";
+                document.getElementById("progress-bar-comper-creation").innerHTML = parseInt((cpt / nbUsers) * 100) + "%";
+                cpt++;
                             }
             return true;
         }
