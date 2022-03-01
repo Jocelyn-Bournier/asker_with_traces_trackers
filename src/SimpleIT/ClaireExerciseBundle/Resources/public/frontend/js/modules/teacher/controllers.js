@@ -81,9 +81,6 @@ directoryControllers.controller('directoryListController', ['$scope', 'MyDirecto
 ]);
 directoryControllers.controller('directoryEditController', ['$scope','$stateParams', 'MyDirectory', 'AvailableManagers',
     function ($scope, $stateParams, MyDirectory, AvailableManagers) {
-        document.getElementById("progress-bar-comper-creation").style.width= '100%';
-        document.getElementById("progress-bar-comper-creation").classList.add("progress-bar-striped");
-        document.getElementById("progress-bar-comper-creation").classList.add("active");
 
         $scope.directory = MyDirectory.get({id: $stateParams.directoryid}, function () {
         });
@@ -95,9 +92,11 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
             });
         };
         $scope.activateComper = function (directory) {
+            document.getElementById("progress-bar-comper-creation").style.width= '100%';
+            document.getElementById("progress-bar-comper-creation").classList.add("progress-bar-striped");
+            document.getElementById("progress-bar-comper-creation").classList.add("active");
             console.log("creation of group");
             console.log("creation of compere profiles :");
-            console.log(document.getElementById("progress-bar-comper-creation"));
             document.getElementById("progress-bar-comper-creation").style.minWidth = "3em;";
             let directoryId = directory.id;
             $.ajax({
