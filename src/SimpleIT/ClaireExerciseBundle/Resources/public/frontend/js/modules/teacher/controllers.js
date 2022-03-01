@@ -94,6 +94,7 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
         $scope.activateComper = function (directory) {
             console.log("creation of group");
             console.log("creation of compere profiles :");
+            document.getElementById("progress-bar-comper-creation").style.minWidth = "3em;";
             let directoryId = directory.id;
             $.ajax({
                 url:         `${BASE_CONFIG.urls.api.directories}comper/${directoryId}/createGroup`,
@@ -121,10 +122,8 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
                 async: false,
                 success: function (data, textStatus) {
 
-                    cpt = 1;
                     users = data["users"];
                     nbUsers = users.length;
-                    document.getElementById("progress-bar-comper-creation").style.minWidth = "3em;"
                 }});
             for (let userId in users) {
                                 $.ajax({
@@ -133,14 +132,12 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
                                     crossDomain: true,
                                     async: false,
                                     success: function (data, textStatus) {
+                                        document.getElementById("progress-bar-comper-creation").style.width = parseInt((cpt / nbUsers) * 100) + "%";
+                                        document.getElementById("progress-bar-comper-creation").innerHTML = parseInt((cpt / nbUsers) * 100) + "%";
                                     }
                                 });
                                 cpt++;
                             }
-            document.getElementById("progress-bar-comper-creation").style.width = parseInt((cpt / nbUsers) * 100) + "%";
-            console.log(document.getElementById("progress-bar-comper-creation"));
-            document.getElementById("progress-bar-comper-creation").innerHTML = parseInt((cpt / nbUsers) * 100) + "%";
-
             return true;
         }
         $scope.filterAlreadyAdded = function(item) {
