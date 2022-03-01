@@ -501,6 +501,27 @@ class DirectoryController extends BaseController
         return $response;
     }
 
+    public function jwtGroupAction($frameworkId, $groupId, $role)
+    {
+        $jwtEncoder = $this->container->get('app.jwtService');
+        $user       = $this->get('security.token_storage')->getToken()->getUser();
+        $timestamp  = new \DateTime();
+        $timestamp  = $timestamp->getTimestamp()+3000;
+        $payload    = [
+            "user"     => "asker:".$user->getId(),
+            "fwid"     => intval($frameworkId),
+            "username" => $user->getUsername(),
+            "role"     => $role,
+            "exp"      => $timestamp,
+            "platformGroupId" => $groupId,
+            "platform" => 'asker',
+            "homepage" => 'https://asker.univ-lyon1.fr/'
+        ];
+        $token = $jwtEncoder->getToken($payload);
+        $response = new JsonResponse(array('token' => $token));
+        return $response;
+    }
+
     /**
      * List users related to a directory
      *

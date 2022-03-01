@@ -45,20 +45,37 @@ directoryControllers.controller('directoryListController', ['$scope', 'MyDirecto
         $scope.editDirectory = function(directory){
             $location.path('/teacher/directory/' + directory.id)
         }
-        $scope.getComperJWT = function (frameworkId) {
+        $scope.getComperJWT = function (frameworkId, groupId = null) {
 
-            $.ajax({
-                //url:         "app_dev.php/api/directories/jwt/"+frameworkId+'/teacher',
-                url:         BASE_CONFIG.urls.api.directories+"jwt/"+frameworkId+'/teacher',
-                type:        "GET",
-                crossDomain: true,
-                async:       false,
-                success: function(data, textStatus){
-                    let token = data['token'];
-                    document.getElementById('comper-jwt-input').value = token;
-                }
-            });
-            return true;
+            if (groupId != null) {
+
+                $.ajax({
+                    //url:         "app_dev.php/api/directories/jwt/"+frameworkId+'/teacher',
+                    url: BASE_CONFIG.urls.api.directories + "jwt/" + frameworkId + '/' + groupId + '/teacher',
+                    type: "GET",
+                    crossDomain: true,
+                    async: false,
+                    success: function (data, textStatus) {
+                        let token = data['token'];
+                        document.getElementById('comper-jwt-input').value = token;
+                    }
+                });
+                return true;
+            }
+            else {
+                $.ajax({
+                    //url:         "app_dev.php/api/directories/jwt/"+frameworkId+'/teacher',
+                    url: BASE_CONFIG.urls.api.directories + "jwt/" + frameworkId + '/teacher',
+                    type: "GET",
+                    crossDomain: true,
+                    async: false,
+                    success: function (data, textStatus) {
+                        let token = data['token'];
+                        document.getElementById('comper-jwt-input').value = token;
+                    }
+                });
+                return true;
+            }
         }
     }
 ]);

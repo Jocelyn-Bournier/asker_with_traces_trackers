@@ -135,7 +135,7 @@ class DirectoryService extends TransactionalService
             if($entity->getFrameworkId() !== null){
 
                 $adminController = new AdminController();
-                $adminController->createGroup($resource->getFrameworkId(), $resource->getId());
+                $adminController->createGroup($resource->getFrameworkId(), $resource->getId(), $resource->getName());
 
                 $userIds = $this->getIdUsers($entity, null);
 
@@ -158,7 +158,7 @@ class DirectoryService extends TransactionalService
             if ($entity->getFrameworkId() !== null) {
 
                 $adminController = new AdminController();
-                return $adminController->createGroup($resource->getFrameworkId(), $resource->getId());
+                return $adminController->createGroup($resource->getFrameworkId(), $resource->getId(), $resource->getName());
             }
         }
         return false;

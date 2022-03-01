@@ -236,7 +236,7 @@ class AdminController extends BaseController
         }
     }
 
-    public function createGroup($frameworkId, $directoryId){
+    public function createGroup($frameworkId, $directoryId, $directoryName){
         $jwtEncoder = $this->get('app.jwtService');
         $timestamp  = new \DateTime();
         $timestamp  = $timestamp->getTimestamp()+3000;
@@ -244,7 +244,7 @@ class AdminController extends BaseController
             "fwid"     => intval($frameworkId),
             "platform" => 'asker',
             "platformGroupId" => 'asker:group-'.$directoryId.'-'.$frameworkId,
-            "groupName" => 'Asker, dossier '.$directoryId.', framework '.$frameworkId
+            "groupName" => 'Asker : '.$directoryName
         ];
 
         $token = $jwtEncoder->getToken($payload);
