@@ -133,13 +133,14 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
                                     url: `${BASE_CONFIG.urls.api.directories}comper/${directoryId}/${users[userId]}`,
                                     type: "GET",
                                     crossDomain: true,
-                                    async: false,
+                                    async: true,
                                     success: function (data, textStatus) {
+                                        document.getElementById("progress-bar-comper-creation").style.width = parseInt((cpt / nbUsers) * 100) + "%";
+                                        document.getElementById("progress-bar-comper-creation").innerHTML = parseInt((cpt / nbUsers) * 100) + "%";
+                                        cpt++;
                                     }
                 });
-                document.getElementById("progress-bar-comper-creation").style.width = parseInt((cpt / nbUsers) * 100) + "%";
-                document.getElementById("progress-bar-comper-creation").innerHTML = parseInt((cpt / nbUsers) * 100) + "%";
-                cpt++;
+
                             }
             return true;
         }
