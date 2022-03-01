@@ -127,6 +127,7 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
                     document.getElementById("progress-bar-comper-creation").style.minWidth = "3em;"
                 }});
             for (let userId in users) {
+                console.log(cpt, nbUsers, cpt/nbUsers);
                 document.getElementById("progress-bar-comper-creation").style.width = parseInt((cpt / nbUsers) * 100) + "%";
                 document.getElementById("progress-bar-comper-creation").innerHTML = parseInt((cpt / nbUsers) * 100) + "%";
                                 $.ajax({
