@@ -132,6 +132,7 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
                 console.log(document.getElementById("progress-bar-comper-creation").style.width);
                 console.log(document.getElementById("progress-bar-comper-creation"));
                 cpt++;
+                $scope.$apply();
                 $.ajax({
                                     url: `${BASE_CONFIG.urls.api.directories}comper/${directoryId}/${users[userId]}`,
                                     type: "GET",
