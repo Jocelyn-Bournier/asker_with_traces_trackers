@@ -130,7 +130,7 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
                 document.getElementById("progress-bar-comper-creation").style.width = parseInt((cpt / nbUsers) * 100) + "%";
                 document.getElementById("progress-bar-comper-creation").innerHTML = parseInt((cpt / nbUsers) * 100) + "%";
                                 $.ajax({
-                                    url: `${BASE_CONFIG.urls.api.directories}comper/${directoryId}/${data["users"][userId]}`,
+                                    url: `${BASE_CONFIG.urls.api.directories}comper/${directoryId}/${users[userId]}`,
                                     type: "GET",
                                     crossDomain: true,
                                     async: false,
