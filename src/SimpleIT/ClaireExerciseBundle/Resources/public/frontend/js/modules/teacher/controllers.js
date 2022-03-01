@@ -100,27 +100,35 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
                 type:        "PUT",
                 crossDomain: true,
                 async:       false,
-                success: function(data, textStatus) {
-                    $.ajax({
-                        url: `${BASE_CONFIG.urls.api.directories}comper/${directoryId}/users`,
-                        type: "GET",
-                        crossDomain: true,
-                        async: false,
-                        success: function (data, textStatus) {
-                            $.ajax({
-                                url: `${BASE_CONFIG.urls.api.directories}comper/${directoryId}/managers/addManagers`,
-                                type: "GET",
-                                crossDomain: true,
-                                async: false,
-                                success: function (data, textStatus) {
-                                }
-                            });
-                            let cpt = 1;
-                            let nbUsers = data["users"].length;
-                            document.getElementById("progress-bar-comper-creation").style.minWidth = "3em;"
-                            for (let userId in data["users"]) {
-                                document.getElementById("progress-bar-comper-creation").style.width = parseInt((cpt / nbUsers) * 100) + "%";
-                                document.getElementById("progress-bar-comper-creation").innerHTML = parseInt((cpt / nbUsers) * 100) + "%";
+                success: function(data, textStatus) {}});
+            let cpt = 1;
+            let nbUsers;
+            let users;
+
+            $.ajax({
+                url: `${BASE_CONFIG.urls.api.directories}comper/${directoryId}/managers/addManagers`,
+                type: "GET",
+                crossDomain: true,
+                async: false,
+                success: function (data, textStatus) {
+                }
+            });
+
+            $.ajax({
+                url: `${BASE_CONFIG.urls.api.directories}comper/${directoryId}/users`,
+                type: "GET",
+                crossDomain: true,
+                async: false,
+                success: function (data, textStatus) {
+
+                    cpt = 1;
+                    users = data["users"];
+                    nbUsers = users.length;
+                    document.getElementById("progress-bar-comper-creation").style.minWidth = "3em;"
+                }});
+            for (let userId in data["users"]) {
+                document.getElementById("progress-bar-comper-creation").style.width = parseInt((cpt / nbUsers) * 100) + "%";
+                document.getElementById("progress-bar-comper-creation").innerHTML = parseInt((cpt / nbUsers) * 100) + "%";
                                 $.ajax({
                                     url: `${BASE_CONFIG.urls.api.directories}comper/${directoryId}/${data["users"][userId]}`,
                                     type: "GET",
@@ -131,9 +139,6 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
                                 });
                                 cpt++;
                             }
-                        }
-                    })
-                }});
             return true;
         }
         $scope.filterAlreadyAdded = function(item) {
