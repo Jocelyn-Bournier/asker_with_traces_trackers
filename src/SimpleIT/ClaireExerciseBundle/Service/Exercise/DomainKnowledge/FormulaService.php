@@ -82,7 +82,7 @@ class FormulaService implements FormulaServiceInterface
      * Converts a split expression into an expression tree object
      *
      * @param array $splitExpr
-     
+
      * @return Addition|Cos|Equation|Multiplication|Power|Sin|Value|Variable
      * @throws \LogicException
      * @throws \Symfony\Component\Process\Exception\LogicException
@@ -176,7 +176,7 @@ class FormulaService implements FormulaServiceInterface
             $expr = $this->buildExpr($splitExpr);
 
         } // text operator
-        elseif (preg_match('^[a-z|A-Z]', $splitExpr[0])) {
+        elseif (preg_match('/^[a-z|A-Z]/', $splitExpr[0])) {
             $expr = $this->buildTextOp($splitExpr);
         } // value or variable
         else {
@@ -265,14 +265,14 @@ class FormulaService implements FormulaServiceInterface
                 $currentType = 'var';
                 $current = '';
             } // letter
-            elseif (preg_match('[a-z|A-Z]', $char)) {
+            elseif (preg_match('/[a-z|A-Z]/', $char)) {
                 if ($currentType !== 'var' && $currentType !== 'textOp') {
                     $this->addPOE($split, $current, $currentType, $prevType, $key, $expression);
                     $currentType = 'textOp';
                     $current = '';
                 }
             } // digit
-            elseif (preg_match('[0-9]', $char)) {
+            elseif (preg_match('/[0-9]/', $char)) {
                 if ($currentType !== 'prePoint' && $currentType !== 'postPoint' && $currentType !== 'var'
                 ) {
                     $this->addPOE($split, $current, $currentType, $prevType, $key, $expression);
