@@ -89,6 +89,15 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
         $scope.updateDirectory = function (directory) {
             directory.$update({id: directory.id}, function (dir) {
                 $scope.directory = dir;
+                if (directory.framework_id != null){
+                    let directoryId = directory.id;
+                    $.ajax({
+                        url:         `${BASE_CONFIG.urls.api.directories}comper/${directoryId}/createGroup`,
+                        type:        "PUT",
+                        crossDomain: true,
+                        async:       false,
+                        success: function(data, textStatus) {}});
+                }
             });
         };
         $scope.activateComper = function (directory) {
