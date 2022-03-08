@@ -151,6 +151,8 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
                 });
 
                             }
+            document.getElementById("progress-bar-comper-creation").classList.remove('progress-bar-striped');
+            document.getElementById("progress-bar-comper-creation").classList.remove('active');
             return true;
         }
         $scope.filterAlreadyAdded = function(item) {
