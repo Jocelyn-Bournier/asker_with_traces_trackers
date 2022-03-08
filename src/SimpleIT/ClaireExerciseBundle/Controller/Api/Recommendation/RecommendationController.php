@@ -37,7 +37,8 @@ class RecommendationController extends BaseController
      * @param directory Le repertoire sur lequel les recommendations sont proposées
      */
     function requestRecommendationsAction($directoryId = null, $fwid, $objectives) {
-        $recommEngineUrl = "https://comper.projet.liris.cnrs.fr/sites/profile-engine/api/recommandations/generate/";
+        $comperApi = $this->getComperApi();
+        $recommEngineUrl = $comperApi . "recommandations/generate/";
         $objectives = json_decode($objectives);
         return $this->saveObjectivesOrRequestRecommendations($recommEngineUrl, $fwid, $objectives, $directoryId);
     }
@@ -47,7 +48,8 @@ class RecommendationController extends BaseController
      * @param directory Le repertoire sur lequel les recommendations sont proposées
      */
     function obtainRecommendationsAction($directoryId = null, $fwid) {
-        $recommEngineUrl = "https://comper.projet.liris.cnrs.fr/sites/profile-engine/api/recommandations/retrieve/";
+        $comperApi = $this->getComperApi();
+        $recommEngineUrl = $comperApi . "recommandations/retrieve/";
         return $this->getObjectivesOrRecommendations($recommEngineUrl, $fwid, $directoryId);
     }
 
@@ -56,7 +58,8 @@ class RecommendationController extends BaseController
      * @param directory Le repertoire sur lequel les recommendations sont proposées
      */
     function retrieveClassObjectivesAction($directoryId = null, $fwid) {
-        $recommEngineUrl = "https://comper.projet.liris.cnrs.fr/sites/profile-engine/api/recommandations/classObjectives/";
+        $comperApi = $this->getComperApi();
+        $recommEngineUrl = $comperApi . "recommandations/classObjectives/";
         return $this->getObjectivesOrRecommendations($recommEngineUrl, $fwid, $directoryId);
     }
 
@@ -65,7 +68,8 @@ class RecommendationController extends BaseController
      * @param directory Le repertoire sur lequel les recommendations sont proposées
      */
     function retrieveObjectivesAction($directoryId = null, $fwid) {
-        $recommEngineUrl = "https://comper.projet.liris.cnrs.fr/sites/profile-engine/api/recommandations/objectives/";
+        $comperApi = $this->getComperApi();
+        $recommEngineUrl = $comperApi . "recommandations/objectives/";
         return $this->getObjectivesOrRecommendations($recommEngineUrl, $fwid, $directoryId);
     }
 
@@ -74,7 +78,8 @@ class RecommendationController extends BaseController
      * @param directory Le repertoire sur lequel les recommendations sont proposées
      */
     function retrieveGenerationObjectivesAction($directoryId = null, $fwid) {
-        $recommEngineUrl = "https://comper.projet.liris.cnrs.fr/sites/profile-engine/api/recommandations/generationObjectives/";
+        $comperApi = $this->getComperApi();
+        $recommEngineUrl = $comperApi . "recommandations/generationObjectives/";
         return $this->getObjectivesOrRecommendations($recommEngineUrl, $fwid, $directoryId);
     }
 
@@ -143,7 +148,8 @@ class RecommendationController extends BaseController
      * @param directory Le repertoire sur lequel les recommendations sont proposées
      */
     function saveObjectivesAction($directoryId = null, $fwid, $objectives) {
-        $recommEngineUrl = "https://comper.projet.liris.cnrs.fr/sites/profile-engine/api/recommandations/saveObjectives/";
+        $comperApi = $this->getComperApi();
+        $recommEngineUrl = $comperApi . "recommandations/saveObjectives/";
         return $this->saveObjectivesOrRequestRecommendations($recommEngineUrl, $fwid, $objectives, $directoryId);
     }
 
@@ -214,7 +220,8 @@ class RecommendationController extends BaseController
      * @param directory Le repertoire sur lequel les recommendations sont proposées
      */
     function performRecommendationAction($directoryId = null, $fwid, $recommendation) {
-        $recommEngineUrl = "https://comper.projet.liris.cnrs.fr/sites/profile-engine/api/recommandations/perform/";
+        $comperApi = $this->getComperApi();
+        $recommEngineUrl = $comperApi . "recommandations/perform/";
 
         $jwtEncoder = $this->container->get('app.jwtService');
         $user       = $this->get('security.token_storage')->getToken()->getUser();
@@ -308,6 +315,16 @@ class RecommendationController extends BaseController
         $this->getDoctrine()->getManager()->flush();
         $response         = new JsonResponse('Recommendation trace created');
         return $response;
+    }
+
+    private function getComperApi(){
+        $kernel = $this->get('kernel');
+        $devMode = $kernel->isDebug();
+        $comperApi = "https://comper.projet.liris.cnrs.fr/sites/profile-engine/api/";
+        if ($devMode){
+            $comperApi = "https://comper.projet.liris.cnrs.fr/sites/profile-engine/test/api/";
+        }
+        return $comperApi;
     }
 }
 ?>

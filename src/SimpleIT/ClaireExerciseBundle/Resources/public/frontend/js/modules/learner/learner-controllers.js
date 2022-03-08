@@ -133,7 +133,7 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
         $scope.requestRecommendations = function (directory, objectives) {
             let frameworkId = directory.framework_id;
             $.ajax({
-                url: `${BASE_CONFIG.urls.api.profile}update/${frameworkId}`,
+                url: `${BASE_CONFIG.urls.api.profile}update/${frameworkId}/${directory.id}`,
                 type: "GET",
                 crossDomain: true,
                 async: true,
