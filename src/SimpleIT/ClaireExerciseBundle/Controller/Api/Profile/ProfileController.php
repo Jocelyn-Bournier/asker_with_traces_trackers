@@ -58,8 +58,8 @@ class ProfileController extends BaseController
             "role"     => $_COOKIE['userRoleStudentOnly'] === 'true' ? 'learner' : 'teacher',
             "exp"      => $timestamp,
             "platform" => 'asker',
-            "homepage" => 'https://asker.univ-lyon1.fr/',
-            "platformGroupId" => 'asker:group-'.$directory_id.'-'.$framework_id
+            "platformGroupId" => 'asker:group-'.$directory_id.'-'.$framework_id,
+            "homepage" => 'https://asker.univ-lyon1.fr/'
         ];
 
         $token = $jwtEncoder->getToken($payload);
@@ -105,7 +105,8 @@ class ProfileController extends BaseController
         $token = $jwtEncoder->getToken($payload);
 
         $profileService = $this->container->get('app.profileService');
-        $profile = JsonResponse::fromJsonString($profileService->requestProfile($token));
+        $profile = JsonResponse::fromJsonString($profileService->updateProfile($token));
+
         return $profile;
     }
 
