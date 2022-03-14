@@ -37,9 +37,10 @@ class RecommendationController extends BaseController
      * @param directory Le repertoire sur lequel les recommendations sont proposées
      */
     function requestRecommendationsAction($directoryId = null, $fwid, $objectives) {
-        $recommEngineUrl = "https://comper.projet.liris.cnrs.fr/sites/profile-engine/api/recommandations/generate/";
+        $comperApi = $this->getComperApi();
+        $recommEngineUrl = $comperApi . "recommandations/generate/";
         $objectives = json_decode($objectives);
-        return $this->saveObjectivesOrRequestRecommendations($recommEngineUrl, $fwid, $objectives);
+        return $this->saveObjectivesOrRequestRecommendations($recommEngineUrl, $fwid, $objectives, $directoryId);
     }
 
     /**
@@ -47,8 +48,9 @@ class RecommendationController extends BaseController
      * @param directory Le repertoire sur lequel les recommendations sont proposées
      */
     function obtainRecommendationsAction($directoryId = null, $fwid) {
-        $recommEngineUrl = "https://comper.projet.liris.cnrs.fr/sites/profile-engine/api/recommandations/retrieve/";
-        return $this->getObjectivesOrRecommendations($recommEngineUrl, $fwid);
+        $comperApi = $this->getComperApi();
+        $recommEngineUrl = $comperApi . "recommandations/retrieve/";
+        return $this->getObjectivesOrRecommendations($recommEngineUrl, $fwid, $directoryId);
     }
 
     /**
@@ -56,8 +58,9 @@ class RecommendationController extends BaseController
      * @param directory Le repertoire sur lequel les recommendations sont proposées
      */
     function retrieveClassObjectivesAction($directoryId = null, $fwid) {
-        $recommEngineUrl = "https://comper.projet.liris.cnrs.fr/sites/profile-engine/api/recommandations/classObjectives/";
-        return $this->getObjectivesOrRecommendations($recommEngineUrl, $fwid);
+        $comperApi = $this->getComperApi();
+        $recommEngineUrl = $comperApi . "recommandations/classObjectives/";
+        return $this->getObjectivesOrRecommendations($recommEngineUrl, $fwid, $directoryId);
     }
 
     /**
@@ -65,8 +68,9 @@ class RecommendationController extends BaseController
      * @param directory Le repertoire sur lequel les recommendations sont proposées
      */
     function retrieveObjectivesAction($directoryId = null, $fwid) {
-        $recommEngineUrl = "https://comper.projet.liris.cnrs.fr/sites/profile-engine/api/recommandations/objectives/";
-        return $this->getObjectivesOrRecommendations($recommEngineUrl, $fwid);
+        $comperApi = $this->getComperApi();
+        $recommEngineUrl = $comperApi . "recommandations/objectives/";
+        return $this->getObjectivesOrRecommendations($recommEngineUrl, $fwid, $directoryId);
     }
 
     /**
@@ -74,24 +78,38 @@ class RecommendationController extends BaseController
      * @param directory Le repertoire sur lequel les recommendations sont proposées
      */
     function retrieveGenerationObjectivesAction($directoryId = null, $fwid) {
-        $recommEngineUrl = "https://comper.projet.liris.cnrs.fr/sites/profile-engine/api/recommandations/generationObjectives/";
-        return $this->getObjectivesOrRecommendations($recommEngineUrl, $fwid);
+        $comperApi = $this->getComperApi();
+        $recommEngineUrl = $comperApi . "recommandations/generationObjectives/";
+        return $this->getObjectivesOrRecommendations($recommEngineUrl, $fwid, $directoryId);
     }
 
-    function getObjectivesOrRecommendations($recommEngineUrl, $fwid){
+    function getObjectivesOrRecommendations($recommEngineUrl, $fwid, $directoryId){
         $jwtEncoder = $this->container->get('app.jwtService');
         $user       = $this->get('security.token_storage')->getToken()->getUser();
         $timestamp  = new \DateTime();
         $timestamp  = $timestamp->getTimestamp()+3000;
-        $payload    = [
-            "user"     => "asker:".$user->getId(),
-            "role"     => 'learner',
-            "fwid"     => intval($fwid),
-            "username" => $user->getUsername(),
-            "exp"      => $timestamp,
-            "platform" => 'asker',
-            "homepage" => 'https://asker.univ-lyon1.fr/'
-        ];
+        if($directoryId != null) {
+            $payload = [
+                "user" => "asker:" . $user->getId(),
+                "role" => 'learner',
+                "fwid" => intval($fwid),
+                "username" => $user->getUsername(),
+                "exp" => $timestamp,
+                "platform" => 'asker',
+                "homepage" => 'https://asker.univ-lyon1.fr/',
+                "platformGroupId" => 'asker:group-' . $directoryId . '-' . $fwid,
+            ];
+        } else {
+            $payload = [
+                "user" => "asker:" . $user->getId(),
+                "role" => 'learner',
+                "fwid" => intval($fwid),
+                "username" => $user->getUsername(),
+                "exp" => $timestamp,
+                "platform" => 'asker',
+                "homepage" => 'https://asker.univ-lyon1.fr/',
+            ];
+        }
         $token = $jwtEncoder->getToken($payload);
 
         $header = array();
@@ -130,25 +148,40 @@ class RecommendationController extends BaseController
      * @param directory Le repertoire sur lequel les recommendations sont proposées
      */
     function saveObjectivesAction($directoryId = null, $fwid, $objectives) {
-        $recommEngineUrl = "https://comper.projet.liris.cnrs.fr/sites/profile-engine/api/recommandations/saveObjectives/";
-        return $this->saveObjectivesOrRequestRecommendations($recommEngineUrl, $fwid, $objectives);
+        $comperApi = $this->getComperApi();
+        $recommEngineUrl = $comperApi . "recommandations/saveObjectives/";
+        return $this->saveObjectivesOrRequestRecommendations($recommEngineUrl, $fwid, $objectives, $directoryId);
     }
 
-    function saveObjectivesOrRequestRecommendations($recommEngineUrl, $fwid, $objectives) {
+    function saveObjectivesOrRequestRecommendations($recommEngineUrl, $fwid, $objectives, $directoryId) {
         $jwtEncoder = $this->container->get('app.jwtService');
         $user       = $this->get('security.token_storage')->getToken()->getUser();
         $timestamp  = new \DateTime();
         $timestamp  = $timestamp->getTimestamp()+3000;
-        $payload    = [
-            "user"     => "asker:".$user->getId(),
-            "role"     => 'learner',
-            "fwid"     => intval($fwid),
-            "username" => $user->getUsername(),
-            "exp"      => $timestamp,
-            "platform" => 'asker',
-            "homepage" => 'https://asker.univ-lyon1.fr/',
-            "objectives" => $objectives
-        ];
+        if($directoryId != null) {
+            $payload = [
+                "user" => "asker:" . $user->getId(),
+                "role" => 'learner',
+                "fwid" => intval($fwid),
+                "username" => $user->getUsername(),
+                "exp" => $timestamp,
+                "platform" => 'asker',
+                "homepage" => 'https://asker.univ-lyon1.fr/',
+                "objectives" => $objectives,
+                "platformGroupId" => 'asker:group-' . $directoryId . '-' . $fwid,
+            ];
+        } else {
+            $payload = [
+                "user" => "asker:" . $user->getId(),
+                "role" => 'learner',
+                "fwid" => intval($fwid),
+                "username" => $user->getUsername(),
+                "exp" => $timestamp,
+                "platform" => 'asker',
+                "homepage" => 'https://asker.univ-lyon1.fr/',
+                "objectives" => $objectives
+            ];
+        }
         $token = $jwtEncoder->getToken($payload);
 
         $header = array();
@@ -187,22 +220,37 @@ class RecommendationController extends BaseController
      * @param directory Le repertoire sur lequel les recommendations sont proposées
      */
     function performRecommendationAction($directoryId = null, $fwid, $recommendation) {
-        $recommEngineUrl = "https://comper.projet.liris.cnrs.fr/sites/profile-engine/api/recommandations/perform/";
+        $comperApi = $this->getComperApi();
+        $recommEngineUrl = $comperApi . "recommandations/perform/";
 
         $jwtEncoder = $this->container->get('app.jwtService');
         $user       = $this->get('security.token_storage')->getToken()->getUser();
         $timestamp  = new \DateTime();
         $timestamp  = $timestamp->getTimestamp()+3000;
-        $payload    = [
-            "user"     => "asker:".$user->getId(),
-            "role"     => 'learner',
-            "fwid"     => intval($fwid),
-            "username" => $user->getUsername(),
-            "exp"      => $timestamp,
-            "platform" => 'asker',
-            "homepage" => 'https://asker.univ-lyon1.fr/',
-            "recommendation" => $recommendation
-        ];
+        if($directoryId != null) {
+            $payload = [
+                "user" => "asker:" . $user->getId(),
+                "role" => 'learner',
+                "fwid" => intval($fwid),
+                "username" => $user->getUsername(),
+                "exp" => $timestamp,
+                "platform" => 'asker',
+                "homepage" => 'https://asker.univ-lyon1.fr/',
+                "recommendation" => $recommendation,
+                "platformGroupId" => 'asker:group-' . $directoryId . '-' . $fwid,
+            ];
+        } else {
+            $payload = [
+                "user" => "asker:" . $user->getId(),
+                "role" => 'learner',
+                "fwid" => intval($fwid),
+                "username" => $user->getUsername(),
+                "exp" => $timestamp,
+                "platform" => 'asker',
+                "homepage" => 'https://asker.univ-lyon1.fr/',
+                "recommendation" => $recommendation
+            ];
+        }
         $token = $jwtEncoder->getToken($payload);
 
         $header = array();
@@ -267,6 +315,16 @@ class RecommendationController extends BaseController
         $this->getDoctrine()->getManager()->flush();
         $response         = new JsonResponse('Recommendation trace created');
         return $response;
+    }
+
+    private function getComperApi(){
+        $kernel = $this->get('kernel');
+        $devMode = $kernel->isDebug();
+        $comperApi = "https://comper.projet.liris.cnrs.fr/sites/profile-engine/api/";
+        if ($devMode){
+            $comperApi = "https://comper.projet.liris.cnrs.fr/sites/profile-engine/test/api/";
+        }
+        return $comperApi;
     }
 }
 ?>

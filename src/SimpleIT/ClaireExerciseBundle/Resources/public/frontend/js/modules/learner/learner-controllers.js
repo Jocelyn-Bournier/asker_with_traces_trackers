@@ -101,9 +101,23 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                     if (data === "Error: recommendation not found") {
                         $scope.recommendations = [];
                     } else {
-                        for (let i = 0; i < $scope.recommendations.length; i++) {
+                        $scope.recommendations = JSON.parse(data);
+                        console.log($scope.recommendations);
+                        document.getElementById('recommendations-loader').classList.add('hidden');
+                        console.log("debug");
+                        /*for (let i = 0; i < $scope.recommendations.length; i++) {
+                            console.log("go");
                             $scope.recommendations[i].learning_type = $scope.typeToAsker($scope.recommendations[i].title);
                         }
+
+                         */
+
+                        for(let recommendation in $scope.recommendations){
+                            console.log($scope.recommendations[recommendation]);
+                            $scope.recommendations[recommendation].learning_type = $scope.typeToAsker($scope.recommendations[recommendation].title);
+                        }
+
+
                         $scope.retrieveGenerationObjectives(directory);
                         $scope.recommendationsNodes = new Array();
                         Object.values($scope.recommendations).filter(function(item){
@@ -131,9 +145,11 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
          * @param directory Le repertoire sur lequel les recommendations sont proposées
          */
         $scope.requestRecommendations = function (directory, objectives) {
+            document.getElementById('recommendations-loader').classList.remove('hidden');
+            document.getElementById('recommendations-container').classList.add('hidden');
             let frameworkId = directory.framework_id;
             $.ajax({
-                url: `${BASE_CONFIG.urls.api.profile}update/${frameworkId}`,
+                url: `${BASE_CONFIG.urls.api.profile}update/${frameworkId}/${directory.id}`,
                 type: "GET",
                 crossDomain: true,
                 async: true,
@@ -141,42 +157,73 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                     $scope.profileComputed = true;
                     $scope.framework = data;
                     $scope.drawProfile();
+
+
                     $.ajax({
                         url: `${BASE_CONFIG.urls.api.recommendations}/${directory.id}/${directory.framework_id}/${JSON.stringify(objectives)}`,
                         type: "POST",
                         async: true,
                         success: function (data, textStatus) {
+                            document.getElementById('recommendations-loader').classList.add('hidden');
+                            document.getElementById('recommendations-container').classList.remove('hidden');
                             $scope.recommendationsRequested = true;
                             $scope.recommendations = JSON.parse(data);
-                            for (let i = 0; i < $scope.recommendations.length; i++) {
-                                $scope.recommendations[i].learning_type = $scope.typeToAsker($scope.recommendations[i].title);
+                            for(let recommendation in $scope.recommendations) {
+                                $scope.recommendations[recommendation].learning_type = $scope.typeToAsker($scope.recommendations[recommendation].title);
                             }
                             $scope.sortRecomendations();
                             $scope.expandAllRecommendations();
                             $scope.$apply();
-                        }
+
+                            for(let recommendation in $scope.recommendations){
+                                console.log(BASE_CONFIG.urls.api.recommendationsTrace);
+                                let action = "generate";
+                                $.ajax({
+                                    url: `${BASE_CONFIG.urls.api.recommendationsTrace}/${directory.id}/${action}/${$scope.recommendations[recommendation].title}`,
+                                    type: "POST",
+                                    async: true,
+                                    success: function (data, textStatus) {
+                                    }
+                                });
+                            }
+                        },
                     });
+                },
+                error: function(request, status, err) {
+                    console.log(request);
+                    console.log(status);
+                    console.log(err);
+                        $.ajax({
+                            url: `${BASE_CONFIG.urls.api.recommendations}/${directory.id}/${directory.framework_id}/${JSON.stringify(objectives)}`,
+                            type: "POST",
+                            async: true,
+                            success: function (data, textStatus) {
+                                document.getElementById('recommendations-loader').classList.add('hidden');
+                                document.getElementById('recommendations-container').classList.remove('hidden');
+                                $scope.recommendationsRequested = true;
+                                $scope.recommendations = JSON.parse(data);
+                                for(let recommendation in $scope.recommendations) {
+                                    $scope.recommendations[recommendation].learning_type = $scope.typeToAsker($scope.recommendations[recommendation].title);
+                                }
+                                $scope.sortRecomendations();
+                                $scope.expandAllRecommendations();
+                                $scope.$apply();
+
+                                for(let recommendation in $scope.recommendations){
+                                    console.log(BASE_CONFIG.urls.api.recommendationsTrace);
+                                    let action = "generate";
+                                    $.ajax({
+                                        url: `${BASE_CONFIG.urls.api.recommendationsTrace}/${directory.id}/${action}/${$scope.recommendations[recommendation].title}`,
+                                        type: "POST",
+                                        async: true,
+                                        success: function (data, textStatus) {
+                                        }
+                                    });
+                                }
+                            },
+                        });
                 }
             });
-            for(let recommendation of $scope.recommendations){
-                console.log(BASE_CONFIG.urls.api.recommendationsTrace);
-                let action = "generate";
-                $.ajax({
-                    url: `${BASE_CONFIG.urls.api.recommendationsTrace}/${directory.id}/${action}/${recommendation.title}`,
-                    type: "POST",
-                    async: true,
-                    success: function (data, textStatus) {
-                    }
-                });
-            }
-            /*$.ajax({
-                url: `${BASE_CONFIG.urls.api.profile}trace/${frameworkId}/viewProfile`,
-                type: "POST",
-                async: true,
-                success: function (data, textStatus) {
-                }
-            });
-            */
         };
 
         $scope.sortRecomendations = function () {
@@ -389,6 +436,7 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
         }
 
         $scope.drawProfile = function () {
+            console.log($scope.showResources);
             $scope.selectionIntention = document.getElementById("selection-intention");
             $scope.removeChilds(document.getElementById('olm-target'));//.innerHTML = '';
             document.getElementById('olm-target-loader').classList.remove('hidden');
@@ -442,7 +490,7 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                 let frameworkId = directory.framework_id;
                 let action = userInitiated ? "viewProfileFromUser" : "viewProfile";
                 $.ajax({
-                    url: `${BASE_CONFIG.urls.api.profile}request/${frameworkId}`,
+                    url: `${BASE_CONFIG.urls.api.profile}request/${frameworkId}/${directory.id}`,
                     type: "GET",
                     crossDomain: true,
                     async: true,
@@ -469,18 +517,27 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
          */
         $scope.updateProfile = function (directory, userInitiated = false) {
 
+            document.getElementById('olm-target').classList.add('hidden');
+            document.getElementById('olm-target-loader').classList.remove('hidden');
+
             let action = userInitiated ? "updateProfileFromUser" : "updateProfile";
 
             let frameworkId = directory.framework_id;
             $.ajax({
-                url: `${BASE_CONFIG.urls.api.profile}update/${frameworkId}`,
+                url: `${BASE_CONFIG.urls.api.profile}update/${frameworkId}/${directory.id}`,
                 type: "GET",
                 crossDomain: true,
                 async: true,
                 success: function (data, textStatus) {
+                    console.log(data);
                     $scope.profileComputed = true;
                     $scope.framework = data;
+                    document.getElementById('olm-target-loader').classList.add('hidden');
                     $scope.drawProfile();
+                },
+                error: function() {
+                    document.getElementById('olm-target-loader').classList.add('hidden');
+                    document.getElementById('olm-target').classList.remove('hidden');
                 }
             });
             if(userInitiated) {
@@ -514,9 +571,12 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
         }
 
         $scope.typeToAsker = function (type) {
+            console.log("here");
+            console.log(type);
             if ($scope.directory.models != null){
                 for(let model of $scope.directory.models){
                     if (type == model.title){
+                        console.log(model.type);
                         return model.type;
                     }
                 }
@@ -526,6 +586,7 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                     if (sub.models != null){
                         for(let model of sub.models){
                             if (type == model.title){
+                                console.log(model.type);
                                 return model.type;
                             }
                         }

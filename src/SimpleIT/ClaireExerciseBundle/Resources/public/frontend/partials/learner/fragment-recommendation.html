@@ -4,6 +4,7 @@
     }
 </style>
 <div ng-click="performRecommendation(directory, recommendation.title, recommendation.location, recommendation.title)" class="link-no-style">
+    {{recommendation.type}}
     <div ng-class="recommendation.completed ? 'panel-default' : 'panel-warning'">
         <div class="panel-heading">
             <div class="" ng-switch="recommendation.learning_type" style="float:left;margin-left:10px;">

@@ -43,7 +43,7 @@ class ProfileController extends BaseController
      * @param int $framework_id the identifier of the framework used
      * @return string the profile of a learner on Json format
      */
-    public function requestProfileAction($framework_id)
+    public function requestProfileAction($framework_id, $directory_id)
     {
         $jwtEncoder = $this->container->get('app.jwtService');
         $user       = $this->get('security.token_storage')->getToken()->getUser();
@@ -58,6 +58,7 @@ class ProfileController extends BaseController
             "role"     => $_COOKIE['userRoleStudentOnly'] === 'true' ? 'learner' : 'teacher',
             "exp"      => $timestamp,
             "platform" => 'asker',
+            "platformGroupId" => 'asker:group-'.$directory_id.'-'.$framework_id,
             "homepage" => 'https://asker.univ-lyon1.fr/'
         ];
 
@@ -82,7 +83,7 @@ class ProfileController extends BaseController
      * @param int $framework_id the identifier of the framework used
      * @return string the profile of a learner on Json format
      */
-    public function updateProfileAction($framework_id)
+    public function updateProfileAction($framework_id, $directory_id)
     {
         $jwtEncoder = $this->container->get('app.jwtService');
         $user       = $this->get('security.token_storage')->getToken()->getUser();
@@ -97,6 +98,7 @@ class ProfileController extends BaseController
             "role"     => $_COOKIE['userRoleStudentOnly'] === 'true' ? 'learner' : 'teacher',
             "exp"      => $timestamp,
             "platform" => 'asker',
+            "platformGroupId" => 'asker:group-'.$directory_id.'-'.$framework_id,
             "homepage" => 'https://asker.univ-lyon1.fr/'
         ];
 

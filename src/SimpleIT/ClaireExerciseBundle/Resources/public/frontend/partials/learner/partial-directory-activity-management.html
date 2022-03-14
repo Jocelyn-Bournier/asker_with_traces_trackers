@@ -153,13 +153,20 @@
         <hr style="margin: 5px !important;"/>
 
         <h4>Mes recommandations</h4>
+        <div id="recommendations-loader">
+            <div class='olm-loader'></div>
+            <p>
+                Chargement des recommendations.
+                Cette opération peut prendre plusieurs secondes.
+            </p>
+        </div>
         <div class="tooltip">
             <button id="retrieve-recommandations-button" ng-click="requestRecommendations(directory, objectives)" class="btn btn-primary w-100 mb-2" ng-disabled="objectives.length === 0">Obtenir de nouvelles recommandations</button>
             <span ng-if="objectives.length === 0"class="tooltiptext">
                 <span>Vous devez avoir au moins un objectif pour demander des recommandations</span>
             </span>
         </div>
-        <div style="flex:1;">
+        <div id="recommendations-container" style="flex:1;">
             <div ng-if="recommendations.length === 0">Vous n'avez pas de recommendations proposées.</div>
                 <div ng-repeat="recommendationNode in recommendationsNodes" class="panel panel-default">
                     <div id="panel-{{recommendationNode}}" class="panel-recommendation panel-heading collapsible active" ng-click="collapse(recommendationNode);">

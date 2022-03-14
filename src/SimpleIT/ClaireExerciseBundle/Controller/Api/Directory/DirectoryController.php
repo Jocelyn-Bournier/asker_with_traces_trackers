@@ -316,6 +316,24 @@ class DirectoryController extends BaseController
                 );
             $directoryResource = DirectoryFactory::create($directory, false, 0);
 
+            $fwid = $directoryResource->getFrameworkId();
+            if ($fwid != null){
+                $jwtEncoder = $this->get('app.jwtService');
+                $timestamp  = new \DateTime();
+                $timestamp  = $timestamp->getTimestamp()+3000;
+                $payload    = [
+                    "fwid"     => intval($fwid),
+                    "platform" => 'asker',
+                    "platformGroupId" => 'asker:group-'.$directoryId.'-'.$fwid,
+                    "groupName" => 'Asker, dossier '.$directoryId.', framework '.$fwid
+                ];
+
+                $token = $jwtEncoder->getToken($payload);
+
+                $profileService = $this->container->get('app.profileService');
+                $profileService->createGroup($token);
+            }
+
             return new ApiEditedResponse($directoryResource);
 
         } catch (NonExistingObjectException $neoe) {
@@ -483,6 +501,27 @@ class DirectoryController extends BaseController
         return $response;
     }
 
+    public function jwtGroupAction($frameworkId, $groupId, $role)
+    {
+        $jwtEncoder = $this->container->get('app.jwtService');
+        $user       = $this->get('security.token_storage')->getToken()->getUser();
+        $timestamp  = new \DateTime();
+        $timestamp  = $timestamp->getTimestamp()+3000;
+        $payload    = [
+            "user"     => "asker:".$user->getId(),
+            "fwid"     => intval($frameworkId),
+            "username" => $user->getUsername(),
+            "role"     => $role,
+            "exp"      => $timestamp,
+            "platformGroupId" => $groupId,
+            "platform" => 'asker',
+            "homepage" => 'https://asker.univ-lyon1.fr/'
+        ];
+        $token = $jwtEncoder->getToken($payload);
+        $response = new JsonResponse(array('token' => $token));
+        return $response;
+    }
+
     /**
      * List users related to a directory
      *
@@ -515,6 +554,23 @@ class DirectoryController extends BaseController
         $dir = $this->get('simple_it.exercise.directory')->find($directoryId);
         $usersCreated = $this->get('simple_it.exercise.directory')->activateComper($dir);
         return new JsonResponse(array('usersCreated' => $usersCreated));
+    }
+
+    /**
+     * Create a JWT Token for comper services
+     *
+     * @OA\Get(
+     *     path="/api/directories/comper/{directoryId}",
+     *     @OA\Parameter(in="path", name="directoryId", parameter="directoryId"),
+     *     @OA\Response(response="200", description="Number of profiles created"),
+     *     tags={"directories"},
+     * )
+     */
+    public function createGroupAction($directoryId)
+    {
+        $dir = $this->get('simple_it.exercise.directory')->find($directoryId);
+        $groupCreated = $this->get('simple_it.exercise.directory')->createGroup($dir);
+        return new JsonResponse(array('groupCreated' => $groupCreated));
     }
 
     /**

@@ -133,13 +133,14 @@ class DirectoryService extends TransactionalService
         if (!$entity->getParent()){
             // Create comper profile if they doesn't exist
             if($entity->getFrameworkId() !== null){
-                $userIds = $this->getIdUsers($entity, null);
+
                 $adminController = new AdminController();
+                $adminController->createGroup($resource->getFrameworkId(), $resource->getId(), $resource->getName());
+
+                $userIds = $this->getIdUsers($entity, null);
 
                 foreach($userIds as $userId){
-                    echo "add comper ?";
-                    $profileCreated = $adminController->addComperToUser($resource->getFrameworkId(), $userId);
-                    echo "comper added";
+                    $profileCreated = $adminController->addComperToUser($resource->getFrameworkId(), $userId, 'learner', $resource->getId() );
                     if ($profileCreated){
                         $userCreated = $userCreated + 1;
                     }
@@ -147,6 +148,20 @@ class DirectoryService extends TransactionalService
             }
         }
         return $userCreated;
+    }
+
+    public function createGroup($resource){
+        $entity = $this->find($resource->getId());
+        $groupCreated = false;
+        if (!$entity->getParent()) {
+            // Create comper profile if they doesn't exist
+            if ($entity->getFrameworkId() !== null) {
+
+                $adminController = new AdminController();
+                return $adminController->createGroup($resource->getFrameworkId(), $resource->getId(), $resource->getName());
+            }
+        }
+        return false;
     }
 
     public function listUsers($resource){
@@ -177,7 +192,7 @@ class DirectoryService extends TransactionalService
             // Create comper profile if they doesn't exist
             if($entity->getFrameworkId() !== null){
                 $adminController = new AdminController();
-                $profileCreated = $adminController->addComperToUser($resource->getFrameworkId(), $userId, $role);
+                $profileCreated = $adminController->addComperToUser($resource->getFrameworkId(), $userId, $role, $resource->getId());
             }
         }
         return $profileCreated;

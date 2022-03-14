@@ -27,12 +27,12 @@
               <div class="col-centered pull-right">
                 <h4>
                   <button ng-if="directory.frameworkId != null && directory.frameworkId != ''" type="submit" name="fromPlatform" 
-                          form="comper-profile-explorer" ng-click="$event.stopPropagation();getComperJWT(directory.frameworkId)" 
+                          form="comper-profile-explorer" ng-click="$event.stopPropagation();getComperJWT(directory.frameworkId, 'asker:group-'+directory.id+'-'+directory.frameworkId)"
                           title="Paramètres COMPER et profils étudiants" style="background: none; border: none; padding: 0;" value="asker">
                     <span class="glyphicon  glyphicon-cloud-upload"></span>
                   </button>
                   <form ng-if="directory.frameworkId != null && directory.frameworkId != ''" id="comper-profile-explorer" 
-                        action="https://comper.projet.liris.cnrs.fr/sites/profile-engine/"
+                        action="https://comper.projet.liris.cnrs.fr/sites/profile-engine/test/"
                         target="_blank"
                         method="post"  style="display:none;">
                     <input type="hidden" id="comper-jwt-input" name="token" />

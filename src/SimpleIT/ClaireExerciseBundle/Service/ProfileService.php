@@ -28,11 +28,13 @@ class ProfileService
 
     private $profileEndpoint;
     private $profileCreateEndpoint;
+    private $groupCreateEndpoint;
 
-    function __construct($profileEndpoint, $profileCreateEndpoint)
+    function __construct($profileEndpoint, $profileCreateEndpoint, $groupCreateEndpoint)
     {
         $this->profileEndpoint = $profileEndpoint;
         $this->profileCreateEndpoint = $profileCreateEndpoint;
+        $this->groupCreateEndpoint = $groupCreateEndpoint;
     }
 
     /**
@@ -54,13 +56,7 @@ class ProfileService
         curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
 
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($curl);
-        if($response === false)
-        {
-            echo 'Erreur Curl asker: ' . curl_error($curl);
-        } else {
-            return $response;
-        }
+        return curl_exec($curl);
     }
 
     /**
@@ -82,13 +78,7 @@ class ProfileService
         curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
 
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($curl);
-        if($response === false)
-        {
-            echo 'Erreur Curl asker: ' . curl_error($curl);
-        } else {
-            return $response;
-        }
+        return curl_exec($curl);
     }
 
     /**
@@ -104,20 +94,36 @@ class ProfileService
         $header[] = 'Comper-origin: asker';
         $header[] = 'Authorization: Bearer '.$token;
 
-        # is it mandatory? Romain CHANU 2022/02/18
-        #echo $this->profileCreateEndpoint;
-
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $this->profileCreateEndpoint);
         curl_setopt($curl, CURLOPT_POST, false);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
 
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        if (curl_exec($curl) !== null) {
-            return true;
-        } else {
-            return false;
-        }
+        return curl_exec($curl);
+
+    }
+
+    /**
+     * Create a group from the profile engine.
+     *
+     * @param string $token the profile to create
+     */
+    public function createGroup($token)
+    {
+        $header = array();
+        $header[] = 'Content-Type: application/json';
+        $header[] = 'Response-Type: application/json';
+        $header[] = 'Comper-origin: asker';
+        $header[] = 'Authorization: Bearer '.$token;
+
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $this->groupCreateEndpoint);
+        curl_setopt($curl, CURLOPT_PUT, true);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
+
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        return curl_exec($curl);
 
     }
 

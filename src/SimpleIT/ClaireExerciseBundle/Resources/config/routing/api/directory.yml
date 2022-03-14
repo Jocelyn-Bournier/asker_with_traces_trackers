@@ -77,10 +77,20 @@ api_directory_jwt:
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/Directory/Directory:jwt}
     methods: [GET]
 
+api_directory_jwt_group:
+    path: /jwt/{frameworkId}/{groupId}/{role}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Directory/Directory:jwtGroup}
+    methods: [GET]
+
 api_directory_users:
     path: /comper/{directoryId}/users
     defaults: { _controller: SimpleITClaireExerciseBundle:Api/Directory/Directory:listUsers }
     methods: [ GET ]
+
+api_directory_createGroup:
+    path: /comper/{directoryId}/createGroup
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Directory/Directory:createGroup }
+    methods: [ PUT ]
 
 api_directory_comper:
     path: /comper/{directoryId}
