@@ -7,6 +7,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use SimpleIT\ClaireExerciseBundle\Repository\DirectoryRepository;
+use SimpleIT\ClaireExerciseBundle\Entity\AskerUserDirectory;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
 
@@ -24,6 +25,12 @@ class AskerUserDirectoryType extends AbstractType
                 array(
                     'label' => " ", # do not display "is Manager"
                     'required' => false,
+                )
+            )
+            ->add('isOwner',CheckboxType::class,
+                array(
+                    'label' => " ",
+                    'disabled' => 'disabled',
                 )
             )
             #->add('startDate', HiddenType::class,

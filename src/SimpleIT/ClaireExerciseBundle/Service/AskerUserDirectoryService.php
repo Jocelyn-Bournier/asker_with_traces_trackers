@@ -132,6 +132,7 @@ class AskerUserDirectoryService extends TransactionalService
                 }
             }
         }
+        $this->em->flush();
     }
 
     public function create(AskerUser $user, Directory $directory)

@@ -93,12 +93,12 @@ option {
 }
 
 
-.panel-model-subscribe>.panel-heading+.panel-collapse 
+.panel-model-subscribe>.panel-heading+.panel-collapse
 .panel-body {
     border-top-color: #428bca
 }
 
-.panel-model-subscribe>.panel-footer+.panel-collapse 
+.panel-model-subscribe>.panel-footer+.panel-collapse
 .panel-body {
     border-bottom-color: #428bca
 }
@@ -165,3 +165,7 @@ ul.brand-size * {
 .d-none {
     display: none !important;
 }
+#tabbody > tr > td > .checkbox {
+        margin-top: 0px !important;
+}
+

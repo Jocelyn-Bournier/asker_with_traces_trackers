@@ -35,6 +35,7 @@
         {{form_widget(form.directory)}}
         </select>
       </td>
+      <td>{{form_widget(form.isOwner)}}</td>
       <td>
         {{form_widget(form.isManager)}}
       </td>
@@ -60,27 +61,31 @@
               </div>
             {% endfor %}
           </div>
-          <table class="table" data-prototype="{{ form_widget(form.directories.vars.prototype)|e('html_attr') }}">
+          <table class="table">
             <thead>
               <th>Répertoires
                 <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"
-                title="Affiche uniquement les répertoires dont l'utilisateur n'est pas proprietaire">
+                title="Il n'est pas possible de supprimer un accés à un propriétaire, ni
+                       de changer son statut de propriétaire">
                 </span>
               </th>
+              <th>Propriétaire</th>
               <th>Gestionnaire</th>
               <th>Action</th>
             </thead>
-            {% for key, directory in form.directories %}
-              {% if directory.vars.data.directory.owner.id == user.id
-                or directory.vars.data.directory.parent is not null%}
-                {% set style = "display:none;" %}
-              {% else %}
-                {% set style = "" %}
-              {% endif %}
-              <tr  style="{{style}}">
-                {{ form_widget(directory)}}
+            <tbody id="tabbody" data-prototype="{{ form_widget(form.directories.vars.prototype)|e('html_attr') }}">
+              {% for key, directory in form.directories %}
+                {% if
+                   directory.vars.data.directory.parent is not null%}
+                  {% set style = "display:none;" %}
+                {% else %}
+                  {% set style = "" %}
+                {% endif %}
+                <tr style="{{style}}" data-aaowner="{{directory.vars.data.isOwner ? 'true' : 'false'}}">
+                  {{ form_widget(directory)}}
                 </tr>
-            {% endfor %}
+              {% endfor %}
+            </tbody>
           </table>
           <button type="button" id="add_directory_button" class="btn btn-success">Ajouter un répertoire</button>
           <input type="submit" value="Editer"
@@ -97,11 +102,13 @@ var $addDirectoryButton = $("#add_directory_button");
 var $newLinkLi = $("<div id='div_button' style='margin:5px;'></div>").append($addDirectoryButton);
 
 jQuery(document).ready(function() {
+    //var childrens = $('#tabbody').children('select').prop( "disabled", true );
+    $('#tabbody select').attr('disabled', true);
     // Get the element that holds the collection of directories
-    $collectionHolder = $('table')
+    $collectionHolder = $('#tabbody')
 
     // add delete link into each elements
-    $collectionHolder.find("tbody tr").each(function() {
+    $collectionHolder.find("tr").each(function() {
         addDirectoryFormDeleteLink($(this));
     });
 
@@ -141,13 +148,25 @@ function addDirectoryForm($collectionHolder, $newLinkLi) {
     addDirectoryFormDeleteLink($newFormLi);
 }
 function addDirectoryFormDeleteLink($tagFormLi) {
-    var $removeFormButton = $('<td><button type="button" class="btn btn-xs btn-danger">Supprimer</button></td>');
-    $tagFormLi.append($removeFormButton);
+    console.log($tagFormLi[0].dataset.aaowner)
+    if($tagFormLi[0].dataset.aaowner === 'true'){
+        disabled = 'disabled'
 
+      }else{
+        disabled = ''
+      }
+    var $removeFormButton = $(`<td><button ${disabled} type="button" class="btn btn-xs btn-danger">Supprimer</button></td>`);
+    $tagFormLi.append($removeFormButton);
     $removeFormButton.on('click', function(e) {
         // remove the li for the tag form
         $tagFormLi.remove();
     });
+
 }
+  $('form').submit(function(e) {
+    $(':disabled').each(function(e) {
+        $(this).removeAttr('disabled');
+    })
+});
 </script>
 {% endblock %}
