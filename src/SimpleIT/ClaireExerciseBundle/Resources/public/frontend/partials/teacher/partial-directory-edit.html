@@ -259,11 +259,12 @@
         <button 
         ng-if="directory.total_subs ===0"
         ng-click="deleteDirectory(directory)" back-Button
-        class="btn btn-danger pull-right"
+        class="btn btn-danger pull-right mb-2"
         title="Supprimer le répertoire">
           Supprimer
         </button>
-        <div class="progress">
+        <div id="progress-actions"> </div>
+        <div class="progress mb-2">
           <div id="progress-bar-comper-creation" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
       </div>

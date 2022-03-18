@@ -289,4 +289,35 @@ class AdminController extends BaseController
         $this->get('simple_it.exercise.asker_user_directory')->updateForUser($this->get('simple_it.exercise.user')->get($userId));
         return $profileCreated;
     }
+
+    public function addRoleToTeacher($frameworkId, $userId, $role, $directoryId){
+        $jwtEncoder = $this->get('app.jwtService');
+        $user       = $this->get('simple_it.exercise.user');
+        $timestamp  = new \DateTime();
+        $timestamp  = $timestamp->getTimestamp()+3000;
+        $payload    = [
+            "user"     => "asker:".$userId,
+            "fwid"     => intval($frameworkId),
+            "username" => $user->get($userId)->getUsername(),
+            "role"     => $role,
+            "exp"      => $timestamp
+        ];
+        $token = $jwtEncoder->getToken($payload);
+        $profileService = $this->container->get('app.profileService');
+        $profileService->setRole($token);
+
+        $timestamp  = new \DateTime();
+        $timestamp  = $timestamp->getTimestamp()+3000;
+
+        $payload    = [
+            "user"     => "asker:".$userId,
+            "username" => $user->get($userId)->getUsername(),
+            "role"     => $role,
+            "exp"      => $timestamp,
+            "platformGroupId" => 'asker:group-'.$directoryId.'-'.$frameworkId,
+        ];
+        $token = $jwtEncoder->getToken($payload);
+        $profileService->setRole($token);
+        return true;
+    }
 }
