@@ -31,12 +31,20 @@
                           title="Paramètres COMPER et profils étudiants" style="background: none; border: none; padding: 0;" value="asker">
                     <span class="glyphicon  glyphicon-cloud-upload"></span>
                   </button>
-                  <form ng-if="directory.frameworkId != null && directory.frameworkId != ''" id="comper-profile-explorer" 
+                  <form ng-if="directory.frameworkId != null && directory.frameworkId != '' && test" id="comper-profile-explorer"
                         action="https://comper.projet.liris.cnrs.fr/sites/profile-engine/test/"
                         target="_blank"
                         method="post"  style="display:none;">
                     <input type="hidden" id="comper-jwt-input" name="token" />
                   </form>
+
+                  <form ng-if="directory.frameworkId != null && directory.frameworkId != '' && !test" id="comper-profile-explorer"
+                        action="https://comper.projet.liris.cnrs.fr/sites/profile-engine/"
+                        target="_blank"
+                        method="post"  style="display:none;">
+                    <input type="hidden" id="comper-jwt-input" name="token" />
+                  </form>
+
                   <span class="glyphicon" ng-class="
                   directory.is_visible ? 'glyphicon-eye-open'
                   : 'glyphicon-eye-close'"

@@ -12,6 +12,8 @@ directoryControllers.controller('directoryController',  ['$scope', '$modal',
 directoryControllers.controller('directoryListController', ['$scope', 'MyDirectory', '$location',
     function ($scope, MyDirectory, $location) {
 
+        $scope.test = document.location.toString().includes("app_dev");
+
         // retrieve models
         //MyDirectory.query({id: BASE_CONFIG.currentUserId}, function (data) {
         MyDirectory.query(function (datas) {
@@ -108,6 +110,7 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
             console.log("creation of compere profiles :");
             document.getElementById("progress-bar-comper-creation").style.minWidth = "3em;";
             let directoryId = directory.id;
+            document.getElementById("progress-actions").innerHTML = "Création du groupe";
             $.ajax({
                 url:         `${BASE_CONFIG.urls.api.directories}comper/${directoryId}/createGroup`,
                 type:        "PUT",
@@ -117,6 +120,7 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
             let cpt = 1;
             let nbUsers;
             let users;
+            document.getElementById("progress-actions").innerHTML = "Gestion des droits des enseignants";
 
             $.ajax({
                 url: `${BASE_CONFIG.urls.api.directories}comper/${directoryId}/managers/addManagers`,
@@ -126,6 +130,8 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
                 success: function (data, textStatus) {
                 }
             });
+
+            document.getElementById("progress-actions").innerHTML = "Récupération de la liste des apprenants";
 
             $.ajax({
                 url: `${BASE_CONFIG.urls.api.directories}comper/${directoryId}/users`,
@@ -137,6 +143,7 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
                     users = data["users"];
                     nbUsers = users.length;
                 }});
+            document.getElementById("progress-actions").innerHTML = "Création des profils";
             for (let userId in users) {
                 $.ajax({
                                     url: `${BASE_CONFIG.urls.api.directories}comper/${directoryId}/${users[userId]}`,
@@ -147,12 +154,18 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
                                         document.getElementById("progress-bar-comper-creation").style.width = parseInt((cpt / nbUsers) * 100) + "%";
                                         document.getElementById("progress-bar-comper-creation").innerHTML = parseInt((cpt / nbUsers) * 100) + "%";
                                         cpt++;
-                                    }
+                                        if  (parseInt((cpt / nbUsers) * 100) >= 100){
+                                            document.getElementById("progress-actions").innerHTML = "Création des profils terminée";
+                                            document.getElementById("progress-bar-comper-creation").classList.remove('progress-bar-striped');
+                                            document.getElementById("progress-bar-comper-creation").classList.remove('active');
+                                        }
+                                    },
+                    error: function(){
+                                        cpt++
+                    }
                 });
 
                             }
-            document.getElementById("progress-bar-comper-creation").classList.remove('progress-bar-striped');
-            document.getElementById("progress-bar-comper-creation").classList.remove('active');
             return true;
         }
         $scope.filterAlreadyAdded = function(item) {

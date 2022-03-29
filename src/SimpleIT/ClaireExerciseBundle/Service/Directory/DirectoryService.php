@@ -198,6 +198,18 @@ class DirectoryService extends TransactionalService
         return $profileCreated;
     }
 
+    public function activateComperTeacher($resource, $userId, $role){
+        $entity = $this->find($resource->getId());
+        $rightsManaged = false;
+        if (!$entity->getParent()){
+            if($entity->getFrameworkId() !== null){
+                $adminController = new AdminController();
+                $rightsManaged = $adminController->addRoleToTeacher($resource->getFrameworkId(), $userId, $role, $resource->getId());
+            }
+        }
+        return $rightsManaged;
+    }
+
 
 
     public function edit($resource,AskerUser $user)

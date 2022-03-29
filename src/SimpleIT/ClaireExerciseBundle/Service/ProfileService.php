@@ -29,12 +29,35 @@ class ProfileService
     private $profileEndpoint;
     private $profileCreateEndpoint;
     private $groupCreateEndpoint;
+    private $teacherManagerEndpoint;
 
-    function __construct($profileEndpoint, $profileCreateEndpoint, $groupCreateEndpoint)
+    function __construct($profileEndpoint, $profileCreateEndpoint, $groupCreateEndpoint, $teacherManagerEndpoint)
     {
         $this->profileEndpoint = $profileEndpoint;
         $this->profileCreateEndpoint = $profileCreateEndpoint;
         $this->groupCreateEndpoint = $groupCreateEndpoint;
+        $this->teacherManagerEndpoint = $teacherManagerEndpoint;
+    }
+
+    /**
+     * Set the role of the teacher on the profile engine
+     *
+     * @param string $token the profile to edit
+     */
+    public function setRole($token){
+        $header = array();
+        $header[] = 'Content-Type: application/json';
+        $header[] = 'Response-Type: application/json';
+        $header[] = 'Comper-origin: asker';
+        $header[] = 'Authorization: Bearer '.$token;
+
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $this->teacherManagerEndpoint);
+        curl_setopt($curl, CURLOPT_PUT, true);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
+
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        return curl_exec($curl);
     }
 
     /**
