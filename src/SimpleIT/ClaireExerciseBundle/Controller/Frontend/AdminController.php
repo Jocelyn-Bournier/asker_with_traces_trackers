@@ -167,7 +167,7 @@ class AdminController extends BaseController
             //$comper = 0;
             foreach($originalDirectories as $aud){
                 if ($user->getDirectories()->contains($aud) === false
-                && $aud->getDirectory()->getOwner()->getId() !== $user->getId()
+                    && $aud->getDirectory()->getOwner()->getId() !== $user->getId()
                 ){
                     $deleted[] = $aud->getDirectory();
                     $em->remove($aud);
@@ -186,7 +186,7 @@ class AdminController extends BaseController
             }
 
             $this->get('simple_it.exercise.asker_user_directory')->deleteChildrens($user, $deleted);
-             $this->get('simple_it.exercise.asker_user_directory')->updateForUser($user);
+            $this->get('simple_it.exercise.asker_user_directory')->updateForUser($user);
             // If comper updateForuser is called, flush will trig a constraint exception
             #if(!$comper){
             #    $this->get('simple_it.exercise.asker_user_directory')->updateForUser($user);
@@ -286,10 +286,39 @@ class AdminController extends BaseController
 
         $profileService = $this->container->get('app.profileService');
         $profileCreated = $profileService->createProfile($token);
-        if($role != "learner"){
-            $profileService->addFrameworkTeacher($token);
-        }
         $this->get('simple_it.exercise.asker_user_directory')->updateForUser($this->get('simple_it.exercise.user')->get($userId));
         return $profileCreated;
     }
+
+    public function addRoleToTeacher($frameworkId, $userId, $role, $directoryId){
+        $jwtEncoder = $this->get('app.jwtService');
+        $user       = $this->get('simple_it.exercise.user');
+        $timestamp  = new \DateTime();
+        $timestamp  = $timestamp->getTimestamp()+3000;
+        $payload    = [
+            "user"     => "asker:".$userId,
+            "fwid"     => intval($frameworkId),
+            "username" => $user->get($userId)->getUsername(),
+            "role"     => $role,
+            "exp"      => $timestamp
+        ];
+        $token = $jwtEncoder->getToken($payload);
+        $profileService = $this->container->get('app.profileService');
+        $profileService->setRole($token);
+
+        $timestamp  = new \DateTime();
+        $timestamp  = $timestamp->getTimestamp()+3000;
+
+        $payload    = [
+            "user"     => "asker:".$userId,
+            "username" => $user->get($userId)->getUsername(),
+            "role"     => $role,
+            "exp"      => $timestamp,
+            "platformGroupId" => 'asker:group-'.$directoryId.'-'.$frameworkId,
+        ];
+        $token = $jwtEncoder->getToken($payload);
+        $profileService->setRole($token);
+        return true;
+    }
 }
+
