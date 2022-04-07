@@ -40,6 +40,27 @@ class ProfileService
     }
 
     /**
+     * Set the role of the teacher on the profile engine
+     *
+     * @param string $token the profile to edit
+     */
+    public function setRole($token){
+        $header = array();
+        $header[] = 'Content-Type: application/json';
+        $header[] = 'Response-Type: application/json';
+        $header[] = 'Comper-origin: asker';
+        $header[] = 'Authorization: Bearer '.$token;
+
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $this->teacherManagerEndpoint);
+        curl_setopt($curl, CURLOPT_PUT, true);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
+
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        return curl_exec($curl);
+    }
+
+    /**
      * Request the profile from the profile engine.
      *
      * @param string $token the profile to request
@@ -143,8 +164,8 @@ class ProfileService
         $header[] = 'Authorization: Bearer '.$token;
 
         $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $this->teacherManagerEndpoint);
-        curl_setopt($curl, CURLOPT_PUT, true );
+        curl_setopt($curl, CURLOPT_URL, $this->profileEndpoint);
+        curl_setopt($curl, CURLOPT_POST, false);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
 
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -154,3 +175,4 @@ class ProfileService
 
 }
 ?>
+

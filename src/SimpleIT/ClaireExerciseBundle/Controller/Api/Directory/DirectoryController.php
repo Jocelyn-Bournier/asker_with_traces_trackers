@@ -93,7 +93,7 @@ class DirectoryController extends BaseController
                 }
             }
             if ($allowed){
-                
+
                 $user = $this->get('security.token_storage')->getToken()->getUser();
                 setcookie("userRoleStudentOnly", json_encode($user->isOnlyStudent()), time() + (86400 * 30), "/");
 
@@ -147,7 +147,7 @@ class DirectoryController extends BaseController
             }else{
                 $name =$d['parent_name'].": ".$d['name'];
 
-            } 
+            }
             $format[] = array('id' => $d['id'], 'name' => $name);
 
         }
@@ -224,7 +224,7 @@ class DirectoryController extends BaseController
      */
     public function modelAction(
         CollectionInformation $collectionInformation,
-        $model)
+                              $model)
     {
         $directories = $this->getDoctrine()
             ->getRepository('SimpleITClaireExerciseBundle:Directory')
@@ -310,10 +310,10 @@ class DirectoryController extends BaseController
     {
         try {
             $directory = $this->get('simple_it.exercise.directory')->edit
-                (
-                    $directoryResource,
-                    $this->getUser()
-                );
+            (
+                $directoryResource,
+                $this->getUser()
+            );
             $directoryResource = DirectoryFactory::create($directory, false, 0);
 
             $fwid = $directoryResource->getFrameworkId();
@@ -362,7 +362,7 @@ class DirectoryController extends BaseController
      */
     public function createAction(
         $id
-    //    DirectoryResource $directoryResource
+        //    DirectoryResource $directoryResource
     )
     {
         try {
@@ -451,12 +451,12 @@ class DirectoryController extends BaseController
      *          @OA\Response(response="200", description="Confirmation that student is no more on directory"),
      *     tags={"directories"},
      *      )
-    * */
+     * */
     public function clearStudentAction(Directory $directory)
     {
         $user = $this->get('security.token_storage')->getToken()->getUser();
         if ($directory->getOwner()->getId() ==  $user->getId()
-        || $user->isAdmin()){
+            || $user->isAdmin()){
             foreach($directory->getUsers() as $aud){
                 if ($aud->getUser()->isOnlyStudent()){
                     $aud->setEndDate(new \DateTime());
@@ -594,10 +594,12 @@ class DirectoryController extends BaseController
         $dir = $this->get('simple_it.exercise.directory')->find($directoryId);
         $managers = $this->get('simple_it.exercise.directory')->listManagers($dir);
         $owner = $dir->getOwner()->getId();
-        $this->get('simple_it.exercise.directory')->activateComperUser($dir, $owner, "teacher_admin");
+        $this->get('simple_it.exercise.directory')->activateComperUser($dir, $owner, "teacher");
+        $this->get('simple_it.exercise.directory')->activateComperTeacher($dir, $owner, "teacher_admin");
         $cpt = 1;
         foreach($managers as $manager){
-            $this->get('simple_it.exercise.directory')->activateComperUser($dir, $manager->getUser()->getId(), "teacher_editor");
+            $this->get('simple_it.exercise.directory')->activateComperUser($dir, $manager->getUser()->getId(), "teacher");
+            $this->get('simple_it.exercise.directory')->activateComperTeacher($dir, $manager->getUser()->getId(), "teacher_editor");
             $cpt ++;
         }
         return new JsonResponse(array('managersCreated' => $cpt));
