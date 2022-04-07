@@ -286,6 +286,9 @@ class AdminController extends BaseController
 
         $profileService = $this->container->get('app.profileService');
         $profileCreated = $profileService->createProfile($token);
+        if($role != "learner"){
+            $profileService->addFrameworkTeacher($token);
+        }
         $this->get('simple_it.exercise.asker_user_directory')->updateForUser($this->get('simple_it.exercise.user')->get($userId));
         return $profileCreated;
     }

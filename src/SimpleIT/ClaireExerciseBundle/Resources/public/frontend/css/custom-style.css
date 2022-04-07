@@ -169,3 +169,10 @@ ul.brand-size * {
         margin-top: 0px !important;
 }
 
+.flex{
+    display:flex;
+}
+
+.filter-item{
+    margin-top: 1em;
+}

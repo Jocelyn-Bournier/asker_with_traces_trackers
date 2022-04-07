@@ -29,12 +29,14 @@ class ProfileService
     private $profileEndpoint;
     private $profileCreateEndpoint;
     private $groupCreateEndpoint;
+    private $teacherManagerEndpoint;
 
-    function __construct($profileEndpoint, $profileCreateEndpoint, $groupCreateEndpoint)
+    function __construct($profileEndpoint, $profileCreateEndpoint, $groupCreateEndpoint, $teacherManagerEndpoint)
     {
         $this->profileEndpoint = $profileEndpoint;
         $this->profileCreateEndpoint = $profileCreateEndpoint;
         $this->groupCreateEndpoint = $groupCreateEndpoint;
+        $this->teacherManagerEndpoint = $teacherManagerEndpoint;
     }
 
     /**
@@ -141,8 +143,8 @@ class ProfileService
         $header[] = 'Authorization: Bearer '.$token;
 
         $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $this->profileEndpoint);
-        curl_setopt($curl, CURLOPT_POST, false);
+        curl_setopt($curl, CURLOPT_URL, $this->teacherManagerEndpoint);
+        curl_setopt($curl, CURLOPT_PUT, true );
         curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
 
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);

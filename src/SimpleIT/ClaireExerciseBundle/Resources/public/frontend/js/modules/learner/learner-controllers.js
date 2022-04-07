@@ -533,6 +533,7 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                     $scope.profileComputed = true;
                     $scope.framework = data;
                     document.getElementById('olm-target-loader').classList.add('hidden');
+                    document.getElementById('olm-target').classList.remove('hidden');
                     $scope.drawProfile();
                 },
                 error: function() {
