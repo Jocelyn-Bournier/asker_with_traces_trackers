@@ -139,6 +139,45 @@ class ProfileController extends BaseController
         return $response;
     }
 
+    /*
+    public function setRoleAction($framework_id, $role){
+        $jwtEncoder = $this->container->get('app.jwtService');
+        $user       = $this->get('security.token_storage')->getToken()->getUser();
+        $timestamp  = new \DateTime();
+        $timestamp  = $timestamp->getTimestamp()+3000;
+        $payload    = [
+            "user"     => "asker:".$user->getId(),
+            "fwid"     => intval($framework_id),
+            "username" => $user->getUsername(),
+            "role"     => $role,
+            "exp"      => $timestamp
+        ];
+
+        $token = $jwtEncoder->getToken($payload);
+
+        $profileService = $this->container->get('app.profileService');
+        return JsonResponse::fromJsonString($profileService->setRole($token));
+    }
+
+    public function setGroupRoleAction($framework_id, $directory_id, $role){
+        $jwtEncoder = $this->container->get('app.jwtService');
+        $user       = $this->get('security.token_storage')->getToken()->getUser();
+        $timestamp  = new \DateTime();
+        $timestamp  = $timestamp->getTimestamp()+3000;
+        $payload    = [
+            "user"     => "asker:".$user->getId(),
+            "username" => $user->getUsername(),
+            "role"     => $role,
+            "exp"      => $timestamp,
+            "platformGroupId" => 'asker:group-'.$directory_id.'-'.$framework_id
+        ];
+
+        $token = $jwtEncoder->getToken($payload);
+
+        $profileService = $this->container->get('app.profileService');
+        return JsonResponse::fromJsonString($profileService->setRole($token));
+    }
+    */
 
 }
 ?>

@@ -19,4 +19,3 @@ api_profile_trace:
     path: /trace/{directoryId}/{action}
     defaults: {_controller: SimpleITClaireExerciseBundle:Api/Profile/Profile:trace}
     methods: [POST]
-

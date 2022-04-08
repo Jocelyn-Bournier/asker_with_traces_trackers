@@ -12,6 +12,8 @@ directoryControllers.controller('directoryController',  ['$scope', '$modal',
 directoryControllers.controller('directoryListController', ['$scope', 'MyDirectory', '$location',
     function ($scope, MyDirectory, $location) {
 
+        $scope.test = document.location.toString().includes("app_dev");
+
         // retrieve models
         //MyDirectory.query({id: BASE_CONFIG.currentUserId}, function (data) {
         MyDirectory.query(function (datas) {

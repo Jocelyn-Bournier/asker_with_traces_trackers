@@ -88,7 +88,7 @@ monolog:
     channels: ['ldap']
     handlers:
       ldap:
-        type: stream
-        path:     '%kernel.logs_dir%/ldap.log'
+        type: rotating_file
+        path:     '%kernel.logs_dir%/ldap_%kernel.environment%.log'
         channels: ['ldap']
         max_files: 10
