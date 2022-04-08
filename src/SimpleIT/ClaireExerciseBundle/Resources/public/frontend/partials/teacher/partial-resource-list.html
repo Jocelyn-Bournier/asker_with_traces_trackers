@@ -15,7 +15,7 @@
 
                         <div class="row"
                              title="Recherche sur des métadonnées : saisir le couple clé/valeur recherché, ou seulement la clé ou seulement la valeur">
-                            <div class="panel panel-success">
+                            <div class="panel panel-success flex">
                                 <br>
 
                                 <div ng-repeat="meta in filters.metadata track by $index">
@@ -30,7 +30,7 @@
                                                                 title="Supprimer ce filtre"></span>
                                     </div>
                                 </div>
-                                <div class="">
+                                <div class="filter-item">
                                     <div class="col-xs-5">
                                         <input id="resourceAddMetadataKey" type="text" value=""
                                                placeholder="nouvelle clé" class="form-control">
@@ -78,7 +78,7 @@
                         <h5>Mots-clés</h5>
 
                         <div class="row" title="Recherche sur les mots-clés">
-                            <div class="panel panel-success">
+                            <div class="panel panel-success flex">
                                 <br>
 
                                 <div ng-repeat="keyword in filters.keywords track by $index">
@@ -90,10 +90,10 @@
                                                                 title="Supprimer ce filtre"></span>
                                     </div>
                                 </div>
-                                <div class="col-xs-10">
+                                <div class="col-xs-10 filter-item">
                                     <input id="resourceAddKeyword" type="text" value=""
                                            placeholder="nouveau mot-clé" class="form-control"></div>
-                                <div class="col-xs-2"><span data-ng-click="resourceAddKeywordsField(filters.keywords)"
+                                <div class="col-xs-2 filter-item"><span data-ng-click="resourceAddKeywordsField(filters.keywords)"
                                                             class="glyphicon glyphicon-ok"
                                                             title="Ajouter ce filtre"></span>
                                 </div>
@@ -104,10 +104,10 @@
                         <h5>Recherche</h5>
 
                         <div class="row">
-                            <div class="panel panel-success">
+                            <div class="panel panel-success flex">
                                 <br>
 
-                                <div class="col-xs-10">
+                                <div class="col-xs-10 filter-item">
                                     <input type="text" placeholder="rechercher" ng-model="$parent.$parent.filters.search"
                                            title="Rechercher dans le titre, les métadonnées et les mots-clés de la ressource">
                                 </div>

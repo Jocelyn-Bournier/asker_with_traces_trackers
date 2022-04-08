@@ -119,8 +119,8 @@ class DirectoryService extends TransactionalService
                 $this->em->remove($entity);
                 $this->em->flush();
             }catch (ForeignKeyConstraintViolationException $e){
-               $res= new Response('Il est nécessaire de supprimer les sous-dossiers:'. $e->getMessage(), 500);
-               $res->send();
+                $res= new Response('Il est nécessaire de supprimer les sous-dossiers:'. $e->getMessage(), 500);
+                $res->send();
             }
         }else{
             throw new AccessDeniedException();
@@ -170,8 +170,8 @@ class DirectoryService extends TransactionalService
         if (!$entity->getParent()){
             if($entity->getFrameworkId() !== null){
                 return $this->getIdUsers($entity, $view);
-                }
             }
+        }
         return [];
     }
 
@@ -300,7 +300,7 @@ class DirectoryService extends TransactionalService
     public function JSONstats($repo,Directory $directory, $model, $view, $ids)
     {
         $datas = $repo->
-            distributionMarkByModel($model->getId(),$view, $ids)[0]
+        distributionMarkByModel($model->getId(),$view, $ids)[0]
         ;
         $json = array();
         foreach($datas as $key=> $val){
@@ -312,13 +312,13 @@ class DirectoryService extends TransactionalService
     public function JSONUserStats($directory,$user,$view)
     {
         $models = $this->directoryRepository->
-            findAllModels($directory->getId())
+        findAllModels($directory->getId())
         ;
 
         $json = array();
         foreach ($models as $key => $model) {
             $json[$key] = $this->directoryRepository->
-                JSONUserStats($model['mid'],$model['did'], $user->getId(), $view)[0]
+            JSONUserStats($model['mid'],$model['did'], $user->getId(), $view)[0]
             ;
         }
         foreach ($json as $key => $dir) {
@@ -368,19 +368,19 @@ class DirectoryService extends TransactionalService
         foreach($directory->getModels() as $model){
             $models[$model->getId()]['title'] = $model->getTitle();
             $models[$model->getId()]['userAnswer'] = $answer->
-                uniqueUsersByModel($model->getId(),$view, $ids)[0]['total']
+            uniqueUsersByModel($model->getId(),$view, $ids)[0]['total']
             ;
             $models[$model->getId()]['userNoAnswer'] =  $attempt->
-                uniqueUsersByModel($model->getId(),$view, $ids)[0]['total']
+            uniqueUsersByModel($model->getId(),$view, $ids)[0]['total']
             ;
             $models[$model->getId()]['avgAttempt'] = $attempt->
-                averageAttemptByModel($model->getId(),$view,$ids)[0]['avg']
+            averageAttemptByModel($model->getId(),$view,$ids)[0]['avg']
             ;
             $models[$model->getId()]['avgAnswer'] = $answer->
-                averageAnswerByModel($model->getId(),$view, $ids)[0]['avg']
+            averageAnswerByModel($model->getId(),$view, $ids)[0]['avg']
             ;
             $models[$model->getId()]['avgMark'] = $answer->
-                averageMarkByModel($model->getId(),$view, $ids)[0]['avg']
+            averageMarkByModel($model->getId(),$view, $ids)[0]['avg']
             ;
             $models[$model->getId()]['directoryId'] =  $directory->getId();
             $models[$model->getId()]['json'] = $this->JSONstats($answer,$directory,$model,$view,$ids);
@@ -569,7 +569,7 @@ class DirectoryService extends TransactionalService
         $stats = array();
         foreach ($users as $key => $user) {
             $stat = $this->directoryRepository->
-                getPreviewStats($directory->getId(),$user->getId(),$view)[0]
+            getPreviewStats($directory->getId(),$user->getId(),$view)[0]
             ;
 
             $stats[$key]['user'] = $user;
@@ -632,12 +632,12 @@ class DirectoryService extends TransactionalService
     public function JSONUserModelsStats($directory,$user,$view)
     {
         $dirs = $this->directoryRepository->
-            getSubDirsStats($directory->getId(),$user->getId(),$view)
+        getSubDirsStats($directory->getId(),$user->getId(),$view)
         ;
 
         foreach ($dirs as $key => $dir) {
             $dirs[$key]['models'] = $this->directoryRepository->
-                getModelsStats($dir['id'],$user->getId(),$view)
+            getModelsStats($dir['id'],$user->getId(),$view)
             ;
         }
 
@@ -650,15 +650,16 @@ class DirectoryService extends TransactionalService
             ->getRepository('SimpleITClaireExerciseBundle:CreatedExercise\Answer')
         ;
         $dirs = $this->directoryRepository->
-            getSubDirs($directory->getId())
+        getSubDirs($directory->getId())
         ;
 
         $json = array();
         foreach ($dirs as $dir) {
             $json[] = $answer->
-                getAllAnswers($dir['id'],$user->getId(),$view)
+            getAllAnswers($dir['id'],$user->getId(),$view)
             ;
         }
         return $json;
     }
 }
+

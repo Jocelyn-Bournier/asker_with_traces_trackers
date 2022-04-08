@@ -106,11 +106,9 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
             document.getElementById("progress-bar-comper-creation").style.width= '100%';
             document.getElementById("progress-bar-comper-creation").classList.add("progress-bar-striped");
             document.getElementById("progress-bar-comper-creation").classList.add("active");
-            console.log("creation of group");
-            console.log("creation of compere profiles :");
             document.getElementById("progress-bar-comper-creation").style.minWidth = "3em;";
+            document.getElementById("action-creation").innerHTML = "Création du groupe";
             let directoryId = directory.id;
-            document.getElementById("progress-actions").innerHTML = "Création du groupe";
             $.ajax({
                 url:         `${BASE_CONFIG.urls.api.directories}comper/${directoryId}/createGroup`,
                 type:        "PUT",
@@ -120,8 +118,8 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
             let cpt = 1;
             let nbUsers;
             let users;
-            document.getElementById("progress-actions").innerHTML = "Gestion des droits des enseignants";
 
+            document.getElementById("action-creation").innerHTML = "Ajout des enseignants";
             $.ajax({
                 url: `${BASE_CONFIG.urls.api.directories}comper/${directoryId}/managers/addManagers`,
                 type: "GET",
@@ -131,8 +129,7 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
                 }
             });
 
-            document.getElementById("progress-actions").innerHTML = "Récupération de la liste des apprenants";
-
+            document.getElementById("action-creation").innerHTML = "Récupération de la liste des étudiants";
             $.ajax({
                 url: `${BASE_CONFIG.urls.api.directories}comper/${directoryId}/users`,
                 type: "GET",
@@ -143,7 +140,7 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
                     users = data["users"];
                     nbUsers = users.length;
                 }});
-            document.getElementById("progress-actions").innerHTML = "Création des profils";
+            document.getElementById("action-creation").innerHTML = "Ajout des étudiants";
             for (let userId in users) {
                 $.ajax({
                                     url: `${BASE_CONFIG.urls.api.directories}comper/${directoryId}/${users[userId]}`,
@@ -154,18 +151,15 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
                                         document.getElementById("progress-bar-comper-creation").style.width = parseInt((cpt / nbUsers) * 100) + "%";
                                         document.getElementById("progress-bar-comper-creation").innerHTML = parseInt((cpt / nbUsers) * 100) + "%";
                                         cpt++;
-                                        if  (parseInt((cpt / nbUsers) * 100) >= 100){
-                                            document.getElementById("progress-actions").innerHTML = "Création des profils terminée";
-                                            document.getElementById("progress-bar-comper-creation").classList.remove('progress-bar-striped');
-                                            document.getElementById("progress-bar-comper-creation").classList.remove('active');
+                                        if (cpt == nbUsers){
+                                            document.getElementById("action-creation").innerHTML = "Création des profils terminée";
                                         }
-                                    },
-                    error: function(){
-                                        cpt++
-                    }
+                                    }
                 });
 
                             }
+            document.getElementById("progress-bar-comper-creation").classList.remove('progress-bar-striped');
+            document.getElementById("progress-bar-comper-creation").classList.remove('active');
             return true;
         }
         $scope.filterAlreadyAdded = function(item) {

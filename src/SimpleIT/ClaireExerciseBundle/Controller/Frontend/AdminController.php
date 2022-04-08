@@ -167,7 +167,7 @@ class AdminController extends BaseController
             //$comper = 0;
             foreach($originalDirectories as $aud){
                 if ($user->getDirectories()->contains($aud) === false
-                && $aud->getDirectory()->getOwner()->getId() !== $user->getId()
+                    && $aud->getDirectory()->getOwner()->getId() !== $user->getId()
                 ){
                     $deleted[] = $aud->getDirectory();
                     $em->remove($aud);
@@ -186,7 +186,7 @@ class AdminController extends BaseController
             }
 
             $this->get('simple_it.exercise.asker_user_directory')->deleteChildrens($user, $deleted);
-             $this->get('simple_it.exercise.asker_user_directory')->updateForUser($user);
+            $this->get('simple_it.exercise.asker_user_directory')->updateForUser($user);
             // If comper updateForuser is called, flush will trig a constraint exception
             #if(!$comper){
             #    $this->get('simple_it.exercise.asker_user_directory')->updateForUser($user);
@@ -321,3 +321,4 @@ class AdminController extends BaseController
         return true;
     }
 }
+
