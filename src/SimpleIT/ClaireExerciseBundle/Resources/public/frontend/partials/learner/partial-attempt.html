@@ -26,7 +26,7 @@
                     <div ng-if="doc.object_type == 'document'">
                         <a href="{{ imageUrl }}{{ doc.source }}"
                            data-lightbox="doc" data-title="Document annexe">
-                            <embed ng-src="{{ imageUrl }}{{ doc.source }}" style="height: 100px" type="application/pdf"/>
+                            <embed ng-src="{{ documentUrl }}{{ doc.source }}" style="height: 100px" type="application/pdf"/>
                         </a>
                     </div>
                 </div>

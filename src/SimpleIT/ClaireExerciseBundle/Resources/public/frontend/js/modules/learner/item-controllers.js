@@ -4,6 +4,7 @@ attemptControllers.controller('attemptController', ['$scope', '$state', 'Attempt
     function ($scope, $state, AttemptByExercise, ExerciseByModel, Exercise, Attempt, Item, $routeParams, $stateParams) {
 
         $scope.imageUrl = BASE_CONFIG.urls.images.uploads;
+        $scope.documentUrl = BASE_CONFIG.urls.documents.uploads;
         $scope.imageExoUrl = BASE_CONFIG.urls.images.exercise;
         $scope.navBarUrl = BASE_CONFIG.urls.partials.learner + '/fragment-nav-bar.html';
 

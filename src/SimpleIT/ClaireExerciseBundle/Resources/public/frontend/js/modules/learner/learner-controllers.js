@@ -668,6 +668,7 @@ learnerControllers.controller('learnerController', ['$scope', 'User', 'AttemptBy
     function ($scope, User, AttemptByExercise, ExerciseByModel, AttemptList, $routeParams, $location, $stateParams) {
         $scope.section = 'attempts';
         $scope.imageUrl = BASE_CONFIG.urls.images.uploads;
+        $scope.documentUrl = BASE_CONFIG.urls.documents.uploads;
         $scope.imageExoUrl = BASE_CONFIG.urls.images.exercise;
 
         // retrieve attempts
