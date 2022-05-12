@@ -23,6 +23,12 @@
                             <img ng-src="{{ imageUrl }}{{ doc.source }}" style="height: 100px"/>
                         </a>
                     </div>
+                    <div ng-if="doc.object_type == 'document'">
+                        <a href="{{ imageUrl }}{{ doc.source }}"
+                           data-lightbox="doc" data-title="Document annexe">
+                            <embed ng-src="{{ imageUrl }}{{ doc.source }}" style="height: 100px" type="application/pdf"/>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

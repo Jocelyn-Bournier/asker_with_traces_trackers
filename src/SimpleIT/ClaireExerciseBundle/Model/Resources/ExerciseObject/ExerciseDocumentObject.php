@@ -22,12 +22,11 @@ use JMS\Serializer\Annotation as Serializer;
 
 /**
  * A picture object in an exercise.
- *
- * @author Baptiste Cablé <baptiste.cable@liris.cnrs.fr>
+ * 
  */
-class ExercisePictureObject extends ExerciseObject
+class ExerciseDocumentObject extends ExerciseObject
 {
-    const OBJECT_TYPE = "picture";
+    const OBJECT_TYPE = "document";
 
     /**
      * @var string $source The source of the picture
