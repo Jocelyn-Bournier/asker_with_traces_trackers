@@ -7,6 +7,9 @@
             <div ng-switch-when="picture">
                 <img ng-src="{{BASE_CONFIG.urls.images.uploads}}{{resource.content.source}}" style="width: 55px; height: 55px;"/>
             </div>
+            <div ng-switch-when="document">
+                <span title="Document" class="glyphicon glyphicon-file" style="font-size: 320%"></span>
+            </div>
             <div ng-switch-when="multiple-choice-question">
                 <span title="Question de QCM" class="glyphicon glyphicon-check" style="font-size: 320%"></span>
             </div>
@@ -128,6 +131,9 @@
     <div ng-switch-when="picture">
         <label>Type de ressource&nbsp;:&nbsp;</label>Image
     </div>
+    <div ng-switch-when="document">
+        <label>Type de ressource&nbsp;:&nbsp;</label>Document
+    </div>
     <div ng-switch-when="multiple-choice-question">
         <label>Type de ressource&nbsp;:&nbsp;</label>Question de QCM
     </div>
@@ -147,6 +153,13 @@
         <a href="{{BASE_CONFIG.urls.images.uploads}}{{resource.content.source}}"
            data-lightbox="res" data-title="La ressource">
             <img ng-src="{{BASE_CONFIG.urls.images.uploads}}{{resource.content.source}}"/>
+        </a>
+    </div>
+    <div ng-switch-when="document">
+        <label>Contenu&nbsp;:&nbsp;</label>
+        <a href="{{BASE_CONFIG.urls.documents.uploads}}{{resource.content.source}}"
+           data-lightbox="res" data-title="La ressource">
+            <embed ng-src="{{BASE_CONFIG.urls.documents.uploads}}{{resource.content.source}}"/>
         </a>
     </div>
     <div ng-switch-when="multiple-choice-question">

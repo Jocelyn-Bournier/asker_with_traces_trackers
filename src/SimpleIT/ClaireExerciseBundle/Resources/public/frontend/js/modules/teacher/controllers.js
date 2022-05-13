@@ -222,7 +222,7 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
             archived: false, // select archived resources or not (boolean)
             public: false, // select public resources or not (boolean)
             type: { // resources types to be selected
-                multiple_choice_question: 'multiple-choice-question', text: 'text', picture: 'picture', open_ended_question: 'open-ended-question', sequence: ''
+                multiple_choice_question: 'multiple-choice-question', text: 'text', picture: 'picture', document: 'document', open_ended_question: 'open-ended-question', sequence: ''
             },
             keywords: [], // list of keywords that a resource must have to be selected
             metadata: [] // list of metadata objects that a resource must have to be selected
@@ -314,6 +314,22 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
                     "content": {
                         "source": null,
                         "object_type": "picture"
+                    },
+                    "required_exercise_resources": null,
+                    "required_knowledges": null
+                },
+                "document": {
+                    "type": "document",
+                    "title": "Nouveau document",
+                    "public": false,
+                    "archived": false,
+                    "draft": false,
+                    "complete": null,
+                    "metadata": [],
+                    "keywords": [],
+                    "content": {
+                        "source": null,
+                        "object_type": "document"
                     },
                     "required_exercise_resources": null,
                     "required_knowledges": null
@@ -480,6 +496,15 @@ resourceControllers.controller('resourceListController', ['$scope', '$state', 'R
                 });
             } else if (type == 'picture') {
                 Resource.save($scope.resourceContext.newResources.picture, function (data) {
+                    $scope.resources[data.id] = data;
+                    if ($scope.parentSection === 'model') {
+                        $state.go('modelEdit.resourceEdit', {resourceid: data.id});
+                    } else {
+                        $state.go('resourceEdit', {resourceid: data.id});
+                    }
+                });
+            } else if (type == 'document') {
+                Resource.save($scope.resourceContext.newResources.document, function (data) {
                     $scope.resources[data.id] = data;
                     if ($scope.parentSection === 'model') {
                         $state.go('modelEdit.resourceEdit', {resourceid: data.id});
@@ -1520,7 +1545,7 @@ modelControllers.controller('modelEditController', ['$scope', 'Model','ModelDire
         $scope.usedDocuments = [];
 
         $scope.onDropDocument = function (event, resource, documents) {
-            if (resource.type == 'text' || resource.type == 'picture') {
+            if (resource.type == 'text' || resource.type == 'picture' || resource.type == 'document') {
                 $scope.modelAddBlockResourceField(documents, resource.id);
             }
         };
