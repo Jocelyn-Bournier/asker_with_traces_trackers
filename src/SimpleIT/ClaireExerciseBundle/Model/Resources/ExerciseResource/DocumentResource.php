@@ -24,10 +24,10 @@ use JMS\Serializer\Annotation as Serializer;
  * Class DocumentRessource
  *
  */
-class PictureResource extends CommonResource
+class DocumentResource extends CommonResource
 {
     /**
-     * @var string $source The source of the picture
+     * @var string $source The source of the document
      * @Serializer\Type("string")
      * @Serializer\Groups({"details", "resource_storage", "resource_list", "owner_resource_list"})
      */
