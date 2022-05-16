@@ -116,8 +116,8 @@ class GroupItemsService extends ExerciseCreationService
             // In each group made by the user, count the number of elements of
             // each class according to the solution to determine the most
             // probable group name
-            $this->determineGroupsAndModifySolution($item, $viewName, $groups, $learnerAnswers);    //debug mark: $item objet instance de classe, passé par référence, groups array, passé par valeur ?
-
+            $this->determineGroupsAndModifySolution($item, $viewName, $groups, $learnerAnswers);
+        }
         // else, the names of the groups are given and there is nothing to do
 
         // Mark
@@ -490,7 +490,7 @@ class GroupItemsService extends ExerciseCreationService
     private function determineGroupsAndModifySolution(
         ResItem &$item,
         $viewName,
-        array $groups,
+        array &$groups,
         array $learnerAnswers
     )
     {
