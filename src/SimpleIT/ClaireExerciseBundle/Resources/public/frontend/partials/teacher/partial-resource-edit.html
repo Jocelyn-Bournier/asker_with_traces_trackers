@@ -148,8 +148,8 @@
                 </div>
                 <a href="{{BASE_CONFIG.urls.documents.uploads}}{{editedResource.content.source}}"
                    data-lightbox="res" data-title="La ressource">
-                    <embed ng-src="{{BASE_CONFIG.urls.documents.uploads}}{{editedResource.content.source}}"
-                         style="height: 100px; width: auto" type="application/pdf"/>
+                    <iframe ng-src="{{BASE_CONFIG.urls.documents.uploads| TrustUrl}}{{editedResource.content.source}}"
+                         style="height: 500px; width: auto"></iframe>
                 </a>
             </div>
         </div>

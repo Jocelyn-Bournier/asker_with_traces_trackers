@@ -1,12 +1,14 @@
 var attemptControllers = angular.module('attemptControllers', ['ui.router']);
 
-attemptControllers.controller('attemptController', ['$scope', '$state', 'AttemptByExercise', 'ExerciseByModel', 'Exercise', 'Attempt', 'Item', '$routeParams', '$stateParams',
-    function ($scope, $state, AttemptByExercise, ExerciseByModel, Exercise, Attempt, Item, $routeParams, $stateParams) {
+attemptControllers.controller('attemptController', ['$scope', '$state', 'AttemptByExercise', 'ExerciseByModel', 'Exercise', 'Attempt', 'Item', '$routeParams', '$stateParams','$sce',
+    function ($scope, $state, AttemptByExercise, ExerciseByModel, Exercise, Attempt, Item, $routeParams, $stateParams,$sce) {
 
         $scope.imageUrl = BASE_CONFIG.urls.images.uploads;
         $scope.documentUrl = BASE_CONFIG.urls.documents.uploads;
         $scope.imageExoUrl = BASE_CONFIG.urls.images.exercise;
         $scope.navBarUrl = BASE_CONFIG.urls.partials.learner + '/fragment-nav-bar.html';
+
+        $scope.documentUrl = $sce.trustAsResourceUrl(BASE_CONFIG.urls.documents.uploads);
 
         $scope.validable = false;
 

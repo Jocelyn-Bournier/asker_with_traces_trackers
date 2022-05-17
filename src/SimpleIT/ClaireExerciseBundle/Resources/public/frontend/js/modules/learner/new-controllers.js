@@ -1,11 +1,14 @@
 var newControllers = angular.module('newControllers', ['ui.router']);
 newControllers.controller('newController',
-    ['$scope','NewList','ExerciseByModel', 'AttemptByExercise', '$routeParams', '$location', '$stateParams',
+    ['$scope','NewList','ExerciseByModel', 'AttemptByExercise', '$routeParams', '$location', '$stateParams','$sce',
     function ($scope,NewList,ExerciseByModel, AttemptByExercise, $routeParams, $location, $stateParams){
         $scope.section = 'news';
         $scope.imageUrl = BASE_CONFIG.urls.images.uploads;
         $scope.documentUrl = BASE_CONFIG.urls.documents.uploads;
         $scope.imageExoUrl = BASE_CONFIG.urls.images.exercise;
+
+        $scope.documentUrl = $sce.trustAsResourceUrl(BASE_CONFIG.urls.documents.uploads);
+
         console.log('news exercises loading...');
         $scope.news = NewList.query(
             function(){

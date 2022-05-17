@@ -654,6 +654,12 @@ resourceControllers.controller('resourceEditController', ['$scope', '$modal', 'R
     function ($scope, $modal, Resource, Upload, $location, $stateParams, User, $upload) {
         $scope.resourcePanelContext = "resourceEdit";
 
+        angular.module("mainAppControllers").filter('trustUrl', ["$sce", function ($sce) {
+            return function (val) {
+                return $sce.trustAsResourceUrl(val);
+            };
+        }]);
+
         // retrieve resource
         if (typeof $scope.resources === "undefined") {
             $scope.editedResource = Resource.get({id: $stateParams.resourceid});
