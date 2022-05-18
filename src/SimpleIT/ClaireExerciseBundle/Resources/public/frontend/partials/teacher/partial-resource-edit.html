@@ -146,10 +146,7 @@
                         <input type="file" ng-file-select="onFileSelect($files)">
                     </div>
                 </div>
-                <a href="{{BASE_CONFIG.urls.documents.uploads}}{{editedResource.content.source}}"
-                   data-lightbox="res" data-title="La ressource">
-                    <iframe ng-src="{{BASE_CONFIG.urls.documents.uploads| TrustUrl}}{{editedResource.content.source}}"
-                         style="height: 500px; width: auto"></iframe>
+                <a href="{{BASE_CONFIG.urls.documents.uploads}}{{editedResource.content.source}}">
                 </a>
             </div>
         </div>

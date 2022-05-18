@@ -650,15 +650,20 @@ resourceControllers.filter('myFilters', function () {
     };
 });
 
-resourceControllers.controller('resourceEditController', ['$scope', '$modal', 'Resource', 'Upload', '$location', '$stateParams', 'User', '$upload',
-    function ($scope, $modal, Resource, Upload, $location, $stateParams, User, $upload) {
+resourceControllers.controller('resourceEditController', ['$scope', '$modal', 'Resource', 'Upload', '$location', '$stateParams', 'User', '$upload', '$sce',
+    function ($scope, $modal, Resource, Upload, $location, $stateParams, User, $upload,$sce) {
         $scope.resourcePanelContext = "resourceEdit";
 
-        angular.module("mainAppControllers").filter('trustUrl', ["$sce", function ($sce) {
-            return function (val) {
-                return $sce.trustAsResourceUrl(val);
-            };
-        }]);
+        /*
+        angular.module("mainAppController")
+            .filter('trustUrl', ["$sce", function ($sce) {
+                return function (val) {
+                 return $sce.trustAsResourceUrl(BASE_CONFIG.urls.documents.uploads + val);
+              };
+            }
+        ]);
+        */
+
 
         // retrieve resource
         if (typeof $scope.resources === "undefined") {
@@ -670,6 +675,13 @@ resourceControllers.controller('resourceEditController', ['$scope', '$modal', 'R
         // resource for md link
         $scope.resource = null;
         $scope.resourceAddMD = {key: '', value: ''};
+
+        $scope.seeDocument = function () {
+            console.log('hey');
+            if (typeof $scope.editedResource.content.source !== 'undefined') {
+                return '<p><a href="{{BASE_CONFIG.urls.documents.uploads}}{{editedResource.content.source}}">consulter ressource</a></p>';
+            }
+        };
 
         // update resource method
         $scope.updateResource = function () {
