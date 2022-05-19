@@ -8,8 +8,6 @@ attemptControllers.controller('attemptController', ['$scope', '$state', 'Attempt
         $scope.imageExoUrl = BASE_CONFIG.urls.images.exercise;
         $scope.navBarUrl = BASE_CONFIG.urls.partials.learner + '/fragment-nav-bar.html';
 
-        $scope.documentUrl = $sce.trustAsResourceUrl(BASE_CONFIG.urls.documents.uploads);
-
         $scope.validable = false;
 
         console.log('loading attempt...');
@@ -27,6 +25,7 @@ attemptControllers.controller('attemptController', ['$scope', '$state', 'Attempt
                                 // when data loaded
                                 console.log('items loaded.');
                                 $scope.gotoItem(0);
+                                console.log($scope.exercise);
                             });
                     });
             }

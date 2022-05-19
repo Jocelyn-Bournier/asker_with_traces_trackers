@@ -157,10 +157,7 @@
     </div>
     <div ng-switch-when="document">
         <label>Contenu&nbsp;:&nbsp;</label>
-        <a href="{{BASE_CONFIG.urls.documents.uploads}}{{resource.content.source}}"
-           data-lightbox="res" data-title="La ressource">
-            <embed ng-src="{{BASE_CONFIG.urls.documents.uploads}}{{resource.content.source}}" type="application/pdf"/>
-        </a>
+        <a id="documentLink" href="{{BASE_CONFIG.urls.documents.uploads}}{{resource.content.source}}">voir document</a>
     </div>
     <div ng-switch-when="multiple-choice-question">
         <label>Question&nbsp;:&nbsp;</label>{{ resource.content.question }}

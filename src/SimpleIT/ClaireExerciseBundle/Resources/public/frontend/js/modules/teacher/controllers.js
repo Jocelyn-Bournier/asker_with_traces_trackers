@@ -676,13 +676,6 @@ resourceControllers.controller('resourceEditController', ['$scope', '$modal', 'R
         $scope.resource = null;
         $scope.resourceAddMD = {key: '', value: ''};
 
-        $scope.seeDocument = function () {
-            console.log('hey');
-            if (typeof $scope.editedResource.content.source !== 'undefined') {
-                return '<p><a href="{{BASE_CONFIG.urls.documents.uploads}}{{editedResource.content.source}}">consulter ressource</a></p>';
-            }
-        };
-
         // update resource method
         $scope.updateResource = function () {
 
@@ -726,8 +719,17 @@ resourceControllers.controller('resourceEditController', ['$scope', '$modal', 'R
                 console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
             }).success(function (data) {
                 // file is uploaded successfully
-                $scope.editedResource.content.source = data.fileName;
+                $scope.editedResource.content.source = data.fileNname;
             });
+            var link=document.getElementById("documentLink");
+            if ($scope.editedResource.content.source === "undefined") {
+                link.setAttribute("hidden","true");
+                console.log("undefined");
+            }
+            else {
+                link.removeAttribute("hidden");
+                console.log("defined");
+            }
         };
 
         // delete resource method
