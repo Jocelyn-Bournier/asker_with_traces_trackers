@@ -719,7 +719,7 @@ resourceControllers.controller('resourceEditController', ['$scope', '$modal', 'R
                 console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
             }).success(function (data) {
                 // file is uploaded successfully
-                $scope.editedResource.content.source = data.fileNname;
+                $scope.editedResource.content.source = data.fileName;
             });
             var link=document.getElementById("documentLink");
             if ($scope.editedResource.content.source === "undefined") {
