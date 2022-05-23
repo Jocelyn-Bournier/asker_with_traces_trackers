@@ -806,6 +806,7 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
         $scope.modelContext = {
             "newModel": {
                 "block_constraint": {
+                    "keyword": {"keyword": '',"comparator": 'keyword'},
                     "exists": {"key": '', "values": [], "comparator": 'exists'},
                     "in": {"key": '', "values": [], "comparator": 'in'},
                     "between": {"key": '', "values": ['', ''], "comparator": 'between'},
@@ -1051,6 +1052,8 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
 
             if (type == 'exists') {
                 newElement = jQuery.extend(true, {}, $scope.modelContext.newModel.block_constraint.exists);
+            } else if (type == 'keyword') {
+                newElement = jQuery.extend(true, {}, $scope.modelContext.newModel.block_constraint.keyword);
             } else if (type == 'in') {
                 newElement = jQuery.extend(true, {}, $scope.modelContext.newModel.block_constraint.in);
             } else if (type == 'between') {
