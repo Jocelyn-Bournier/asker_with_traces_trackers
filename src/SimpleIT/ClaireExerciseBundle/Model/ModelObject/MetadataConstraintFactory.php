@@ -77,6 +77,11 @@ class MetadataConstraintFactory
                 $metadataConstraint->setBetween($min, $max);
             }
 
+            if ($constr->nodeName == 'keyword') {
+                $metadataConstraint->setKeyword($const->textContent);
+                echo('<script>console.log("here");</script>');
+            }
+
             /*
              *  empty node (exists)
              */
