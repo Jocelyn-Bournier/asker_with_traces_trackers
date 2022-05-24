@@ -74,6 +74,15 @@ attemptControllers.controller('attemptController', ['$scope', '$state', 'Attempt
                 });
         };
 
+        $scope.seeDocument = function (resource){
+            if (typeof resource.source !== 'undefined'){
+                window.open(BASE_CONFIG.urls.documents.uploads + resource.source);
+            }
+            else{
+                console.log("undefined");
+            }
+        }
+
     }]);
 
 var itemControllers = angular.module('itemControllers', ['ui.router']);

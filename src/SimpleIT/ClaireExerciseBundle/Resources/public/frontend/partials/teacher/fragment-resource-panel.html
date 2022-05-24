@@ -157,7 +157,7 @@
     </div>
     <div ng-switch-when="document">
         <label>Contenu&nbsp;:&nbsp;</label>
-        <a id="documentLink" href="{{BASE_CONFIG.urls.documents.uploads}}{{resource.content.source}}">voir document</a>
+        <button type="button" data-ng-click="seeDocument(resource)">Voir document</button>
     </div>
     <div ng-switch-when="multiple-choice-question">
         <label>Question&nbsp;:&nbsp;</label>{{ resource.content.question }}

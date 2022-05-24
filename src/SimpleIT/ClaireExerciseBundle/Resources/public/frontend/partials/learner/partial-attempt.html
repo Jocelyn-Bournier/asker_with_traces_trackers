@@ -24,7 +24,7 @@
                         </a>
                     </div>
                     <div ng-if="doc.object_type == 'document'">
-                        <a id="documentLink" href="{{ BASE_CONFIG.urls.documents.uploads }}{{ doc.source }}">voir document</a>
+                        <button type="button" data-ng-click="seeDocument(doc)">Voir document</button>
                     </div>
                 </div>
             </div>

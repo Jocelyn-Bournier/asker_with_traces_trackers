@@ -483,6 +483,15 @@ resourceControllers.controller('resourceListController', ['$scope', '$state', 'R
             collection.splice(index, 1);
         };
 
+        $scope.seeDocument = function (resource){
+            if (typeof resource.content.source !== 'undefined'){
+                window.open(BASE_CONFIG.urls.documents.uploads + resource.content.source);
+            }
+            else{
+                console.log("undefined");
+            }
+        }
+
         // create resource method
         $scope.createResource = function (type) {
             if (type == 'text') {
@@ -721,16 +730,16 @@ resourceControllers.controller('resourceEditController', ['$scope', '$modal', 'R
                 // file is uploaded successfully
                 $scope.editedResource.content.source = data.fileName;
             });
-            var link=document.getElementById("documentLink");
-            if ($scope.editedResource.content.source === "undefined") {
-                link.setAttribute("hidden","true");
+        };
+
+        $scope.seeDocument = function (){
+            if (typeof $scope.editedResource.content.source !== 'undefined'){
+                window.open(BASE_CONFIG.urls.documents.uploads + $scope.editedResource.content.source);
+            }
+            else{
                 console.log("undefined");
             }
-            else {
-                link.removeAttribute("hidden");
-                console.log("defined");
-            }
-        };
+        }
 
         // delete resource method
         $scope.deleteResource = function (resource) {

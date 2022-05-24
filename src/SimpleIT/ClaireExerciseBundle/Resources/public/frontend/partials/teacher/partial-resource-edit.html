@@ -146,7 +146,7 @@
                         <input type="file" ng-file-select="onFileSelect($files)">
                     </div>
                 </div>
-                <a id="documentLink" hidden="true" href="{{BASE_CONFIG.urls.documents.uploads}}{{editedResource.content.source}}">voir document</a>
+                <button type="button" data-ng-click="seeDocument()">Voir document</button>
             </div>
         </div>
     </div>
