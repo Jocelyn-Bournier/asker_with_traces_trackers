@@ -806,7 +806,7 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
         $scope.modelContext = {
             "newModel": {
                 "block_constraint": {
-                    "keyword": {"keyword": '',"comparator": 'keyword'},
+                    "keyword": {"key": '',"values": [],"comparator": 'keyword'},
                     "exists": {"key": '', "values": [], "comparator": 'exists'},
                     "in": {"key": '', "values": [], "comparator": 'in'},
                     "between": {"key": '', "values": ['', ''], "comparator": 'between'},
@@ -1049,7 +1049,8 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
 
         $scope.modelAddBlockResourceConstraint = function (metadata_constraints, type) {
             var newElement;
-
+            console.log('ajout du nouvel elmnt:');
+            console.log(metadata_constraints);
             if (type == 'exists') {
                 newElement = jQuery.extend(true, {}, $scope.modelContext.newModel.block_constraint.exists);
             } else if (type == 'keyword') {
@@ -1504,8 +1505,11 @@ modelControllers.controller('modelEditController', ['$scope', 'Model','ModelDire
         };
 
         $scope.updateModel = function () {
+            console.log("updatemodel");
             var newModel = $scope.preUpdate();
             newModel.$update({id: $stateParams.modelid}, function (model) {
+                console.log(model);
+                console.log($scope.models);
                 $scope.model = model;
                 $scope.models[model.id] = model;
             });
