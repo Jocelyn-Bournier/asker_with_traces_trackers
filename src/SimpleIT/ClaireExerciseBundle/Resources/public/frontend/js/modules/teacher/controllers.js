@@ -969,7 +969,8 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
                 },
                 "group_items_group": {
                     "name": "",
-                    "metadata_constraints": []
+                    "metadata_constraints": [],
+                    "force_use": false
                 },
                 "open_ended_question": {
                     "type": "open-ended-question",

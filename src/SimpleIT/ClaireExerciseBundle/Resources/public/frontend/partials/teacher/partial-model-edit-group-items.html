@@ -65,6 +65,11 @@
                      data-ng-init="metadata_constraints = group.metadata_constraints">
                     <label>Nom du groupe</label>
                     <div class="col-centred pull-right">
+                        <span data-ng-click="group.force_use=!group.force_use">
+                            <span class="glyphicon"
+                                  ng-class="{'glyphicon-check': group.force_use, 'glyphicon-unchecked': !group.force_use}"></span>
+                            Forcer l'usage
+                        </span>
                         <span
                             data-ng-click="modelRemoveField(model.content.classif_constr.groups, $index)"
                             class="glyphicon glyphicon-remove"></span>
