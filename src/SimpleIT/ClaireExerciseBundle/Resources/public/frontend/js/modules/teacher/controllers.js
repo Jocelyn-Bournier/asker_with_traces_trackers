@@ -1049,8 +1049,6 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
 
         $scope.modelAddBlockResourceConstraint = function (metadata_constraints, type) {
             var newElement;
-            console.log('ajout du nouvel elmnt:');
-            console.log(metadata_constraints);
             if (type == 'exists') {
                 newElement = jQuery.extend(true, {}, $scope.modelContext.newModel.block_constraint.exists);
             } else if (type == 'keyword') {
@@ -1657,12 +1655,28 @@ modelControllers.controller('modelEditGroupItemsController', ['$scope',
                 // test all the constaints
                 for (var j = 0; j < group.metadata_constraints.length; ++j) {
                     var mc = group.metadata_constraints[j];
+                    console.log(mc);
                     var value = $scope.findMDValue(resource, mc.key);
-                    if (value === null) {
+                    if (value === null && mc.comparator !== 'keyword') {
                         belongs = false;
                     }
 
                     switch (mc.comparator) {
+                        case 'keyword':
+                            console.log('case keyword');
+                            var isIn = false;
+                            angular.forEach (resource.keywords, function(keyword){
+                                console.log(mc.values[0]+' ' + keyword);
+                                if (keyword === mc.values[0]){
+                                    isIn = true;
+                                }
+                            });
+
+                            if (isIn === false){
+                                belongs = false;
+                            }
+                            break;
+
                         case 'in':
                             var isIn = false;
                             for (var k = 0; k < mc.values.length; ++k) {
