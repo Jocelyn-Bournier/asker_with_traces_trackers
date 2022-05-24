@@ -23,6 +23,7 @@ use Doctrine\ORM\QueryBuilder;
 use SimpleIT\ClaireExerciseBundle\Entity\ExerciseResource\ExerciseResource;
 use SimpleIT\ClaireExerciseBundle\Exception\NonExistingObjectException;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ModelObject\MetadataConstraint;
+use SimpleIT\ClaireExerciseBundle\Model\Resources\MetadataResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ModelObject\ObjectConstraints;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ModelObject\ObjectId;
 use SimpleIT\ClaireExerciseBundle\Repository\Exercise\SharedEntity\SharedEntityRepository;
@@ -246,21 +247,30 @@ class ExerciseResourceRepository extends SharedEntityRepository
         // if exists (key test only)
         if ($comparison == 'exists') {
             $qp = $qb->expr()->eq('m.key', "'" . $metaKey . "'");
-        } //else (key and value test)
-        else {
-            // if between
-            if ($comparison == 'between') {
-                $exprComp = $qb->expr()->between('m.value', $value[0], $value[1]);
-            } // if not between
+        } //if keyword(value test)
+        else{
+            if($comparison == 'keyword') {
+                $qp= $qb->expr()->andX(
+                    $qb->expr()->eq('m.key', "'" . MetadataResource::MISC_METADATA_KEY . "'"),
+                    $qb->expr()->eq('m.value', "'" . $value . "'")
+                );
+            }       
+            //else (key and value test)
             else {
-                $exprComp = $qb->expr()->$comparison('m.value', $value);
-            }
+                // if between
+                if ($comparison == 'between') {
+                    $exprComp = $qb->expr()->between('m.value', $value[0], $value[1]);
+                } // if not between
+                else {
+                    $exprComp = $qb->expr()->$comparison('m.value', $value);
+                }
 
-            // AND of value test and key test
-            $qp = $qb->expr()->andX(
-                $qb->expr()->eq('m.key', "'" . $metaKey . "'"),
-                $exprComp
-            );
+                // AND of value test and key test
+                $qp = $qb->expr()->andX(
+                    $qb->expr()->eq('m.key', "'" . $metaKey . "'"),
+                    $exprComp
+                );
+            }
         }
 
         // add to the query part
