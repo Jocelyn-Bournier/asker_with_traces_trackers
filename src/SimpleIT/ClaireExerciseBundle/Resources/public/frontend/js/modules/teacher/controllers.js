@@ -1655,7 +1655,6 @@ modelControllers.controller('modelEditGroupItemsController', ['$scope',
                 // test all the constaints
                 for (var j = 0; j < group.metadata_constraints.length; ++j) {
                     var mc = group.metadata_constraints[j];
-                    console.log(mc);
                     var value = $scope.findMDValue(resource, mc.key);
                     if (value === null && mc.comparator !== 'keyword') {
                         belongs = false;
@@ -1663,10 +1662,8 @@ modelControllers.controller('modelEditGroupItemsController', ['$scope',
 
                     switch (mc.comparator) {
                         case 'keyword':
-                            console.log('case keyword');
                             var isIn = false;
                             angular.forEach (resource.keywords, function(keyword){
-                                console.log(mc.values[0]+' ' + keyword);
                                 if (keyword === mc.values[0]){
                                     isIn = true;
                                 }
