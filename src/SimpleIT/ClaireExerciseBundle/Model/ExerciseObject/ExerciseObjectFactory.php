@@ -38,10 +38,11 @@ use SimpleIT\ClaireExerciseBundle\Model\Resources\ResourceResource;
 abstract class ExerciseObjectFactory
 {
     /**
-     * Translate a CommonExercise + metadata into an ExerciseObject
+     * Translate a CommonExercise + metadata + keyword into an ExerciseObject
      *
      * @param CommonResource $resource
      * @param Collection     $metadata
+     * @param array          $keyword
      * @param array          $requiredResource
      * @param null           $resourceId
      *
@@ -51,6 +52,7 @@ abstract class ExerciseObjectFactory
     public static function createExerciseObject(
         CommonResource $resource,
         Collection $metadata = null,
+        array $keyword = null,
         array $requiredResource = null,
         $resourceId = null
     )
@@ -93,6 +95,14 @@ abstract class ExerciseObjectFactory
             foreach ($metadata as $md) {
                 /** @var Metadata $md */
                 $object->addMetadata($md->getKey(), $md->getValue());
+            }
+        }
+
+        // add the keyword
+        if ($keyword !== null) {
+            foreach ($keyword as $kw) {
+                /** @var Keyword $kw */
+                $object->addKeyword($kw->getValue());
             }
         }
 

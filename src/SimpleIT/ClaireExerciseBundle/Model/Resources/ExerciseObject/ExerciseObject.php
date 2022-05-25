@@ -35,6 +35,13 @@ abstract class ExerciseObject
     const OBJECT_TYPE = "object type";
 
     /**
+     * @var array $keyword An array of keyword: value
+     * @Serializer\Type("array")
+     * @Serializer\Groups({"details", "corrected", "not_corrected"})
+     */
+    protected $keyword;
+
+    /**
      * @var array $metadata An array of metadata: key => value
      * @Serializer\Type("array")
      * @Serializer\Groups({"details", "corrected", "not_corrected"})
@@ -75,6 +82,16 @@ abstract class ExerciseObject
     }
 
     /**
+     * Get keyword
+     *
+     * @return array
+     */
+    public function getKeyword()
+    {
+        return $this->keyword;
+    }
+
+    /**
      * Get metadata by key
      *
      * @param $key
@@ -97,6 +114,16 @@ abstract class ExerciseObject
     }
 
     /**
+     * Set keyword
+     *
+     * @param array $keyword
+     */
+    public function setKeyword($keyword)
+    {
+        $this->keyword = $keyword;
+    }
+
+    /**
      * Add a $key - $value metadata
      *
      * @param string $key
@@ -105,6 +132,16 @@ abstract class ExerciseObject
     public function addMetadata($key, $value)
     {
         $this->metadata[$key] = $value;
+    }
+
+    /**
+     * Add a $value keyword
+     *
+     * @param string $value
+     */
+    public function addKeyword($value)
+    {
+        array_push($this->keyword,$value);
     }
 
     /**

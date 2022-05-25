@@ -110,6 +110,11 @@ abstract class SharedEntity extends AbstractResource
     protected $metadata;
 
     /**
+     * @var array
+     */
+    protected $keyword;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -277,6 +282,26 @@ abstract class SharedEntity extends AbstractResource
     public function getMetadata()
     {
         return $this->metadata;
+    }
+
+    /**
+     * Set keyword
+     *
+     * @param array $keyword
+     */
+    public function setKeyword($keyword)
+    {
+        $this->keyword = $keyword;
+    }
+
+    /**
+     * Get keyword
+     *
+     * @return array
+     */
+    public function getKeyword()
+    {
+        return $this->keyword;
     }
 
     /**

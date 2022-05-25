@@ -260,6 +260,7 @@ class GroupItemsService extends ExerciseCreationService
         $belongs = true;
 
         $metadata = $object->getMetadata();
+        $keyword = $object->getKeyword();
 
         // To be in the group, the object metadata must match all the
         // constraints.
@@ -272,6 +273,23 @@ class GroupItemsService extends ExerciseCreationService
             // if the metadata does not exist, it does not belong to the group
             if (!isset($metadata[$key])) {
                 return false;
+            }
+
+            //in the case of a 'keyword'
+            if ($comparator == 'keyword') {
+                $in = false;
+
+                foreach ($keyword as $kw) {
+                    if ($kw == $values[0]) {
+                        $in = true;
+                    }
+                }
+
+                // if the value was not in the list, the object is not in
+                // the group
+                if (!$in) {
+                    $belongs = false;
+                }
             }
 
             // in the case of a 'in'
