@@ -35,11 +35,11 @@ abstract class ExerciseObject
     const OBJECT_TYPE = "object type";
 
     /**
-     * @var array $keyword An array of keyword: value
+     * @var array $keywords An array of keyword
      * @Serializer\Type("array")
      * @Serializer\Groups({"details", "corrected", "not_corrected"})
      */
-    protected $keyword;
+    protected $keywords;
 
     /**
      * @var array $metadata An array of metadata: key => value
@@ -88,7 +88,7 @@ abstract class ExerciseObject
      */
     public function getKeyword()
     {
-        return $this->keyword;
+        return $this->keywords;
     }
 
     /**
@@ -141,7 +141,7 @@ abstract class ExerciseObject
      */
     public function addKeyword($value)
     {
-        array_push($this->keyword,$value);
+        array_push($this->keywords,$value);
     }
 
     /**

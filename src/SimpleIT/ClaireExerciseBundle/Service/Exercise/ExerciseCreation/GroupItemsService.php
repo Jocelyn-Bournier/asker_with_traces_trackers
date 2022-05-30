@@ -256,7 +256,7 @@ class GroupItemsService extends ExerciseCreationService
      * @throws \LogicException
      */
     private function objectInGroup(ExerciseObject $object, Group $group)
-    {
+    {        
         $belongs = true;
 
         $metadata = $object->getMetadata();
@@ -270,14 +270,12 @@ class GroupItemsService extends ExerciseCreationService
             $values = $constraint->getValues();
             $comparator = $constraint->getComparator();
 
-            // if the metadata does not exist, it does not belong to the group
-            if (!isset($metadata[$key])) {
-                return false;
-            }
-
             //in the case of a 'keyword'
             if ($comparator == 'keyword') {
                 $in = false;
+
+                //echo "<script>console.log(" + $keyword + " ');</script>";
+                //var_dump($keyword);
 
                 foreach ($keyword as $kw) {
                     if ($kw == $values[0]) {
@@ -290,6 +288,11 @@ class GroupItemsService extends ExerciseCreationService
                 if (!$in) {
                     $belongs = false;
                 }
+            }
+
+            // if the metadata does not exist, it does not belong to the group
+            else if (!isset($metadata[$key])) {
+                return false;
             }
 
             // in the case of a 'in'
