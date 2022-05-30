@@ -177,6 +177,9 @@ class GroupItemsService extends ExerciseCreationService
 
         }
 
+        // mandatory groups
+        $this->addMandatoryGroups($classifConstr,$item);
+
         // shuffle the order of the objects
         $item->shuffleObjects();
 
@@ -222,6 +225,27 @@ class GroupItemsService extends ExerciseCreationService
             }
         }
     }
+
+    /**
+     * Add the groups with force_use attribute
+     *
+     * @param ClassificationConstraints $classifConstr The classification constraints
+     * @param ResItem                   $item          The exercise to be modified
+     */
+    private function addMandatoryGroups(
+        ClassificationConstraints $classifConstr,
+        ResItem &$item
+    )
+    {
+        foreach ($classifConstr->getGroups() as $group) {
+            /** @var Group $group */
+            if ($group->getForceUse()) {
+                $item->findOrCreateGroup($group->getName());
+            }
+        }
+
+    }
+
 
     /**
      * Choose the group of a no-group-object
