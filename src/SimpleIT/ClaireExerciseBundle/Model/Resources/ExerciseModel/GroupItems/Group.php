@@ -48,6 +48,14 @@ class Group
     private $mDConstraints;
 
     /**
+     * @var boolean $force_use 
+     * @Serializer\Type("boolean")
+     * @Serializer\Groups({"details", "exercise_model_storage"})
+     * @Serializer\SerializedName("force_use")
+     */
+    private $force_use;
+
+    /**
      * Get name
      *
      * @return string
@@ -95,5 +103,25 @@ class Group
     public function addMDConstraint($mDConstraint)
     {
         $this->mDConstraints[] = $mDConstraint;
+    }
+
+    /**
+     * Get force_use
+     *
+     * @return boolean
+     */
+    public function getForceUSe()
+    {
+        return $this->force_use;
+    }
+
+    /**
+     * Set force_use
+     *
+     * @param boolean $force_use
+     */
+    public function setForceUse($force_use)
+    {
+        $this->force_use = $force_use;
     }
 }
