@@ -6,12 +6,31 @@
                 <div ng-switch-when="keyword" class="row">
                     <div class="col-xs-10">
                         <h5>Teste l'existence du mot-clé</h5>
-                        <input type="text" ng-model="metadata_constraint.values[0]" class="form-control" placeholder="Mot-clé"
-                               ui-on-Drop="onDropMetadataKey($event,$data,metadata_constraint,'key')">
                     </div>
                     <div class="col-xs-2">
-                            <span data-ng-click="modelRemoveField(metadata_constraints, $index)"
-                                  class="glyphicon glyphicon-remove col-centered pull-right"></span>
+                        <span data-ng-click="modelRemoveField(metadata_constraints, $index)"
+                              class="glyphicon glyphicon-remove col-centered pull-right"></span>
+                    </div>
+                    <div data-ng-repeat="value in metadata_constraint.values track by $index">
+                        <div class="col-xs-5">
+                            <div class="constraint-value">
+                                {{ value }}
+                            </div>
+                        </div>
+                        <div class="col-xs-1">
+                            <span data-ng-click="modelRemoveField(metadata_constraint.values, $index)"
+                                  class="glyphicon glyphicon-remove"></span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="col-xs-5">
+                            <input type="text" ng-model="newValue" class="form-control"
+                                   placeholder="nouvelle valeur">
+                        </div>
+                        <div class="col-xs-1">
+                            <span data-ng-click="metadata_constraint.values.push(newValue); newValue = ''"
+                                  class="glyphicon glyphicon-ok"></span>
+                        </div>
                     </div>
                 </div>
                 <div ng-switch-when="exists" class="row">

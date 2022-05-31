@@ -142,6 +142,8 @@ class ExerciseResourceRepository extends SharedEntityRepository
             $queryExcludedPart
         );
 
+        //echo $qb;
+
         return $qb->getQuery()->getResult();
     }
 
@@ -205,8 +207,8 @@ class ExerciseResourceRepository extends SharedEntityRepository
         $metaKey = $mdc->getKey();
         $val = $mdc->getValues();
 
-        // in, between or exists ($val == null)
-        if ($comp == 'in' || $comp == 'exists' || $comp == 'between') {
+        // keyword, in, between or exists ($val == null)
+        if ($comp == 'in' || $comp == 'exists' || $comp == 'between' || $comp = 'keyword') {
             $this->addMetadataConstraint(
                 $qb,
                 $queryPart,
@@ -252,7 +254,7 @@ class ExerciseResourceRepository extends SharedEntityRepository
             if($comparison == 'keyword') {
                 $qp= $qb->expr()->andX(
                     $qb->expr()->eq('m.key', "'" . MetadataResource::MISC_METADATA_KEY . "'"),
-                    $qb->expr()->eq('m.value', "'" . $value . "'")
+                    $qb->expr()->in('m.value',$value)
                 );
             }       
             //else (key and value test)
@@ -286,6 +288,8 @@ class ExerciseResourceRepository extends SharedEntityRepository
                 $qp
             );
         }
+
+        //echo $queryPart;
     }
 
     /**
