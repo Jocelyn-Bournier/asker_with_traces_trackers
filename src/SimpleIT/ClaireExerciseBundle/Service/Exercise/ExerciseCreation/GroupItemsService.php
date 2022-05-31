@@ -35,6 +35,7 @@ use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseObject\ExerciseObject;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ItemResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ItemResourceFactory;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ModelObject\MetadataConstraint;
+use SimpleIT\ClaireExerciseBundle\Model\Resources\MetadataResource;
 
 /**
  * Service which manages Group Items Exercises.
@@ -260,7 +261,6 @@ class GroupItemsService extends ExerciseCreationService
         $belongs = true;
 
         $metadata = $object->getMetadata();
-        $keyword = $object->getKeyword();
 
         // To be in the group, the object metadata must match all the
         // constraints.
@@ -273,17 +273,20 @@ class GroupItemsService extends ExerciseCreationService
             //in the case of a 'keyword'
             if ($comparator == 'keyword') {
                 $in = false;
+                $key = MetadataResource::MISC_METADATA_KEY;
 
-                //echo "<script>console.log(" + $keyword + " ');</script>";
-                //var_dump($keyword);
-
-                foreach ($keyword as $kw) {
-                    if ($kw == $values[0]) {
-                        $in = true;
+                //if the object has keywords
+                if(array_key_exists($key,$metadata)) {
+                    $keywords = explode(";",$metadata[$key]); 
+                           
+                    foreach ($keywords as $kw) {
+                        if ($kw == $values[0]) {
+                            $in = true;
+                        }
                     }
                 }
 
-                // if the value was not in the list, the object is not in
+                // if the value was not in the list, or if there is no keywords, the object is not in
                 // the group
                 if (!$in) {
                     $belongs = false;
@@ -326,7 +329,7 @@ class GroupItemsService extends ExerciseCreationService
                     $belongs = false;
                 }
             } // Comparator error
-            elseif ($comparator !== 'exists') {
+            elseif ($comparator !== 'exists' && $comparator !== 'keyword') {
                 throw new \LogicException("Invalid comparator type:" . $comparator);
             }
         }
