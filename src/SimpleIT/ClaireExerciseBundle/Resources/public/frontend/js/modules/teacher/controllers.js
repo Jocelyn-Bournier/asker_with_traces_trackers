@@ -98,7 +98,9 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
                         type:        "PUT",
                         crossDomain: true,
                         async:       false,
-                        success: function(data, textStatus) {}});
+                        success: function(data, textStatus) {
+                            $scope.activateComper(directory);
+                        }});
                 }
             });
         };
@@ -222,7 +224,7 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
             archived: false, // select archived resources or not (boolean)
             public: false, // select public resources or not (boolean)
             type: { // resources types to be selected
-                multiple_choice_question: 'multiple-choice-question', text: 'text', picture: 'picture', open_ended_question: 'open-ended-question', sequence: ''
+                multiple_choice_question: 'multiple-choice-question', text_with_holes: 'text-with-holes', text: 'text', picture: 'picture', open_ended_question: 'open-ended-question', sequence: ''
             },
             keywords: [], // list of keywords that a resource must have to be selected
             metadata: [] // list of metadata objects that a resource must have to be selected
@@ -298,6 +300,28 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
                     "content": {
                         "text": null,
                         "object_type": "text"
+                    },
+                    "required_exercise_resources": null,
+                    "required_knowledges": null
+                },
+                "text_with_holes": {
+                    "type": "text-with-holes",
+                    "title": "Nouveau texte annoté",
+                    "public": false,
+                    "archived": false,
+                    "draft": false,
+                    "complete": null,
+                    "metadata": [],
+                    "keywords": [],
+                    "content": {
+                        "annotationsList": [],
+                        "errorsList": [],
+                        "bold": [],
+                        "italize": [],
+                        "underline": [],
+                        "annotations": [],
+                        "text": "Nouveau texte.",
+                        "object_type": "text_with_holes"
                     },
                     "required_exercise_resources": null,
                     "required_knowledges": null
@@ -478,7 +502,17 @@ resourceControllers.controller('resourceListController', ['$scope', '$state', 'R
                         $state.go('resourceEdit', {resourceid: data.id});
                     }
                 });
-            } else if (type == 'picture') {
+            }
+            else if (type == 'text-with-holes') {
+                Resource.save($scope.resourceContext.newResources.text_with_holes, function (data) {
+                    $scope.resources[data.id] = data;
+                    if ($scope.parentSection === 'model') {
+                        $state.go('modelEdit.resourceEdit', {resourceid: data.id});
+                    } else {
+                        $state.go('resourceEdit', {resourceid: data.id});
+                    }
+                });
+            }  else if (type == 'picture') {
                 Resource.save($scope.resourceContext.newResources.picture, function (data) {
                     $scope.resources[data.id] = data;
                     if ($scope.parentSection === 'model') {
@@ -639,6 +673,314 @@ resourceControllers.controller('resourceEditController', ['$scope', '$modal', 'R
         // resource for md link
         $scope.resource = null;
         $scope.resourceAddMD = {key: '', value: ''};
+
+
+        $scope.errorsName = "";
+        $scope.selectedErrors = {
+            "name": "",
+            "nbErrors": 1,
+            "errors": [],
+            "constraintName": ""
+        };
+        $scope.errorLists = [];
+        $scope.nbErrors = [];
+        $scope.states = ["",""];
+
+        $scope._handleDown = function (event){
+            $scope.states[0] = $scope.states[1];
+            $scope.states[1] = event.key;
+
+            if ($scope.states[0] == "Control" && $scope.states[1] == "x"){
+                event.preventDefault();
+                alert("Il est impossible d'utiliser la commande Ctrl + X sur cette page");
+            }
+            if ($scope.states[0] == "Control" && $scope.states[1] == "z"){
+                event.preventDefault();
+                alert("Il est impossible d'utiliser la commande Ctrl + Z sur cette page");
+            }
+            if (event.key == "Backspace"){
+                $scope._updateIndices(event, "backspace");
+            }
+        }
+
+        $scope._updateIndices = function (event, action){
+            let positionStart = event.target.selectionStart;
+            let positionStop = event.target.selectionEnd;
+            let diff = positionStop - positionStart;
+            let addDiffValue, addValue;
+
+            if(action == "paste"){
+                texte = event.clipboardData.getData("text");
+                let tailleTexte = texte.length;
+                addDiffValue = tailleTexte - diff;
+                addValue = tailleTexte;
+            } else if (action == "key"){
+                addDiffValue = 1 - diff;
+                addValue = 1;
+            } else if (action == "backspace"){
+                addDiffValue = -diff;
+                addValue = -1;
+            }
+
+            for(indice of $scope.editedResource.content.bold){
+                if (positionStart < indice[0]){
+                    if (positionStart != positionStop){
+                        indice[0] = indice[0] + addDiffValue;
+                        indice[1] = indice[1] + addDiffValue;
+                    } else {
+                        indice[0] += addValue;
+                        indice[1] += addValue;
+                    }
+                } else if (positionStart >= indice[0] && positionStart <= indice[1]) {
+                    if (positionStart != positionStop){
+                        indice[1] = indice[1] + addDiffValue;
+                    } else {
+                        indice[1] += addValue;
+                    }
+                }
+            }
+            for(indice of $scope.editedResource.content.italize){
+                if (positionStart < indice[0]){
+                    if (positionStart != positionStop){
+                        indice[0] = indice[0] + addDiffValue;
+                        indice[1] = indice[1] + addDiffValue;
+                    } else {
+                        indice[0] += addValue;
+                        indice[1] += addValue;
+                    }
+                } else if (positionStart >= indice[0] && positionStart <= indice[1]) {
+                    if (positionStart != positionStop){
+                        indice[1] = indice[1] + addDiffValue;
+                    } else {
+                        indice[1] += addValue;
+                    }
+                }
+            }
+            for(indice of $scope.editedResource.content.underline){
+                if (positionStart < indice[0]){
+                    if (positionStart != positionStop){
+                        indice[0] = indice[0] + addDiffValue;
+                        indice[1] = indice[1] + addDiffValue;
+                    } else {
+                        indice[0] += addValue;
+                        indice[1] += addValue;
+                    }
+                } else if (positionStart >= indice[0] && positionStart <= indice[1]) {
+                    if (positionStart != positionStop){
+                        indice[1] = indice[1] + addDiffValue;
+                    } else {
+                        indice[1] += addValue;
+                    }
+                }
+            }
+            for(tag of $scope.editedResource.content.annotations){
+                if (positionStart < tag["indiceDebut"]){
+                    if (positionStart != positionStop){
+                        tag["indiceDebut"] = tag["indiceDebut"] + addDiffValue;
+                        tag["indiceFin"] = tag["indiceFin"] + addDiffValue;
+                    } else {
+                        tag["indiceDebut"] += addValue;
+                        tag["indiceFin"] += addValue;
+                    }
+                } else if (positionStart >= tag["indiceDebut"] && positionStart <= tag["indiceFin"]+1) {
+                    if (positionStart != positionStop){
+                        tag["indiceFin"] = tag["indiceFin"] + addDiffValue;
+                    } else {
+                        tag["indiceFin"] += addValue;
+                    }
+                }
+            }
+            for(errors of $scope.editedResource.content.errors_list) {
+                for (err of errors.errors) {
+                    if (positionStart < err["indiceDebut"]) {
+                        if (positionStart != positionStop) {
+                            err["indiceDebut"] = err["indiceDebut"] + addDiffValue;
+                            err["indiceFin"] = err["indiceFin"] + addDiffValue;
+                        } else {
+                            err["indiceDebut"] += addValue;
+                            err["indiceFin"] += addValue;
+                        }
+                    } else if (positionStart >= err["indiceDebut"] && positionStart <= err["indiceFin"] + 1) {
+                        if (positionStart != positionStop) {
+                            err["indiceFin"] = err["indiceFin"] + addDiffValue;
+                        } else {
+                            err["indiceFin"] += addValue;
+                        }
+                    }
+                }
+            }
+        }
+
+        $scope._updateErrorList = function () {
+            let found = false;
+            $scope.selectedErrors = {
+                "name": "",
+                "nbErrors": 1,
+                "errors": [],
+                "constraintName": ""
+            };
+            for(eList of $scope.editedResource.content.errors_list){
+                if (eList.name == $scope.selectedErrors.name){
+                    found = true;
+                }
+            }
+            if(!found) {
+                $scope.editedResource.content.errors_list.push($scope.selectedErrors);
+            }
+        }
+
+        $scope._updateErrorsInput = function () {
+            //$scope.selectedErrors.nbErrors = document.getElementById("input-nb-error").value;
+            for (error of $scope.selectedErrors.errors){
+                console.log(error);
+                error.errors.length = document.getElementById("input-nb-error").value;
+            }
+        }
+
+        $scope._selectErrorList = function (errorName) {
+            for(errorList of $scope.editedResource.content.errors_list){
+                if (errorList.name == errorName){
+                    console.log($scope.editedResource.content.errors_list);
+                    $scope.selectedErrors = errorList;
+                }
+            }
+        }
+
+        $scope._changeError = function (erreur, index) {
+            console.log($scope.selectedErrors);
+            for(err of $scope.selectedErrors.errors){
+                if(err.indiceDebut == erreur.indiceDebut && err.indiceFin == erreur.indiceFin){
+                    err.errors[index] = document.getElementById(`error-${erreur.indiceDebut}-${erreur.indiceFin}-${index}`).value;
+                    return;
+                }
+            }
+            console.log($scope.selectedErrors);
+        }
+
+
+        $scope._selectErrors = function (errorName) {
+            $scope.errorsName = document.getElementById('select-constraint-list').value;
+            let constraintList = $scope.editedResource.content.annotations_list;
+            let annotations = $scope.editedResource.content.annotations;
+            for(constraint of constraintList) {
+                console.log(constraint);
+                console.log($scope.errorsName);
+                if (constraint.name == $scope.errorsName) {
+                    console.log(constraint);
+                    console.log(annotations);
+                    $scope.selectedErrors.errors = filterByConstraint(annotations, constraint.constraint);
+                    $scope.selectedErrors.errors = filterByUniqueIndices($scope.selectedErrors.errors);
+                    for (err of $scope.selectedErrors.errors){
+                        err.errors = Array();
+                        err.errors.length= document.getElementById('input-nb-error').value;
+                    }
+                    console.log($scope.selectedErrors);
+                    return;
+                }
+            }
+        }
+
+        function filterByUniqueIndices(errors){
+            newErrors = [];
+            for(err of errors){
+                if(newErrors.length == 0){
+                    newErrors.push({"indiceDebut": err.indiceDebut, "indiceFin" : err.indiceFin});
+                } else {
+                    let finded = false
+                    for (newErr of newErrors){
+                        if(newErr.indiceFin == err.indiceFin && newErr.indiceDebut == err.indiceDebut){
+                            finded = true;
+                            break;
+                        }
+                    }
+                    if (!finded){
+                        newErrors.push({"indiceDebut": err.indiceDebut, "indiceFin" : err.indiceFin});
+                    }
+                }
+            }
+            return newErrors;
+        }
+
+        function filterByConstraint(annotations, constraint){
+            if (constraint.cle != null){
+                if(constraint.valeur == ""){
+                    let tabCle = annotations.filter((annotation) => {return annotation.cle == constraint.cle});
+                    let tabCleValeur = [];
+                    for(annotation of annotations) {
+                        for(cle of tabCle){
+                            if(cle.indiceDebut == annotation.indiceDebut && cle.indiceFin == annotation.indiceFin){
+                                if(tabCleValeur.indexOf(cle) === -1 ){tabCleValeur.push(cle);}
+                                if(tabCleValeur.indexOf(annotation) === -1){tabCleValeur.push(annotation);}
+                            }
+                        }
+                    }
+                    return tabCleValeur;
+                } else {
+                    let tabCle = annotations.filter((annotation) => {return annotation.cle == constraint.cle});
+                    let tabValeur = [];
+                    let tabCleValeur = [];
+                    let tabValeurToRemove = [];
+                    switch (constraint.operateur){
+                        case "=" :
+                            tabValeur = annotations.filter((annotation) => {return annotation.cle == constraint.cle && annotation.valeur == constraint.valeur});
+                            break;
+                        case "≠" :
+                            tabValeur = annotations.filter((annotation) => {return annotation.valeur != constraint.valeur});
+                            tabValeurToRemove = annotations.filter((annotation) => {return annotation.valeur == constraint.valeur});
+                            break;
+                        case "<" :
+                            tabValeur = annotations.filter((annotation) => {return annotation.cle == constraint.cle && annotation.valeur < constraint.valeur});
+                            break;
+                        case ">" :
+                            tabValeur = annotations.filter((annotation) => {return annotation.cle == constraint.cle && annotation.valeur > constraint.valeur});
+                            break;
+                        case "≤" :
+                            tabValeur = annotations.filter((annotation) => {return annotation.cle == constraint.cle && annotation.valeur <= constraint.valeur});
+                            break;
+                        case "≥" :
+                            tabValeur = annotations.filter((annotation) => {return annotation.cle == constraint.cle && annotation.valeur >= constraint.valeur});
+                            break;
+
+                    }
+                    for(cle of tabCle) {
+                        for(valeur of tabValeur){
+                            if(valeur.indiceDebut == cle.indiceDebut && valeur.indiceFin == cle.indiceFin){
+                                if(tabCleValeur.indexOf(cle) === -1 ){tabCleValeur.push(cle);}
+                                if(tabCleValeur.indexOf(valeur) === -1){tabCleValeur.push(valeur);}
+                            }
+                        }
+                    }
+                    for(annotation of annotations){
+                        for(valeur of tabValeur){
+                            if(tabCleValeur.indexOf(annotation) === -1 && annotation.indiceDebut == valeur.indiceDebut && annotation.indiceFin == valeur.indiceFin) {
+                                tabCleValeur.push(annotation);
+                            }
+                        }
+                    }
+                    if (tabValeurToRemove != []){
+                        for(valeur of tabValeurToRemove){
+                            tabCleValeur = tabCleValeur.filter((annotation) => {return (annotation.indiceDebut != valeur.indiceDebut || annotation.indiceFin != valeur.indiceFin)});
+                        }
+                    }
+                    return tabCleValeur;
+                }
+            } else if (constraint.operateur == "ET") {
+                return filterByConstraint(filterByConstraint(annotations, constraint.filsGauche), constraint.filsDroit);
+
+            } else if (constraint.operateur == "OU") {
+                let left = filterByConstraint(annotations, constraint.filsGauche);
+                let right = filterByConstraint(annotations, constraint.filsDroit);
+                for(elem of right){
+                    if(left.indexOf(elem) === -1){
+                        left.push(elem);
+                    }
+                }
+                return left;
+
+            } else if (constraint.operateur == "OU EXCLUSIF") {
+                return;
+            }
+        }
 
         // update resource method
         $scope.updateResource = function () {
