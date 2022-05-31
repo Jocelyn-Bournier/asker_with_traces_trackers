@@ -1348,6 +1348,41 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
                             "excluded": []
                         }
                     }
+                },
+                "text-with-holes": {
+                    "type": "text-with-holes",
+                    "title": "Nouveau modèle d'exercice de texte à trous",
+                    "public": false,
+                    "archived": false,
+                    "draft": false,
+                    "complete": null,
+                    "metadata": [],
+                    "keywords": [],
+                    "content": {
+                        "wording": null,
+                        "documents": [],
+                        "resources": [],
+                        "sharedTags": [],
+                        "sharedConstraint": [],
+                        "generationRules": {
+                            'annotationsLists': [],
+                            'coverages': [{
+                                'isGlobal': true,
+                                'listName': null,
+                                'type': 'percent',
+                                'value': 1
+                            }],
+                            'responsesTag': null
+                        },
+                        "learnersVisualisation": {
+                            'indicationShowed': false,
+                            'initialElementAsIndication': true,
+                            'keyAsIndication': null
+                        },
+                        "exercise_model_type": "text_with_holes"
+                    },
+                    "required_exercise_resources": null,
+                    "required_knowledges": null
                 }
             }
         };
