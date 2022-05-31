@@ -1349,7 +1349,7 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
                         }
                     }
                 },
-                "text-with-holes": {
+                "text_with_holes": {
                     "type": "text-with-holes",
                     "title": "Nouveau modèle d'exercice de texte à trous",
                     "public": false,
@@ -1379,7 +1379,7 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
                             'initialElementAsIndication': true,
                             'keyAsIndication': null
                         },
-                        "exercise_model_type": "text_with_holes"
+                        "exercise_model_type": "text-with-holes"
                     },
                     "required_exercise_resources": null,
                     "required_knowledges": null
@@ -1744,6 +1744,10 @@ modelControllers.controller('modelListController', ['$scope', 'Model', '$locatio
                 });
             } else if (type == 'open-ended-question') {
                 Model.save($scope.modelContext.newModel.open_ended_question, function (data) {
+                    $location.path('/teacher/model/' + data.id)
+                });
+            } else if (type == 'text-with-holes') {
+                Model.save($scope.modelContext.newModel.text_with_holes, function (data) {
                     $location.path('/teacher/model/' + data.id)
                 });
             }

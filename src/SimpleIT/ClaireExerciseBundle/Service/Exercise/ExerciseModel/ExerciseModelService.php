@@ -182,6 +182,9 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
             case CommonExercise::OPEN_ENDED_QUESTION:
                 $class = ExerciseModelResource::OPEN_ENDED_QUESTION_CLASS;
                 break;
+            case CommonExercise::TEXT_WITH_HOLES:
+                $class = ExerciseModelResource::TEXT_WITH_HOLES_CLASS;
+                break;
             default:
                 throw new \LogicException('Unknown type of model');
         }
@@ -445,6 +448,10 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
                 case CommonModel::OPEN_ENDED_QUESTION:
                     /** @var OpenEnded $content */
                     $complete = $this->checkOEQComplete($content, $errorCode);
+                    break;
+                case CommonModel::TEXT_WITH_HOLES:
+                    /** @var OpenEnded $content */
+                    $complete = true; //TODO
                     break;
                 default:
                     throw new InconsistentEntityException('Invalid type');
@@ -1011,6 +1018,8 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
                 get_class($content) !== ExerciseModelResource::PAIR_ITEMS_MODEL_CLASS)
             || ($type === CommonModel::OPEN_ENDED_QUESTION &&
                 get_class($content) !== ExerciseModelResource::OPEN_ENDED_QUESTION_CLASS)
+            || ($type === CommonModel::TEXT_WITH_HOLES &&
+                get_class($content) !== ExerciseModelResource::TEXT_WITH_HOLES_CLASS)
         ) {
             throw new InvalidTypeException('Content does not match exercise model type');
         }
@@ -1077,19 +1086,6 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
                         )
                 );
                 break;
-            case ExerciseModelResource::PAIR_ITEMS_MODEL_CLASS:
-                /** @var PairItems $content */
-                $reqRes = array_merge(
-                    $reqRes,
-                    $this->computeRequiredResourcesFromModelBlocks
-                        (
-                            $content->getPairBlocks(),
-                            $import,
-                            $ownerId,
-                            $originalOwner
-                        )
-                );
-                break;
             case ExerciseModelResource::GROUP_ITEMS_MODEL_CLASS:
                 /** @var GroupItems $content */
                 $reqRes = array_merge(
@@ -1102,6 +1098,9 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
                             $originalOwner
                         )
                 );
+                break;
+            case ExerciseModelResource::TEXT_WITH_HOLES_CLASS:
+                $resRes = [];
                 break;
             case ExerciseModelResource::MULTIPLE_CHOICE_MODEL_CLASS:
             case ExerciseModelResource::OPEN_ENDED_QUESTION_CLASS:
