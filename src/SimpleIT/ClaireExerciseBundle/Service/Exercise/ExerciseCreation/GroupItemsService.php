@@ -272,25 +272,37 @@ class GroupItemsService extends ExerciseCreationService
 
             //in the case of a 'keyword'
             if ($comparator == 'keyword') {
-                $in = false;
+                $allKeywords = true;
                 $key = MetadataResource::MISC_METADATA_KEY;
 
                 //if the object has keywords
                 if(array_key_exists($key,$metadata)) {
                     $keywords = explode(";",$metadata[$key]); 
+                    //echo " values: ".json_encode($values);
+                    //echo " keywords: ".json_encode($keywords);
                            
-                    foreach ($keywords as $kw) {
-                        if ($kw == $values[0]) {
-                            $in = true;
+                    foreach ($values as $val) {
+                        //echo " val: ".$val;
+                        $thisKeyword=false;
+                        foreach ($keywords as $kw) {
+                            //echo " kw: ".$kw;
+                            if ($kw == $val) {
+                                //echo " identiques ";
+                                $thisKeyword = true;
+                            }
                         }
+                        //false if one keyword is missing
+                        $allKeywords=$allKeywords&&$thisKeyword;
+                        //echo " allKw: ".$allKeywords;
                     }
                 }
 
-                // if the value was not in the list, or if there is no keywords, the object is not in
+                // if the object doesn't have all the keywords, or if there is no keywords, the object is not in
                 // the group
-                if (!$in) {
+                if (!$allKeywords) {
                     $belongs = false;
                 }
+                //echo " belongs:".$belongs."....";
             }
 
             // if the metadata does not exist, it does not belong to the group
