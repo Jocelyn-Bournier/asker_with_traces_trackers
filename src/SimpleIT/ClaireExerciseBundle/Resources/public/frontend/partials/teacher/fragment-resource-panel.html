@@ -2,10 +2,14 @@
     <div class="row">
         <div class="col-xs-1" ng-switch="resource.type" ui-draggable="true" drag="resource">
             <div ng-switch-when="text">
-                <span title="Texte" class="glyphicon glyphicon-font" style="font-size: 320%"></span>
+                <span title="Texte" class="glyphicon glyphicon-align-left" style="font-size: 320%"></span>
+            </div>
+            <div ng-switch-when="text-with-holes">
+                <span title="Texte à trous" class="glyphicon glyphicon-indent-right" style="font-size: 320%"></span>
             </div>
             <div ng-switch-when="picture">
-                <img ng-src="{{BASE_CONFIG.urls.images.uploads}}{{resource.content.source}}" style="width: 55px; height: 55px;"/>
+                <span title="Image" class="glyphicon glyphicon-picture" style="font-size: 320%"></span>
+                <!--<img ng-src="{{BASE_CONFIG.urls.images.uploads}}{{resource.content.source}}" style="width: 55px; height: 55px;"/>-->
             </div>
             <div ng-switch-when="multiple-choice-question">
                 <span title="Question de QCM" class="glyphicon glyphicon-check" style="font-size: 320%"></span>

@@ -42,6 +42,7 @@ use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\Sequence\Sequ
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\Sequence\SequenceElement;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\SequenceResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\TextResource;
+use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\TextWithHolesResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\KnowledgeResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\MetadataResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ModelObject\ObjectConstraints;
@@ -361,6 +362,10 @@ class ExerciseResourceService extends SharedEntityService implements ExerciseRes
                     /** @var TextResource $content */
                     $complete = $this->checkTextComplete($content, $errorCode);
                     break;
+                case CommonResource::TEXT_WITH_HOLES:
+                    /** @var TextWithHolesResource $content */
+                    $complete = $this->checkTextWithHolesComplete($content, $errorCode);
+                    break;
                 case CommonResource::OPEN_ENDED_QUESTION:
                     /** @var OpenEndedQuestionResource $content */
                     $complete = $this->checkOEQComplete($content, $errorCode);
@@ -430,6 +435,28 @@ class ExerciseResourceService extends SharedEntityService implements ExerciseRes
     private function checkTextComplete(
         TextResource $content,
         &$errorCode
+    )
+    {
+        if ($content->getText() === null) {
+            $errorCode = '802';
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Check if a text with holes resource is complete
+     *
+     * @param TextWithHolesResource $content
+     * @param string $errorCode
+     *
+     * @return bool
+     */
+    private function checkTextWithHolesComplete(
+        TextWithHolesResource $content,
+                     &$errorCode
     )
     {
         if ($content->getText() === null) {
@@ -575,6 +602,8 @@ class ExerciseResourceService extends SharedEntityService implements ExerciseRes
                 get_class($content) !== ResourceResource::SEQUENCE_CLASS)
             || ($type === CommonResource::TEXT &&
                 get_class($content) !== ResourceResource::TEXT_CLASS)
+            || ($type === CommonResource::TEXT_WITH_HOLES &&
+                get_class($content) !== ResourceResource::TEXT_WITH_HOLES_CLASS)
             || ($type === CommonResource::PICTURE &&
                 get_class($content) !== ResourceResource::PICTURE_CLASS)
         ) {
@@ -602,6 +631,7 @@ class ExerciseResourceService extends SharedEntityService implements ExerciseRes
         switch (get_class($resourceResource->getContent())) {
             case ResourceResource::PICTURE_CLASS:
             case ResourceResource::TEXT_CLASS:
+            case ResourceResource::TEXT_WITH_HOLES_CLASS:
             case ResourceResource::MULTIPLE_CHOICE_QUESTION_CLASS:
             case ResourceResource::OPEN_ENDED_QUESTION_CLASS:
                 $resourceResource->setRequiredExerciseResources(array());
