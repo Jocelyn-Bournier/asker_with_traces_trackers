@@ -330,7 +330,6 @@ class ExerciseResourceService extends SharedEntityService implements ExerciseRes
         return ExerciseObjectFactory::createExerciseObject(
             $resource,
             $resEntity->getMetadata(),
-            $resEntity->getKeyword(),
             $requiredResources,
             $resEntity->getId()
         );

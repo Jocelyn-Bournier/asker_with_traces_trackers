@@ -35,13 +35,6 @@ abstract class ExerciseObject
     const OBJECT_TYPE = "object type";
 
     /**
-     * @var array $keywords An array of keyword
-     * @Serializer\Type("array")
-     * @Serializer\Groups({"details", "corrected", "not_corrected"})
-     */
-    protected $keywords;
-
-    /**
      * @var array $metadata An array of metadata: key => value
      * @Serializer\Type("array")
      * @Serializer\Groups({"details", "corrected", "not_corrected"})
@@ -79,16 +72,6 @@ abstract class ExerciseObject
     public function getMetadata()
     {
         return $this->metadata;
-    }
-
-    /**
-     * Get keyword
-     *
-     * @return array
-     */
-    public function getKeyword()
-    {
-        return $this->keywords;
     }
 
     /**
