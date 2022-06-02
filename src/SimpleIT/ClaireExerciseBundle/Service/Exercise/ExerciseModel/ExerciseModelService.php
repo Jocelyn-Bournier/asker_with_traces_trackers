@@ -971,7 +971,7 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
                 return false;
             }
 
-            if (count($group->getMDConstraints()) == 0) {
+            if (count($group->getMDConstraints()) == 0 && !$group->getBuildGroups()) {
                 $errorCode = '703';
 
                 return false;
