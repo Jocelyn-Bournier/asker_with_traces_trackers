@@ -30,5 +30,140 @@ use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModel\Common\CommonMod
  */
 class Model extends CommonModel
 {
+    /**
+     * @var array $sharedTags
+     * @Serializer\Type("array")
+     * @Serializer\Groups({"details", "exercise_model_storage"})
+     */
+    private $sharedTags = array();
+
+    /**
+     * @var array $sharedConstraints
+     * @Serializer\Type("array")
+     * @Serializer\Groups({"details", "exercise_model_storage"})
+     */
+    private $sharedConstraints = array();
+
+    /**
+     * @var array $annotationsLists
+     * @Serializer\Type("array")
+     * @Serializer\Groups({"details", "exercise_model_storage"})
+     */
+    private $annotationsLists = array();
+
+    /**
+     * @var array $coverages
+     * @Serializer\Type("array")
+     * @Serializer\Groups({"details", "exercise_model_storage"})
+     */
+    private $coverages = array();
+
+    /**
+     * @var string $responsesTag
+     * @Serializer\Type("string")
+     * @Serializer\Groups({"details", "exercise_model_storage"})
+     */
+    private $responsesTag = "";
+
+
+    /**
+     * Set shared constraint
+     *
+     * @param array $sharedConstraints An array of shared constraints
+     */
+    public function setSharedConstraints($sharedConstraints)
+    {
+        $this->sharedConstraints = $sharedConstraints;
+    }
+
+    /**
+     * Set shared tags
+     *
+     * @param array $sharedTags An array of shared tags
+     */
+    public function setSharedTags($sharedTags)
+    {
+        $this->sharedTags = $sharedTags;
+    }
+
+    /**
+     * Set annotations lists
+     *
+     * @param array $annotationsLists An array of annotations lists
+     */
+    public function setAnnotationsLists($annotationsLists)
+    {
+        $this->annotationsLists = $annotationsLists;
+    }
+
+    /**
+     * Set coverages
+     *
+     * @param array $coverages An array of coverages
+     */
+    public function setCoverages($coverages)
+    {
+        $this->coverages = $coverages;
+    }
+
+    /**
+     * Set responses tag
+     *
+     * @param string $responsesTag the string of tag for generating responses
+     */
+    public function setResponsesTag($responsesTag)
+    {
+        $this->responsesTag = $responsesTag;
+    }
+
+    /**
+     * Get the shared constraints
+     *
+     * @return array An array of shared constraints
+     */
+    public function getSharedConstraints()
+    {
+        return $this->sharedConstraints;
+    }
+
+    /**
+     * Get the shared tags
+     *
+     * @return array An array of shared tags
+     */
+    public function getSharedTags()
+    {
+        return $this->sharedTags;
+    }
+
+    /**
+     * Set annotations lists
+     *
+     * @return array  An aray of annotations lists
+     */
+    public function getAnnotationsLists()
+    {
+        return $this->annotationsLists;
+    }
+
+    /**
+     * get coverages
+     *
+     * @param array An array of coverages
+     */
+    public function getCoverages()
+    {
+        return $this->coverages;
+    }
+
+    /**
+     * get responses tag
+     *
+     * @param string the string of tag for generating responses
+     */
+    public function getResponsesTag()
+    {
+        return $this->responsesTag;
+    }
 
 }

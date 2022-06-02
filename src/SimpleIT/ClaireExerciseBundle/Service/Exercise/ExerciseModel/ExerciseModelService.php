@@ -209,7 +209,6 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
 
         parent::fillFromResource($model, $modelResource);
         $model = $this->computeRequirements($modelResource, $model);
-
         return $model;
     }
 

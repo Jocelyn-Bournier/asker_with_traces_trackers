@@ -237,12 +237,14 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
                 $scope.filters.type.picture = 'picture';
                 $scope.filters.type.open_ended_question = '';
                 $scope.filters.type.sequence = '';
+                $scope.filters.type.text_with_holes = '';
             } else if (newValue == 'multiple-choice') {
                 $scope.filters.type.multiple_choice_question = 'multiple-choice-question';
                 $scope.filters.type.text = '';
                 $scope.filters.type.picture = '';
                 $scope.filters.type.open_ended_question = '';
                 $scope.filters.type.sequence = '';
+                $scope.filters.type.text_with_holes = '';
             } else if (newValue == 'group-items') {
                 $scope.filters.type.multiple_choice_question = '';
                 $scope.filters.type.text = 'text';
@@ -255,12 +257,21 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
                 $scope.filters.type.picture = '';
                 $scope.filters.type.open_ended_question = '';
                 $scope.filters.type.sequence = '';
+                $scope.filters.type.text_with_holes = '';
             } else if (newValue == 'open-ended-question') {
                 $scope.filters.type.multiple_choice_question = '';
                 $scope.filters.type.text = '';
                 $scope.filters.type.picture = '';
                 $scope.filters.type.open_ended_question = 'open-ended-question';
                 $scope.filters.type.sequence = '';
+                $scope.filters.type.text_with_holes = '';
+            } else if (newValue == 'text-with-holes') {
+                $scope.filters.type.multiple_choice_question = '';
+                $scope.filters.type.text = '';
+                $scope.filters.type.picture = '';
+                $scope.filters.type.open_ended_question = '';
+                $scope.filters.type.sequence = '';
+                $scope.filters.type.text_with_holes = 'text-with-holes';
             }
         });
 
@@ -1139,7 +1150,7 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
             archived: false, // select archived resources or not (boolean)
             public: false, // select public resources or not (boolean)
             type: { // resources types to be selected
-                multiple_choice: 'multiple-choice', pair_items: 'pair-items', order_items: 'order-items', open_ended_question: 'open-ended-question', group_items: 'group-items'
+                multiple_choice: 'multiple-choice', text_with_holes: 'text-with-holes', pair_items: 'pair-items', order_items: 'order-items', open_ended_question: 'open-ended-question', group_items: 'group-items'
             },
             keywords: [], // list of keywords that a resource must have to be selected
             metadata: [] // list of metadata objects that a resource must have to be selected
@@ -1359,26 +1370,25 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
                     "metadata": [],
                     "keywords": [],
                     "content": {
+
                         "wording": null,
-                        "documents": [],
-                        "resources": [],
-                        "sharedTags": [],
-                        "sharedConstraint": [],
-                        "generationRules": {
-                            'annotationsLists': [],
-                            'coverages': [{
-                                'isGlobal': true,
-                                'listName': null,
-                                'type': 'percent',
-                                'value': 1
-                            }],
-                            'responsesTag': null
-                        },
                         "learnersVisualisation": {
                             'indicationShowed': false,
                             'initialElementAsIndication': true,
                             'keyAsIndication': null
                         },
+                        "resources": [],
+                        "sharedTags": [],
+                        "sharedConstraint": [],
+                        'annotationsLists': [],
+                        'coverages': [{
+                            'isGlobal': true,
+                            'listName': null,
+                            'type': 'percent',
+                            'value': 1
+                        }],
+                        'responsesTag': "",
+                        "documents": [],
                         "exercise_model_type": "text-with-holes"
                     },
                     "required_exercise_resources": null,

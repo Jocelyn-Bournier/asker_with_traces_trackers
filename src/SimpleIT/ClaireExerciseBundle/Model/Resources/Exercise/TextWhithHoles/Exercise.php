@@ -35,11 +35,35 @@ class Exercise extends CommonExercise
     private $item;
 
     /**
+     * @var sharedTags
+     * @Serializer\Type("array")
+     * @Serializer\Groups({"details", "corrected", "item"})
+     */
+    private $sharedTags;
+
+    /**
+     * @var $sharedConstraints
+     * @Serializer\Type("array")
+     * @Serializer\Groups({"details", "corrected", "item"})
+     */
+    private $sharedConstraints;
+
+    /**
      * Constructor : itemCount = 1 for this type of exercise.
      */
     function __construct($wording)
     {
         parent::__construct($wording);
         $this->itemCount = 1;
+    }
+
+    public function setSharedConstraints($sharedConstraints)
+    {
+        $this->sharedConstraints = $sharedConstraints;
+    }
+
+    public function setSharedTags($sharedTags)
+    {
+        $this->sharedTags = $sharedTags;
     }
 }
