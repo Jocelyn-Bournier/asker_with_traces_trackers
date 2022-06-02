@@ -56,6 +56,14 @@ class Group
     private $force_use;
 
     /**
+     * @var boolean $build_groups 
+     * @Serializer\Type("boolean")
+     * @Serializer\Groups({"details", "exercise_model_storage"})
+     * @Serializer\SerializedName("build_groups")
+     */
+    private $build_groups;
+
+    /**
      * Get name
      *
      * @return string
@@ -123,5 +131,25 @@ class Group
     public function setForceUse($force_use)
     {
         $this->force_use = $force_use;
+    }
+
+    /**
+     * Get build_groups
+     *
+     * @return boolean
+     */
+    public function getBuildGroups()
+    {
+        return $this->build_groups;
+    }
+
+    /**
+     * Set build_groups
+     *
+     * @param boolean $build_groups
+     */
+    public function setBuildGroups($build_groups)
+    {
+        $this->build_groups = $build_groups;
     }
 }

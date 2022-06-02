@@ -35,6 +35,7 @@ use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseObject\ExerciseObject;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ItemResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ItemResourceFactory;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ModelObject\MetadataConstraint;
+use Symfony\Component\Form\Extension\Core\Type\CountryType;
 use Symfony\Component\Validator\Constraints\Length;
 
 /**
@@ -204,19 +205,23 @@ class GroupItemsService extends ExerciseCreationService
         foreach ($objects as $obj) {
             if (!in_array($obj,$item->getObjects())) {
                 $count = 0;
-                // find its group
+                // find its group among existing
                 $groupName = "";
                 foreach ($classifConstr->getGroups() as $group) {
                     /** @var Group $group */
-                    if ($this->objectInGroup($obj, $group)) {
-                        $groupName = $group->getName();
-                        $count += 1;
+                    if (!$group->getBuildGroups()) {
+                        if ($this->objectInGroup($obj, $group)) {
+                            $groupName = $group->getName();
+                            $count += 1;
+                        }
                     }
                 }
 
                 // if no group
                 if ($count == 0) {
-                    $groupName = $this->chooseGroup($classifConstr);
+                    if (!$this->objectInBuildGroup($obj,$classifConstr,$groupName)) {
+                        $groupName = $this->chooseGroup($classifConstr);
+                    }
                 } elseif ($count >= 2) {
                     $groupName = self::REJECT;
                 }
@@ -246,7 +251,6 @@ class GroupItemsService extends ExerciseCreationService
                 $item->findOrCreateGroup($group->getName());
             }
         }
-
     }
 
 
@@ -271,6 +275,32 @@ class GroupItemsService extends ExerciseCreationService
         }
 
         return $groupName;
+    }
+
+    /**
+     * Determine if the object match an automatic-build group an set its name
+     */
+    private function ObjectInBuildGroup(
+        ExerciseObject $object, 
+        ClassificationConstraints $classifConstr, 
+        &$groupName)
+    {
+        $count = 0;
+
+        foreach ($classifConstr->getGroups() as $group) {
+            /** @var Group $group */
+            if($group->getBuildGroups()) {
+                $metadata = $object->getMetadata();
+                $key = $group->getName();
+
+                if (isset($metadata[$key])) {
+                    $groupName = $metadata[$key];
+                    $count++;
+                }
+            }
+        }
+
+        return $count == 1;
     }
 
     /**
