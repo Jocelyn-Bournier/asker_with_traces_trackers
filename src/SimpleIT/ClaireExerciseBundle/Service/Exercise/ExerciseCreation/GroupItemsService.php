@@ -35,6 +35,7 @@ use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseObject\ExerciseObject;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ItemResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ItemResourceFactory;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ModelObject\MetadataConstraint;
+use Symfony\Component\Validator\Constraints\Length;
 
 /**
  * Service which manages Group Items Exercises.
@@ -201,27 +202,29 @@ class GroupItemsService extends ExerciseCreationService
     )
     {
         foreach ($objects as $obj) {
-            $count = 0;
-            // find its group
-            $groupName = "";
-            foreach ($classifConstr->getGroups() as $group) {
-                /** @var Group $group */
-                if ($this->objectInGroup($obj, $group)) {
-                    $groupName = $group->getName();
-                    $count += 1;
+            if (!in_array($obj,$item->getObjects())) {
+                $count = 0;
+                // find its group
+                $groupName = "";
+                foreach ($classifConstr->getGroups() as $group) {
+                    /** @var Group $group */
+                    if ($this->objectInGroup($obj, $group)) {
+                        $groupName = $group->getName();
+                        $count += 1;
+                    }
                 }
-            }
 
-            // if no group
-            if ($count == 0) {
-                $groupName = $this->chooseGroup($classifConstr);
-            } elseif ($count >= 2) {
-                $groupName = self::REJECT;
-            }
+                // if no group
+                if ($count == 0) {
+                    $groupName = $this->chooseGroup($classifConstr);
+                } elseif ($count >= 2) {
+                    $groupName = self::REJECT;
+                }
 
-            // add the object to the exercise
-            if ($groupName !== self::REJECT) {
-                $item->addObjectInGroup($obj, $groupName);
+                // add the object to the exercise
+                if ($groupName !== self::REJECT) {
+                    $item->addObjectInGroup($obj, $groupName);
+                }
             }
         }
     }
