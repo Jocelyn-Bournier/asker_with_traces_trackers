@@ -63,23 +63,41 @@
                 <div class="panel-body panel panel-primary"
                      data-ng-repeat="group in model.content.classif_constr.groups track by $index"
                      data-ng-init="metadata_constraints = group.metadata_constraints">
-                    <label>Nom du groupe</label>
-                    <div class="col-centred pull-right">
-                        <span data-ng-click="group.force_use=!group.force_use">
-                            <span class="glyphicon"
-                                  ng-class="{'glyphicon-check': group.force_use, 'glyphicon-unchecked': !group.force_use}"></span>
-                            Forcer l'usage
-                        </span>
-                        <span
-                            data-ng-click="modelRemoveField(model.content.classif_constr.groups, $index)"
-                            class="glyphicon glyphicon-remove"></span>
-                    </div><br>
-                    <input type="text" ng-model="group.name" class="form-control"/>
-                    <div data-ng-include="BASE_CONFIG.urls.partials.teacher+'/fragment-constraint-list.html'"></div>
+
+                    <div data-ng-if="!group.build_groups">
+                        <label>Nom du groupe</label>
+                        <div class="col-centred pull-right">
+                            <span data-ng-click="group.force_use=!group.force_use">
+                                <span class="glyphicon"
+                                    ng-class="{'glyphicon-check': group.force_use, 'glyphicon-unchecked': !group.force_use}"></span>
+                                Forcer l'usage
+                            </span>
+                            <span
+                                data-ng-click="modelRemoveField(model.content.classif_constr.groups, $index)"
+                                class="glyphicon glyphicon-remove"></span>
+                        </div><br>
+                        <input type="text" ng-model="group.name" class="form-control"/>
+                        <div data-ng-include="BASE_CONFIG.urls.partials.teacher+'/fragment-constraint-list.html'"></div>
+                    </div>
+                    <div data-ng-if="group.build_groups">
+                        <label>Groupe automatique</label>
+                        <div class="col-centred pull-right">
+                            <span>Meta-donnée pour la création des groupes</span>
+                            <span
+                                data-ng-click="modelRemoveField(model.content.classif_constr.groups, $index)"
+                                class="glyphicon glyphicon-remove"></span>
+                        </div><br>
+                        <input type="text" ng-model="group.name" class="form-control"/>
+                    </div>
                 </div>
                 <button
-                    ng-click="addGroup()" class="btn btn-primary"
-                    title="Ajouter un nouveau groupe">
+                    ng-click="addGroup(true)" class="btn btn-primary"
+                    title="Ajouter un nouveau groupe automatique">
+                    <span class="glyphicon glyphicon-plus"></span>
+                </button>
+                <button
+                    ng-click="addGroup(false)" class="btn btn-primary"
+                    title="Ajouter un nouveau groupe manuel">
                     <span class="glyphicon glyphicon-plus"></span>
                 </button>
             </div>

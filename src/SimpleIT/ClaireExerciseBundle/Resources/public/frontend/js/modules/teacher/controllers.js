@@ -970,7 +970,8 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
                 "group_items_group": {
                     "name": "",
                     "metadata_constraints": [],
-                    "force_use": false
+                    "force_use": false,
+                    "build_groups": false
                 },
                 "open_ended_question": {
                     "type": "open-ended-question",
@@ -1634,12 +1635,13 @@ modelControllers.controller('modelEditGroupItemsController', ['$scope',
             );
         };
 
-        $scope.addGroup = function () {
+        $scope.addGroup = function ($build_groups) {
             $scope.model.content.classif_constr.groups.splice(
                 $scope.model.content.classif_constr.groups.length,
                 0,
                 jQuery.extend(true, {}, $scope.modelContext.newModel.group_items_group)
             );
+            $scope.model.content.classif_constr.groups[$scope.model.content.classif_constr.groups.length-1].build_groups = $build_groups;
         };
 
         $scope.findGroup = function (resource) {
