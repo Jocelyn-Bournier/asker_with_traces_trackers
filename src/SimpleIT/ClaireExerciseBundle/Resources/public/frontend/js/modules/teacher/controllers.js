@@ -813,7 +813,7 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
                 },
                 "pair_items": {
                     "type": "pair-items",
-                    "title": "Nouvel appariement",
+                    "title": "",
                     "public": false,
                     "archived": false,
                     "draft": false,
@@ -848,7 +848,7 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
                 },
                 "order_items": {
                     "type": "order-items",
-                    "title": "Nouvel ordonnancement",
+                    "title": "",
                     "public": false,
                     "archived": false,
                     "draft": false,
@@ -888,7 +888,7 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
                 },
                 "multiple_choice": {
                     "type": "multiple-choice",
-                    "title": "Nouveau QCM",
+                    "title": "",
                     "public": false,
                     "archived": false,
                     "draft": false,
@@ -928,7 +928,7 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
                 },
                 "group_items": {
                     "type": "group-items",
-                    "title": "Nouveau groupement",
+                    "title": "",
                     "public": false,
                     "archived": false,
                     "draft": false,
@@ -973,7 +973,7 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
                 },
                 "open_ended_question": {
                     "type": "open-ended-question",
-                    "title": "Nouveau modèle d'exercice de question à réponse ouverte courte",
+                    "title": "",
                     "public": false,
                     "archived": false,
                     "draft": false,
