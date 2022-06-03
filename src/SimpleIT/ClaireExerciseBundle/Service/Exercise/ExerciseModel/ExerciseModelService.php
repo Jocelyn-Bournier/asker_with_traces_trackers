@@ -483,7 +483,7 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
      */
     private function checkTitle($entity, &$errorCode){
         if ($entity->getTitle() == ''){
-            $errorCode = '901';
+            $errorCode = 901;
 
             return false;
         }
