@@ -699,7 +699,7 @@ resourceControllers.controller('resourceEditController', ['$scope', '$modal', 'R
         };
 
         $scope.addProposition = function (collection) {
-            var newProposition = {"text": "Nouvelle proposition", "right": false};
+            var newProposition = {"text": "", "right": false};
             collection.splice(collection.length, 0, newProposition);
         };
 
