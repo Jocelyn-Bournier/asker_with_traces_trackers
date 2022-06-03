@@ -424,50 +424,71 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
     {
         $errorCode = null;
 
-        if ($parentId === null) {
-            switch ($type) {
-                case CommonModel::MULTIPLE_CHOICE:
-                    /** @var MultipleChoice $content */
-                    $complete = $this->checkMCComplete($content, $errorCode);
-                    break;
-                case CommonModel::PAIR_ITEMS:
-                    /** @var PairItems $content */
-                    $complete = $this->checkPIComplete($content, $errorCode);
-                    break;
-                case CommonModel::GROUP_ITEMS:
-                    /** @var GroupItems $content */
-                    $complete = $this->checkGIComplete($content, $errorCode);
-                    break;
-                case CommonModel::ORDER_ITEMS:
-                    /** @var OrderItems $content */
-                    $complete = $this->checkOIComplete($content, $errorCode);
-                    break;
-                case CommonModel::OPEN_ENDED_QUESTION:
-                    /** @var OpenEnded $content */
-                    $complete = $this->checkOEQComplete($content, $errorCode);
-                    break;
-                default:
-                    throw new InconsistentEntityException('Invalid type');
-            }
-        } else {
-            if ($content !== null) {
-                throw new InconsistentEntityException('A model must be a pointer OR have a content');
-            }
-            try {
+        $complete = $this->checkTitle($entity,$errorCode);
 
-                $parentModel = $this->get($parentId);
-            } catch (NonExistingObjectException $neoe) {
-                throw new InconsistentEntityException('The parent model cannot be found.');
-            }
+        if ($complete){
+            if ($parentId === null) {
+                switch ($type) {
+                    case CommonModel::MULTIPLE_CHOICE:
+                        /** @var MultipleChoice $content */
+                        $complete = $this->checkMCComplete($content, $errorCode);
+                        break;
+                    case CommonModel::PAIR_ITEMS:
+                        /** @var PairItems $content */
+                        $complete = $this->checkPIComplete($content, $errorCode);
+                        break;
+                    case CommonModel::GROUP_ITEMS:
+                        /** @var GroupItems $content */
+                        $complete = $this->checkGIComplete($content, $errorCode);
+                        break;
+                    case CommonModel::ORDER_ITEMS:
+                        /** @var OrderItems $content */
+                        $complete = $this->checkOIComplete($content, $errorCode);
+                        break;
+                    case CommonModel::OPEN_ENDED_QUESTION:
+                        /** @var OpenEnded $content */
+                        $complete = $this->checkOEQComplete($content, $errorCode);
+                        break;
+                    default:
+                        throw new InconsistentEntityException('Invalid type');
+                }
+            } else {
+                if ($content !== null) {
+                    throw new InconsistentEntityException('A model must be a pointer OR have a content');
+                }
+                try {
 
-            $complete = $parentModel->getPublic();
-            if (!$parentModel->getPublic()) {
-                $errorCode = 101;
+                    $parentModel = $this->get($parentId);
+                } catch (NonExistingObjectException $neoe) {
+                    throw new InconsistentEntityException('The parent model cannot be found.');
+                }
+
+                $complete = $parentModel->getPublic();
+                if (!$parentModel->getPublic()) {
+                    $errorCode = 101;
+                }
             }
         }
 
         $entity->setComplete($complete);
         $entity->setCompleteError($errorCode);
+    }
+
+    /**
+     * Check if an Exercise has a title
+     * 
+     * @param ExerciseModel $entity
+     * @param $errorCode
+     * @return boolean True if it has a title
+     */
+    private function checkTitle($entity, &$errorCode){
+        if ($entity->getTitle() == ''){
+            $errorCode = '901';
+
+            return false;
+        }
+
+        return true;
     }
 
     /**

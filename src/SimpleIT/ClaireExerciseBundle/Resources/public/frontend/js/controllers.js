@@ -40,7 +40,8 @@ mainAppControllers.controller('mainManagerController', ['$scope', '$sce', '$rout
             '807': 'Le type de séquence doit être précisé',
             '808': 'Impossible de valider le contenu de la séquence',
             '809': 'Chaque formule doit posséder un nom',
-            '810': 'Chaque formule doit posséder une équation ou faire référence à une connaissance du domaine'
+            '810': 'Chaque formule doit posséder une équation ou faire référence à une connaissance du domaine',
+            '901': "Il faut préciser le Titre"
         };
 
         if (typeof $rootScope.models === 'undefined') {
