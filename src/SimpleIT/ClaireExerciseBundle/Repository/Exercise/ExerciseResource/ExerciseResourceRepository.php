@@ -23,6 +23,7 @@ use Doctrine\ORM\QueryBuilder;
 use SimpleIT\ClaireExerciseBundle\Entity\ExerciseResource\ExerciseResource;
 use SimpleIT\ClaireExerciseBundle\Exception\NonExistingObjectException;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ModelObject\MetadataConstraint;
+use SimpleIT\ClaireExerciseBundle\Model\Resources\MetadataResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ModelObject\ObjectConstraints;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ModelObject\ObjectId;
 use SimpleIT\ClaireExerciseBundle\Repository\Exercise\SharedEntity\SharedEntityRepository;
@@ -109,6 +110,7 @@ class ExerciseResourceRepository extends SharedEntityRepository
         // Metadata
         $queryMetadataPart = '';
         $numberOfMetadataConstraints = 0;
+        $hasKeywords = false;
 
         $metadataConstraints = $objectConstraints->getMetadataConstraints();
 
@@ -118,9 +120,19 @@ class ExerciseResourceRepository extends SharedEntityRepository
                 $queryMetadataPart,
                 $mdc
             );
-            $numberOfMetadataConstraints++;
+            if ($mdc->getComparator() == 'keyword'){
+                //all the keywords on the same line in the database, having count>1 doesn't work 
+                $hasKeywords = true;
+            }
+            else{
+                $numberOfMetadataConstraints++;
+            }
         }
 
+        if($hasKeywords) {
+            $numberOfMetadataConstraints++;
+        }
+        
         // Excluded resources
         $queryExcludedPart = '';
         $excludedList = $objectConstraints->getExcluded();
@@ -213,7 +225,7 @@ class ExerciseResourceRepository extends SharedEntityRepository
                 $comp,
                 $val
             );
-        } // lte, lt, gte, gt
+        } // lte, lt, gte, gt, keyword
         else {
             $this->addMetadataConstraint(
                 $qb,
@@ -243,24 +255,50 @@ class ExerciseResourceRepository extends SharedEntityRepository
         $value
     )
     {
+        //default operator
+        $operator='orX';
+
         // if exists (key test only)
         if ($comparison == 'exists') {
             $qp = $qb->expr()->eq('m.key', "'" . $metaKey . "'");
-        } //else (key and value test)
-        else {
-            // if between
-            if ($comparison == 'between') {
-                $exprComp = $qb->expr()->between('m.value', $value[0], $value[1]);
-            } // if not between
-            else {
-                $exprComp = $qb->expr()->$comparison('m.value', $value);
-            }
+        } 
+        
+        //if keyword(value test)
+        else{
+            if($comparison == 'keyword') {
+                //keyword key
+                $qp= $qb->expr()->andX(
+                    $qb->expr()->eq('m.key', "'" . MetadataResource::MISC_METADATA_KEY . "'"),
+                    //four cases for the list of keyword. %value% doesn't work, if value='ab', the keyword 'abc' is accepted. 
+                    $qb->expr()->orX(
+                        //one keyword
+                        $qb->expr()->like('m.value',"'".$value."'"),
+                        //several keywords    
+                        $qb->expr()->like('m.value',"'%;".$value."'"),  //at the end of the list
+                        $qb->expr()->like('m.value',"'".$value.";%'"),  //at the start of the list
+                        $qb->expr()->like('m.value',"'%;".$value.";%'") //in the middle of the list     
+                    ) 
+                );
 
-            // AND of value test and key test
-            $qp = $qb->expr()->andX(
-                $qb->expr()->eq('m.key', "'" . $metaKey . "'"),
-                $exprComp
-            );
+                //all the keywords on the same line in the database
+                $operator='andX';
+            }       
+            //else (key and value test)
+            else {
+                // if between
+                if ($comparison == 'between') {
+                    $exprComp = $qb->expr()->between('m.value', $value[0], $value[1]);
+                } // if not between
+                else {
+                    $exprComp = $qb->expr()->$comparison('m.value', $value);
+                }
+
+                // AND of value test and key test
+                $qp = $qb->expr()->andX(
+                    $qb->expr()->eq('m.key', "'" . $metaKey . "'"),
+                    $exprComp
+                );
+            }
         }
 
         // add to the query part
@@ -271,7 +309,7 @@ class ExerciseResourceRepository extends SharedEntityRepository
                 'm'
             );
         } else {
-            $queryPart = $qb->expr()->orX(
+            $queryPart = $qb->expr()->$operator(
                 $queryPart,
                 $qp
             );

@@ -860,6 +860,7 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
         $scope.modelContext = {
             "newModel": {
                 "block_constraint": {
+                    "keyword": {"key": '',"values": [],"comparator": 'keyword'},
                     "exists": {"key": '', "values": [], "comparator": 'exists'},
                     "in": {"key": '', "values": [], "comparator": 'in'},
                     "between": {"key": '', "values": ['', ''], "comparator": 'between'},
@@ -1102,9 +1103,10 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
 
         $scope.modelAddBlockResourceConstraint = function (metadata_constraints, type) {
             var newElement;
-
             if (type == 'exists') {
                 newElement = jQuery.extend(true, {}, $scope.modelContext.newModel.block_constraint.exists);
+            } else if (type == 'keyword') {
+                newElement = jQuery.extend(true, {}, $scope.modelContext.newModel.block_constraint.keyword);
             } else if (type == 'in') {
                 newElement = jQuery.extend(true, {}, $scope.modelContext.newModel.block_constraint.in);
             } else if (type == 'between') {
@@ -1555,8 +1557,11 @@ modelControllers.controller('modelEditController', ['$scope', 'Model','ModelDire
         };
 
         $scope.updateModel = function () {
+            console.log("updatemodel");
             var newModel = $scope.preUpdate();
             newModel.$update({id: $stateParams.modelid}, function (model) {
+                console.log(model);
+                console.log($scope.models);
                 $scope.model = model;
                 $scope.models[model.id] = model;
             });
@@ -1705,11 +1710,24 @@ modelControllers.controller('modelEditGroupItemsController', ['$scope',
                 for (var j = 0; j < group.metadata_constraints.length; ++j) {
                     var mc = group.metadata_constraints[j];
                     var value = $scope.findMDValue(resource, mc.key);
-                    if (value === null) {
+                    if (value === null && mc.comparator !== 'keyword') {
                         belongs = false;
                     }
 
                     switch (mc.comparator) {
+                        case 'keyword':
+                            var isIn = false;
+                            angular.forEach (resource.keywords, function(keyword){
+                                if (keyword === mc.values[0]){
+                                    isIn = true;
+                                }
+                            });
+
+                            if (isIn === false){
+                                belongs = false;
+                            }
+                            break;
+
                         case 'in':
                             var isIn = false;
                             for (var k = 0; k < mc.values.length; ++k) {

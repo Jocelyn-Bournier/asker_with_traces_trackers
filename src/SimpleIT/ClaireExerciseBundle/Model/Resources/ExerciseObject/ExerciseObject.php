@@ -98,6 +98,16 @@ abstract class ExerciseObject
     }
 
     /**
+     * Set keyword
+     *
+     * @param array $keyword
+     */
+    public function setKeyword($keyword)
+    {
+        $this->keyword = $keyword;
+    }
+
+    /**
      * Add a $key - $value metadata
      *
      * @param string $key
@@ -106,6 +116,16 @@ abstract class ExerciseObject
     public function addMetadata($key, $value)
     {
         $this->metadata[$key] = $value;
+    }
+
+    /**
+     * Add a $value keyword
+     *
+     * @param string $value
+     */
+    public function addKeyword($value)
+    {
+        array_push($this->keywords,$value);
     }
 
     /**
