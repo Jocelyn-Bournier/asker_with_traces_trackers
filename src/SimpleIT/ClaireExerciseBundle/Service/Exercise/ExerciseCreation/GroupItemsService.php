@@ -97,7 +97,7 @@ class GroupItemsService extends ExerciseCreationService
         $la = AnswerResourceFactory::create($answer);
         $learnerAnswers = $la->getContent();
 
-        $groups = $item->getGroups();
+        $groups = $item->getGroups();   
 
         // If 'ask' or 'hide', determine the expected name of each group according to the objects
         $viewName = $item->getDisplayGroupNames();
@@ -121,7 +121,7 @@ class GroupItemsService extends ExerciseCreationService
         // else, the names of the groups are given and there is nothing to do
 
         // Mark
-        $this->mark($item, $learnerAnswers, $groups);
+        $this->mark($item, $learnerAnswers, $groups);   
 
         // copy the learnerAnswers
         $item->setAnswers($learnerAnswers);
