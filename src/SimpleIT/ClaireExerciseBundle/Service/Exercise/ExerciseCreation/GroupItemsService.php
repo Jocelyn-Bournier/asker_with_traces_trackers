@@ -490,7 +490,7 @@ class GroupItemsService extends ExerciseCreationService
     private function determineGroupsAndModifySolution(
         ResItem &$item,
         $viewName,
-        array $groups,
+        array &$groups,
         array $learnerAnswers
     )
     {
