@@ -102,6 +102,12 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
                 }
             });
         };
+        $scope.setExerciseVisible = function(directory,$index){
+            MyDirectory.visible({id:directory.id},function (data){
+                directory.visible[$index] = data.visible[$index];
+                $location.path('/teacher/directory/visible/' + data.id)
+            });
+        }
         $scope.activateComper = function (directory) {
             document.getElementById("progress-bar-comper-creation").style.width= '100%';
             document.getElementById("progress-bar-comper-creation").classList.add("progress-bar-striped");
@@ -194,8 +200,10 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
         $scope.onDropModel = function(event, model, collection){
             if ($scope.directory.models === undefined){
                 $scope.directory.models = [];
+                $scope.directory.visible = [];
             }
             $scope.directory.models.push(model);
+            $scope.directory.visible.push(true);
         };
         $scope.directoryRemoveField = function (collection, index) {
             collection.splice(index, 1);
