@@ -133,17 +133,29 @@
       </button>
     </div>
     <div id='navbar' class="navbar-collapse collapse">
-      <ul class="nav navbar brand-size">
-        {% for dir in app.user.realDirectories %}
-          {% if dir.parent is null and dir.isVisible %}
-            <li>
-              <a ui-sref="dir-model-list({dirId:'{{dir.id}}'})"
-              title="Consulter les exercices du dossier {{dir.name}}">
-                {{dir.name}}
+      <ul class="nav navbar brand-size" style='margin-left:10px;'>
+        {% if is_granted('ROLE_WS_CREATOR') %}
+        <li class='dropdown'>
+              <a data-toggle="dropdown" class='dropdown-toggle brand' href='#'>
+                <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                Vue Etudiant<b class='caret'></b>
               </a>
-            </li>
-          {% endif %}
-        {% endfor %}
+              <ul class='dropdown-menu'>
+              {% endif %}
+                {% for dir in app.user.realDirectories %}
+                  {% if dir.parent is null and dir.isVisible %}
+                    <li>
+                      <a ui-sref="dir-model-list({dirId:'{{dir.id}}'})"
+                      title="Consulter les exercices du dossier {{dir.name}}">
+                        {{dir.name}}
+                      </a>
+                    </li>
+                  {% endif %}
+                {% endfor %}
+              {% if is_granted('ROLE_WS_CREATOR') %}
+              </ul>
+        </li>
+        {% endif %}
         {% if not app.user.isOnlyStudent %}
           <li>
             <a ui-sref="model"
