@@ -932,7 +932,7 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
 
             return false;
         }
-        if ($mdc->getKey() == null) {
+        if ($mdc->getKey() == null && $mdc->getComparator() != MetadataConstraint::KEYWORD) {
             $errorCode = '602';
 
             return false;

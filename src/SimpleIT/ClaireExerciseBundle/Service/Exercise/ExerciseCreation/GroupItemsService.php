@@ -37,6 +37,8 @@ use SimpleIT\ClaireExerciseBundle\Model\Resources\ItemResourceFactory;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ModelObject\MetadataConstraint;
 use Symfony\Component\Form\Extension\Core\Type\CountryType;
 use Symfony\Component\Validator\Constraints\Length;
+use SimpleIT\ClaireExerciseBundle\Model\Resources\MetadataResource;
+
 
 /**
  * Service which manages Group Items Exercises.
@@ -99,7 +101,7 @@ class GroupItemsService extends ExerciseCreationService
         $la = AnswerResourceFactory::create($answer);
         $learnerAnswers = $la->getContent();
 
-        $groups = $item->getGroups();
+        $groups = $item->getGroups();   
 
         // If 'ask' or 'hide', determine the expected name of each group according to the objects
         $viewName = $item->getDisplayGroupNames();
@@ -123,7 +125,7 @@ class GroupItemsService extends ExerciseCreationService
         // else, the names of the groups are given and there is nothing to do
 
         // Mark
-        $this->mark($item, $learnerAnswers, $groups);
+        $this->mark($item, $learnerAnswers, $groups);   
 
         // copy the learnerAnswers
         $item->setAnswers($learnerAnswers);
@@ -313,7 +315,7 @@ class GroupItemsService extends ExerciseCreationService
      * @throws \LogicException
      */
     private function objectInGroup(ExerciseObject $object, Group $group)
-    {
+    {        
         $belongs = true;
 
         $metadata = $object->getMetadata();
@@ -326,8 +328,30 @@ class GroupItemsService extends ExerciseCreationService
             $values = $constraint->getValues();
             $comparator = $constraint->getComparator();
 
+            //in the case of a 'keyword'
+            if ($comparator == 'keyword') {
+                $in = false;
+                $key = MetadataResource::MISC_METADATA_KEY;
+
+                //if the object has keywords
+                if(array_key_exists($key,$metadata)) {
+                    $keywords = explode(";",$metadata[$key]);       
+                    foreach ($keywords as $kw) {
+                        if ($kw == $values[0]) {
+                            $in = true;
+                        }
+                    }
+                }
+
+                // if the object doesn't have the keyword, or if there is no keywords, the object is not in
+                // the group
+                if (!$in) {
+                    $belongs = false;
+                }
+            }
+
             // if the metadata does not exist, it does not belong to the group
-            if (!isset($metadata[$key])) {
+            else if (!isset($metadata[$key])) {
                 return false;
             }
 
@@ -362,7 +386,7 @@ class GroupItemsService extends ExerciseCreationService
                     $belongs = false;
                 }
             } // Comparator error
-            elseif ($comparator !== 'exists') {
+            elseif ($comparator !== 'exists' && $comparator !== 'keyword') {
                 throw new \LogicException("Invalid comparator type:" . $comparator);
             }
         }
@@ -547,7 +571,7 @@ class GroupItemsService extends ExerciseCreationService
     private function determineGroupsAndModifySolution(
         ResItem &$item,
         $viewName,
-        array $groups,
+        array &$groups,
         array $learnerAnswers
     )
     {
