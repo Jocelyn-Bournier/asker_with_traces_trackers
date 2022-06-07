@@ -35,7 +35,10 @@ use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseObject\ExerciseObject;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ItemResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ItemResourceFactory;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ModelObject\MetadataConstraint;
+use Symfony\Component\Form\Extension\Core\Type\CountryType;
+use Symfony\Component\Validator\Constraints\Length;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\MetadataResource;
+
 
 /**
  * Service which manages Group Items Exercises.
@@ -178,6 +181,9 @@ class GroupItemsService extends ExerciseCreationService
 
         }
 
+        // mandatory groups
+        $this->addMandatoryGroups($classifConstr,$item);
+
         // shuffle the order of the objects
         $item->shuffleObjects();
 
@@ -199,30 +205,56 @@ class GroupItemsService extends ExerciseCreationService
     )
     {
         foreach ($objects as $obj) {
-            $count = 0;
-            // find its group
-            $groupName = "";
-            foreach ($classifConstr->getGroups() as $group) {
-                /** @var Group $group */
-                if ($this->objectInGroup($obj, $group)) {
-                    $groupName = $group->getName();
-                    $count += 1;
+            if (!in_array($obj,$item->getObjects())) {
+                $count = 0;
+                // find its group among existing
+                $groupName = "";
+                foreach ($classifConstr->getGroups() as $group) {
+                    /** @var Group $group */
+                    if (!$group->getBuildGroups()) {
+                        if ($this->objectInGroup($obj, $group)) {
+                            $groupName = $group->getName();
+                            $count += 1;
+                        }
+                    }
                 }
-            }
 
-            // if no group
-            if ($count == 0) {
-                $groupName = $this->chooseGroup($classifConstr);
-            } elseif ($count >= 2) {
-                $groupName = self::REJECT;
-            }
+                // if no group
+                if ($count == 0) {
+                    if (!$this->objectInBuildGroup($obj,$classifConstr,$groupName)) {
+                        $groupName = $this->chooseGroup($classifConstr);
+                    }
+                } elseif ($count >= 2) {
+                    $groupName = self::REJECT;
+                }
 
-            // add the object to the exercise
-            if ($groupName !== self::REJECT) {
-                $item->addObjectInGroup($obj, $groupName);
+                // add the object to the exercise
+                if ($groupName !== self::REJECT) {
+                    $item->addObjectInGroup($obj, $groupName);
+                }
             }
         }
     }
+
+    /**
+     * Add the groups with force_use attribute
+     *
+     * @param ClassificationConstraints $classifConstr The classification constraints
+     * @param ResItem                   $item          The exercise to be modified
+     */
+    private function addMandatoryGroups(
+        ClassificationConstraints $classifConstr,
+        ResItem &$item
+    )
+    {
+        foreach ($classifConstr->getGroups() as $group) {
+            /** @var Group $group */
+            if ($group->getForceUse()) {
+                $item->findOrCreateGroup($group->getName());
+            }
+        }
+    }
+
 
     /**
      * Choose the group of a no-group-object
@@ -245,6 +277,32 @@ class GroupItemsService extends ExerciseCreationService
         }
 
         return $groupName;
+    }
+
+    /**
+     * Determine if the object match an automatic-build group an set its name
+     */
+    private function ObjectInBuildGroup(
+        ExerciseObject $object, 
+        ClassificationConstraints $classifConstr, 
+        &$groupName)
+    {
+        $count = 0;
+
+        foreach ($classifConstr->getGroups() as $group) {
+            /** @var Group $group */
+            if($group->getBuildGroups()) {
+                $metadata = $object->getMetadata();
+                $key = $group->getName();
+
+                if (isset($metadata[$key])) {
+                    $groupName = $metadata[$key];
+                    $count++;
+                }
+            }
+        }
+
+        return $count == 1;
     }
 
     /**
