@@ -7,8 +7,6 @@ newControllers.controller('newController',
         $scope.documentUrl = BASE_CONFIG.urls.documents.uploads;
         $scope.imageExoUrl = BASE_CONFIG.urls.images.exercise;
 
-        $scope.documentUrl = $sce.trustAsResourceUrl(BASE_CONFIG.urls.documents.uploads);
-
         console.log('news exercises loading...');
         $scope.news = NewList.query(
             function(){

@@ -671,8 +671,6 @@ learnerControllers.controller('learnerController', ['$scope', 'User', 'AttemptBy
         $scope.documentUrl = BASE_CONFIG.urls.documents.uploads;
         $scope.imageExoUrl = BASE_CONFIG.urls.images.exercise;
 
-        $scope.documentUrl = $sce.trustAsResourceUrl(BASE_CONFIG.urls.documents.uploads);
-
         // retrieve attempts
         if ($stateParams.modelId == '' || $stateParams.modelId == null) {
             $scope.models = AttemptList.query(
