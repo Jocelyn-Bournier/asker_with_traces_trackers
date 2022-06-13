@@ -44,6 +44,8 @@ class Directory
 
     private $models;
 
+    private $visibleExercise;
+
     private $parent;
 
     private $statViews;
@@ -58,6 +60,7 @@ class Directory
         $this->subs = new ArrayCollection();
         $this->statViews = new ArrayCollection();
         $this->models =  new ArrayCollection();
+        $this->visibleExercise =  new ArrayCollection();
     }
 
 
@@ -359,6 +362,21 @@ class Directory
     public function setIsVisible($isVisible)
     {
         $this->isVisible = $isVisible;
+    }
+    
+    public function getVisibleExercise()
+    {
+        return $this->visibleExercise;
+    }
+
+    /**
+     * Set visible[$index].
+     *
+     * @param visible the value to set.
+     */
+    public function setVisibleExercise($visibleExercise)
+    {
+        $this->visibleExercise = $visibleExercise;
     }
 }
 

@@ -98,6 +98,12 @@ class DirectoryResource
     protected $models;
     /**
      * @var array
+     * @Serializer\Type("array<boolean>")
+     * @Serializer\Groups({"details"})
+     */
+    protected $visibleExercise;
+    /**
+     * @var array
      * @Serializer\Type("array<SimpleIT\ClaireExerciseBundle\Model\Resources\DirectoryResource>")
      * @Serializer\Groups({"details"})
      */
@@ -166,6 +172,20 @@ class DirectoryResource
     {
       $this->models[] = $model;
       return $this;
+    }
+
+    public function addVisibleExercise($visible)
+    {
+      $this->visibleExercise[] = $visible;
+      return $this;
+    }
+
+    public function setVisibleExercise($visibleExercise){
+        $this->visibleExercise = $visibleExercise;
+    }
+
+    public function getVisibleExercise(){
+        return $this->visibleExercise;
     }
 
     public function removeModel(EM $model)
