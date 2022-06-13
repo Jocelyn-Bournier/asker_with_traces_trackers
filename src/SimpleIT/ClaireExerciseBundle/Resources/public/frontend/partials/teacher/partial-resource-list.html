@@ -56,6 +56,9 @@
                                 <button class="btn" title="Image" ng-model="$parent.$parent.filters.type.picture" btn-checkbox-true="'picture'" btn-checkbox-false="''" btn-checkbox>
                                     <span class="glyphicon glyphicon-picture"></span>
                                 </button>
+                                <button class="btn" title="Document" ng-model="$parent.$parent.filters.type.document" btn-checkbox-true="'document'" btn-checkbox-false="''" btn-checkbox>
+                                    <span class="glyphicon glyphicon-file"></span>
+                                </button>
                                 <button class="btn" title="Texte" ng-model="$parent.$parent.filters.type.text" btn-checkbox-true="'text'" btn-checkbox-false="''" btn-checkbox>
                                     <span class="glyphicon glyphicon-font"></span>
                                 </button>
@@ -145,6 +148,9 @@
                 <div class="list-group">
                     <div>
                         <a data-ng-click="createResource('picture')" href class="list-group-item"><span class="glyphicon glyphicon-picture"></span>&nbsp;Créer une image</a>
+                    </div>
+                    <div>
+                        <a data-ng-click="createResource('document')" href class="list-group-item"><span class="glyphicon glyphicon-file"></span>&nbsp;Créer un document</a>
                     </div>
                     <div>
                         <a data-ng-click="createResource('text')" href class="list-group-item"><span title="Texte" class="glyphicon glyphicon-font"></span>&nbsp;Créer un texte</a>

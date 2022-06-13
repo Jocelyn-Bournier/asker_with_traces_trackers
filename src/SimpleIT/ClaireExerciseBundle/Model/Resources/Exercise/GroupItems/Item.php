@@ -88,6 +88,22 @@ class Item extends CommonItem implements Markable
     private $answers = array();
 
     /**
+     * Find the index of the group or create it
+     * 
+     * @param mixed $groupName
+     * @return mixed
+     */
+    public function findOrCreateGroup($groupName)
+    {
+        $groupIndex = array_search($groupName, $this->groups);
+        if ($groupIndex === false) {
+            $groupIndex = count($this->groups);
+            $this->groups[$groupIndex] = $groupName;
+        }
+        return $groupIndex;
+    }
+
+    /**
      * Add an object in the group.
      *
      * @param ExerciseObject $object
@@ -101,11 +117,7 @@ class Item extends CommonItem implements Markable
         $this->objects[$objIndex] = $object;
 
         // find the index of the group or create it
-        $groupIndex = array_search($groupName, $this->groups);
-        if ($groupIndex === false) {
-            $groupIndex = count($this->groups);
-            $this->groups[$groupIndex] = $groupName;
-        }
+        $groupIndex = $this->findOrCreateGroup($groupName);
 
         $this->solutions[$objIndex] = $groupIndex;
     }
