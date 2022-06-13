@@ -22,7 +22,7 @@ use SimpleIT\ClaireExerciseBundle\Entity\Directory;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\DirectoryResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModelResourceFactory;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\AskerUserResourceFactory;
-
+use Symfony\Bridge\Twig\UndefinedCallableHandler;
 
 /**
  * Class ExerciseModelResourceFactory
@@ -69,6 +69,7 @@ abstract class DirectoryFactory
             //$directoryResource->addModel($model);
             $directoryResource->addModel(ExerciseModelResourceFactory::create($model,$links));
         }
+        $directoryResource->setVisibleExercise($directory->getVisibleExercise());
         foreach($directory->getSubs() as $sub){
             $directoryResource->addSub(self::create($sub));
         }
@@ -107,6 +108,7 @@ abstract class DirectoryFactory
             //$directoryResource->addModel($model);
             $directoryResource->addModel(ExerciseModelResourceFactory::createProper($model));
         }
+        $directoryResource->setVisibleExercise($directory->getVisibleExercise());
         foreach($directory->getSubs() as $sub){
             $directoryResource->addSub(self::createProper($sub));
         }
