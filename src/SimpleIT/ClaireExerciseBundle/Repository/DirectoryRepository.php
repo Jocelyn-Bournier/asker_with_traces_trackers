@@ -416,6 +416,20 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
             ->getResult();
     }
 
+
+    function updateVisibleExercise($visibleExercise,$dirId,$modelId){
+        $sql = "
+            UPDATE directories_models
+            SET visible = " . $visibleExercise . "
+            WHERE directory_id = " . $dirId . "
+                AND model_id = " . $modelId
+        ;
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+    }
+
+
     /**
      * ANR COMPER
      *
@@ -542,6 +556,7 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
             JOIN directory d
                 ON d.id = dm.directory_id
             WHERE d.parent_id = :id
+                AND dm.visible = true
         ";
         $conn = $this->getEntityManager()->getConnection();
         $stmt = $conn->prepare($sql);
@@ -559,6 +574,7 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
             JOIN directory d
                 ON d.id = dm.directory_id
             WHERE d.parent_id = :id or d.id = :id
+                AND dm.visible = true
         ";
         $conn = $this->getEntityManager()->getConnection();
         $stmt = $conn->prepare($sql);

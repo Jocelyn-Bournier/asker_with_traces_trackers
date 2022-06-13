@@ -267,6 +267,17 @@ class DirectoryService extends TransactionalService
             }
         }
         $this->em->flush();
+
+        if (!is_null($resource->getModels())){
+            for($i=0; $i<count($resource->getModels()); $i++){
+                $this->directoryRepository->updateVisibleExercise(
+                    $resource->getVisibleExercise()[$i],
+                    $resource->getId(),
+                    $resource->getModels()[$i]->getId()
+                );
+            }
+        }
+        $entity->setVisibleExercise($resource->getVisibleExercise());
         return $entity;
     }
     public function updateFrameworkDir($dir, $frameworkId)
