@@ -82,7 +82,7 @@
           ui-on-Drop="onDropModel($event,$data,directory.models)">
             <accordion close-others="true">
               <accordion-group class="panel panel-primary"
-              ng-class="directory.visible[$index] ? 'panel-default'
+              ng-class="directory.visible_exercise[$index] ? 'panel-default'
               : 'panel-invisible'"
               data-ng-repeat="model in directory.models track by $index">
                 <accordion-heading class="panel-heading">
@@ -129,16 +129,16 @@
                     </div>
                     <div class="col-xs-1">
                       <span class="glyphicon" ng-class="
-                        directory.visible[$index] ? 'glyphicon-eye-open'
+                        directory.visible_exercise[$index] ? 'glyphicon-eye-open'
                         : 'glyphicon-eye-close'"
                         ng-click="$event.stopPropagation();setExerciseVisible(directory,$index)"
                         ng-attr-title="
-                        {{directory.visible[$index]
+                        {{directory.visible_exercise[$index]
                         ? 'Ce dossier est visible.'
                         : 'Ce dossier est invisible.'}}">
                       </span>
                       <span
-                      data-ng-click="$event.stopPropagation();directoryRemoveField(directory.models, $index)"
+                      data-ng-click="$event.stopPropagation();directoryRemoveField(directory.models, $index, directory.visible_exercise)"
                       class="glyphicon glyphicon-remove"></span>
                     </div>
                   </div>
