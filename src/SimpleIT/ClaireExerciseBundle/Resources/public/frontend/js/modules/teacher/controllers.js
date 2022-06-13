@@ -288,7 +288,7 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
             "newResources": {
                 "text": {
                     "type": "text",
-                    "title": "Nouveau texte",
+                    "title": "",
                     "public": false,
                     "archived": false,
                     "draft": false,
@@ -304,7 +304,7 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
                 },
                 "picture": {
                     "type": "picture",
-                    "title": "Nouvelle image",
+                    "title": "",
                     "public": false,
                     "archived": false,
                     "draft": false,
@@ -320,7 +320,7 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
                 },
                 "document": {
                     "type": "document",
-                    "title": "Nouveau document",
+                    "title": "",
                     "public": false,
                     "archived": false,
                     "draft": false,
@@ -336,7 +336,7 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
                 },
                 "multiple_choice_question": {
                     "type": "multiple-choice-question",
-                    "title": "Nouvelle question",
+                    "title": "",
                     "public": false,
                     "archived": false,
                     "draft": false,
@@ -363,7 +363,7 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
                 },
                 "open_ended_question": {
                     "type": "open-ended-question",
-                    "title": "Nouvelle question",
+                    "title": "",
                     "public": false,
                     "archived": false,
                     "draft": false,
@@ -753,7 +753,7 @@ resourceControllers.controller('resourceEditController', ['$scope', '$modal', 'R
         };
 
         $scope.addProposition = function (collection) {
-            var newProposition = {"text": "Nouvelle proposition", "right": false};
+            var newProposition = {"text": "", "right": false};
             collection.splice(collection.length, 0, newProposition);
         };
 
@@ -868,7 +868,7 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
                 },
                 "pair_items": {
                     "type": "pair-items",
-                    "title": "Nouvel appariement",
+                    "title": "",
                     "public": false,
                     "archived": false,
                     "draft": false,
@@ -903,7 +903,7 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
                 },
                 "order_items": {
                     "type": "order-items",
-                    "title": "Nouvel ordonnancement",
+                    "title": "",
                     "public": false,
                     "archived": false,
                     "draft": false,
@@ -943,7 +943,7 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
                 },
                 "multiple_choice": {
                     "type": "multiple-choice",
-                    "title": "Nouveau QCM",
+                    "title": "",
                     "public": false,
                     "archived": false,
                     "draft": false,
@@ -983,7 +983,7 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
                 },
                 "group_items": {
                     "type": "group-items",
-                    "title": "Nouveau groupement",
+                    "title": "",
                     "public": false,
                     "archived": false,
                     "draft": false,
@@ -1030,7 +1030,7 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
                 },
                 "open_ended_question": {
                     "type": "open-ended-question",
-                    "title": "Nouveau modèle d'exercice de question à réponse ouverte courte",
+                    "title": "",
                     "public": false,
                     "archived": false,
                     "draft": false,

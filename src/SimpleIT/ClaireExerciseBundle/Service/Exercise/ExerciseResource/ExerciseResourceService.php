@@ -352,54 +352,73 @@ class ExerciseResourceService extends SharedEntityService implements ExerciseRes
     {
         $errorCode = null;
 
-        if ($parentId === null) {
-            switch ($type) {
-                case CommonResource::PICTURE:
-                    /** @var PictureResource $content */
-                    $complete = $this->checkPictureComplete($content, $errorCode);
-                    break;
-                case CommonResource::TEXT:
-                    /** @var TextResource $content */
-                    $complete = $this->checkTextComplete($content, $errorCode);
-                    break;
-                case CommonResource::OPEN_ENDED_QUESTION:
-                    /** @var OpenEndedQuestionResource $content */
-                    $complete = $this->checkOEQComplete($content, $errorCode);
-                    break;
-                case CommonResource::MULTIPLE_CHOICE_QUESTION:
-                    /** @var MultipleChoiceQuestionResource $content */
-                    $complete = $this->checkMCQComplete($content, $errorCode);
-                    break;
-                case CommonResource::SEQUENCE:
-                    /** @var SequenceResource $content */
-                    $complete = $this->checkSequenceComplete($content, $errorCode);
-                    break;
-                case CommonResource::DOCUMENT:
-                    /** @var DocumentResource $content */
-                    $complete = $this->checkDocumentComplete($content, $errorCode);
-                    break;
-                default:
-                    throw new InconsistentEntityException('Invalid type');
-            }
-        } else {
-            if ($content !== null) {
-                throw new InconsistentEntityException('A resource must be a pointer OR have a content');
-            }
-            try {
+        $complete = $this->checkTitle($entity, $errorCode);
 
-                $parentModel = $this->get($parentId);
-            } catch (NonExistingObjectException $neoe) {
-                throw new InconsistentEntityException('The parent resource cannot be found.');
-            }
-
-            $complete = $parentModel->getPublic();
-            if (!$parentModel->getPublic()) {
-                $errorCode = 101;
+        if ($complete){
+            if ($parentId === null) {
+                switch ($type) {
+                    case CommonResource::PICTURE:
+                        /** @var PictureResource $content */
+                        $complete = $this->checkPictureComplete($content, $errorCode);
+                        break;
+                    case CommonResource::TEXT:
+                        /** @var TextResource $content */
+                        $complete = $this->checkTextComplete($content, $errorCode);
+                        break;
+                    case CommonResource::OPEN_ENDED_QUESTION:
+                        /** @var OpenEndedQuestionResource $content */
+                        $complete = $this->checkOEQComplete($content, $errorCode);
+                        break;
+                    case CommonResource::MULTIPLE_CHOICE_QUESTION:
+                        /** @var MultipleChoiceQuestionResource $content */
+                        $complete = $this->checkMCQComplete($content, $errorCode);
+                        break;
+                    case CommonResource::SEQUENCE:
+                        /** @var SequenceResource $content */
+                        $complete = $this->checkSequenceComplete($content, $errorCode);
+                        break;
+                    case CommonResource::DOCUMENT:
+                        /** @var DocumentResource $content */
+                        $complete = $this->checkDocumentComplete($content, $errorCode);
+                        break;
+                    default:
+                        throw new InconsistentEntityException('Invalid type');
+                }
+            } else {
+                if ($content !== null) {
+                    throw new InconsistentEntityException('A resource must be a pointer OR have a content');
+                }
+                try {
+                        $parentModel = $this->get($parentId);
+                } catch (NonExistingObjectException $neoe) {
+                    throw new InconsistentEntityException('The parent resource cannot be found.');
+                }
+                $complete = $parentModel->getPublic();
+                if (!$parentModel->getPublic()) {
+                    $errorCode = 101;
+                }
             }
         }
 
         $entity->setComplete($complete);
         $entity->setCompleteError($errorCode);
+    }
+
+    /**
+     * Check if a Resource has a title
+     * 
+     * @param ExerciseModel $entity
+     * @param $errorCode
+     * @return boolean True if it has a title
+     */
+    private function checkTitle($entity, &$errorCode){
+        if ($entity->getTitle() == '') {
+            $errorCode = 901;
+
+            return false;
+        }
+
+        return true;
     }
 
     /**
