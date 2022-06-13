@@ -320,7 +320,7 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
                 },
                 "document": {
                     "type": "document",
-                    "title": "Nouveau document",
+                    "title": "",
                     "public": false,
                     "archived": false,
                     "draft": false,
