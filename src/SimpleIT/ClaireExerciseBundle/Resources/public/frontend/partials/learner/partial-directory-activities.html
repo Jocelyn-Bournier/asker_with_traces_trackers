@@ -1,6 +1,6 @@
 <div ng-repeat="model in directory.models  track by $index">
     <!-- every models if attempts in directory -->
-    <div ng-if="model.has_attempts">
+    <div ng-if="model.has_attempts && directory.visible_exercise[$index]">
         <accordion>
             <accordion-group
                     class="panel panel-default">
@@ -10,7 +10,7 @@
         </accordion>
     </div>
     <!-- every models if no attempts in directory -->
-    <div ng-if="model.has_attempts == 0" >
+    <div ng-if="model.has_attempts == 0 && directory.visible_exercise[$index]" >
         <div class="margin-fix">
             <div ng-include="BASE_CONFIG.urls.partials.learner+'/fragment-models.html'">
             </div>
