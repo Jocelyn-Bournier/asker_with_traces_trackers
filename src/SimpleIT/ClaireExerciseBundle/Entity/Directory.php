@@ -60,7 +60,7 @@ class Directory
         $this->subs = new ArrayCollection();
         $this->statViews = new ArrayCollection();
         $this->models =  new ArrayCollection();
-        $this->visibleExercise =  new ArrayCollection();
+        $this->constructVisibleExercise();
     }
 
 
@@ -377,6 +377,16 @@ class Directory
     public function setVisibleExercise($visibleExercise)
     {
         $this->visibleExercise = $visibleExercise;
+    }
+
+    public function constructVisibleExercise()
+    {
+        $this->visibleExercise =  new ArrayCollection();
+    }
+
+    public function addVisibleExercise($visible)
+    {
+        $this->visibleExercise[] = $visible;
     }
 }
 
