@@ -40,6 +40,25 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
         if ($resource === null) {
             throw new NonExistingObjectException();
         }
+        else{
+            $resource->constructVisibleExercise();
+            foreach($resource->getModels() as $mod){
+                $sql = "SELECT dm.visible
+                    FROM directories_models dm
+                    WHERE dm.model_id =" . $mod->getId() . "
+                        AND dm.directory_id =" .$directoryId
+                ;
+                $stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+                $stmt->execute();
+                if ($stmt->fetchFirstColumn()[0] == "0")
+                {
+                    $resource->addVisibleExercise(false);
+                }
+                else {
+                    $resource->addVisibleExercise(true);
+                }
+            }
+        }
 
         return $resource;
     }
@@ -418,6 +437,11 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
 
 
     function updateVisibleExercise($visibleExercise,$dirId,$modelId){
+        if ($visibleExercise){
+            $visibleExercise = "true";
+        } else{
+            $visibleExercise = "false";
+        }
         $sql = "
             UPDATE directories_models
             SET visible = " . $visibleExercise . "
@@ -426,7 +450,7 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
         ;
         $conn = $this->getEntityManager()->getConnection();
         $stmt = $conn->prepare($sql);
-        $stmt->execute();
+        $stmt->executeQuery();
     }
 
 
