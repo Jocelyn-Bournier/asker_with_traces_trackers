@@ -35,6 +35,11 @@ class MetadataConstraint
     const EXISTS = "exists";
 
     /**
+     * @const KEYWORD = "keyword"
+     */
+    const KEYWORD = "keyword";
+
+    /**
      * @const IN = "in"
      */
     const IN = "in";
@@ -201,6 +206,16 @@ class MetadataConstraint
     {
         $this->comparator = 'exists';
         $this->values = array();
+    }
+
+    /**
+     * Set the comparison type to "exists", which means this metadata key exists
+     * but which imposes no constraint about the value.
+     */
+    public function setKeyword($val)
+    {
+        $this->comparator = 'keyword';
+        $this->values = array(0=>$val);
     }
 
     /**

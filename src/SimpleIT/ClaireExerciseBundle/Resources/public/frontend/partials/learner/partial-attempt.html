@@ -23,6 +23,9 @@
                             <img ng-src="{{ imageUrl }}{{ doc.source }}" style="height: 100px"/>
                         </a>
                     </div>
+                    <div ng-if="doc.object_type == 'document'">
+                        <button type="button" data-ng-click="seeDocument(doc)">Voir document</button>
+                    </div>
                 </div>
             </div>
         </div>

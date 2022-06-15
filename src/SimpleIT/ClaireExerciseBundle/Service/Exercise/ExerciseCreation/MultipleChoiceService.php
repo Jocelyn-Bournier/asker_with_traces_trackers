@@ -385,12 +385,19 @@ class MultipleChoiceService extends ExerciseCreationService
      */
     private function mark(Question &$question)
     {
-        $mark = 100.0;
+        $mark = 0.0;
+
+        $numberOfRight=$question->numberOfRightAnswer();
 
         foreach ($question->getPropositions() as $prop) {
             /** @var Proposition $prop */
-            if ($prop->getTicked() != $prop->getRight()) {
-                $mark = 0.0;
+            if ($prop->getTicked()) {
+                if ($prop->getRight()) {
+                    $mark += 100/$numberOfRight;
+                }
+                else{
+                    $mark -= 100/$numberOfRight;
+                }
             }
         }
 

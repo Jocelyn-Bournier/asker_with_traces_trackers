@@ -26,6 +26,7 @@ use JMS\Serializer\Annotation as Serializer;
  * @author Baptiste Cablé <baptiste.cable@liris.cnrs.fr>
  * @Serializer\Discriminator(field = "object_type", map = {
  *    "picture":  "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseObject\ExercisePictureObject",
+ *    "document":  "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseObject\ExerciseDocumentObject",
  *    "text":     "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseObject\ExerciseTextObject",
  *    "sequence": "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseObject\ExerciseSequenceObject"
  * })
@@ -97,6 +98,16 @@ abstract class ExerciseObject
     }
 
     /**
+     * Set keyword
+     *
+     * @param array $keyword
+     */
+    public function setKeyword($keyword)
+    {
+        $this->keyword = $keyword;
+    }
+
+    /**
      * Add a $key - $value metadata
      *
      * @param string $key
@@ -105,6 +116,16 @@ abstract class ExerciseObject
     public function addMetadata($key, $value)
     {
         $this->metadata[$key] = $value;
+    }
+
+    /**
+     * Add a $value keyword
+     *
+     * @param string $value
+     */
+    public function addKeyword($value)
+    {
+        array_push($this->keywords,$value);
     }
 
     /**

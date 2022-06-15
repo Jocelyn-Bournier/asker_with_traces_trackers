@@ -162,4 +162,22 @@ class Question extends CommonItem implements Markable
     {
         return $this->originResource;
     }
+
+    /**
+     * Return the number of right answer
+     * 
+     * @return int
+     */
+    public function numberOfRightAnswer()
+    {
+        $count=0;
+        
+        foreach ($this->propositions as $prop) {
+            if ($prop->getRight()) {
+                $count++;
+            }
+        }
+
+        return $count;
+    }
 }

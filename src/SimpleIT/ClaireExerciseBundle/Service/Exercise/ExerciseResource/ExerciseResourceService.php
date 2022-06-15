@@ -37,6 +37,7 @@ use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\MultipleChoic
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\MultipleChoiceQuestionResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\OpenEndedQuestionResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\PictureResource;
+use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\DocumentResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\Sequence\ResourceId;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\Sequence\SequenceBlock;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\Sequence\SequenceElement;
@@ -351,50 +352,73 @@ class ExerciseResourceService extends SharedEntityService implements ExerciseRes
     {
         $errorCode = null;
 
-        if ($parentId === null) {
-            switch ($type) {
-                case CommonResource::PICTURE:
-                    /** @var PictureResource $content */
-                    $complete = $this->checkPictureComplete($content, $errorCode);
-                    break;
-                case CommonResource::TEXT:
-                    /** @var TextResource $content */
-                    $complete = $this->checkTextComplete($content, $errorCode);
-                    break;
-                case CommonResource::OPEN_ENDED_QUESTION:
-                    /** @var OpenEndedQuestionResource $content */
-                    $complete = $this->checkOEQComplete($content, $errorCode);
-                    break;
-                case CommonResource::MULTIPLE_CHOICE_QUESTION:
-                    /** @var MultipleChoiceQuestionResource $content */
-                    $complete = $this->checkMCQComplete($content, $errorCode);
-                    break;
-                case CommonResource::SEQUENCE:
-                    /** @var SequenceResource $content */
-                    $complete = $this->checkSequenceComplete($content, $errorCode);
-                    break;
-                default:
-                    throw new InconsistentEntityException('Invalid type');
-            }
-        } else {
-            if ($content !== null) {
-                throw new InconsistentEntityException('A resource must be a pointer OR have a content');
-            }
-            try {
+        $complete = $this->checkTitle($entity, $errorCode);
 
-                $parentModel = $this->get($parentId);
-            } catch (NonExistingObjectException $neoe) {
-                throw new InconsistentEntityException('The parent resource cannot be found.');
-            }
-
-            $complete = $parentModel->getPublic();
-            if (!$parentModel->getPublic()) {
-                $errorCode = 101;
+        if ($complete){
+            if ($parentId === null) {
+                switch ($type) {
+                    case CommonResource::PICTURE:
+                        /** @var PictureResource $content */
+                        $complete = $this->checkPictureComplete($content, $errorCode);
+                        break;
+                    case CommonResource::TEXT:
+                        /** @var TextResource $content */
+                        $complete = $this->checkTextComplete($content, $errorCode);
+                        break;
+                    case CommonResource::OPEN_ENDED_QUESTION:
+                        /** @var OpenEndedQuestionResource $content */
+                        $complete = $this->checkOEQComplete($content, $errorCode);
+                        break;
+                    case CommonResource::MULTIPLE_CHOICE_QUESTION:
+                        /** @var MultipleChoiceQuestionResource $content */
+                        $complete = $this->checkMCQComplete($content, $errorCode);
+                        break;
+                    case CommonResource::SEQUENCE:
+                        /** @var SequenceResource $content */
+                        $complete = $this->checkSequenceComplete($content, $errorCode);
+                        break;
+                    case CommonResource::DOCUMENT:
+                        /** @var DocumentResource $content */
+                        $complete = $this->checkDocumentComplete($content, $errorCode);
+                        break;
+                    default:
+                        throw new InconsistentEntityException('Invalid type');
+                }
+            } else {
+                if ($content !== null) {
+                    throw new InconsistentEntityException('A resource must be a pointer OR have a content');
+                }
+                try {
+                        $parentModel = $this->get($parentId);
+                } catch (NonExistingObjectException $neoe) {
+                    throw new InconsistentEntityException('The parent resource cannot be found.');
+                }
+                $complete = $parentModel->getPublic();
+                if (!$parentModel->getPublic()) {
+                    $errorCode = 101;
+                }
             }
         }
 
         $entity->setComplete($complete);
         $entity->setCompleteError($errorCode);
+    }
+
+    /**
+     * Check if a Resource has a title
+     * 
+     * @param ExerciseModel $entity
+     * @param $errorCode
+     * @return boolean True if it has a title
+     */
+    private function checkTitle($entity, &$errorCode){
+        if ($entity->getTitle() == '') {
+            $errorCode = 901;
+
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -555,6 +579,28 @@ class ExerciseResourceService extends SharedEntityService implements ExerciseRes
     }
 
     /**
+     * Check if a document resource is complete
+     *
+     * @param DocumentRessource $content
+     * @param string $errorCode
+     *
+     * @return bool
+     */
+    private function checkDocumentComplete(
+        DocumentResource $content,
+        &$errorCode
+    )
+    {
+        if ($content->getSource() === null) {
+            $errorCode = '811';
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Throws an exception if the content does not match the type
      *
      * @param $content
@@ -577,6 +623,8 @@ class ExerciseResourceService extends SharedEntityService implements ExerciseRes
                 get_class($content) !== ResourceResource::TEXT_CLASS)
             || ($type === CommonResource::PICTURE &&
                 get_class($content) !== ResourceResource::PICTURE_CLASS)
+            || ($type === CommonResource::DOCUMENT &&
+                get_class($content) !== ResourceResource::DOCUMENT_CLASS)
         ) {
             throw new InvalidTypeException('Content does not match exercise model type');
         }
@@ -601,6 +649,7 @@ class ExerciseResourceService extends SharedEntityService implements ExerciseRes
     {
         switch (get_class($resourceResource->getContent())) {
             case ResourceResource::PICTURE_CLASS:
+            case ResourceResource::DOCUMENT_CLASS:
             case ResourceResource::TEXT_CLASS:
             case ResourceResource::MULTIPLE_CHOICE_QUESTION_CLASS:
             case ResourceResource::OPEN_ENDED_QUESTION_CLASS:

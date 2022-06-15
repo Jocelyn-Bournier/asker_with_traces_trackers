@@ -290,7 +290,7 @@ class DirectoryService extends TransactionalService
     public function create($user, $directory)
     {
         $dir = new Directory();
-        $dir->setName('Nouveau répertoire');
+        $dir->setName('');
         $dir->setIsVisible(true);
         $dir->setOwner($user);
         if ($directory != 0){
