@@ -369,6 +369,20 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
             ->getResult();
     }
 
+    public function countVisibleModels($parent)
+    {
+        $sql = "
+            SELECT count(dm.model_id)
+            FROM directories_models dm
+            WHERE dm.directory_id = ".$parent."
+            AND dm.visible = true
+            "
+        ;
+        $stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+        $stmt->executeQuery();
+        return $stmt->fetchFirstColumn()[0];
+    }
+
     public function countModelChildrens($parent)
     {
         return $this->createQueryBuilder('d')
