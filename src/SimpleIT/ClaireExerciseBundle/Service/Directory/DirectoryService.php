@@ -112,7 +112,7 @@ class DirectoryService extends TransactionalService
             || $user->isAdmin()
         ){
             try{
-                $entity = $this->directoryRepository->find($id);
+                $entity = $this->directoryRepository->find($id->getId());
                 foreach($entity->getModels() as $mod){
                     $entity->removeModel($mod);
                 }
