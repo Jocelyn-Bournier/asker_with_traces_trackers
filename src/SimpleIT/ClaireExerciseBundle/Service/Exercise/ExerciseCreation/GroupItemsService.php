@@ -167,7 +167,7 @@ class GroupItemsService extends ExerciseCreationService
         foreach ($model->getObjectBlocks() as $block) {
             /** @var ObjectBlock $block */
             // get the objects to add from the blocks
-            $objectsToAdd = $this->getObjectsFromBlock($model, $block, $owner);
+            $objectsToAdd = $this->getObjectsFromBlock($model, $block, $owner, $item->getObjects());
 
             // find the classification constraint of this block
             if (is_null($model->getClassifConstr())) {
@@ -205,7 +205,7 @@ class GroupItemsService extends ExerciseCreationService
     )
     {
         foreach ($objects as $obj) {
-            if (!in_array($obj,$item->getObjects())) {
+            //if (!in_array($obj,$item->getObjects())) {
                 $count = 0;
                 // find its group among existing
                 $groupName = "";
@@ -232,7 +232,7 @@ class GroupItemsService extends ExerciseCreationService
                 if ($groupName !== self::REJECT) {
                     $item->addObjectInGroup($obj, $groupName);
                 }
-            }
+            //}
         }
     }
 
@@ -400,10 +400,11 @@ class GroupItemsService extends ExerciseCreationService
      * @param Model       $model The Model
      * @param ObjectBlock $ob    The ObjectBlock
      * @param AskerUser        $owner
+     * @param array     $resourceToExclude
      *
      * @return array An array of ExerciseObject
      */
-    private function getObjectsFromBlock(Model $model, ObjectBlock $ob, AskerUser $owner)
+    private function getObjectsFromBlock(Model $model, ObjectBlock $ob, AskerUser $owner, $resourceToExclude = null)
     {
         $blockObjects = array();
         $numOfObjects = $ob->getNumberOfOccurrences();
@@ -412,7 +413,7 @@ class GroupItemsService extends ExerciseCreationService
          * if the block is a list
          */
         if ($ob->isList()) {
-            $this->getObjectsFromList($ob, $numOfObjects, $blockObjects, $owner);
+            $this->getObjectsFromList($ob, $numOfObjects, $blockObjects, $owner, $resourceToExclude);
         } /*
          * if the block is object constraints
          */
@@ -431,7 +432,8 @@ class GroupItemsService extends ExerciseCreationService
                 ->getExerciseObjectsFromConstraints(
                     $oc,
                     $numOfObjects,
-                    $owner
+                    $owner,
+                    $resourceToExclude
                 );
         }
 

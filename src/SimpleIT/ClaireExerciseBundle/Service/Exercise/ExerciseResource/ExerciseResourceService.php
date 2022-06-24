@@ -110,21 +110,35 @@ class ExerciseResourceService extends SharedEntityService implements ExerciseRes
     public function getExerciseObjectsFromConstraints(
         ObjectConstraints $oc,
         $numberOfObjects,
-        AskerUser $owner
+        AskerUser $owner,
+        $resourceToExclude = null
     )
     {
         $resList = $this->getResourcesFromConstraintsByOwner(
             $oc,
             $owner
         );
+        
+        $resListObj = [];
+        foreach ($resList as $res) {
+            $resListObj[] = $this->getExerciseObjectFromEntity($res);
+        }
+
+        if ($resourceToExclude) {
+            foreach ($resourceToExclude as $obj){
+                if (($key = array_search($obj, $resListObj)) !== false) {
+                    unset($resListObj[$key]);
+                }
+            }
+        }
 
         $objList = array();
 
-        while ($numberOfObjects > 0 && count($resList)) {
-            $key = array_rand($resList);
-            $res = $resList[$key];
-            $objList[] = $this->getExerciseObjectFromEntity($res);
-            unset($resList[$key]);
+        while ($numberOfObjects > 0 && count($resListObj) > 0) {
+            $key = array_rand($resListObj);
+            $res = $resListObj[$key];
+            $objList[] = $res;
+            unset($resListObj[$key]);
             $numberOfObjects--;
         }
 
