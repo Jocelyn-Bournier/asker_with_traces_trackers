@@ -42,25 +42,33 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
         }
         else{
             $resource->constructVisibleExercise();
-            foreach($resource->getModels() as $mod){
-                $sql = "SELECT dm.visible
-                    FROM directories_models dm
-                    WHERE dm.model_id =" . $mod->getId() . "
-                        AND dm.directory_id =" .$directoryId
-                ;
-                $stmt = $this->getEntityManager()->getConnection()->prepare($sql);
-                $stmt->execute();
-                if ($stmt->fetchFirstColumn()[0] == "0")
-                {
-                    $resource->addVisibleExercise(false);
-                }
-                else {
-                    $resource->addVisibleExercise(true);
-                }
+            $this->findVisibleExercise($resource, $directoryId);
+            foreach ($resource->getSubs() as $sub){
+                $sub->constructVisibleExercise();
+                $this->findVisibleExercise($sub,$sub->getId());
             }
         }
 
         return $resource;
+    }
+
+    public function findVisibleExercise(&$resource, $directoryId){
+        foreach($resource->getModels() as $mod){
+            $sql = "SELECT dm.visible
+                FROM directories_models dm
+                WHERE dm.model_id =" . $mod->getId() . "
+                    AND dm.directory_id =" .$directoryId
+            ;
+            $stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+            $stmt->execute();
+            if ($stmt->fetchFirstColumn()[0] == "0")
+            {
+                $resource->addVisibleExercise(false);
+            }
+            else {
+                $resource->addVisibleExercise(true);
+            }
+        }
     }
 
     public function findNews($user)
