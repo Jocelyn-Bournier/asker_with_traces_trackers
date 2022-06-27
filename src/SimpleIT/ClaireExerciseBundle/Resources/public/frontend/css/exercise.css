@@ -35,10 +35,21 @@
 .wrong-answer label {
     color: #e1000a;
 }
+.wrong-answer-input {
+    color: #e1000a;
+    background-color: #e1000a30 !important;
+    border-radius:5px;
+}
+
 
 .good-answer,
 .good-answer label {
     color: #009d0a;
+}
+.good-answer-input{
+    color: #009d0a;
+    background-color: #009d0a30 !important;
+    border-radius:5px;
 }
 
 .wrong-prop,
@@ -53,6 +64,17 @@
 
 .solution {
     color: #428bca;
+}
+
+.label-solution{
+    background-color: #428bca55;
+    color: #428bca;
+    font-size: 100%;
+    padding: .6em;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25em;
 }
 
 .checkbox-exo {

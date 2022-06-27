@@ -325,6 +325,7 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
                     "metadata": [],
                     "keywords": [],
                     "content": {
+                        "answerModality": 'holes',
                         "annotationsList": [],
                         "errorsList": [],
                         "bold": [],
@@ -869,23 +870,19 @@ resourceControllers.controller('resourceEditController', ['$scope', '$modal', 'R
         }
 
 
-        $scope._selectErrors = function (errorName) {
+        $scope._selectErrors = function (errorName, apply=false) {
             $scope.errorsName = document.getElementById('select-constraint-list').value;
             let constraintList = $scope.editedResource.content.annotations_list;
             let annotations = $scope.editedResource.content.annotations;
             for(constraint of constraintList) {
-                console.log(constraint);
-                console.log($scope.errorsName);
                 if (constraint.name == $scope.errorsName) {
-                    console.log(constraint);
-                    console.log(annotations);
                     $scope.selectedErrors.errors = filterByConstraint(annotations, constraint.constraint);
                     $scope.selectedErrors.errors = filterByUniqueIndices($scope.selectedErrors.errors);
                     for (err of $scope.selectedErrors.errors){
                         err.errors = Array();
                         err.errors.length= document.getElementById('input-nb-error').value;
                     }
-                    console.log($scope.selectedErrors);
+                    if(apply){$scope.$apply();}
                     return;
                 }
             }
@@ -1377,7 +1374,7 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
                             'initialElementAsIndication': true,
                             'keyAsIndication': null
                         },
-                        "resources": [],
+                        "ressources": [],
                         "sharedTags": [],
                         "sharedConstraint": [],
                         'annotationsLists': [],
@@ -1385,8 +1382,11 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
                             'isGlobal': true,
                             'listName': null,
                             'type': 'percent',
-                            'value': 1
+                            'value': 100
                         }],
+                        "generateIndication": false,
+                        "initAsIndication": true,
+                        "indicationKey": null,
                         'responsesTag': "",
                         "documents": [],
                         "exercise_model_type": "text-with-holes"
@@ -1396,6 +1396,7 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
                 }
             }
         };
+
         $scope.modelAddDirectoryField = function (newDir, model) {
             model.push(newDir.name);
             //DirectorySelect.save({
@@ -1767,6 +1768,7 @@ modelControllers.controller('modelListController', ['$scope', 'Model', '$locatio
 modelControllers.controller('modelEditController', ['$scope', 'Model','ModelDirectory','DirectoryList','DirectorySelect', 'Resource', '$location', '$stateParams',
     function ($scope, Model,ModelDirectory,DirectoryList, DirectorySelect, Resource, $location, $stateParams) {
 
+
         $scope.freeDirectories =DirectoryList.query(
             function(){
                 console.log('load free directories');
@@ -1779,6 +1781,74 @@ modelControllers.controller('modelEditController', ['$scope', 'Model','ModelDire
                 }
             }
         };
+
+        $scope.addItem = function () {
+            $scope.initAnswerLists();
+            $scope.initTagsList();
+        }
+
+        $scope.initAnswerLists = function () {
+            $scope.answerLists = [];
+            for (let resource of $scope.model.content.ressources){
+                for (let annotationlist of $scope.resources[resource.id].content.annotations_list){
+                        $scope.answerLists.push(annotationlist.name);
+                }
+            }
+            $scope.answerLists = [...new Set($scope.answerLists)];
+            for(let answer of $scope.answerLists) {
+                let present = false;
+                for (let resource of $scope.model.content.ressources) {
+                    let presentInRessource = false;
+                    for (let annotationList of $scope.resources[resource.id].content.annotations_list) {
+                        if (annotationList.name == answer) {
+                            presentInRessource = true;
+                        }
+                    }
+                    if (!presentInRessource) {
+                        if (!present) {
+                            $scope.answerLists.splice($scope.answerLists.indexOf(answer), 1);
+                        }
+                    }
+                }
+            }
+        };
+
+        $scope.initTagsList = function () {
+            $scope.tagsList = [];
+            for (let resource of $scope.model.content.ressources){
+                for (let annotation of $scope.resources[resource.id].content.annotations){
+                    if($scope.tagsList.indexOf(annotation.cle) == -1) {
+                        $scope.tagsList.push(annotation.cle);
+                    }
+                }
+            }
+            for(let tag of $scope.tagsList){
+                let present = false;
+                for(let resource of $scope.model.content.ressources){
+                    let presentInRessource = false;
+                    for (let annotation of $scope.resources[resource.id].content.annotations){
+                        if(annotation.cle == tag){
+                            presentInRessource = true;
+                        }
+                    }
+                    if (!presentInRessource){
+                        if (!present){
+                            $scope.tagsList.splice($scope.tagsList.indexOf(tag),1);
+                        }
+                    }
+                }
+            }
+        };
+
+        $scope.initIndications = function () {
+          $scope.keyAsIndication = "";
+          $scope.generateIndications = false;
+        };
+
+        $scope._checkGenerateIndications = function () {
+            $scope.generateIndications = document.getElementById('generateIndications').checked;
+            console.log($scope.generateIndications);
+        }
 
         $scope.model = Model.get({id: $stateParams.modelid}, function () {
             // fill each block with empty constraints
@@ -1807,13 +1877,52 @@ modelControllers.controller('modelEditController', ['$scope', 'Model','ModelDire
                     $scope.acceptedTypes = ['picture', 'text'];
                     $scope.comperType = "matching";
                     break;
+                case 'text-with-holes':
+                    $scope.acceptedTypes = ['text-with-holes'];
+                    $scope.comperType = "fill-in";
+                    $scope.initAnswerLists();
+                    $scope.initTagsList();
+                    $scope.initIndications();
+                    $scope.selectedAnnotationList = "";
+                    break;
             }
         });
+
+        $scope._selectAnnotation = function() {
+            $scope.selectedAnnotationList = document.getElementById('select-annotation-list').value
+        }
+
+        $scope._removeAnnotationList = function(listName){
+            $scope.model.content.annotations_lists.splice($scope.model.content.annotations_lists.indexOf(listName),1);
+            for(let coverage in $scope.model.content.coverages){
+                console.log(coverage);
+                if($scope.model.content.coverages[coverage].listName == listName){
+                    $scope.model.content.coverages.splice(coverage,1);
+                }
+            }
+        }
+
+        $scope.addCoverage = function(annotationList) {
+            $scope.model.content.coverages.push({
+                'isGlobal': false,
+                'listName': annotationList,
+                'type': 'percent',
+                'value': 100
+            });
+        }
+
+        $scope.addAnnotationList = function() {
+            if ($scope.model.content.annotations_lists.indexOf($scope.selectedAnnotationList) == -1) {
+                $scope.model.content.annotations_lists.push($scope.selectedAnnotationList);
+                $scope.addCoverage($scope.selectedAnnotationList);
+            }
+        }
         //$scope.usedDirectories =ModelDirectory.query({modelId:$stateParams.modelid},
         //    function(){
         //        console.log('load directories for model');
         //    }
         //);
+
 
         $scope.fillBlockConstraints = function (model) {
             switch (model.type) {
@@ -1945,16 +2054,38 @@ modelControllers.controller('modelEditController', ['$scope', 'Model','ModelDire
             if ($scope.acceptedTypes.indexOf(resource.type) != -1) {
                 if (resource.owner === BASE_CONFIG.currentUserId) {
                     $scope.modelAddBlockResourceField(collection, resource.id);
+                    $scope.addItem();
                 } else {
                     var dial = confirm("Pour utiliser cette ressource qui ne vous appartient pas, vous devez l'importer dans votre espace personnel. Pour cela, vous pouvez vous abonner à cette ressource. Vous bénéficierez des modifications apportées par l'auteur et ne pourrez la modifier de votre côté. Il faudrait pour cela l'importer.\n\nVoulez-vous vous abonner à cette ressource ?");
                     if (dial == true) {
                         Resource.subscribe({id: resource.id}, function (data) {
                             $scope.resources[data.id] = data;
                             $scope.modelAddBlockResourceField(collection, data.id);
+                            $scope.addItem();
                         });
                     }
                 }
             }
+        };
+
+        $scope.onDropResource = function (event, resource, collection) {
+            if ($scope.acceptedTypes.indexOf(resource.type) != -1) {
+                if (resource.owner === BASE_CONFIG.currentUserId) {
+                    $scope.modelAddBlockResourceField(collection, resource.id);
+                    $scope.addItem();
+                } else {
+                    var dial = confirm("Pour utiliser cette ressource qui ne vous appartient pas, vous devez l'importer dans votre espace personnel. Pour cela, vous pouvez vous abonner à cette ressource. Vous bénéficierez des modifications apportées par l'auteur et ne pourrez la modifier de votre côté. Il faudrait pour cela l'importer.\n\nVoulez-vous vous abonner à cette ressource ?");
+                    if (dial == true) {
+                        Resource.subscribe({id: resource.id}, function (data) {
+                            $scope.resources[data.id] = data;
+                            $scope.modelAddBlockResourceField(collection, data.id);
+                            $scope.addItem();
+                        });
+                    }
+                }
+            }
+            console.log(collection);
+            console.log($scope.resources[resource.id]);
         };
     }]);
 
@@ -1969,6 +2100,8 @@ modelControllers.controller('modelEditPairItemsController', ['$scope',
                 jQuery.extend(true, {}, $scope.modelContext.newModel.sub_pair_items.block_field)
             );
         };
+
+
 
         $scope.getMobilePart = function (collection, key) {
             var returnValue = '';

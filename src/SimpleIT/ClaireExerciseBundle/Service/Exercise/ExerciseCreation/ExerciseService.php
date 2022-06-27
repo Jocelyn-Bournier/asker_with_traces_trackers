@@ -66,6 +66,11 @@ class ExerciseService extends TransactionalService implements ExerciseServiceInt
     private $openEndedQuestionService;
 
     /**
+     * @var ExerciseCreationServiceInterface
+     */
+    private $textWithHolesService;
+
+    /**
      * Set ExerciseModelService
      *
      * @param ExerciseModelServiceInterface $exerciseModelService
@@ -103,6 +108,16 @@ class ExerciseService extends TransactionalService implements ExerciseServiceInt
     public function setGroupItemsService(GroupItemsService $groupItemsService)
     {
         $this->groupItemsService = $groupItemsService;
+    }
+
+    /**
+     * Set textWithHoles
+     *
+     * @param TextWithHolesService $textWithHolesService
+     */
+    public function setTextWithHolesServices(TextWithHolesService $textWithHolesService)
+    {
+        $this->textWithHolesService = $textWithHolesService;
     }
 
     /**
@@ -220,6 +235,9 @@ class ExerciseService extends TransactionalService implements ExerciseServiceInt
                 break;
             case CommonExercise::OPEN_ENDED_QUESTION:
                 $service = $this->openEndedQuestionService;
+                break;
+            case CommonExercise::TEXT_WITH_HOLES:
+                $service = $this->textWithHolesService;
                 break;
             case null:
                 throw new \LogicException('The type of exercise should be specified');

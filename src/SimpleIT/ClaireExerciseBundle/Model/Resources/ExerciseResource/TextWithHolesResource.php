@@ -217,6 +217,113 @@ class TextWithHolesResource extends CommonResource
         $this->errorsList = $errorsList;
     }
 
+    public function filterElement(string $annotationName, $responseTag = null, $indicationTag = null){
+        $filteredElement = Array();
+        if ($responseTag == null){
+            $filteredElement['answers'] = null;
+        }
+        if ($indicationTag == null){
+            $filteredElement['indications'] = null;
+        }
+        $constraint = Array();
+        foreach($this->annotationsList as $annotationsConstraint){
+            if($annotationsConstraint['name'] == $annotationName){
+                $constraint = $annotationsConstraint['constraint'];
+            }
+        }
+
+        return $filteredElement;
+    }
+
+
+    public function filterByConstraint($annotations, $constraint){
+        if ($constraint->cle != null){
+            if($constraint->valeur == ""){
+                $tabCle = array_filter($annotations,(function ($annotation) use ($constraint) {return $annotation->cle == $constraint->cle;}));
+                $tabCleValeur = array();
+                /*
+                    foreach($annotations as $annotation) {
+                        foreach($tabCle as $cle){
+                            echo $cle->indiceDebut == $annotation->indiceDebut;
+                            echo $cle->indiceFin == $annotation->indiceFin;
+                            if($cle->indiceDebut == $annotation->indiceDebut && $cle->indiceFin == $annotation->indiceFin){
+                                array_push($tabCleValeur, );
+                                if(array_search($cle, $tabCleValeur) === -1 ){array_push($tabCleValeur, $cle);}
+                                if(array_search($annotation, $tabCleValeur) === -1){array_push($tabCleValeur, $annotation);}
+                            }
+                        }
+                    }
+
+                    return $tabCleValeur;
+                    */
+                return $tabCle;
+                } else {
+                $tabCle = array_filter($annotations,(function ($annotation) use ($constraint) {return $annotation->cle == $constraint->cle;}));
+                $tabValeur = array();
+                $tabCleValeur = array();
+                $tabValeurToRemove = array();
+                    switch ($constraint->operateur){
+                        case "=" :
+                            $tabValeur = array_filter($annotations,(function ($annotation) use ($constraint) {return $annotation->cle == $constraint->cle && $annotation->valeur == $constraint->valeur;}));
+                            break;
+                        case "≠" :
+                            $tabValeur = array_filter($annotations,(function ($annotation) use ($constraint) {return $annotation->valeur != $constraint->valeur;}));
+                            $tabValeurToRemove = array_filter($annotations,(function ($annotation) use ($constraint) {return $annotation->valeur == $constraint->valeur;}));
+                            break;
+                        case "<" :
+                            $tabValeur = array_filter($annotations,(function ($annotation) use ($constraint) {return $annotation->cle == $constraint->cle && $annotation->valeur < $constraint->valeur;}));
+                            break;
+                        case ">" :
+                            $tabValeur = array_filter($annotations,(function ($annotation) use ($constraint) {return $annotation->cle == $constraint->cle && $annotation->valeur > $constraint->valeur;}));
+                            break;
+                        case "≤" :
+                            $tabValeur = array_filter($annotations,(function ($annotation) use ($constraint) {return $annotation->cle == $constraint->cle && $annotation->valeur <= $constraint->valeur;}));
+                            break;
+                        case "≥" :
+                            $tabValeur = array_filter($annotations,(function ($annotation) use ($constraint) {return $annotation->cle == $constraint->cle && $annotation->valeur >= $constraint->valeur;}));
+                            break;
+
+                    }
+                    foreach($tabCle as $cle) {
+                        foreach($tabValeur as $valeur){
+                            if($valeur->indiceDebut == $cle->indiceDebut && $valeur->indiceFin == $cle->indiceFin){
+                                if(array_search($cle, $tabCleValeur) === -1 ){array_push($tabCleValeur, $cle);}
+                                if(array_search($valeur, $tabCleValeur) === -1){array_push($tabCleValeur,$valeur);}
+                            }
+                        }
+                    }
+                    foreach ($annotations as $annotation){
+                        foreach ($tabValeur as $valeur){
+                            if(array_search($annotation, $tabCleValeur) === -1 && $annotation->indiceDebut == $valeur->indiceDebut && $annotation->indiceFin == $valeur->indiceFin) {
+                                array_push($tabCleValeur, $annotation);
+                            }
+                        }
+                    }
+                    if ($tabValeurToRemove != array()){
+                        foreach($tabValeurToRemove as $valeur){
+                            $tabCleValeur = array_filter($tabCleValeur,(function ($annotation) use ($valeur) {return $annotation->indiceDebut != $valeur->indiceDebut || $annotation->indiceFin != $valeur->indiceFin;}));
+                        }
+                    }
+                    return $tabCleValeur;
+                }
+        } else if ($constraint->operateur == "ET") {
+            return $this->filterByConstraint($this->filterByConstraint($annotations, $constraint->filsGauche), $constraint->filsDroit);
+
+        } else if ($constraint->operateur == "OU") {
+            $left = $this->filterByConstraint($annotations, $constraint->filsGauche);
+            $right = $this->filterByConstraint($annotations, $constraint->filsDroit);
+                foreach($right as $elem){
+                    if(array_search($elem, $left) === -1){
+                        array_push($left, $elem);
+                    }
+                }
+                return $left;
+
+            } else if ($constraint->operateur == "OU EXCLUSIF") {
+            return;
+        }
+    }
+
     /**
      * Validate text resource
      *
@@ -228,4 +335,5 @@ class TextWithHolesResource extends CommonResource
             throw new InvalidExerciseResourceException('Invalid Text with holes resource');
         }
     }
+
 }

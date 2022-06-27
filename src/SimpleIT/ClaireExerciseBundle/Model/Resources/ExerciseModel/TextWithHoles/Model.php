@@ -45,6 +45,34 @@ class Model extends CommonModel
     private $sharedConstraints = array();
 
     /**
+     * @var array $ressources
+     * @Serializer\Type("array")
+     * @Serializer\Groups({"details", "exercise_model_storage"})
+     */
+    private $ressources = array();
+
+    /**
+     * @var array $holes
+     * @Serializer\Type("array")
+     * @Serializer\Groups({"details", "exercise_model_storage"})
+     */
+    private $holes = array();
+
+    /**
+     * @var array $answers
+     * @Serializer\Type("array")
+     * @Serializer\Groups({"details", "exercise_model_storage"})
+     */
+    private $answers = array();
+
+    /**
+     * @var array $indications
+     * @Serializer\Type("array")
+     * @Serializer\Groups({"details", "exercise_model_storage"})
+     */
+    private $indications = array();
+
+    /**
      * @var array $annotationsLists
      * @Serializer\Type("array")
      * @Serializer\Groups({"details", "exercise_model_storage"})
@@ -64,6 +92,34 @@ class Model extends CommonModel
      * @Serializer\Groups({"details", "exercise_model_storage"})
      */
     private $responsesTag = "";
+
+    /**
+     * @var string $answerModality
+     * @Serializer\Type("string")
+     * @Serializer\Groups({"details", "exercise_model_storage"})
+     */
+    private $answerModality = "holes";
+
+    /**
+     * @var bool $generateIndication
+     * @Serializer\Type("bool")
+     * @Serializer\Groups({"details", "exercise_model_storage"})
+     */
+    private $generateIndication = false;
+
+    /**
+     * @var bool $initAsIndication
+     * @Serializer\Type("bool")
+     * @Serializer\Groups({"details", "exercise_model_storage"})
+    */
+    private $initAsIndication = false;
+
+    /**
+     * @var string $indicationKey
+     * @Serializer\Type("string")
+     * @Serializer\Groups({"details", "exercise_model_storage"})
+     */
+    private $indicationKey = null;
 
 
     /**
@@ -117,6 +173,87 @@ class Model extends CommonModel
     }
 
     /**
+     * Set ressources
+     *
+     * @param array $ressources the array of ressources
+     */
+    public function setRessources($ressources)
+    {
+        $this->ressources = $ressources;
+    }
+
+
+    /**
+     * Set answer modality
+     *
+     * @param string $answerModality the string of tag for generating responses
+     */
+    public function setAnswerModality(string $answerModality)
+    {
+        $this->answerModality = $answerModality;
+    }
+
+    /**
+     * Set generation of indications
+     *
+     * @param bool $genearateIndication
+     */
+    public function setGenerateIndication(bool $genearateIndication)
+    {
+        $this->generateIndication = $genearateIndication;
+    }
+
+    /**
+     * Set init as indication
+     *
+     * @param bool $initAsIndication
+     */
+    public function setInitAsIndication(bool $initAsIndication)
+    {
+        $this->initAsIndication = $initAsIndication;
+    }
+
+    /**
+     * Set key of indication
+     *
+     * @param bool $indicationKey
+     */
+    public function setIndicationKey(string $indicationKey)
+    {
+        $this->indicationKey = $indicationKey;
+    }
+
+    /**
+     * Set generation of indications
+     *
+     * @return bool generation of indication
+     */
+    public function getGenerateIndication()
+    {
+        return $this->generateIndication;
+    }
+
+    /**
+     * Set init as indication
+     *
+     * @return bool init as indication
+     */
+    public function getInitAsIndication()
+    {
+        return $this->initAsIndication;
+    }
+
+    /**
+     * get key of indication
+     *
+     * @return bool key of indication
+     */
+    public function getIndicationKey()
+    {
+        return $this->indicationKey;
+    }
+
+    /**
      * Get the shared constraints
      *
      * @return array An array of shared constraints
@@ -149,7 +286,7 @@ class Model extends CommonModel
     /**
      * get coverages
      *
-     * @param array An array of coverages
+     * @return array An array of coverages
      */
     public function getCoverages()
     {
@@ -159,11 +296,81 @@ class Model extends CommonModel
     /**
      * get responses tag
      *
-     * @param string the string of tag for generating responses
+     * @return string the string of tag for generating responses
      */
     public function getResponsesTag()
     {
         return $this->responsesTag;
     }
+
+    /**
+     * get answer modality
+     *
+     * @return string  the string of answer modality
+     */
+    public function getAnswerModality()
+    {
+        return $this->answerModality;
+    }
+
+    /**
+     * get ressources
+     *
+     * @param array the array of ressources
+     */
+    public function getRessources()
+    {
+        return $this->ressources;
+    }
+
+    /**
+     * @return array
+     */
+    public function getHoles(): array
+    {
+        return $this->holes;
+    }
+
+    /**
+     * @param array $holes
+     */
+    public function setHoles(array $holes): void
+    {
+        $this->holes = $holes;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAnswers(): array
+    {
+        return $this->answers;
+    }
+
+    /**
+     * @param array $answers
+     */
+    public function setAnswers(array $answers): void
+    {
+        $this->answers = $answers;
+    }
+
+    /**
+     * @return array
+     */
+    public function getIndications(): array
+    {
+        return $this->indications;
+    }
+
+    /**
+     * @param array $indications
+     */
+    public function setIndications(array $indications): void
+    {
+        $this->indications = $indications;
+    }
+
+
 
 }

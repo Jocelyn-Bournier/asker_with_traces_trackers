@@ -1,0 +1,10 @@
+
+    <div class="panel-body panel panel-primary"
+         ui-on-Drop="onDropResource($event,$data,model.content.ressources)">
+        <div ng-repeat="resource in model.content.ressources track by $index">
+            <h4>
+                {{ resources[resource.id].title }}
+                <div style="float:right; margin-right:2em; color:red;cursor:pointer;" class="glyphicon glyphicon-trash" ng-click="model.content.ressources.splice($index, 1); addItem();"></div>
+            </h4>
+        </div>
+    </div>

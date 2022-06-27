@@ -374,16 +374,30 @@ function handleFocusOut(event){
 
 function format(action){
     if (selectionStart != selectionStop){
+        let ind;
         switch (action){
             case "bold":
-                angular.element("#twh").scope().editedResource.content.bold.push([selectionStart,selectionStop]);
+                ind = angular.element("#twh").scope().editedResource.content.bold.indexOf([selectionStart,selectionStop]);
+                if(ind == -1) {
+                    angular.element("#twh").scope().editedResource.content.bold.push([selectionStart, selectionStop]);
+                } else {
+                    angular.element("#twh").scope().editedResource.content.bold.splice(ind, 1);
+                }
                 break;
             case "italize":
-                angular.element("#twh").scope().editedResource.content.italize.push([selectionStart,selectionStop]);
-                break;
+                ind = angular.element("#twh").scope().editedResource.content.italize.indexOf([selectionStart,selectionStop]);
+                if(ind == -1) {
+                    angular.element("#twh").scope().editedResource.content.italize.push([selectionStart, selectionStop]);
+                } else {
+                    angular.element("#twh").scope().editedResource.content.italize.splice(ind, 1);
+                }
             case "underline":
-                angular.element("#twh").scope().editedResource.content.underline.push([selectionStart,selectionStop]);
-                break;
+                ind = angular.element("#twh").scope().editedResource.content.underline.indexOf([selectionStart,selectionStop]);
+                if(ind == -1) {
+                    angular.element("#twh").scope().editedResource.content.underline.push([selectionStart, selectionStop]);
+                } else {
+                    angular.element("#twh").scope().editedResource.content.underline.splice(ind, 1);
+                }
         }
         angular.element("#twh").scope().$apply();
         drawText();
@@ -445,6 +459,7 @@ function tagElement(){
                 }
             }
         }
+        angular.element("#twh").scope()._selectErrors(angular.element("#twh").scope().selectedErrors.constraintName,true);
         drawKeys();
         drawSelectionTags();
         document.getElementById("input-value-tag").value = "";
@@ -453,6 +468,7 @@ function tagElement(){
         oldTag = null;
         for(key of keys){
         let option = document.createElement("option");
+        console.log(key);
         option.value = key;
         document.getElementById("list-keys").appendChild(option);
         }
@@ -737,7 +753,7 @@ mark{
                 <div class="panel-heading">
                     Indiquez une clé
                     <input id="input-key-tag" list="list-keys" type="text" class="form-control" placeholder="clé">
-                    <datalist id="list-keys">
+                    <datalist id="list-keys-annotations">
                     </datalist>
                     <br>
                     Indiquez une valeur correspondante
@@ -792,7 +808,7 @@ mark{
             <br>
             Nom de la liste d'étiquettes
             <input id="input-annotation-name" type="text" class="form-control" placeholder="Nom de la liste">
-            <button id="btnCreateTagConstraint" class="btn btn-success" style="margin-top:1em;" onclick="createConstraintList()">Créer la liste d'étiquettes</button>
+            <button id="btnCreateTagConstraints" class="btn btn-success" style="margin-top:1em;" onclick="createConstraintList()">Créer la liste d'étiquettes</button>
         </div>
         <div class="panel-heading">
             Choisissez un opérateur

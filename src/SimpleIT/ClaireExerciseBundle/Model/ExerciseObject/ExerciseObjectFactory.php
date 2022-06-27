@@ -82,6 +82,12 @@ abstract class ExerciseObjectFactory
                     $requiredResource
                 );
                 break;
+            case ResourceResource::TEXT_WITH_HOLES_CLASS:
+                /** @var SequenceResource $resource */
+                $object = ExerciseTextWithHolesFactory::createFromCommonResource(
+                    $resource
+                );
+                break;
             default:
                 throw new InvalidTypeException(
                     'Resource type is incorrect: ' . get_class($resource)

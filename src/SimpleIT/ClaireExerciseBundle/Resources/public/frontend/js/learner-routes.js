@@ -30,6 +30,11 @@ mainApp.config(
                 templateUrl: `${BASE_CONFIG.urls.partials.learner}/partial-pair-items.html?v=${buildVersion}`
             });
 
+            $stateProvider.state('attempt.text-with-holes', {
+                url: '/text-with-holes/:itemId',
+                templateUrl: `${BASE_CONFIG.urls.partials.learner}/partial-text-with-holes.html?v=${buildVersion}`
+            });
+
             $stateProvider.state('attempt.order-items', {
                 //url: '/order-items/:itemId',
                 templateUrl: `${BASE_CONFIG.urls.partials.learner}/partial-order-items.html?v=${buildVersion}`

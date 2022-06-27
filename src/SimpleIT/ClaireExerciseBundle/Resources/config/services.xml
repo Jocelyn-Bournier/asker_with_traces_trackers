@@ -23,6 +23,7 @@
         <parameter key="simple_it.exercise.group_items.class">SimpleIT\ClaireExerciseBundle\Service\Exercise\ExerciseCreation\GroupItemsService</parameter>
         <parameter key="simple_it.exercise.order_items.class">SimpleIT\ClaireExerciseBundle\Service\Exercise\ExerciseCreation\OrderItemsService</parameter>
         <parameter key="simple_it.exercise.open_ended_question.class">SimpleIT\ClaireExerciseBundle\Service\Exercise\ExerciseCreation\OpenEndedQuestionService</parameter>
+        <parameter key="simple_it.exercise.text_with_holes.class">SimpleIT\ClaireExerciseBundle\Service\Exercise\ExerciseCreation\TextWithHolesService</parameter>
 
         <parameter key="simple_it.exercise.stored_exercise.class">SimpleIT\ClaireExerciseBundle\Service\Exercise\CreatedExercise\StoredExerciseService</parameter>
         <parameter key="simple_it.exercise.entity.stored_exercise.class">SimpleIT\ClaireExerciseBundle\Entity\CreatedExercise\StoredExercise</parameter>
@@ -128,6 +129,9 @@
             <call method="setOrderItemsService">
                 <argument type="service" id="simple_it.exercise.order_items"/>
             </call>
+            <call method="setTextWithHolesServices">
+                <argument type="service" id="simple_it.exercise.text_with_holes"/>
+            </call>
             <call method="setOpenEndedQuestionService">
                 <argument type="service" id="simple_it.exercise.open_ended_question"/>
             </call>
@@ -186,6 +190,21 @@
         </service>
 
         <service id="simple_it.exercise.order_items" class="%simple_it.exercise.order_items.class%">
+            <call method="setExerciseResourceService">
+                <argument type="service" id="simple_it.exercise.exercise_resource"/>
+            </call>
+            <call method="setFormulaService">
+                <argument type="service" id="simple_it.exercise.knowledge.formula"/>
+            </call>
+            <call method="setKnowledgeService">
+                <argument type="service" id="simple_it.exercise.knowledge"/>
+            </call>
+            <call method="setSerializer">
+                <argument type="service" id="simple_it.api.serializer"/>
+            </call>
+        </service>
+
+        <service id="simple_it.exercise.text_with_holes" class="%simple_it.exercise.text_with_holes.class%">
             <call method="setExerciseResourceService">
                 <argument type="service" id="simple_it.exercise.exercise_resource"/>
             </call>

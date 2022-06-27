@@ -156,6 +156,7 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                 success: function (data, textStatus) {
                     $scope.profileComputed = true;
                     $scope.framework = data;
+                    $scope.framework['computedAt']['date'] = $scope.framework['computedAt']['date'].split('.')[0];
                     $scope.drawProfile();
 
 
@@ -451,7 +452,10 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                 "fontColor": "rgba(0, 0, 0, .85)",
                 "backgroundColor": "rgba(255, 255, 255, .95)",
                 "showCover": $.cookie('userRoleStudentOnly') === 'false',
-                "showExercises": $scope.showResources
+                "showTrust": $.cookie('userRoleStudentOnly') === 'false',
+                "showExercises": $scope.showResources,
+                "useLegend": false,
+                "colors" : [{to:parseFloat($scope.framework.colors[0]),color:"#cf000f"},{to:parseFloat($scope.framework.colors[1]),color:"#f57f17"},{to:parseFloat($scope.framework.colors[2]),color:"#ffee58"},{color:"#4caf50"}]
             }
 
             switch($scope.selectedOption){
@@ -480,8 +484,15 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
             $scope.profileVisu.draw();
             document.getElementById('olm-options').classList.remove('hidden');
 
-        }
-
+            document.getElementById('olm-colors').innerHTML = `
+                <div style="width: calc(${parseFloat($scope.framework.colors[0])*100}% - 15px); float:left; background-color:#cf000f; height:20px; margin-top:5px;border-radius: 5px 0px 0px 5px"></div>
+                <div style="width: 30px; background-color:lightgray; height:30px; display: flex; justify-content: center; align-items: center; float:left;border-radius: 5px;border: 1px solid gray;">${parseFloat($scope.framework.colors[0])*100}</div>
+                <div style="width: calc(${(parseFloat($scope.framework.colors[1])-parseFloat($scope.framework.colors[0]))*100}% - 30px); float:left; background-color:#f57f17; height:20px; margin-top:5px;"></div>
+                <div style="width: 30px; background-color:lightgray; height:30px;  display: flex; justify-content: center; align-items: center; float:left;border-radius: 5px;border: 1px solid gray;">${parseFloat($scope.framework.colors[1]) * 100}</div>
+                <div style="width: calc(${(parseFloat($scope.framework.colors[2])-parseFloat($scope.framework.colors[1]))*100}% - 30px); float:left; background-color:#ffee58; height:20px; margin-top:5px;"></div>
+                <div style="width: 30px; background-color:lightgray; height:30px;  display: flex; justify-content: center; align-items: center; float:left;;border-radius: 5px;border: 1px solid gray;">${parseFloat($scope.framework.colors[2]) * 100}</div>
+                <div style="width: calc(${(100-(parseFloat($scope.framework.colors[2])*100))}% - 15px); background-color:#4caf50; height:20px; float:left; margin-top:5px;border-radius: 0px 5px 5px 0px"></div>`;
+            }
         /**
          * Récupère le profil de l'apprenant sur un répertoire donné
          * @param directory le répertoire sur lequel le profil récupéré correspond
@@ -497,6 +508,7 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                     success: function (data, textStatus) {
                         $scope.profileComputed = true;
                         $scope.framework = data;
+                        $scope.framework['computedAt']['date'] = $scope.framework['computedAt']['date'].split('.')[0]
                         $scope.drawProfile();
                     }
                 });
@@ -532,6 +544,7 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                     console.log(data);
                     $scope.profileComputed = true;
                     $scope.framework = data;
+                    $scope.framework['computedAt']['date'] = $scope.framework['computedAt']['date'].split('.')[0]
                     document.getElementById('olm-target-loader').classList.add('hidden');
                     document.getElementById('olm-target').classList.remove('hidden');
                     $scope.drawProfile();
@@ -631,6 +644,8 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                 "fontColor": "rgba(0, 0, 0, .85)",
                 "backgroundColor": "rgba(255, 255, 255, .95)",
                 "showCover": $.cookie('userRoleStudentOnly') === 'false',
+                "showTrust": $.cookie('userRoleStudentOnly') === 'false',
+                "useLegend": false,
                 "showExercises": $scope.showResources
             }
             switch($scope.selectedOption){
