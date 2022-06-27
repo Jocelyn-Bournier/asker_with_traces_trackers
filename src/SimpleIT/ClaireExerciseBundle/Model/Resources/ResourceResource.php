@@ -50,6 +50,11 @@ class ResourceResource extends SharedResource
     const PICTURE_CLASS = 'SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\PictureResource';
 
     /**
+     * @const DOCUMENT = 'SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\DocumentResource'
+     */
+    const DOCUMENT_CLASS = 'SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\DocumentResource';
+
+    /**
      * @const SEQUENCE = 'SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\SequenceResource'
      */
     const SEQUENCE_CLASS = 'SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\SequenceResource';
@@ -286,6 +291,9 @@ class ResourceResource extends SharedResource
                 break;
             case CommonResource::PICTURE:
                 $class = self::PICTURE_CLASS;
+                break;
+            case CommonResource::DOCUMENT:
+                $class = self::DOCUMENT_CLASS;
                 break;
             case CommonResource::SEQUENCE:
                 $class = self::SEQUENCE_CLASS;

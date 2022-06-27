@@ -225,6 +225,7 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
             public: false, // select public resources or not (boolean)
             type: { // resources types to be selected
                 multiple_choice_question: 'multiple-choice-question', text_with_holes: 'text-with-holes', text: 'text', picture: 'picture', open_ended_question: 'open-ended-question', sequence: ''
+                multiple_choice_question: 'multiple-choice-question', text: 'text', picture: 'picture', document: 'document', open_ended_question: 'open-ended-question', sequence: ''
             },
             keywords: [], // list of keywords that a resource must have to be selected
             metadata: [] // list of metadata objects that a resource must have to be selected
@@ -301,7 +302,7 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
             "newResources": {
                 "text": {
                     "type": "text",
-                    "title": "Nouveau texte",
+                    "title": "",
                     "public": false,
                     "archived": false,
                     "draft": false,
@@ -340,7 +341,7 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
                 },
                 "picture": {
                     "type": "picture",
-                    "title": "Nouvelle image",
+                    "title": "",
                     "public": false,
                     "archived": false,
                     "draft": false,
@@ -354,9 +355,25 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
                     "required_exercise_resources": null,
                     "required_knowledges": null
                 },
+                "document": {
+                    "type": "document",
+                    "title": "",
+                    "public": false,
+                    "archived": false,
+                    "draft": false,
+                    "complete": null,
+                    "metadata": [],
+                    "keywords": [],
+                    "content": {
+                        "source": null,
+                        "object_type": "document"
+                    },
+                    "required_exercise_resources": null,
+                    "required_knowledges": null
+                },
                 "multiple_choice_question": {
                     "type": "multiple-choice-question",
-                    "title": "Nouvelle question",
+                    "title": "",
                     "public": false,
                     "archived": false,
                     "draft": false,
@@ -383,7 +400,7 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
                 },
                 "open_ended_question": {
                     "type": "open-ended-question",
-                    "title": "Nouvelle question",
+                    "title": "",
                     "public": false,
                     "archived": false,
                     "draft": false,
@@ -503,6 +520,15 @@ resourceControllers.controller('resourceListController', ['$scope', '$state', 'R
             collection.splice(index, 1);
         };
 
+        $scope.seeDocument = function (resource){
+            if (typeof resource.content.source !== 'undefined'){
+                window.open(BASE_CONFIG.urls.documents.uploads + resource.content.source);
+            }
+            else{
+                console.log("undefined");
+            }
+        }
+
         // create resource method
         $scope.createResource = function (type) {
             if (type == 'text') {
@@ -526,6 +552,15 @@ resourceControllers.controller('resourceListController', ['$scope', '$state', 'R
                 });
             }  else if (type == 'picture') {
                 Resource.save($scope.resourceContext.newResources.picture, function (data) {
+                    $scope.resources[data.id] = data;
+                    if ($scope.parentSection === 'model') {
+                        $state.go('modelEdit.resourceEdit', {resourceid: data.id});
+                    } else {
+                        $state.go('resourceEdit', {resourceid: data.id});
+                    }
+                });
+            } else if (type == 'document') {
+                Resource.save($scope.resourceContext.newResources.document, function (data) {
                     $scope.resources[data.id] = data;
                     if ($scope.parentSection === 'model') {
                         $state.go('modelEdit.resourceEdit', {resourceid: data.id});
@@ -671,9 +706,20 @@ resourceControllers.filter('myFilters', function () {
     };
 });
 
-resourceControllers.controller('resourceEditController', ['$scope', '$modal', 'Resource', 'Upload', '$location', '$stateParams', 'User', '$upload',
-    function ($scope, $modal, Resource, Upload, $location, $stateParams, User, $upload) {
+resourceControllers.controller('resourceEditController', ['$scope', '$modal', 'Resource', 'Upload', '$location', '$stateParams', 'User', '$upload', '$sce',
+    function ($scope, $modal, Resource, Upload, $location, $stateParams, User, $upload,$sce) {
         $scope.resourcePanelContext = "resourceEdit";
+
+        /*
+        angular.module("mainAppController")
+            .filter('trustUrl', ["$sce", function ($sce) {
+                return function (val) {
+                 return $sce.trustAsResourceUrl(BASE_CONFIG.urls.documents.uploads + val);
+              };
+            }
+        ]);
+        */
+
 
         // retrieve resource
         if (typeof $scope.resources === "undefined") {
@@ -1037,6 +1083,15 @@ resourceControllers.controller('resourceEditController', ['$scope', '$modal', 'R
             });
         };
 
+        $scope.seeDocument = function (){
+            if (typeof $scope.editedResource.content.source !== 'undefined'){
+                window.open(BASE_CONFIG.urls.documents.uploads + $scope.editedResource.content.source);
+            }
+            else{
+                console.log("undefined");
+            }
+        }
+
         // delete resource method
         $scope.deleteResource = function (resource) {
             resource.$delete({id: resource.id}, function () {
@@ -1049,7 +1104,7 @@ resourceControllers.controller('resourceEditController', ['$scope', '$modal', 'R
         };
 
         $scope.addProposition = function (collection) {
-            var newProposition = {"text": "Nouvelle proposition", "right": false};
+            var newProposition = {"text": "", "right": false};
             collection.splice(collection.length, 0, newProposition);
         };
 
@@ -1156,6 +1211,7 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
         $scope.modelContext = {
             "newModel": {
                 "block_constraint": {
+                    "keyword": {"key": '',"values": [],"comparator": 'keyword'},
                     "exists": {"key": '', "values": [], "comparator": 'exists'},
                     "in": {"key": '', "values": [], "comparator": 'in'},
                     "between": {"key": '', "values": ['', ''], "comparator": 'between'},
@@ -1163,7 +1219,7 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
                 },
                 "pair_items": {
                     "type": "pair-items",
-                    "title": "Nouvel appariement",
+                    "title": "",
                     "public": false,
                     "archived": false,
                     "draft": false,
@@ -1198,7 +1254,7 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
                 },
                 "order_items": {
                     "type": "order-items",
-                    "title": "Nouvel ordonnancement",
+                    "title": "",
                     "public": false,
                     "archived": false,
                     "draft": false,
@@ -1238,7 +1294,7 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
                 },
                 "multiple_choice": {
                     "type": "multiple-choice",
-                    "title": "Nouveau QCM",
+                    "title": "",
                     "public": false,
                     "archived": false,
                     "draft": false,
@@ -1278,7 +1334,7 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
                 },
                 "group_items": {
                     "type": "group-items",
-                    "title": "Nouveau groupement",
+                    "title": "",
                     "public": false,
                     "archived": false,
                     "draft": false,
@@ -1319,11 +1375,13 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
                 },
                 "group_items_group": {
                     "name": "",
-                    "metadata_constraints": []
+                    "metadata_constraints": [],
+                    "force_use": false,
+                    "build_groups": false
                 },
                 "open_ended_question": {
                     "type": "open-ended-question",
-                    "title": "Nouveau modèle d'exercice de question à réponse ouverte courte",
+                    "title": "",
                     "public": false,
                     "archived": false,
                     "draft": false,
@@ -1436,9 +1494,10 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
 
         $scope.modelAddBlockResourceConstraint = function (metadata_constraints, type) {
             var newElement;
-
             if (type == 'exists') {
                 newElement = jQuery.extend(true, {}, $scope.modelContext.newModel.block_constraint.exists);
+            } else if (type == 'keyword') {
+                newElement = jQuery.extend(true, {}, $scope.modelContext.newModel.block_constraint.keyword);
             } else if (type == 'in') {
                 newElement = jQuery.extend(true, {}, $scope.modelContext.newModel.block_constraint.in);
             } else if (type == 'between') {
@@ -2001,8 +2060,11 @@ modelControllers.controller('modelEditController', ['$scope', 'Model','ModelDire
         };
 
         $scope.updateModel = function () {
+            console.log("updatemodel");
             var newModel = $scope.preUpdate();
             newModel.$update({id: $stateParams.modelid}, function (model) {
+                console.log(model);
+                console.log($scope.models);
                 $scope.model = model;
                 $scope.models[model.id] = model;
             });
@@ -2020,7 +2082,7 @@ modelControllers.controller('modelEditController', ['$scope', 'Model','ModelDire
         $scope.usedDocuments = [];
 
         $scope.onDropDocument = function (event, resource, documents) {
-            if (resource.type == 'text' || resource.type == 'picture') {
+            if (resource.type == 'text' || resource.type == 'picture' || resource.type == 'document') {
                 $scope.modelAddBlockResourceField(documents, resource.id);
             }
         };
@@ -2157,12 +2219,13 @@ modelControllers.controller('modelEditGroupItemsController', ['$scope',
             );
         };
 
-        $scope.addGroup = function () {
+        $scope.addGroup = function ($build_groups) {
             $scope.model.content.classif_constr.groups.splice(
                 $scope.model.content.classif_constr.groups.length,
                 0,
                 jQuery.extend(true, {}, $scope.modelContext.newModel.group_items_group)
             );
+            $scope.model.content.classif_constr.groups[$scope.model.content.classif_constr.groups.length-1].build_groups = $build_groups;
         };
 
         $scope.findGroup = function (resource) {
@@ -2175,11 +2238,24 @@ modelControllers.controller('modelEditGroupItemsController', ['$scope',
                 for (var j = 0; j < group.metadata_constraints.length; ++j) {
                     var mc = group.metadata_constraints[j];
                     var value = $scope.findMDValue(resource, mc.key);
-                    if (value === null) {
+                    if (value === null && mc.comparator !== 'keyword') {
                         belongs = false;
                     }
 
                     switch (mc.comparator) {
+                        case 'keyword':
+                            var isIn = false;
+                            angular.forEach (resource.keywords, function(keyword){
+                                if (keyword === mc.values[0]){
+                                    isIn = true;
+                                }
+                            });
+
+                            if (isIn === false){
+                                belongs = false;
+                            }
+                            break;
+
                         case 'in':
                             var isIn = false;
                             for (var k = 0; k < mc.values.length; ++k) {

@@ -1,9 +1,10 @@
 var attemptControllers = angular.module('attemptControllers', ['ui.router']);
 
-attemptControllers.controller('attemptController', ['$scope', '$state', 'AttemptByExercise', 'ExerciseByModel', 'Exercise', 'Attempt', 'Item', '$routeParams', '$stateParams',
-    function ($scope, $state, AttemptByExercise, ExerciseByModel, Exercise, Attempt, Item, $routeParams, $stateParams) {
+attemptControllers.controller('attemptController', ['$scope', '$state', 'AttemptByExercise', 'ExerciseByModel', 'Exercise', 'Attempt', 'Item', '$routeParams', '$stateParams','$sce',
+    function ($scope, $state, AttemptByExercise, ExerciseByModel, Exercise, Attempt, Item, $routeParams, $stateParams,$sce) {
 
         $scope.imageUrl = BASE_CONFIG.urls.images.uploads;
+        $scope.documentUrl = BASE_CONFIG.urls.documents.uploads;
         $scope.imageExoUrl = BASE_CONFIG.urls.images.exercise;
         $scope.navBarUrl = BASE_CONFIG.urls.partials.learner + '/fragment-nav-bar.html';
 
@@ -24,6 +25,7 @@ attemptControllers.controller('attemptController', ['$scope', '$state', 'Attempt
                                 // when data loaded
                                 console.log('items loaded.');
                                 $scope.gotoItem(0);
+                                console.log($scope.exercise);
                             });
                     });
             }
@@ -76,6 +78,15 @@ attemptControllers.controller('attemptController', ['$scope', '$state', 'Attempt
                     $scope.tryExercise(exercise);
                 });
         };
+
+        $scope.seeDocument = function (resource){
+            if (typeof resource.source !== 'undefined'){
+                window.open(BASE_CONFIG.urls.documents.uploads + resource.source);
+            }
+            else{
+                console.log("undefined");
+            }
+        }
 
     }]);
 
@@ -568,6 +579,9 @@ itemControllers.controller('groupItemsController', ['$scope', 'Answer', '$routeP
             answer.content = {"obj": []};
             if ($scope.dgn === 'ask') {
                 answer.content.gr = [];
+                for (var i = 0; i < $scope.groups.length; i++) {
+                    $scope.groups[i].name="";
+                }
             }
 
             for (var i = 0; i < $scope.groups.length; ++i) {

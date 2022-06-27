@@ -26,6 +26,7 @@ use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\CommonResourc
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\MultipleChoiceQuestionResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\OpenEndedQuestionResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\PictureResource;
+use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\DocumentResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\SequenceResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\TextResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ResourceResource;
@@ -73,6 +74,11 @@ abstract class ExerciseObjectFactory
             case ResourceResource::PICTURE_CLASS:
                 /** @var PictureResource $resource */
                 $object = ExercisePictureFactory::createFromCommonResource($resource);
+                break;
+
+            case ResourceResource::DOCUMENT_CLASS:
+                /** @var DocumentResource $resource */
+                $object = ExerciseDocumentFactory::createFromCommonResource($resource);
                 break;
 
             case ResourceResource::SEQUENCE_CLASS:

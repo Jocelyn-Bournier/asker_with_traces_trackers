@@ -35,6 +35,10 @@ use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseObject\ExerciseObject;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ItemResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ItemResourceFactory;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ModelObject\MetadataConstraint;
+use Symfony\Component\Form\Extension\Core\Type\CountryType;
+use Symfony\Component\Validator\Constraints\Length;
+use SimpleIT\ClaireExerciseBundle\Model\Resources\MetadataResource;
+
 
 /**
  * Service which manages Group Items Exercises.
@@ -97,7 +101,7 @@ class GroupItemsService extends ExerciseCreationService
         $la = AnswerResourceFactory::create($answer);
         $learnerAnswers = $la->getContent();
 
-        $groups = $item->getGroups();
+        $groups = $item->getGroups();   
 
         // If 'ask' or 'hide', determine the expected name of each group according to the objects
         $viewName = $item->getDisplayGroupNames();
@@ -121,7 +125,7 @@ class GroupItemsService extends ExerciseCreationService
         // else, the names of the groups are given and there is nothing to do
 
         // Mark
-        $this->mark($item, $learnerAnswers, $groups);
+        $this->mark($item, $learnerAnswers, $groups);   
 
         // copy the learnerAnswers
         $item->setAnswers($learnerAnswers);
@@ -163,7 +167,7 @@ class GroupItemsService extends ExerciseCreationService
         foreach ($model->getObjectBlocks() as $block) {
             /** @var ObjectBlock $block */
             // get the objects to add from the blocks
-            $objectsToAdd = $this->getObjectsFromBlock($model, $block, $owner);
+            $objectsToAdd = $this->getObjectsFromBlock($model, $block, $owner, $item->getObjects());
 
             // find the classification constraint of this block
             if (is_null($model->getClassifConstr())) {
@@ -176,6 +180,9 @@ class GroupItemsService extends ExerciseCreationService
             $this->addObjectsToExercise($objectsToAdd, $classifConstr, $item);
 
         }
+
+        // mandatory groups
+        $this->addMandatoryGroups($classifConstr,$item);
 
         // shuffle the order of the objects
         $item->shuffleObjects();
@@ -198,30 +205,56 @@ class GroupItemsService extends ExerciseCreationService
     )
     {
         foreach ($objects as $obj) {
-            $count = 0;
-            // find its group
-            $groupName = "";
-            foreach ($classifConstr->getGroups() as $group) {
-                /** @var Group $group */
-                if ($this->objectInGroup($obj, $group)) {
-                    $groupName = $group->getName();
-                    $count += 1;
+            //if (!in_array($obj,$item->getObjects())) {
+                $count = 0;
+                // find its group among existing
+                $groupName = "";
+                foreach ($classifConstr->getGroups() as $group) {
+                    /** @var Group $group */
+                    if (!$group->getBuildGroups()) {
+                        if ($this->objectInGroup($obj, $group)) {
+                            $groupName = $group->getName();
+                            $count += 1;
+                        }
+                    }
                 }
-            }
 
-            // if no group
-            if ($count == 0) {
-                $groupName = $this->chooseGroup($classifConstr);
-            } elseif ($count >= 2) {
-                $groupName = self::REJECT;
-            }
+                // if no group
+                if ($count == 0) {
+                    if (!$this->objectInBuildGroup($obj,$classifConstr,$groupName)) {
+                        $groupName = $this->chooseGroup($classifConstr);
+                    }
+                } elseif ($count >= 2) {
+                    $groupName = self::REJECT;
+                }
 
-            // add the object to the exercise
-            if ($groupName !== self::REJECT) {
-                $item->addObjectInGroup($obj, $groupName);
+                // add the object to the exercise
+                if ($groupName !== self::REJECT) {
+                    $item->addObjectInGroup($obj, $groupName);
+                }
+            //}
+        }
+    }
+
+    /**
+     * Add the groups with force_use attribute
+     *
+     * @param ClassificationConstraints $classifConstr The classification constraints
+     * @param ResItem                   $item          The exercise to be modified
+     */
+    private function addMandatoryGroups(
+        ClassificationConstraints $classifConstr,
+        ResItem &$item
+    )
+    {
+        foreach ($classifConstr->getGroups() as $group) {
+            /** @var Group $group */
+            if ($group->getForceUse()) {
+                $item->findOrCreateGroup($group->getName());
             }
         }
     }
+
 
     /**
      * Choose the group of a no-group-object
@@ -247,6 +280,32 @@ class GroupItemsService extends ExerciseCreationService
     }
 
     /**
+     * Determine if the object match an automatic-build group an set its name
+     */
+    private function ObjectInBuildGroup(
+        ExerciseObject $object, 
+        ClassificationConstraints $classifConstr, 
+        &$groupName)
+    {
+        $count = 0;
+
+        foreach ($classifConstr->getGroups() as $group) {
+            /** @var Group $group */
+            if($group->getBuildGroups()) {
+                $metadata = $object->getMetadata();
+                $key = $group->getName();
+
+                if (isset($metadata[$key])) {
+                    $groupName = $metadata[$key];
+                    $count++;
+                }
+            }
+        }
+
+        return $count == 1;
+    }
+
+    /**
      * Determine if the object is in the group according to group constraints
      *
      * @param ExerciseObject $object The object
@@ -256,7 +315,7 @@ class GroupItemsService extends ExerciseCreationService
      * @throws \LogicException
      */
     private function objectInGroup(ExerciseObject $object, Group $group)
-    {
+    {        
         $belongs = true;
 
         $metadata = $object->getMetadata();
@@ -269,8 +328,30 @@ class GroupItemsService extends ExerciseCreationService
             $values = $constraint->getValues();
             $comparator = $constraint->getComparator();
 
+            //in the case of a 'keyword'
+            if ($comparator == 'keyword') {
+                $in = false;
+                $key = MetadataResource::MISC_METADATA_KEY;
+
+                //if the object has keywords
+                if(array_key_exists($key,$metadata)) {
+                    $keywords = explode(";",$metadata[$key]);       
+                    foreach ($keywords as $kw) {
+                        if ($kw == $values[0]) {
+                            $in = true;
+                        }
+                    }
+                }
+
+                // if the object doesn't have the keyword, or if there is no keywords, the object is not in
+                // the group
+                if (!$in) {
+                    $belongs = false;
+                }
+            }
+
             // if the metadata does not exist, it does not belong to the group
-            if (!isset($metadata[$key])) {
+            else if (!isset($metadata[$key])) {
                 return false;
             }
 
@@ -305,7 +386,7 @@ class GroupItemsService extends ExerciseCreationService
                     $belongs = false;
                 }
             } // Comparator error
-            elseif ($comparator !== 'exists') {
+            elseif ($comparator !== 'exists' && $comparator !== 'keyword') {
                 throw new \LogicException("Invalid comparator type:" . $comparator);
             }
         }
@@ -319,10 +400,11 @@ class GroupItemsService extends ExerciseCreationService
      * @param Model       $model The Model
      * @param ObjectBlock $ob    The ObjectBlock
      * @param AskerUser        $owner
+     * @param array     $resourceToExclude
      *
      * @return array An array of ExerciseObject
      */
-    private function getObjectsFromBlock(Model $model, ObjectBlock $ob, AskerUser $owner)
+    private function getObjectsFromBlock(Model $model, ObjectBlock $ob, AskerUser $owner, $resourceToExclude = null)
     {
         $blockObjects = array();
         $numOfObjects = $ob->getNumberOfOccurrences();
@@ -331,7 +413,7 @@ class GroupItemsService extends ExerciseCreationService
          * if the block is a list
          */
         if ($ob->isList()) {
-            $this->getObjectsFromList($ob, $numOfObjects, $blockObjects, $owner);
+            $this->getObjectsFromList($ob, $numOfObjects, $blockObjects, $owner, $resourceToExclude);
         } /*
          * if the block is object constraints
          */
@@ -350,7 +432,8 @@ class GroupItemsService extends ExerciseCreationService
                 ->getExerciseObjectsFromConstraints(
                     $oc,
                     $numOfObjects,
-                    $owner
+                    $owner,
+                    $resourceToExclude
                 );
         }
 
@@ -490,7 +573,7 @@ class GroupItemsService extends ExerciseCreationService
     private function determineGroupsAndModifySolution(
         ResItem &$item,
         $viewName,
-        array $groups,
+        array &$groups,
         array $learnerAnswers
     )
     {

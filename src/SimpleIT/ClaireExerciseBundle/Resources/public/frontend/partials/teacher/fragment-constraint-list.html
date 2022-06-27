@@ -3,6 +3,17 @@
          data-ng-repeat="metadata_constraint in metadata_constraints track by $index">
         <div class="panel-heading">
             <ng-switch on="metadata_constraint.comparator">
+                <div ng-switch-when="keyword" class="row">
+                    <div class="col-xs-10">
+                        <h5>Teste l'existence du mot-clé</h5>
+                        <input type="text" ng-model="metadata_constraint.values[0]" class="form-control" placeholder="Mot-clé"
+                        ui-on-Drop="onDropMetadataKey($event,$data,metadata_constraint,'key')">
+                    </div>
+                    <div class="col-xs-2">
+                        <span data-ng-click="modelRemoveField(metadata_constraints, $index)"
+                           class="glyphicon glyphicon-remove col-centered pull-right"></span>
+                    </div>
+                </div>
                 <div ng-switch-when="exists" class="row">
                     <div class="col-xs-10">
                         <h5>Teste l'existence de la clé de métadonnées</h5>
@@ -141,6 +152,11 @@
                 <span class="glyphicon glyphicon-plus"
                       title="Choisissez le type de contrainte à ajouter"></span>&nbsp;
                 <div class="btn-group">
+                    <button class="btn btn-info"
+                            title="Le mot-clé existe"
+                            data-ng-click="modelAddBlockResourceConstraint(metadata_constraints, 'keyword')">
+                        &equals;
+                    </button>
                     <button class="btn btn-info"
                             title="La clé de métadonnée existe"
                             data-ng-click="modelAddBlockResourceConstraint(metadata_constraints, 'exists')">

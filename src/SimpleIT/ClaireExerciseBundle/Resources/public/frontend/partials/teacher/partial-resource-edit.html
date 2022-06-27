@@ -16,6 +16,9 @@
                         <div ng-switch-when="picture">
                             <span class="glyphicon glyphicon-picture" style="font-size: 500%"></span>
                         </div>
+                        <div ng-switch-when="document">
+                            <span class="glyphicon glyphicon-file" style="font-size: 500%"></span>
+                        </div>
                         <div ng-switch-when="multiple-choice-question">
                             <span title="Question de QCM" class="glyphicon glyphicon-check" style="font-size: 500%"></span>
                         </div>
@@ -136,6 +139,25 @@
         </div>
     </div>
 
+    <div ng-switch-when="document">
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-11">
+                        <h4>Document</h4>
+                    </div>
+                    <div class="col-xs-1"></div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-5">
+                        <input type="file" ng-file-select="onFileSelect($files)">
+                    </div>
+                </div>
+                <button type="button" data-ng-click="seeDocument()">Voir document</button>
+            </div>
+        </div>
+    </div>
+
     <div ng-switch-when="multiple-choice-question">
         <div class="panel panel-success">
             <div class="panel-heading">
@@ -185,7 +207,7 @@
                     </div>
                     <div class="col-xs-3 text-center" data-ng-click="proposition.force_use=!proposition.force_use">
                         <span class="glyphicon" ng-class="{'glyphicon-check': proposition.force_use, 'glyphicon-unchecked': !proposition.force_use}"></span>
-                        <label>Forcer l'utilisation</label>
+                        <label>Forcer l'affichage</label>
                     </div>
                     <div class="col-xs-1">
                         <span class="glyphicon glyphicon-remove" data-ng-click="removeFromCollection(editedResource.content.propositions, $index)"></span>

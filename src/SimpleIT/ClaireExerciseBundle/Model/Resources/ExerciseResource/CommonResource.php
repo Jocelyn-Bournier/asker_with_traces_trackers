@@ -27,6 +27,7 @@ use SimpleIT\ClaireExerciseBundle\Model\Resources\Validable;
  * @author Baptiste Cablé <baptiste.cable@liris.cnrs.fr>
  * @Serializer\Discriminator(field = "object_type", map = {
  *    "picture": "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\PictureResource",
+ *    "document": "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\DocumentResource",
  *    "text": "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\TextResource",
  *    "text_with_holes": "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\TextWithHolesResource",
  *    "sequence": "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\SequenceResource",
@@ -40,6 +41,11 @@ abstract class CommonResource implements Validable
      * @const PICTURE = "picture"
      */
     const PICTURE = "picture";
+
+    /**
+     * @const DOCUMENT = "document"
+     */
+    const DOCUMENT = "document";
 
     /**
      * @const TEXT = "text"
@@ -106,6 +112,7 @@ abstract class CommonResource implements Validable
             $type === self::TEXT
             || $type === self::SEQUENCE
             || $type === self::PICTURE
+            || $type === self::DOCUMENT
             || $type === self::MULTIPLE_CHOICE_QUESTION
             || $type === self::OPEN_ENDED_QUESTION
             || $type === self::TEXT_WITH_HOLES
