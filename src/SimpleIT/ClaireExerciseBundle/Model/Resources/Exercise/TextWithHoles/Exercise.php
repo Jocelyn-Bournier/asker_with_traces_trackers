@@ -69,15 +69,23 @@ class Exercise extends CommonExercise
                     foreach ($coverages as $coverage) {
                         $findCoverage = false;
                         if(!$coverage['isGlobal'] && $coverage['listName'] == $annotationsLists->name){
-                            $findCoverage = true;
                             if($coverage['type'] == "nbElements" && $coverage['value'] <= count($filteredElements)){
                                 $coverNb = $coverage['value'];
-                            } else {
+                                $findCoverage = true;
+                            } if($coverage['type'] == "nbElements" && $coverage['value'] > count($filteredElements)){
+                                $coverNb = count($filteredElements);
+                            }
+                            else if ($coverage['type'] == "percent"){
                                 $coverNb = count($filteredElements)*($coverage['value'] / 100.) ;
+                                if($coverage['value'] != 100){
+                                    $findCoverage = true;
+                                }
                             }
                         } else if($coverage['isGlobal']){
                             if($coverage['type'] == "nbElements" && $coverage['value'] <= count($filteredElements)){
                                 $globalCoverage = $coverage['value'];
+                            } if($coverage['type'] == "nbElements" && $coverage['value'] > count($filteredElements)){
+                                $globalCoverage = count($filteredElements);
                             } else {
                                 $globalCoverage = count($filteredElements)*($coverage['value'] / 100.) ;
                             }

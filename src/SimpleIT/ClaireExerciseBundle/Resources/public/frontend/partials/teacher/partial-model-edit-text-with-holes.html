@@ -60,7 +60,7 @@
                 <tbody>
                 <tr ng-repeat="coverage in model.content.coverages" ng-if="coverage.listName != null">
                     <th><h4>{{coverage.listName}}</h4></th>
-                    <th><input type="number" class="form-control" placeholder="couverture pour la liste" ng-model="coverage.value"></th>
+                    <th><input type="number" min="0" max="100" class="form-control" placeholder="couverture pour la liste" ng-model="coverage.value"></th>
                 <th>
                     <label class="checkbox-inline" >
                         <input class="form-check-input" ng-model="coverage.type" type="radio" id="radioPercent{{annotationList}}" value="percent"> Pourcents
