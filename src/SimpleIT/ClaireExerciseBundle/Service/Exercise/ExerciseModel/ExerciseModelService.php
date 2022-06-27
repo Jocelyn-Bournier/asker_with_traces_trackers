@@ -451,6 +451,10 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
                         /** @var OpenEnded $content */
                         $complete = $this->checkOEQComplete($content, $errorCode);
                         break;
+                    case CommonModel::TEXT_WITH_HOLES:
+                        /** @var OrderItems $content */
+                        $complete = true;
+                        break;
                     default:
                         throw new InconsistentEntityException('Invalid type');
                 }

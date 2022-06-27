@@ -396,6 +396,10 @@ class ExerciseResourceService extends SharedEntityService implements ExerciseRes
                         /** @var DocumentResource $content */
                         $complete = $this->checkDocumentComplete($content, $errorCode);
                         break;
+                    case CommonResource::TEXT_WITH_HOLES:
+                        /** @var DocumentResource $content */
+                        $complete = true;
+                        break;
                     default:
                         throw new InconsistentEntityException('Invalid type');
                 }

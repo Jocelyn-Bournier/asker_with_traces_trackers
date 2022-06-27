@@ -224,8 +224,7 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
             archived: false, // select archived resources or not (boolean)
             public: false, // select public resources or not (boolean)
             type: { // resources types to be selected
-                multiple_choice_question: 'multiple-choice-question', text_with_holes: 'text-with-holes', text: 'text', picture: 'picture', open_ended_question: 'open-ended-question', sequence: ''
-                multiple_choice_question: 'multiple-choice-question', text: 'text', picture: 'picture', document: 'document', open_ended_question: 'open-ended-question', sequence: ''
+                multiple_choice_question: 'multiple-choice-question', text_with_holes: 'text-with-holes', document: 'document', text: 'text', picture: 'picture', open_ended_question: 'open-ended-question', sequence: ''
             },
             keywords: [], // list of keywords that a resource must have to be selected
             metadata: [] // list of metadata objects that a resource must have to be selected

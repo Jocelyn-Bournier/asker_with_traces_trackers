@@ -343,9 +343,9 @@ itemControllers.controller('textWithHolesController', ['$scope', 'Answer', '$rou
                 return b[1] - a[1];
             });
 
-            //cpt = 0;
-            //nbThree = 0;
-            //nbFour = 0;
+            let cpt = 0;
+            let nbThree = 0;
+            let nbFour = 0;
             let copieValue = $scope.item.content.text;
             console.log(copieValue);
             let newStr = "";
@@ -374,7 +374,7 @@ itemControllers.controller('textWithHolesController', ['$scope', 'Answer', '$rou
                         }
                     }
                 }
-                //cpt = cpt + 1;
+                cpt = cpt + 1;
                 newStr += lettre;
             }
             let lines = newStr.split(/\r\n|\r|\n/g);
@@ -386,9 +386,7 @@ itemControllers.controller('textWithHolesController', ['$scope', 'Answer', '$rou
                 indexNewLine += line.length;
                 newLines.push(indexNewLine);
             }
-            console.log(newLines);
             $scope.item.content.text = newStr;
-            console.log(newStr);
 
             $scope.item.content.holes.sort(function(a, b) {
                 return b.indice_debut - a.indice_febut;
