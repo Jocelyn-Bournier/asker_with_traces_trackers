@@ -78,8 +78,6 @@ class AskerUserType extends AbstractType
             ->add('directories',CollectionType::class,
                 array(
                     'entry_type' => AskerUserDirectoryType::class,
-                    'allow_add' => true,
-                    'allow_delete' => true,
                     'data' => $datas,
                     'entry_options' => array(
                         'label' => false,
