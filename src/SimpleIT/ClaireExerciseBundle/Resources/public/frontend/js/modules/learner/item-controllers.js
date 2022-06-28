@@ -395,6 +395,9 @@ itemControllers.controller('groupItemsController', ['$scope', 'Answer', '$routeP
             answer.content = {"obj": []};
             if ($scope.dgn === 'ask') {
                 answer.content.gr = [];
+                for (var i = 0; i < $scope.groups.length; i++) {
+                    $scope.groups[i].name="";
+                }
             }
 
             for (var i = 0; i < $scope.groups.length; ++i) {

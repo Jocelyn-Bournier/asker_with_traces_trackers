@@ -390,26 +390,38 @@ abstract class ExerciseCreationService implements ExerciseCreationServiceInterfa
      * @param int           $numberOfOccurrences
      * @param array         $blockResources
      * @param AskerUser          $owner
+     * @param array         $resourceToExclude
      */
     public function getObjectsFromList(
         ResourceBlock $resourceBlock,
         &$numberOfOccurrences,
         array &$blockResources,
-        AskerUser $owner
+        AskerUser $owner,
+        $resourceToExclude = null
     )
     {
         $existingResourceIds = $resourceBlock->getResources();
+        $existingResource = [];
+        
+        //get the resources in form of ExerciseObject
+        foreach ($existingResourceIds as $id) {
+            $existingResource[] = $this->exerciseResourceService->getExerciseObject($id, $owner);
+        }
 
-        while ($numberOfOccurrences > 0 && count($existingResourceIds) > 0) {
+        //exclude existing resources
+        foreach ($resourceToExclude as $obj){
+            if (($key = array_search($obj, $existingResource)) !== false) {
+                unset($existingResource[$key]);
+            }
+        }
+
+        while ($numberOfOccurrences > 0 && count($existingResource) > 0) {
             // select a random object
-            $resIndex = array_rand($existingResourceIds);
-            $resId = $existingResourceIds[$resIndex];
-
-            // get this object in form of an ExerciseObject and add to the list
-            $exObj = $this->exerciseResourceService->getExerciseObject($resId, $owner);
+            $resIndex = array_rand($existingResource);
+            $exObj = $existingResource[$resIndex];
 
             // remove the object from the list (cannot be added anymore)
-            unset($existingResourceIds[$resIndex]);
+            unset($existingResource[$resIndex]);
 
             $blockResources[] = $exObj;
             $numberOfOccurrences--;
