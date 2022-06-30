@@ -18,6 +18,7 @@ let oldTag = null;
 let oldMetadata = null;
 let jsonConstraint = {};
 let constraintList = [];
+let oldConstraintName = "";
 
 //let tags = [];
 let keys = [];
@@ -51,7 +52,6 @@ document.addEventListener("drop", function(ev) {
     var data = ev.dataTransfer.getData("text");
     ev.target.appendChild(document.getElementById(data));
   }
-  console.log(ev.target);
 
   // trash constraint
   if(ev.target.classList.contains("trash-constraint")){
@@ -91,7 +91,7 @@ document.addEventListener("drop", function(ev) {
     }
   }
   document.getElementById("trash-constraint").style.display = "none";
-  document.getElementById("trash-metadata").style.display = "none";
+  //document.getElementById("trash-metadata").style.display = "none";
   document.getElementById("trash-constraint-list").style.display = "none";
   document.getElementById("trash-tag").style.display = "none";
 });
@@ -118,21 +118,43 @@ function removeTag(tag){
 
 
 function createConstraintList(){
-    let name = document.getElementById('input-annotation-name');
+    let name = document.getElementById('input-annotation-name').value;
     let node = document.getElementById('container-constraint').childNodes[0];
     if(node != null && name != null){
-        for(constraint of angular.element("#twh").scope().editedResource.content.annotations_list){
-            if (constraint.name == name){
-                constraint.constraint = parseConstraint(node);
+        /*for(let constraintE of angular.element("#twh").scope().editedResource.content.annotations_list){
+            if (constraintE.name == name){
+                constraintE.constraint = parseConstraint(node);
                 return;
             }
         }
-        angular.element("#twh").scope().editedResource.content.annotations_list.push({'name':name.value,'constraint': parseConstraint(node)});
+
+         */
+        let constraintE = parseConstraint(node);
+        console.log(constraintE)
+        if(oldConstraintName != "") {
+            for(let constraint of angular.element("#twh").scope().editedResource.content.annotations_list){
+                console.log(constraint, oldConstraintName)
+                if (constraint.name == oldConstraintName){
+                    constraint.name = name;
+                    constraint.constraint = constraintE;
+                }
+            }
+            oldConstraintName = "";
+            document.getElementById('btnCreateTagConstraints').innerHTML = "Créer la liste d'étiquette";
+        } else {
+            angular.element("#twh").scope().editedResource.content.annotations_list.push({
+                'name': name,
+                'constraint': constraintE
+            });
+        }
+        clearConstraint();
+        drawConstraintList();
         angular.element("#twh").scope().$apply();
     }
-    //clearConstraint();
-    //drawConstraintList();
+    clearConstraint();
 }
+
+
 
 function clearConstraint(){
     document.getElementById("container-constraint").innerHTML = "";
@@ -158,6 +180,9 @@ function drawConstraintList(){
 
 function updateConstraint(event){
     let name = event.target.innerHTML;
+    oldConstraintName = name;
+    document.getElementById('input-annotation-name').value = name;
+    document.getElementById('btnCreateTagConstraints').innerHTML = "Mettre à jour la liste d'étiquette";
     for(constraint of angular.element("#twh").scope().editedResource.content.annotations_list){
         if (constraint.name == name){
             let template = constraintToHTML(constraint.constraint);
@@ -375,29 +400,55 @@ function handleFocusOut(event){
 function format(action){
     if (selectionStart != selectionStop){
         let ind;
+        let cpt =0;
+        let finded = false;
         switch (action){
+
             case "bold":
-                ind = angular.element("#twh").scope().editedResource.content.bold.indexOf([selectionStart,selectionStop]);
-                if(ind == -1) {
+                for(let elem of angular.element("#twh").scope().editedResource.content.bold){
+                    if(elem[0] == selectionStart && elem[1] == selectionStop){
+                        finded = true;
+                    }
+                    cpt++;
+                }
+                if(!finded) {
                     angular.element("#twh").scope().editedResource.content.bold.push([selectionStart, selectionStop]);
                 } else {
-                    angular.element("#twh").scope().editedResource.content.bold.splice(ind, 1);
+                    angular.element("#twh").scope().editedResource.content.bold = angular.element("#twh").scope().editedResource.content.bold.filter(elem => {
+                        return !(elem[0] == selectionStart && elem[1] == selectionStop);
+                    });
                 }
                 break;
             case "italize":
-                ind = angular.element("#twh").scope().editedResource.content.italize.indexOf([selectionStart,selectionStop]);
-                if(ind == -1) {
+                for(let elem of angular.element("#twh").scope().editedResource.content.italize){
+                    if(elem[0] == selectionStart && elem[1] == selectionStop){
+                        finded = true;
+                    }
+                    cpt++;
+                }
+                if(!finded) {
                     angular.element("#twh").scope().editedResource.content.italize.push([selectionStart, selectionStop]);
                 } else {
-                    angular.element("#twh").scope().editedResource.content.italize.splice(ind, 1);
+                    angular.element("#twh").scope().editedResource.content.italize = angular.element("#twh").scope().editedResource.content.italize.filter(elem => {
+                        return !(elem[0] == selectionStart && elem[1] == selectionStop);
+                    });
                 }
+                break;
             case "underline":
-                ind = angular.element("#twh").scope().editedResource.content.underline.indexOf([selectionStart,selectionStop]);
-                if(ind == -1) {
+                for(let elem of angular.element("#twh").scope().editedResource.content.underline){
+                if(elem[0] == selectionStart && elem[1] == selectionStop){
+                    finded = true;
+                }
+                cpt++;
+            }
+                if(!finded) {
                     angular.element("#twh").scope().editedResource.content.underline.push([selectionStart, selectionStop]);
                 } else {
-                    angular.element("#twh").scope().editedResource.content.underline.splice(ind, 1);
+                    angular.element("#twh").scope().editedResource.content.underline = angular.element("#twh").scope().editedResource.content.underline.filter(elem => {
+                        return !(elem[0] == selectionStart && elem[1] == selectionStop);
+                    });
                 }
+                break;
         }
         angular.element("#twh").scope().$apply();
         drawText();
@@ -405,7 +456,7 @@ function format(action){
 }
 
 function handleSelection(event){
-    if(document.getElementById("myTextArea").selectionStart != 0 && document.getElementById("myTextArea").selectionEnd != 0){
+    if(document.getElementById("myTextArea").selectionEnd != 0){
     selectionStart = document.getElementById("myTextArea").selectionStart;
     selectionStop = document.getElementById("myTextArea").selectionEnd;
     }
@@ -468,9 +519,20 @@ function tagElement(){
         oldTag = null;
         for(key of keys){
         let option = document.createElement("option");
-        console.log(key);
-        option.value = key;
+        option.value = key['key'];
         document.getElementById("list-keys").appendChild(option);
+        }
+        let constraintFinded = false;
+        for(let constraint of angular.element("#twh").scope().editedResource.content.annotations_list){
+            if(constraint.name == key['key']){
+                constraintFinded = true;
+                break;
+            }
+        }
+        if(!constraintFinded){
+            let newConstraint = {"name":key['key'],"constraint":{"cle":key['key'],"valeur":"","operateur":""}};
+            angular.element("#twh").scope().editedResource.content.annotations_list.push(newConstraint);
+            drawConstraintList();
         }
     }
     }
@@ -644,6 +706,11 @@ function updateKeys(){
             keys[keyIndex].count ++;
         }
     }
+    for(key of keys){
+        let option = document.createElement("option");
+        option.value = key['key'];
+        document.getElementById("list-keys").appendChild(option);
+    }
 }
 
 </script>
@@ -808,7 +875,6 @@ mark{
             <br>
             Nom de la liste d'étiquettes
             <input id="input-annotation-name" type="text" class="form-control" placeholder="Nom de la liste">
-            <button id="btnCreateTagConstraints" class="btn btn-success" style="margin-top:1em;" onclick="createConstraintList()">Créer la liste d'étiquettes</button>
         </div>
         <div class="panel-heading">
             Choisissez un opérateur
@@ -846,6 +912,9 @@ mark{
             </div>
             <button id="btnCreateTagConstraint" class="btn btn-success" style="margin-top:1em;" onclick="createTagConstraint()">Créer l'étiquette  </button>
         </div>
+
+        <button id="btnCreateTagConstraints" class="btn btn-success" style="margin:1em;" onclick="createConstraintList()">Créer la liste d'étiquettes</button>
+
 
     </div>
 

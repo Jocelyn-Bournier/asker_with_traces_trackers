@@ -11,12 +11,14 @@
         <label class="checkbox-inline">
             <input type="radio" ng-model="model.content.answer_modality" name="answerModality" id="answerModalityHoles" ng-value="'holes'"> Texte à trous
         </label>
+        <!--
         <label class="checkbox-inline">
             <input type="radio" ng-model="model.content.answer_modality" name="answerModality" id="answerModalityList" ng-value="'list'"> Liste
         </label>
         <label class="checkbox-inline">
             <input type="radio" ng-model="model.content.answer_modality" name="answerModality" id="answerModalityDragAndDrop" ng-value="'dragAndDrop'"> Glisser/déposer
         </label>
+        -->
     </div>
 </accordion-group>
 </accordion>
@@ -47,7 +49,7 @@
         <select id="select-annotation-list" class="form-control" ng-model="selectedAnnotationlist" ng-change="_selectAnnotation()">
             <option ng-repeat="answerList in answerLists track by $index" value="{{answerList}}">{{answerList}}</option>
         </select>
-        <button class="btn btn-primary" ng-click="addAnnotationList()" style="margin-top: 1em;">Ajouter la liste</button>
+        <button class="btn btn-primary" ng-click="addAnnotationList()" style="margin-top: 1em;width: 33%;">Ajouter la liste</button>
         <div>
             <table class="table">
                 <thead>
@@ -107,7 +109,8 @@
                 </div>
             </div>
         </accordion-heading>
-    <div class="panel-body" style="display: flex;flex-direction: column;">
+    <div class="panel-body" >
+        <div style="display: flex;flex-direction: column;">
         <label class="checkbox-inline">
             <input ng-model="model.content.generate_indication" type="checkbox" id="generateIndications" value="" style="float:left;" ng-change="_checkGenerateIndications()"> Générer des indications pour l'exercice
         </label>
@@ -122,6 +125,29 @@
             <option value="none" selected disabled hidden>Choisissez une clé</option>
             <option ng-repeat="answerTag in tagsList track by $index" value="{{answerTag}}">{{answerTag}}</option>
         </select>
+        </div>
+        <div ng-if="model.content.answer_modality == 'dragAndDrop'" style="display: flex;flex-direction: column;">
+            <hr>
+            <label class="checkbox-inline">
+                <input ng-model="model.content.do_not_remove_tag" type="checkbox" id="removeTags" value="" style="float:left;"> Ne pas enlever les étiquettes une fois utilisées
+            </label>
+            <label class="checkbox-inline" style="margin-left:0px;">
+                <input ng-model="model.content.remove_duplicates" type="checkbox" id="removeDuplicates" value="" style="float:left;"> Enlever les doublons
+            </label>
+        </div>
+        <div ng-if="model.content.answer_modality == 'list' || model.content.answer_modality == 'dragAndDrop'" style="display: flex;flex-direction: column;">
+            <hr>
+            <label class="checkbox-inline">
+                <input ng-model="model.content.generate_perturbators" type="checkbox" id="generatePerturbators" value="" style="float:left;"> Générer des éléments perturbateurs
+            </label>
+            <h4>Eléments perturbateurs :</h4>
+            <select id="select-perturbators-list" class="form-control" ng-model="selectedPerturbatorsList">
+                <option ng-repeat="answerList in answerLists track by $index" value="{{answerList}}">{{answerList}}</option>
+            </select>
+            <button class="btn btn-primary" style="margin-top: 1em; width: 33%">Ajouter la liste</button>
+            Nombre de perturbateurs à générer
+            <input ng-model="model.content.nb_perturbators" type="number" id="nbPerturbators" placeholder="0" style="float:left;">
+        </div>
     </div>
     </accordion-group>
 </accordion>

@@ -1999,6 +1999,9 @@ modelControllers.controller('modelEditController', ['$scope', 'Model','ModelDire
                 case 'open-ended-question':
                     $scope.fillConstraints(model.content.question_blocks);
                     break;
+                case 'text-with-holrd':
+                    $scope.fillConstraints(model.content.text_blocks);
+                    break;
             }
         };
 
@@ -2198,7 +2201,6 @@ modelControllers.controller('modelEditOrderItemsController', ['$scope',
 
 modelControllers.controller('modelEditMultipleChoiceController', ['$scope',
     function ($scope) {
-
         $scope.modelAddBlockField = function (collection) {
             collection.splice(
                 collection.length,
