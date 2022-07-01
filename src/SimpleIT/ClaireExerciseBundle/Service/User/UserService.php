@@ -225,11 +225,12 @@ class UserService extends TransactionalService implements UserServiceInterface
             return $datas;
         }
         if (preg_match($reg[1], $username)){
-            $semiSplit = explode("/;/", $username);
+            $semiSplit = explode(";", $username);
             $underSplit = explode("_",$semiSplit[0]);
+            $nameSplit = explode(".",$underSplit[1]);
             $datas['state'] = "ext";
-            $datas['firstName'] = $underSplit[1];
-            $datas['lastName'] = $underSplit[2];
+            $datas['firstName'] = $nameSplit[0];
+            $datas['lastName'] = $nameSplit[1];
             $datas['username'] = $semiSplit[0];
             $datas['password'] = $semiSplit[1];
             return $datas;
