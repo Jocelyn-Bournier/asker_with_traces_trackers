@@ -217,7 +217,7 @@ class UserService extends TransactionalService implements UserServiceInterface
     }
     public function validUserFormat($username){
         # care if we want to allow to create LDAP teacher prenom.nom
-        $reg = array("/^(p|[0-9])[0-9]{7}$/","/^ext_[a-zA-Z].*_[a-zA-Z].*;/");
+        $reg = array("/^(p|[0-9])[0-9]{7}$/","/ext_[a-zA-Z]{1,}\.[a-zA-Z]{1,};[^;]{6,}/");
         $datas = array();
         if (preg_match("/^(p|[0-9])[0-9]{7}$/", $username)){
             $datas['state'] = "student";
@@ -225,7 +225,7 @@ class UserService extends TransactionalService implements UserServiceInterface
             return $datas;
         }
         if (preg_match($reg[1], $username)){
-            $semiSplit = explode(";",$username);
+            $semiSplit = explode("/;/", $username);
             $underSplit = explode("_",$semiSplit[0]);
             $datas['state'] = "ext";
             $datas['firstName'] = $underSplit[1];
@@ -236,7 +236,7 @@ class UserService extends TransactionalService implements UserServiceInterface
         }
         throw new UsernameUnknownFormat(
             "\"$username\" ne respecte aucun des formats attendus:
-            p1234567, 11234567 ou ext_prenom.nom;password"
+            p1234567, 11234567 ou \"ext_prenom.nom;password\" (au moins 6 lettres)"
         );
     }
 
