@@ -22,6 +22,7 @@ use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use SimpleIT\ClaireExerciseBundle\Controller\BaseController;
 use SimpleIT\ClaireExerciseBundle\Entity\AskerUser;
 use SimpleIT\ClaireExerciseBundle\Entity\AskerUserDirectory;
+use SimpleIT\ClaireExerciseBundle\Entity\Directory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,6 +32,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 use SimpleIT\ClaireExerciseBundle\Form\AskerUserType;
 use SimpleIT\ClaireExerciseBundle\Form\AskerPasswordType;
+use SimpleIT\ClaireExerciseBundle\Form\ImportFileType;
+use Symfony\Component\Form\FormError;
 /**
  * Class AdminController
  *
@@ -204,6 +207,47 @@ class AdminController extends BaseController
             array(
                 'form' => $form->createView(),
                 'user' => $user
+            )
+        );
+    }
+    public function importFileAction(Request $request){
+        $form = $this->createForm(ImportFileType::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $attachment = $form['attachment']->getData();
+            if ($attachment->getClientMimeType() == "text/csv"){
+                $res = $this->get('simple_it.exercise.user')
+                            ->createUserFromFile(
+                                $attachment->getPathName(),
+                                $form['roles']->getData(),
+                                $form['directory']->getData())
+                ;
+                if ($res['ok'] > 1 ){
+                    $this->addFlash(
+                        "success", $res['ok']. " utilisateurs créés."
+                    );
+                }
+                if ($res['already'] > 1 ){
+                    $this->addFlash(
+                        "warning", $res['already']. " utilisateurs existaient déjà."
+                    );
+                }
+                if ($res['error'] > 0 ){
+                    $this->addFlash(
+                        "danger", $res['error_msg']
+                    );
+                }
+            }else{
+                $this->addFlash(
+                    "danger", $res['error_msg']
+                );
+            }
+
+        }
+        return $this->render(
+            "SimpleITClaireExerciseBundle:Form:importUser.html.twig",
+            array(
+                'form' => $form->createView(),
             )
         );
     }

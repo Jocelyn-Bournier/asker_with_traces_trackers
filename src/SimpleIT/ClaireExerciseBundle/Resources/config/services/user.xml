@@ -23,6 +23,12 @@
             <call method="setUserRepository">
                 <argument type="service" id="simple_it.exercise.repository.user"/>
             </call>
+            <call method="setLdapServer">
+                <argument type="service" id="ldap_server"/>
+            </call>
+            <call method="setRoleService">
+                <argument type="service" id="simple_it.exercise.role"/>
+            </call>
         </service>
 
     </services>
