@@ -29,6 +29,7 @@ use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\PictureResour
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\DocumentResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\SequenceResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\TextResource;
+use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\OrderResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ResourceResource;
 
 /**
@@ -81,6 +82,11 @@ abstract class ExerciseObjectFactory
                 $object = ExerciseDocumentFactory::createFromCommonResource($resource);
                 break;
 
+            case ResourceResource::ORDER_CLASS:
+                /** @var OrderResource $resource */
+                $object = ExerciseOrderFactory::createFromCommonResource($resource);
+                break;
+                
             case ResourceResource::SEQUENCE_CLASS:
                 /** @var SequenceResource $resource */
                 $object = ExerciseSequenceFactory::createFromCommonResource(

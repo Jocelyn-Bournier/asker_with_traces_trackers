@@ -19,6 +19,9 @@
             <div ng-switch-when="sequence">
                 <span class="glyphicon glyphicon-sort-by-order" style="font-size: 320%"></span>
             </div>
+            <div ng-switch-when="order">
+                <span class="glyphicon glyphicon-sort" style="font-size: 320%"></span>
+            </div>
         </div>
 
         <div class="col-xs-11">
@@ -143,6 +146,9 @@
     <div ng-switch-when="sequence">
         <label>Type de ressource&nbsp;:&nbsp;</label>Séquence
     </div>
+    <div ng-switch-when="order">
+        <label>Type de ressource&nbsp;:&nbsp;</label>Ordre
+    </div>
 </div>
 <div class="col-centered" ng-switch="resource.type">
     <div ng-switch-when="text">
@@ -164,6 +170,9 @@
     </div>
     <div ng-switch-when="open-ended-question">
         <label>Question&nbsp;:&nbsp;</label>{{ resource.content.question }}
+    </div>
+    <div ng-switch-when="order">
+        <label>Question&nbsp;:&nbsp;</label>{{ resource.content.block.rule }}
     </div>
 </div>
 <div class="col-centered" ng-switch="resource.type">

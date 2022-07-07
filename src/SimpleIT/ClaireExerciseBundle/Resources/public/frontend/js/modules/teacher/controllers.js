@@ -222,7 +222,7 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
             archived: false, // select archived resources or not (boolean)
             public: false, // select public resources or not (boolean)
             type: { // resources types to be selected
-                multiple_choice_question: 'multiple-choice-question', text: 'text', picture: 'picture', document: 'document', open_ended_question: 'open-ended-question', sequence: ''
+                multiple_choice_question: 'multiple-choice-question', text: 'text', picture: 'picture', document: 'document', open_ended_question: 'open-ended-question', order: 'order', sequence: ''
             },
             keywords: [], // list of keywords that a resource must have to be selected
             metadata: [] // list of metadata objects that a resource must have to be selected
@@ -379,6 +379,40 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
                     },
                     "required_exercise_resources": null,
                     "required_knowledges": null
+                },
+                "order": {
+                    "type": "order",
+                    "title": "",
+                    "public": false,
+                    "archived": false,
+                    "draft": false,
+                    "complete": null,
+                    "metadata": [],
+                    "keywords": [],
+                    "content": {
+                        "object_type": "order",
+                        "block": {
+                            "rule": "position",
+                            "items": [],
+                            "rules": []
+                        }                     
+                    },
+                    "required_exercise_resources": null,
+                    "required_knowledges": null
+                },
+                "order_block": {
+                    "rule": "position",
+                    "items": [],
+                    "rules": []
+                },
+                "order_item": {
+                    "id": null,
+                    "item_type": "text",
+                    "content": null
+                },
+                "order_constraint": {
+                    "type": "before",
+                    "values":[] 
                 }
             }
         };
@@ -514,6 +548,15 @@ resourceControllers.controller('resourceListController', ['$scope', '$state', 'R
                 });
             } else if (type == 'document') {
                 Resource.save($scope.resourceContext.newResources.document, function (data) {
+                    $scope.resources[data.id] = data;
+                    if ($scope.parentSection === 'model') {
+                        $state.go('modelEdit.resourceEdit', {resourceid: data.id});
+                    } else {
+                        $state.go('resourceEdit', {resourceid: data.id});
+                    }
+                });
+            } else if (type == 'order') {
+                Resource.save($scope.resourceContext.newResources.order, function (data) {
                     $scope.resources[data.id] = data;
                     if ($scope.parentSection === 'model') {
                         $state.go('modelEdit.resourceEdit', {resourceid: data.id});
@@ -833,6 +876,71 @@ resourceControllers.controller('resourceSelectListController', ['$scope', 'BASE_
         };
     }]);
 
+resourceControllers.controller('resourceEditOrderController', ['$scope',
+    function ($scope, $stateParams){
+
+        $scope.typeOfConstraints=["fix","before","after"];
+
+
+        $scope.addGroup = function(resource, position){
+            console.log("add in position "+position);
+            resource.items.splice(
+                position,
+                0,
+                jQuery.extend(true, {}, $scope.resourceContext.newResources.order_item));
+            resource.items[position].content=jQuery.extend(true, {}, $scope.resourceContext.newResources.order_block);
+            resource.items[position].id=resource.items.length;
+            resource.items[position].item_type="block";
+            resource.rules[position]=[];
+            console.log(resource);
+        }
+
+        $scope.addText = function (resource, position){
+            console.log("add in position "+position);
+            resource.items.splice(
+                position,
+                0,
+                jQuery.extend(true, {}, $scope.resourceContext.newResources.order_item));
+            resource.items[position].id=resource.items.length;
+            resource.items[position].item_type="text";
+            resource.rules[position]=[];
+            console.log(resource);
+        }
+
+        $scope.removeFromBlock = function(resource, id){
+            console.log("remove element "+id+" from ");
+            console.log(resource);
+            resource.items.splice(id,1);
+            resource.rules.splice(id,1);
+            for(i=id; i<resource.items.length; i++){
+                resource.items[i].id-=1;
+            }
+            console.log(resource);
+        }
+
+        $scope.addConstraint = function(resource, id){
+            resource.rules[id].splice(
+                0,
+                0,
+                jQuery.extend(true, {}, $scope.resourceContext.newResources.order_constraint))
+        }
+
+        $scope.removeConstraint = function(resource, idItem, idConstraint){
+            resource.rules[idItem].splice(idConstraint,1);
+        }
+
+        $scope.generateNumbers = function(number, exclude1=0, exclude2=0){
+            console.log("generate tab for "+number+" without "+exclude1+" and "+exclude2);
+            tab = [];
+            for (i=1; i<=number; i++){
+                if(i!=exclude1 && i!=exclude2){
+                    tab.push(i);
+                }
+            }
+            return tab;
+        }
+
+    }]);
 
 var modelControllers = angular.module('modelControllers', ['ui.router']);
 

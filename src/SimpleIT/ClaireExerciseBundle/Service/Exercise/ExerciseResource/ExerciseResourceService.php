@@ -43,6 +43,8 @@ use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\Sequence\Sequ
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\Sequence\SequenceElement;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\SequenceResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\TextResource;
+use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\OrderResource;
+use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\Order\OrderBlock;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\KnowledgeResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\MetadataResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ModelObject\ObjectConstraints;
@@ -395,6 +397,10 @@ class ExerciseResourceService extends SharedEntityService implements ExerciseRes
                         /** @var DocumentResource $content */
                         $complete = $this->checkDocumentComplete($content, $errorCode);
                         break;
+                    case CommonResource::ORDER:
+                        /** @var OrderResource $content */
+                        $complete = $this->checkOrderComplete($content, $errorCode);
+                        break;
                     default:
                         throw new InconsistentEntityException('Invalid type');
                 }
@@ -615,6 +621,22 @@ class ExerciseResourceService extends SharedEntityService implements ExerciseRes
     }
 
     /**
+     * Check if an order resource is complete
+     *
+     * @param OrderResource $content
+     * @param string $errorCode
+     *
+     * @return bool
+     */
+    private function checkOrderComplete(
+        OrderResource $content,
+        &$errorCode
+    )
+    {
+        return true;
+    }
+
+    /**
      * Throws an exception if the content does not match the type
      *
      * @param $content
@@ -639,6 +661,8 @@ class ExerciseResourceService extends SharedEntityService implements ExerciseRes
                 get_class($content) !== ResourceResource::PICTURE_CLASS)
             || ($type === CommonResource::DOCUMENT &&
                 get_class($content) !== ResourceResource::DOCUMENT_CLASS)
+            || ($type === CommonResource::ORDER &&
+            get_class($content) !== ResourceResource::ORDER_CLASS)
         ) {
             throw new InvalidTypeException('Content does not match exercise model type');
         }
@@ -666,6 +690,7 @@ class ExerciseResourceService extends SharedEntityService implements ExerciseRes
             case ResourceResource::DOCUMENT_CLASS:
             case ResourceResource::TEXT_CLASS:
             case ResourceResource::MULTIPLE_CHOICE_QUESTION_CLASS:
+            case ResourceResource::ORDER_CLASS:
             case ResourceResource::OPEN_ENDED_QUESTION_CLASS:
                 $resourceResource->setRequiredExerciseResources(array());
                 break;
