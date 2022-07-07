@@ -409,10 +409,12 @@ abstract class ExerciseCreationService implements ExerciseCreationServiceInterfa
         }
 
         //exclude existing resources
+        if($resourceToExclude){
         foreach ($resourceToExclude as $obj){
             if (($key = array_search($obj, $existingResource)) !== false) {
                 unset($existingResource[$key]);
             }
+        }
         }
 
         while ($numberOfOccurrences > 0 && count($existingResource) > 0) {
