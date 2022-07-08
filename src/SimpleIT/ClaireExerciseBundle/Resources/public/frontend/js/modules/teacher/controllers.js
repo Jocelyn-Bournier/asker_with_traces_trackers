@@ -102,6 +102,10 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
                 }
             });
         };
+        $scope.setExerciseVisible = function(directory,$index){
+            directory.visible_exercise[$index]=!directory.visible_exercise[$index];
+            console.log(directory);
+        }
         $scope.activateComper = function (directory) {
             document.getElementById("progress-bar-comper-creation").style.width= '100%';
             document.getElementById("progress-bar-comper-creation").classList.add("progress-bar-striped");
@@ -195,7 +199,11 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
             if ($scope.directory.models === undefined){
                 $scope.directory.models = [];
             }
+            if ($scope.directory.visible_exercise === undefined){
+                $scope.directory.visible_exercise = [];
+            }
             $scope.directory.models.push(model);
+            $scope.directory.visible_exercise.push(true);
         };
         $scope.directoryRemoveField = function (collection, index) {
             collection.splice(index, 1);
