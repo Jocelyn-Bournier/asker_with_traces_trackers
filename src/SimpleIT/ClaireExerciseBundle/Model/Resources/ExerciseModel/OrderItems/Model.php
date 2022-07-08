@@ -87,6 +87,21 @@ class Model extends CommonModel
      */
     private $showValues = null;
 
+     /**
+     * @var boolean $useOrderResource Determine if an orderResource is used
+     * @Serializer\Type("boolean")
+     * @Serializer\Groups({"details", "exercise_model_storage"})
+     */
+    private $useOrderResource = null;
+
+    /**
+     * @var OrderResource $orderResource
+     * @Serializer\Type("SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\OrderResource")
+     * @Serializer\Groups({"details", "exercise_model_storage"})
+     */
+    private $orderResource = null;
+    
+
     /**
      * Get sequenceBlock
      *

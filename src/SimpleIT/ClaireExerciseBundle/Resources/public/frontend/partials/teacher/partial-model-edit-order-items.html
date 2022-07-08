@@ -7,38 +7,47 @@
                 </div>
             </div>
         </accordion-heading>
-        <div>
-            <span data-ng-click="model.content.give_first=!model.content.give_first">
-                <span class="glyphicon" ng-class="{'glyphicon-check': model.content.give_first, 'glyphicon-unchecked': !model.content.give_first}"></span>
-                Donner le premier
-            </span> &nbsp;&nbsp;
-            <span data-ng-click="model.content.give_last=!model.content.give_last">
-                <span class="glyphicon" ng-class="{'glyphicon-check': model.content.give_last, 'glyphicon-unchecked': !model.content.give_last}"></span>
-                Donner le dernier
-            </span>
+        <div data-ng-click="model.content.use_order_resource=!model.content.use_order_resource">
+            <span class="glyphicon" ng-class="{'glyphicon-check': model.content.use_order_resource, 'glyphicon-unchecked': !model.content.use_order_resource}"></span>
+            Utiliser une ressource Ordre
         </div>
         &nbsp;
-        <div data-ng-click="model.content.show_values=!model.content.show_values">
-            <span class="glyphicon" ng-class="{'glyphicon-check': model.content.show_values, 'glyphicon-unchecked': !model.content.show_values}"></span>
-            Montrer les valeurs à la correction
-        </div>
-        &nbsp;
+        <div ng-if="!model.content.use_order_resource">
+            <div>
+                <span data-ng-click="model.content.give_first=!model.content.give_first">
+                    <span class="glyphicon" ng-class="{'glyphicon-check': model.content.give_first, 'glyphicon-unchecked': !model.content.give_first}"></span>
+                    Donner le premier
+                </span> &nbsp;&nbsp;
+                <span data-ng-click="model.content.give_last=!model.content.give_last">
+                    <span class="glyphicon" ng-class="{'glyphicon-check': model.content.give_last, 'glyphicon-unchecked': !model.content.give_last}"></span>
+                    Donner le dernier
+                </span>
+            </div>
+            &nbsp;
+            <div data-ng-click="model.content.show_values=!model.content.show_values">
+                <span class="glyphicon" ng-class="{'glyphicon-check': model.content.show_values, 'glyphicon-unchecked': !model.content.show_values}"></span>
+                Montrer les valeurs à la correction
+            </div>
+            &nbsp;
 
-        <div>
-            Ordre
-            <div class="btn-group">
-                <label class="btn btn-info" ng-model="model.content.order"
-                       btn-radio="'asc'">
-                    Croissant
-                </label>
-                <label class="btn btn-info" ng-model="model.content.order" btn-radio="'desc'">
-                    Décroissant
-                </label>
+            <div>
+                Ordre
+                <div class="btn-group">
+                    <label class="btn btn-info" ng-model="model.content.order"
+                        btn-radio="'asc'">
+                        Croissant
+                    </label>
+                    <label class="btn btn-info" ng-model="model.content.order" btn-radio="'desc'">
+                        Décroissant
+                    </label>
+                </div>
             </div>
         </div>
     </accordion-group>
 </accordion>
 
+
+<div ng-if="!model.content.use_order_resource">
 <accordion>
     <accordion-group class="panel panel-primary" name="accordionBlock"
                      data-ng-repeat="block in model.content.object_blocks track by $index"
@@ -88,3 +97,70 @@
     </div>
 
 </accordion>
+</div>
+
+<div ng-if="model.content.use_order_resource">
+    <accordion>
+        <accordion-group class="panel panel-primary" is-open="true">
+            <accordion-heading class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-12">
+                        Ressource&nbsp;<span class="caret"></span>
+                    </div>
+                </div>
+            </accordion-heading>
+                <div class="panel-body panel panel-primary"
+                    ui-on-Drop="onDropResourceToBlock($event,$data)">
+                    <accordion close-others="true">
+                        <accordion-group class="panel panel-success"  ng-if="model.content.order_resource.type != null">
+                            <accordion-heading class="panel-heading">
+                                <div class="row">
+                                    <div class="col-xs-2">
+                                        <div>
+                                            <span class="glyphicon glyphicon-sort" style="font-size: 260%"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-8">
+                                        <h4>{{ model.content.order_resource.title }}
+                                            &nbsp;<span class="caret"></span>
+                                        </h4>
+                                    </div>
+                                    <div class="col-xs-1">
+
+                                    </div>
+                                    <div class="col-xs-1">
+                                            <span data-ng-click="$event.stopPropagation();modelRemoveOrderResource(model)"
+                                                class="glyphicon glyphicon-remove"></span>
+                                    </div>
+                                </div>
+                            </accordion-heading>
+                            <div class="col-centered">
+                                <label>ID&nbsp;:&nbsp;</label>{{
+                                model.content.order_resource.id }}
+                            </div>
+                            <div class="col-centered">
+                                <label>Auteur&nbsp;:&nbsp;</label>{{ users[model.content.order_resource.author].user_name }}
+                            </div>
+                            <div class="col-centered">
+                                <label>Propriétaire&nbsp;:&nbsp;</label>{{ users[model.content.order_resource.owner].user_name }}
+                            </div>
+                            <div class="col-centered">
+                                <label>Partagé&nbsp;:&nbsp;</label>
+                                <ng-switch on="model.content.order_resource.public">
+                                    <span ng-switch-when="true">Oui</span>
+                                    <span ng-switch-when="false">Non</span>
+                                </ng-switch>
+                            </div>
+                            <div class="col-centered">
+                                <label>Complet&nbsp;:&nbsp;</label>
+                                <ng-switch on="model.content.order_resource.complete">
+                                    <span ng-switch-when="true">Oui</span>
+                                    <span ng-switch-when="false">Non</span>
+                                </ng-switch>
+                            </div>
+                        </accordion-group>
+                    </accordion>
+                </div>
+        </accordion-group>
+    </accordion>
+</div>

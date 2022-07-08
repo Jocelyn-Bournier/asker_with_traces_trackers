@@ -4,18 +4,18 @@
         <div ng-switch="item.item_type">
 
             <div ng-switch-when="text">
-                <accordion-group class="panel panel-success" is-open="false">
-                    <accordion-heading class="panel-heading">
+                <div class="panel panel-success">
+                    <div class="panel-heading">
                         <div class="row">
                             <div class="col-centered pull-left">
                                 <h4>{{item.id}}. Texte</h4>
                             </div>
-                            <input type="text" ng-model="item.content" data-ng-click="$event.stopPropagation()"/>
+                            <input type="text" ng-model="item.content"/>
                             <div class="col-centered pull-right"
                                 style="margin-right:1%">
-                                    <strong ng-if="parentBlock.rule=='constraint'" data-ng-click="$event.stopPropagation(); addConstraint(parentBlock,itemIndex)">Ajouter contrainte</strong>
+                                    <strong ng-if="parentBlock.rule=='constraint'" data-ng-click="addConstraint(parentBlock,itemIndex)">Ajouter contrainte</strong>
                                     <span ng-if="parentBlock.rule=='constraint'"
-                                        data-ng-click="$event.stopPropagation(); addConstraint(parentBlock,itemIndex)"
+                                        data-ng-click="addConstraint(parentBlock,itemIndex)"
                                         class="glyphicon glyphicon-plus"></span>
                                 <strong data-ng-click="removeFromBlock(parentBlock, itemIndex)">Supprimer</strong>
                                 <span
@@ -27,14 +27,20 @@
                             <div class="row">
                                 <div class="col-centered pull-left">
                                     <strong>Position(s) acceptée(s) :</strong>
-                                    <input type="text" ng-model="block.rules[itemIndex]" data-ng-click="$event.stopPropagation();">
+                                    <span data-ng-repeat="itemRule in parentBlock.rules[itemIndex] track by $index">
+                                        <select ng-model="itemRule" ng-options="x for x in generateNumbers(parentBlock.items.length)" 
+                                        style="width:auto">
+                                        </select>
+                                    </span>&nbsp;
+                                    <span data-ng-click="addPosition(parentBlock,itemIndex)"
+                                        class="glyphicon glyphicon-plus"></span>
                                 </div>
                             </div>
                         </div>
                         <div ng-if="parentBlock.rule=='constraint'" data-ng-repeat="constraint in parentBlock.rules[itemIndex] track by $index">
                             <div class="row">
                                 <div class="col-centered pull-left">
-                                    <span data-ng-click="removeConstraint(parentBlock, itemIndex, $index); $event.stopPropagation()"
+                                    <span data-ng-click="removeConstraint(parentBlock, itemIndex, $index)"
                                         class="glyphicon glyphicon-remove"></span>
                                     <select ng-model="constraint.type" ng-options="x for x in typeOfConstraints">
                                     </select>
@@ -55,8 +61,8 @@
                                 </div>
                             </div>
                         </div>
-                    </accordion-heading>
-                </accordion-group>
+                    </div>
+                </div>
             </div>
 
             <div ng-switch-when="block">
@@ -83,9 +89,16 @@
                             <div class="row">
                                 <div class="col-centered pull-left">
                                     <strong>Position(s) acceptée(s) :</strong>
-                                    <input type="text" ng-model="block.rules[itemIndex]" data-ng-click="$event.stopPropagation();">
+                                    <span data-ng-repeat="itemRule in parent.rules[itemIndex] track by $index">
+                                        <select ng-model="itemRule" ng-options="x for x in generateNumbers(parent.items.length)" 
+                                        style="width:auto" data-ng-click="$event.stopPropagation();">
+                                        </select>
+                                    </span>&nbsp;
+                                    <span data-ng-click="$event.stopPropagation(); addPosition(parent,itemIndex)"
+                                        class="glyphicon glyphicon-plus"></span>
                                 </div>
                             </div>
+                            <br>
                         </div>
                         <div ng-if="parent.rule=='constraint'" data-ng-repeat="constraint in parent.rules[itemIndex] track by $index">
                             <div class="row">
@@ -99,12 +112,14 @@
                                     <div ng-switch="constraint.type">
                                         <div ng-switch-when="fix">
                                            <strong>à la position </strong>
-                                           <select ng-model="constraint.values[0]" ng-options="x for x in generateNumbers(parent.items.length,itemIndex+1)">
+                                           <select ng-model="constraint.values[0]" data-ng-click="$event.stopPropagation();"
+                                           ng-options="x for x in generateNumbers(parent.items.length,itemIndex+1)">
                                            </select> 
                                         </div>
                                         <div ng-switch-default>
                                             <strong>le numéro </strong>
-                                            <select ng-model="constraint.values[0]" ng-options="x for x in generateNumbers(parent.items.length,itemIndex+1)">
+                                            <select ng-model="constraint.values[0]" data-ng-click="$event.stopPropagation();"
+                                            ng-options="x for x in generateNumbers(parent.items.length,itemIndex+1)">
                                             </select>
                                         </div>
                                     </div>
@@ -137,14 +152,14 @@
     </div>
 </accordion>
 
-<div data-ng-click="addText(parentBlock,parentBlock.items.length)">
+<div data-ng-click="addText(parentBlock,parentBlock.items.length,parentBlock.rule)">
     <div>
         <span class="glyphicon glyphicon-plus" title="Ajouter une proposition"></span>&nbsp;&nbsp;
         <strong>Ajouter un texte</strong>
     </div>
     <br>
 </div>
-<div data-ng-click="addGroup(parentBlock,parentBlock.items.length)">
+<div data-ng-click="addGroup(parentBlock,parentBlock.items.length,parentBlock.rule)">
     <div>
         <span class="glyphicon glyphicon-plus" title="Ajouter une proposition"></span>&nbsp;&nbsp;
         <strong>Ajouter un bloc</strong>

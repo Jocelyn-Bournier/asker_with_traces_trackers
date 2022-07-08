@@ -235,30 +235,35 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
                 $scope.filters.type.picture = 'picture';
                 $scope.filters.type.open_ended_question = '';
                 $scope.filters.type.sequence = '';
+                $scope.filters.type.order = '';
             } else if (newValue == 'multiple-choice') {
                 $scope.filters.type.multiple_choice_question = 'multiple-choice-question';
                 $scope.filters.type.text = '';
                 $scope.filters.type.picture = '';
                 $scope.filters.type.open_ended_question = '';
                 $scope.filters.type.sequence = '';
+                $scope.filters.type.order = '';
             } else if (newValue == 'group-items') {
                 $scope.filters.type.multiple_choice_question = '';
                 $scope.filters.type.text = 'text';
                 $scope.filters.type.picture = 'picture';
                 $scope.filters.type.open_ended_question = '';
                 $scope.filters.type.sequence = '';
-            } else if (newValue == 'sequence') {
+                $scope.filters.type.order = '';
+            } else if (newValue == 'order-items') {
                 $scope.filters.type.multiple_choice_question = '';
                 $scope.filters.type.text = '';
                 $scope.filters.type.picture = '';
                 $scope.filters.type.open_ended_question = '';
                 $scope.filters.type.sequence = '';
+                $scope.filters.type.order = 'order';
             } else if (newValue == 'open-ended-question') {
                 $scope.filters.type.multiple_choice_question = '';
                 $scope.filters.type.text = '';
                 $scope.filters.type.picture = '';
                 $scope.filters.type.open_ended_question = 'open-ended-question';
                 $scope.filters.type.sequence = '';
+                $scope.filters.type.order = '';
             }
         });
 
@@ -566,7 +571,7 @@ resourceControllers.controller('resourceListController', ['$scope', '$state', 'R
                 });
             } else if (type == 'multiple-choice-question') {
                 Resource.save($scope.resourceContext.newResources.multiple_choice_question, function (data) {
-                    $scope.resources[data.id] = data;
+                    $scope.resources[data.id] = data;modelRemoveOrderResource
                     if ($scope.parentSection === 'model') {
                         $state.go('modelEdit.resourceEdit', {resourceid: data.id});
                     } else {
@@ -882,7 +887,7 @@ resourceControllers.controller('resourceEditOrderController', ['$scope',
         $scope.typeOfConstraints=["fix","before","after"];
 
 
-        $scope.addGroup = function(resource, position){
+        $scope.addGroup = function(resource, position, rule){
             console.log("add in position "+position);
             resource.items.splice(
                 position,
@@ -891,11 +896,16 @@ resourceControllers.controller('resourceEditOrderController', ['$scope',
             resource.items[position].content=jQuery.extend(true, {}, $scope.resourceContext.newResources.order_block);
             resource.items[position].id=resource.items.length;
             resource.items[position].item_type="block";
-            resource.rules[position]=[];
+            if(rule == 'position'){
+                resource.rules[position]=[position+1]
+            }
+            else{
+                resource.rules[position]=[];
+            }
             console.log(resource);
         }
 
-        $scope.addText = function (resource, position){
+        $scope.addText = function (resource, position, rule){
             console.log("add in position "+position);
             resource.items.splice(
                 position,
@@ -903,7 +913,12 @@ resourceControllers.controller('resourceEditOrderController', ['$scope',
                 jQuery.extend(true, {}, $scope.resourceContext.newResources.order_item));
             resource.items[position].id=resource.items.length;
             resource.items[position].item_type="text";
-            resource.rules[position]=[];
+            if(rule == 'position'){
+                resource.rules[position]=[position+1]
+            }
+            else{
+                resource.rules[position]=[];
+            }
             console.log(resource);
         }
 
@@ -922,15 +937,21 @@ resourceControllers.controller('resourceEditOrderController', ['$scope',
             resource.rules[id].splice(
                 0,
                 0,
-                jQuery.extend(true, {}, $scope.resourceContext.newResources.order_constraint))
+                jQuery.extend(true, {}, $scope.resourceContext.newResources.order_constraint));
         }
 
         $scope.removeConstraint = function(resource, idItem, idConstraint){
             resource.rules[idItem].splice(idConstraint,1);
         }
 
+        $scope.addPosition = function(resource, id){
+            resource.rules[id].splice(
+                resource.rules.length,
+                0,
+                id+1);
+        }
+
         $scope.generateNumbers = function(number, exclude1=0, exclude2=0){
-            console.log("generate tab for "+number+" without "+exclude1+" and "+exclude2);
             tab = [];
             for (i=1; i<=number; i++){
                 if(i!=exclude1 && i!=exclude2){
@@ -1029,7 +1050,8 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
                                 "meta_key": ""
                             }
                         ],
-                        "is_sequence": false,
+                        "use_order_resource": false,
+                        "order_resource": null,
                         "give_first": false,
                         "give_last": false,
                         "order": "asc",
@@ -1778,6 +1800,27 @@ modelControllers.controller('modelEditOrderItemsController', ['$scope',
             });
             return returnValue;
         };
+
+        $scope.modelRemoveOrderResource = function(model){
+            model.content.order_resource = null;
+        };
+
+        $scope.onDropResourceToBlock = function (event, resource) {
+            if (resource.type == 'order') {
+                if (resource.owner === BASE_CONFIG.currentUserId) {
+                    $scope.model.content.order_resource = resource;
+                } else {
+                    var dial = confirm("Pour utiliser cette ressource qui ne vous appartient pas, vous devez l'importer dans votre espace personnel. Pour cela, vous pouvez vous abonner à cette ressource. Vous bénéficierez des modifications apportées par l'auteur et ne pourrez la modifier de votre côté. Il faudrait pour cela l'importer.\n\nVoulez-vous vous abonner à cette ressource ?");
+                    if (dial == true) {
+                        Resource.subscribe({id: resource.id}, function (data) {
+                            $scope.resources[data.id] = data;
+                            $scope.model.content.order_resource = resource;
+                        });
+                    }
+                }
+            }
+        };
+
     }]);
 
 modelControllers.controller('modelEditMultipleChoiceController', ['$scope',
