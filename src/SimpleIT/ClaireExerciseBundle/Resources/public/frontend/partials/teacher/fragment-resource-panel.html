@@ -103,6 +103,12 @@
                            data-ng-repeat="keyword in resource.keywords track by $index" style="margin: 2px;">
                         &nbsp;{{ keyword }}&nbsp;
                     </label>
+                    <label class="panel panel-success"
+                           title="Annotation de cette ressource"
+                           data-ng-repeat="annotation in resource.content.annotations_list track by $index" style="margin: 2px;">
+                        &nbsp;{{ annotation.name }}&nbsp;
+
+                    </label>
                 </div>
             </div>
         </div>

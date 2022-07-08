@@ -398,7 +398,7 @@ class ExerciseResourceService extends SharedEntityService implements ExerciseRes
                         break;
                     case CommonResource::TEXT_WITH_HOLES:
                         /** @var DocumentResource $content */
-                        $complete = true;
+                        $complete = $this->checkTextWithHolesComplete($content, $errorCode);;
                         break;
                     default:
                         throw new InconsistentEntityException('Invalid type');
@@ -499,6 +499,12 @@ class ExerciseResourceService extends SharedEntityService implements ExerciseRes
     {
         if ($content->getText() === null) {
             $errorCode = '802';
+
+            return false;
+        }
+
+        if (!$content->checkAnnotationsListHolesGeneration()){
+            $errorCode = '812';
 
             return false;
         }

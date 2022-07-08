@@ -41,7 +41,11 @@ mainAppControllers.controller('mainManagerController', ['$scope', '$sce', '$rout
             '808': 'Impossible de valider le contenu de la séquence',
             '809': 'Chaque formule doit posséder un nom',
             '810': 'Chaque formule doit posséder une équation ou faire référence à une connaissance du domaine',
-            '901': "Il faut préciser le Titre"
+            '812': 'Au moins une des listes de contraintes ne permet pas de générer de "trous"',
+            '901': "Il faut préciser le Titre",
+            '1001': 'Il est nécessaire d\'avoir au moins une ressource',
+            '1002': 'Il est nécessaire de choisir au moins une liste d\'annotation',
+            '1003': 'Au moins une des ressources sélectionnées ne permet pas de générer sufisament d\'éléments pour le taux de couverture indiqué'
         };
 
         if (typeof $rootScope.models === 'undefined') {

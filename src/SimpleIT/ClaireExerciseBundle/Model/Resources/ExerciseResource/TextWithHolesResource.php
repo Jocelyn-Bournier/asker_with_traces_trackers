@@ -20,6 +20,7 @@ namespace SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource;
 
 use JMS\Serializer\Annotation as Serializer;
 use SimpleIT\ClaireExerciseBundle\Exception\InvalidExerciseResourceException;
+use stdClass;
 
 /**
  * Class TextResource
@@ -240,22 +241,6 @@ class TextWithHolesResource extends CommonResource
         if ($constraint->cle != null){
             if($constraint->valeur == ""){
                 $tabCle = array_filter($annotations,(function ($annotation) use ($constraint) {return $annotation->cle == $constraint->cle;}));
-                $tabCleValeur = array();
-                /*
-                    foreach($annotations as $annotation) {
-                        foreach($tabCle as $cle){
-                            echo $cle->indiceDebut == $annotation->indiceDebut;
-                            echo $cle->indiceFin == $annotation->indiceFin;
-                            if($cle->indiceDebut == $annotation->indiceDebut && $cle->indiceFin == $annotation->indiceFin){
-                                array_push($tabCleValeur, );
-                                if(array_search($cle, $tabCleValeur) === -1 ){array_push($tabCleValeur, $cle);}
-                                if(array_search($annotation, $tabCleValeur) === -1){array_push($tabCleValeur, $annotation);}
-                            }
-                        }
-                    }
-
-                    return $tabCleValeur;
-                    */
                 return $tabCle;
                 } else {
                 $tabCle = array_filter($annotations,(function ($annotation) use ($constraint) {return $annotation->cle == $constraint->cle;}));
@@ -324,6 +309,15 @@ class TextWithHolesResource extends CommonResource
         }
     }
 
+    private function getConstraint($listName): ? array {
+        foreach ($this->annotationsList as $annotation){
+            if ($annotation->name == $listName){
+                return $annotation->constraint;
+            }
+        }
+        return null;
+    }
+
     /**
      * Validate text resource
      *
@@ -331,9 +325,48 @@ class TextWithHolesResource extends CommonResource
      */
     public function  validate($param = null)
     {
+        echo "toto";
         if (is_null($this->text) || $this->text == '') {
-            throw new InvalidExerciseResourceException('Invalid Text with holes resource');
+            throw new InvalidExerciseResourceException('A text is needed');
         }
+
+        $errorOnAnnotations = $this->checkAnnotationsListHolesGeneration();
+        if (count($errorOnAnnotations) > 0){
+            throw new InvalidExerciseResourceException('Following annotations lists can\'t be used to generate holes : ' . json_encode($errorOnAnnotations));
+        }
+    }
+
+    public function checkAnnotationsListHolesGeneration() {
+
+        $annotations = [];
+        foreach ($this->getAnnotations() as $annotation){
+            $annotations[] = (object) $annotation;
+        }
+
+        foreach($this->getAnnotationsList() as $annotationList) {
+            $filteredElements = $this->filterByConstraint($annotations, (object) $annotationList['constraint']);
+            $nbHoles = count($filteredElements);
+            if ($nbHoles == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private function ToObject($Array) {
+
+        // Create new stdClass object
+        $object = new stdClass();
+
+        // Use loop to convert array into
+        // stdClass object
+        foreach ($Array as $key => $value) {
+            if (is_array($value)) {
+                $value = $this->ToObject($value);
+            }
+            $object->$key = $value;
+        }
+        return $object;
     }
 
 }

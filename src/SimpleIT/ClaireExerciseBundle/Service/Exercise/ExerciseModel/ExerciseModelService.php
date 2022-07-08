@@ -35,6 +35,7 @@ use SimpleIT\ClaireExerciseBundle\Exception\InconsistentEntityException;
 use SimpleIT\ClaireExerciseBundle\Exception\InvalidTypeException;
 use SimpleIT\ClaireExerciseBundle\Exception\NoAuthorException;
 use SimpleIT\ClaireExerciseBundle\Exception\NonExistingObjectException;
+use SimpleIT\ClaireExerciseBundle\Model\ExerciseObject\ExerciseTextWithHoles;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\DomainKnowledge\Formula\LocalFormula;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\Exercise\Common\CommonExercise;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModel\Common\CommonModel;
@@ -51,9 +52,11 @@ use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModel\OrderItems\Model
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModel\OrderItems\ObjectBlock as OIObjectBlock;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModel\PairItems\Model as PairItems;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModel\PairItems\PairBlock;
+use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModel\TextWithHoles\Model;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModelResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModelResourceFactory;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\CommonResource;
+use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\TextWithHolesResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\KnowledgeResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ModelObject\MetadataConstraint;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ModelObject\ModelDocument;
@@ -453,7 +456,7 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
                         break;
                     case CommonModel::TEXT_WITH_HOLES:
                         /** @var OrderItems $content */
-                        $complete = true;
+                        $complete = $this->checkTWHComplete($content, $errorCode);
                         break;
                     default:
                         throw new InconsistentEntityException('Invalid type');
@@ -756,7 +759,7 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
      */
     private function checkOEQComplete(
         OpenEnded $content,
-        &$errorCode
+                  &$errorCode
     )
     {
         if (is_null($content->isShuffleQuestionsOrder())) {
@@ -783,6 +786,64 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
             }
         }
 
+        return true;
+    }
+
+    /**
+     * Check if a text with hole model is complete
+     *
+     * @param Model $content
+     * @param string $errorCode
+     *
+     * @return bool
+     */
+    private function checkTWHComplete(
+        Model $content,
+        &$errorCode
+    )
+    {
+
+        if (count($content->getRessources()) == 0) {
+            $errorCode = '1001';
+
+            return false;
+        }
+
+        if (count($content->getAnnotationsLists()) == 0) {
+            $errorCode = '1002';
+
+            return false;
+        }
+
+                foreach ($content->getCoverages() as $coverage) {
+                    if ($coverage['type'] == "nbElements") {
+                        foreach ($content->getRessources() as $resource) {
+                            $res = $this->exerciseResourceService->get($resource);
+                            $res = json_decode($res->getContent());
+                            $res = get_object_vars($res);
+                            foreach($res['annotations_list'] as $constraint){
+                                $constraint = get_object_vars($constraint);
+                                if($coverage['isGlobal'] || $constraint['name'] == $coverage['listName']){
+                                    if(!$this->checkCoverage($res['annotations'],$constraint['constraint'], $coverage['value'])){
+                                        $errorCode = '1003';
+
+                                        return false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+        return true;
+    }
+
+    private function checkCoverage($annotations, $constraint, $value): bool {
+        $filteredElements = TextWithHolesResource::filterByConstraint($annotations, $constraint);
+        $coverNb = count($filteredElements);
+        if ($coverNb < $value){
+            return false;
+        }
         return true;
     }
 

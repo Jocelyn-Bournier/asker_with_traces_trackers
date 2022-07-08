@@ -20,6 +20,8 @@ namespace SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModel\TextWithHo
 
 use JMS\Serializer\Annotation as Serializer;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModel\Common\CommonModel;
+use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\TextWithHolesResource;
+use SimpleIT\ClaireExerciseBundle\Service\Exercise\ExerciseResource\ExerciseResourceServiceInterface;
 
 /**
  * A short answer question model. It contains blocks of questions and a parameter to
@@ -120,7 +122,6 @@ class Model extends CommonModel
      * @Serializer\Groups({"details", "exercise_model_storage"})
      */
     private $indicationKey = null;
-
 
     /**
      * Set shared constraint
@@ -370,7 +371,5 @@ class Model extends CommonModel
     {
         $this->indications = $indications;
     }
-
-
 
 }
