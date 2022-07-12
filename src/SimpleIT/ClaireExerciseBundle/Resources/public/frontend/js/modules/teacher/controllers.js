@@ -1431,6 +1431,8 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
                             'initialElementAsIndication': true,
                             'keyAsIndication': null
                         },
+                        "is_list": true,
+                        "resource_constraint": [],
                         "ressources": [],
                         "sharedTags": [],
                         "sharedConstraint": [],
@@ -1492,6 +1494,7 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
         };
 
         $scope.modelAddBlockResourceConstraint = function (metadata_constraints, type) {
+            console.log(metadata_constraints);
             var newElement;
             if (type == 'exists') {
                 newElement = jQuery.extend(true, {}, $scope.modelContext.newModel.block_constraint.exists);

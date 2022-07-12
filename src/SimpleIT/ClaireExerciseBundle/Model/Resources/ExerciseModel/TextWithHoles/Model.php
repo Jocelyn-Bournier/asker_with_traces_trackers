@@ -21,6 +21,7 @@ namespace SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModel\TextWithHo
 use JMS\Serializer\Annotation as Serializer;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModel\Common\CommonModel;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\TextWithHolesResource;
+use SimpleIT\ClaireExerciseBundle\Model\Resources\ModelObject\ObjectConstraints;
 use SimpleIT\ClaireExerciseBundle\Service\Exercise\ExerciseResource\ExerciseResourceServiceInterface;
 
 /**
@@ -32,12 +33,30 @@ use SimpleIT\ClaireExerciseBundle\Service\Exercise\ExerciseResource\ExerciseReso
  */
 class Model extends CommonModel
 {
+
+    /**
+     * @var bool $isList
+     * @Serializer\Type("bool")
+     * @Serializer\Groups({"details", "exercise_model_storage"})
+     */
+    private $isList = false;
+
     /**
      * @var array $sharedTags
      * @Serializer\Type("array")
      * @Serializer\Groups({"details", "exercise_model_storage"})
      */
     private $sharedTags = array();
+
+    /**
+     * The object constraints. If it is null, the Block contains a
+     * list of ObjectId
+     *
+     * @var ObjectConstraints $resourceConstraint
+     * @Serializer\Type("SimpleIT\ClaireExerciseBundle\Model\Resources\ModelObject\ObjectConstraints")
+     * @Serializer\Groups({"details", "exercise_model_storage"})
+     */
+    protected $resourceConstraint = null;
 
     /**
      * @var array $sharedConstraints
@@ -371,5 +390,40 @@ class Model extends CommonModel
     {
         $this->indications = $indications;
     }
+
+    /**
+     * @return ObjectConstraints
+     */
+    public function getResourceConstraint(): ?ObjectConstraints
+    {
+        return $this->resourceConstraint;
+    }
+
+    /**
+     * @param ObjectConstraints $resourceConstraint
+     */
+    public function setResourceConstraint(?ObjectConstraints $resourceConstraint): void
+    {
+        $this->resourceConstraint = $resourceConstraint;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isList(): bool
+    {
+        return $this->isList;
+    }
+
+    /**
+     * @param bool $isList
+     */
+    public function setIsList(bool $isList): void
+    {
+        $this->isList = $isList;
+    }
+
+
+
 
 }

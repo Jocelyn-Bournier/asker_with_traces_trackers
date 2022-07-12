@@ -57,6 +57,19 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
         }
 
         /**
+         * Génère un exercise en enregistrant la source de génération
+         * @param location l'url de l'exercise
+         */
+        $scope._createExerciseFromId = function (modelId) {
+            $.cookie('exerciseGeneratedFrom', 'profile');
+
+                exercise = ExerciseByModel.try({modelId: modelId},
+                    function (exercise) {
+                        $scope.tryExercise(exercise);
+                    });
+        }
+
+        /**
          * Sélectionne un onglet entre l'onglet d'activités ou de gestion de l'activité (profil et recommandations)
          * @param tab L'onglet à ouvrir'
          */
@@ -482,6 +495,23 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
             };
             $scope.profileVisu.onMouseEnter = (node) => {};
             $scope.profileVisu.draw();
+
+            for(let exercise of document.getElementsByClassName('exercise-olm')){
+                let exerciseName = exercise.id.split("exercise-")[1];
+                let location = $scope.titleToLocation(exerciseName);
+                exercise.addEventListener('click', function() {
+                    $scope._createExerciseFromId(location);
+
+                }, false);
+                exercise.addEventListener('mouseenter', function() {
+                    exercise.style.cursor = "pointer";
+                    exercise.style.fontWeight = "bold";
+
+                }, false);
+                exercise.addEventListener('mouseleave', function() {
+                    exercise.style.fontWeight = "normal";
+                }, false);
+            }
             document.getElementById('olm-options').classList.remove('hidden');
 
             document.getElementById('olm-colors').innerHTML = `
@@ -630,6 +660,28 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
             }
         };
 
+        $scope.titleToLocation = function (title) {
+            console.log(title);
+            if ($scope.directory.models != null){
+                for(let model of $scope.directory.models){
+                    if (title == model.title){
+                        return model.id;
+                    }
+                }
+            }
+            if($scope.directory.subs != null){
+                for(let sub of $scope.directory.subs){
+                    if (sub.models != null){
+                        for(let model of sub.models){
+                            if (title == model.title){
+                                return model.id;
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
         $scope._changeOLMVisu = function (){
             $scope.selectedOption = parseInt(document.getElementById("olm-options").value);
             document.getElementById('olm-target').innerHTML = '';
@@ -667,12 +719,27 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                     action = 'change_to_treeSunburst';
                     break;
             }
-            $scope.profileVisu.onClick = (node) => {
-                $scope.selectedNode = node.data.name;
-                $scope.selectionIntention.style.display = "block";
-            };
+
             $scope.profileVisu.onMouseEnter = (node) => {};
             $scope.profileVisu.draw();
+            for(let exercise of document.getElementsByClassName('exercise-olm')){
+                let exerciseName = exercise.id.split("exercise-")[1];
+                let location = $scope.titleToLocation(exerciseName);
+                console.log(exerciseName);
+                console.log(location);
+                exercise.addEventListener('click', function() {
+                    $scope._createExerciseFromId(location);
+
+                }, false);
+                exercise.addEventListener('mouseenter', function() {
+                    exercise.style.cursor = "pointer";
+                    exercise.style.fontWeight = "bold";
+
+                }, false);
+                exercise.addEventListener('mouseleave', function() {
+                    exercise.style.fontWeight = "normal";
+                }, false);
+            }
             document.getElementById('olm-options').classList.remove('hidden');
         }
 

@@ -76,7 +76,7 @@ class TextWithHolesService extends ExerciseCreationService
     {
         $exercise = new Exercise($model->getWording());
 
-        $this->setItems($exercise, $model);
+        $this->setItems($exercise, $model, $owner);
 
         // Documents
         $this->addDocuments($model, $exercise, $owner);
@@ -87,12 +87,24 @@ class TextWithHolesService extends ExerciseCreationService
         return $exercise;
     }
 
-    private function setItems(Exercise $exercise, Model $model){
-        $ressource = $model->getRessources()[array_rand($model->getRessources())];
-        //foreach($model->getRessources() as $ressource){
+    private function setItems(Exercise $exercise, Model $model, AskerUser $owner){
+        if($model->isList()) {
+            $ressource = $model->getRessources()[array_rand($model->getRessources())];
             $res = $this->exerciseResourceService->get($ressource);
             $exercise->addItem($res, $model);
-        //}
+            //}
+        } else {
+            $oc = $model->getResourceConstraint();
+            $oc->setType(CommonResource::TEXT_WITH_HOLES);
+            $ressourcesList = $this->exerciseResourceService
+                ->getResourcesFromConstraintsByOwner(
+                    $oc,
+                    $owner
+                );
+            $ressource = $ressourcesList[array_rand($ressourcesList)];
+            $res = $this->exerciseResourceService->get($ressource);
+            $exercise->addItem($ressource, $model);
+        }
     }
 
     /**
