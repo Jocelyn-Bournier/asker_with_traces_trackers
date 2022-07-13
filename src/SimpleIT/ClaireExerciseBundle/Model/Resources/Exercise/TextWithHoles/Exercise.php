@@ -134,8 +134,24 @@ class Exercise extends CommonExercise
                     }
                 }
 
+            usort($holesWithIndications, function($a, $b){
+                $value = $a->indiceDebut - $b->indiceFin;
+                if($value != 0){
+                    return $a->indiceDebut - $b->indiceFin;
+                } else {
+                    return $a->indiceDebut - $b->indiceFin;
+                }
+            });
         $newItem->setHoles($holesWithIndications);
         } else {
+            usort($holesWithAnswers, function($a, $b){
+                $value = $a->indiceDebut - $b->indiceFin;
+                if($value != 0){
+                    return $a->indiceDebut - $b->indiceFin;
+                } else {
+                    return $a->indiceDebut - $b->indiceFin;
+                }
+            });
             $newItem->setHoles($holesWithAnswers);
         }
         $this->item = [$newItem];

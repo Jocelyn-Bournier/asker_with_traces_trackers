@@ -779,6 +779,7 @@ resourceControllers.controller('resourceEditController', ['$scope', '$modal', 'R
                 addValue = -1;
             }
 
+            let boldToRemove = [];
             for(indice of $scope.editedResource.content.bold){
                 if (positionStart < indice[0]){
                     if (positionStart != positionStop){
@@ -795,7 +796,14 @@ resourceControllers.controller('resourceEditController', ['$scope', '$modal', 'R
                         indice[1] += addValue;
                     }
                 }
+                if(indice[0] >= indice[1]){
+                    boldToRemove.push(tag);
+                }
             }
+            for(tag of boldToRemove){
+                $scope.editedResource.content.bold.splice($scope.editedResource.content.bold.indexOf(tag),1);
+            }
+            let italizeToRemove = [];
             for(indice of $scope.editedResource.content.italize){
                 if (positionStart < indice[0]){
                     if (positionStart != positionStop){
@@ -812,7 +820,14 @@ resourceControllers.controller('resourceEditController', ['$scope', '$modal', 'R
                         indice[1] += addValue;
                     }
                 }
+                if(indice[0] >= indice[1]){
+                    italizeToRemove.push(tag);
+                }
             }
+            for(tag of italizeToRemove){
+                $scope.editedResource.content.italize.splice($scope.editedResource.content.italize.indexOf(tag),1);
+            }
+            let underlineToRemove = [];
             for(indice of $scope.editedResource.content.underline){
                 if (positionStart < indice[0]){
                     if (positionStart != positionStop){
@@ -829,7 +844,14 @@ resourceControllers.controller('resourceEditController', ['$scope', '$modal', 'R
                         indice[1] += addValue;
                     }
                 }
+                if(indice[0] >= indice[1]){
+                    underlineToRemove.push(tag);
+                }
             }
+            for(tag of underlineToRemove){
+                $scope.editedResource.content.underline.splice($scope.editedResource.content.underline.indexOf(tag),1);
+            }
+            let annotationsToRemove = [];
             for(tag of $scope.editedResource.content.annotations){
                 if (positionStart < tag["indiceDebut"]){
                     if (positionStart != positionStop){
@@ -846,6 +868,12 @@ resourceControllers.controller('resourceEditController', ['$scope', '$modal', 'R
                         tag["indiceFin"] += addValue;
                     }
                 }
+                if(tag["indiceDebut"] >= tag["indiceFin"]){
+                    annotationsToRemove.push(tag);
+                }
+            }
+            for(tag of annotationsToRemove){
+                $scope.editedResource.content.annotations.splice($scope.editedResource.content.annotations.indexOf(tag),1);
             }
             for(errors of $scope.editedResource.content.errors_list) {
                 for (err of errors.errors) {
@@ -863,6 +891,9 @@ resourceControllers.controller('resourceEditController', ['$scope', '$modal', 'R
                         } else {
                             err["indiceFin"] += addValue;
                         }
+                    }
+                    if(err["indiceDebut"] >= err["indiceFin"]){
+                        errors.errors.splice(errors.errors.indexOf(err), 1);
                     }
                 }
             }

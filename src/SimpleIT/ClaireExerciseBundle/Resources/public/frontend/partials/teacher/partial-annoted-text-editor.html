@@ -768,7 +768,7 @@ mark{
                     <div class="custom-area" style=" height:40%;font-family: Courier New;" ng-model="editedResource.content.text">
                     </div>
                 </div>
-                <textarea ng-model="editedResource.content.text" id="myTextArea" style="width:40%; height:50vh;font-family: Courier New;" onselectionchange="handleSelection(event)" ng-keypress="_updateIndices($event,'key')" ng-keydown="_handleDown($event)" ng-paste="_updateIndices($event,'paste')" onclick="drawText()" onfocusout="handleFocusOut(event)"></textarea>
+                <textarea ng-model="editedResource.content.text" id="myTextArea" style="width:40%; height:50vh;font-family: Courier New;" onselectionchange="handleSelection(event)" ng-keypress="_updateIndices($event,'key');" ng-keydown="_handleDown($event)" ng-paste="_updateIndices($event,'paste')" onclick="drawText()" onfocusout="handleFocusOut(event)"></textarea>
             </div>
         </div>
     </div>
