@@ -1,0 +1,33 @@
+{% extends "SimpleITClaireExerciseBundle:Frontend:template_creator.html.twig" %}
+{% block content %}
+  <div class='row'>
+    <br>
+    <div class='col-xs-6 col-xs-offset-3'>
+      {% form_theme form 'bootstrap_3_layout.html.twig' %}
+        {{ form_start(form) }}
+          {{form_label(form.attachment)}}
+          {{form_widget(form.attachment)}}
+          {{ form_errors(form) }}
+          <p class="help-block">
+            Fichier au format CSV avec un ";" comme séparateur pour les comptes externes<br>
+            Lyon1: identifiant au format 11234567 ou p1234567<br>
+            Extérieur: ext_prenom.nom;password
+          </p>
+          {{form_row(form.roles)}}
+          {{form_row(form.directory)}}
+          <input type="submit" value="Envoyer"
+          class="btn btn-success" />
+        {{ form_end(form) }}
+        <br>
+        {% for label, messages in app.flashes(['success', 'warning','danger']) %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }}">
+                    {{ message|raw }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+
+  </div>
+{% endblock %}
+

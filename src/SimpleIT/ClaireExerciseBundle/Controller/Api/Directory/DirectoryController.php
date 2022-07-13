@@ -180,6 +180,7 @@ class DirectoryController extends BaseController
                 $directories[$key]["subs"] = $val[0]["total"];
             }
             $directories[$key]["models"] = $repo->countModels($dir["id"])[0]["total"];
+            $directories[$key]["nbVisibleExercise"] = $repo->countVisibleModels($dir["id"]);
         }
         return new ApiGotResponse($directories, array('list', 'Default'));
     }

@@ -30,3 +30,6 @@ admin_show_aur:
 admin_importlocal:
     path: /import/local
     defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Admin:importLocal }
+admin_import_file:
+    path: /import/file
+    defaults: { _controller: SimpleITClaireExerciseBundle:Frontend/Admin:importFile }

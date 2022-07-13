@@ -396,7 +396,7 @@ class MultipleChoiceService extends ExerciseCreationService
                     $mark += 100/$numberOfRight;
                 }
                 else{
-                    $mark -= 100/$numberOfRight;
+                    $mark -= 50/$numberOfRight;
                 }
             }
         }

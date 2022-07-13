@@ -40,8 +40,35 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
         if ($resource === null) {
             throw new NonExistingObjectException();
         }
+        else{
+            $resource->constructVisibleExercise();
+            $this->findVisibleExercise($resource, $directoryId);
+            foreach ($resource->getSubs() as $sub){
+                $sub->constructVisibleExercise();
+                $this->findVisibleExercise($sub,$sub->getId());
+            }
+        }
 
         return $resource;
+    }
+
+    public function findVisibleExercise(&$resource, $directoryId){
+        foreach($resource->getModels() as $mod){
+            $sql = "SELECT dm.visible
+                FROM directories_models dm
+                WHERE dm.model_id =" . $mod->getId() . "
+                    AND dm.directory_id =" .$directoryId
+            ;
+            $stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+            $stmt->execute();
+            if ($stmt->fetchFirstColumn()[0] == "0")
+            {
+                $resource->addVisibleExercise(false);
+            }
+            else {
+                $resource->addVisibleExercise(true);
+            }
+        }
     }
 
     public function findNews($user)
@@ -350,6 +377,20 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
             ->getResult();
     }
 
+    public function countVisibleModels($parent)
+    {
+        $sql = "
+            SELECT count(dm.model_id)
+            FROM directories_models dm
+            WHERE dm.directory_id = ".$parent."
+            AND dm.visible = true
+            "
+        ;
+        $stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+        $stmt->executeQuery();
+        return $stmt->fetchFirstColumn()[0];
+    }
+
     public function countModelChildrens($parent)
     {
         return $this->createQueryBuilder('d')
@@ -415,6 +456,25 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+
+    function updateVisibleExercise($visibleExercise,$dirId,$modelId){
+        if ($visibleExercise){
+            $visibleExercise = "true";
+        } else{
+            $visibleExercise = "false";
+        }
+        $sql = "
+            UPDATE directories_models
+            SET visible = " . $visibleExercise . "
+            WHERE directory_id = " . $dirId . "
+                AND model_id = " . $modelId
+        ;
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare($sql);
+        $stmt->executeQuery();
+    }
+
 
     /**
      * ANR COMPER
@@ -542,6 +602,7 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
             JOIN directory d
                 ON d.id = dm.directory_id
             WHERE d.parent_id = :id
+                AND dm.visible = true
         ";
         $conn = $this->getEntityManager()->getConnection();
         $stmt = $conn->prepare($sql);
@@ -559,6 +620,7 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
             JOIN directory d
                 ON d.id = dm.directory_id
             WHERE d.parent_id = :id or d.id = :id
+                AND dm.visible = true
         ";
         $conn = $this->getEntityManager()->getConnection();
         $stmt = $conn->prepare($sql);

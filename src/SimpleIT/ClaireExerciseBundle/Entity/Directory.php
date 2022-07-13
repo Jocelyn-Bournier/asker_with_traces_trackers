@@ -4,45 +4,38 @@ namespace SimpleIT\ClaireExerciseBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use SimpleIT\ClaireExerciseBundle\Entity\ExerciseModel\ExerciseModel;
 
-/**
- * Directory
- * @OA\Schema()
- */
 class Directory
 {
     /**
      * @var integer
-     * @OA\Property()
      */
     private $id;
 
     /**
      * @var string
-     * @OA\Property()
      */
     private $name;
 
     /**
      * @var string
-     * @OA\Property()
      */
     private $code;
 
     /**
      * @var string
-     * @OA\Property()
      */
     private $frameworkId;
 
     /**
      * @var boolean
-     * @OA\Property()
      */
     private $isVisible;
 
     private $users;
 
     private $models;
+
+    private $visibleExercise;
 
     private $parent;
 
@@ -51,13 +44,14 @@ class Directory
     private $subs;
 
     private $owner;
-    
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
         $this->subs = new ArrayCollection();
         $this->statViews = new ArrayCollection();
         $this->models =  new ArrayCollection();
+        $this->constructVisibleExercise();
     }
 
 
@@ -94,7 +88,7 @@ class Directory
     {
         return $this->name;
     }
-    
+
     /**
      * Get users.
      *
@@ -183,7 +177,7 @@ class Directory
         }
         return false;
     }
-    
+
     /**
      * Get models.
      *
@@ -204,16 +198,16 @@ class Directory
     {
       $this->models->removeElement($model);
     }
-    
+
     public function __toString()
     {
         return $this->getName();
     }
-    
+
    /*
     *  getLongName
     *  if subDirectory return parent's name + his name
-    *  @return string 
+    *  @return string
     */
     public function getLongName()
     {
@@ -234,7 +228,7 @@ class Directory
     {
         return $this->parent;
     }
-    
+
     /**
      * Set parent.
      *
@@ -263,7 +257,7 @@ class Directory
     {
       $this->subs->removeElement($sub);
     }
-    
+
     /**
      * Get code.
      *
@@ -273,7 +267,7 @@ class Directory
     {
         return $this->code;
     }
-    
+
     /**
      * Set code.
      *
@@ -293,7 +287,7 @@ class Directory
     {
         return $this->frameworkId;
     }
-    
+
     /**
      * Set frameworkId.
      *
@@ -303,7 +297,7 @@ class Directory
     {
         $this->frameworkId = $frameworkId;
     }
-    
+
     /**
      * Get owner.
      *
@@ -313,7 +307,7 @@ class Directory
     {
         return $this->owner;
     }
-    
+
     /**
      * Set owner.
      *
@@ -340,7 +334,7 @@ class Directory
             return $last;
         }
     }
-    
+
     /**
      * Get isVisible.
      *
@@ -350,7 +344,7 @@ class Directory
     {
         return $this->isVisible;
     }
-    
+
     /**
      * Set isVisible.
      *
@@ -359,6 +353,31 @@ class Directory
     public function setIsVisible($isVisible)
     {
         $this->isVisible = $isVisible;
+    }
+    
+    public function getVisibleExercise()
+    {
+        return $this->visibleExercise;
+    }
+
+    /**
+     * Set visible[$index].
+     *
+     * @param visible the value to set.
+     */
+    public function setVisibleExercise($visibleExercise)
+    {
+        $this->visibleExercise = $visibleExercise;
+    }
+
+    public function constructVisibleExercise()
+    {
+        $this->visibleExercise =  new ArrayCollection();
+    }
+
+    public function addVisibleExercise($visible)
+    {
+        $this->visibleExercise[] = $visible;
     }
 }
 
