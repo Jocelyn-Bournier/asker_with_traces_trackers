@@ -191,16 +191,18 @@ class UserService extends TransactionalService implements UserServiceInterface
                         $check->addRole($role);
                     }
                     $this->roleService->addRoleToUser("ROLE_USER",$check);
-                    $aud = new AskerUserDirectory();
-                    $aud->setDirectory($directory);
-                    $aud->setUser($check);
-                    $aud->setIsManager(0);
-                    $check->addDirectory($aud);
-                    try{
-                        $this->em->persist($aud);
-                        $this->em->flush($aud);
-                    }catch(\Doctrine\DBAL\DBALException $e){
-                        die("Symfony failed to:". $e->getMessage());
+                    if (!empty($directory)){
+                        $aud = new AskerUserDirectory();
+                        $aud->setDirectory($directory);
+                        $aud->setUser($check);
+                        $aud->setIsManager(0);
+                        $check->addDirectory($aud);
+                        try{
+                            $this->em->persist($aud);
+                            $this->em->flush($aud);
+                        }catch(\Doctrine\DBAL\DBALException $e){
+                            die("Symfony failed to:". $e->getMessage());
+                        }
                     }
                 }
             }else{
