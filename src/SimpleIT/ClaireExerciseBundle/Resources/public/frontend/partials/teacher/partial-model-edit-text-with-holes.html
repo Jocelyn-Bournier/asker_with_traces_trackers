@@ -46,9 +46,14 @@
             </div>
         </accordion-heading>
     <div class="panel-body">
-        <select id="select-annotation-list" class="form-control" ng-model="selectedAnnotationlist" ng-change="_selectAnnotation()">
+        <!--<select id="select-annotation-list" class="form-control" ng-model="selectedAnnotationlist" ng-change="_selectAnnotation()">
             <option ng-repeat="answerList in answerLists track by $index" value="{{answerList}}">{{answerList}}</option>
-        </select>
+        </select>-->
+        <input id="select-annotation-list" class="form-control" list="list-answers"  ng-change="_selectAnnotation()">
+        <datalist id="list-answers">
+            <option ng-repeat="answerList in answerLists track by $index" value="{{answerList}}">{{answerList}}</option>
+        </datalist>
+        </input>
         <button class="btn btn-primary" ng-click="addAnnotationList()" style="margin-top: 1em;width: 33%;">Ajouter la liste</button>
         <div>
             <table class="table">
@@ -93,9 +98,15 @@
         <label class="checkbox-inline" >
             <input class="form-check-input" type="checkbox" value="" id="checkAnswersDifferents" style="float:left;" ng-checked="model.content.responses_tag != ''">Les réponses sont différentes du texte initial
         </label>
-        <select class="form-control" ng-model="model.content.responses_tag">
+        <!--<select class="form-control" ng-model="model.content.responses_tag">
             <option ng-repeat="answerTag in tagsList track by $index" value="{{answerTag}}">{{answerTag}}</option>
         </select>
+        -->
+        <input id="select-answer-tag" class="form-control" list="list-tags"  ng-model="model.content.responses_tag">
+        <datalist id="list-tags">
+            <option ng-repeat="answerTag in tagsList track by $index" value="{{answerTag}}">{{answerTag}}</option>
+        </datalist>
+        </input>
     </div>
     </accordion-group>
 </accordion>
@@ -121,10 +132,11 @@
         <label class="checkbox-inline">
             <input id="checkedIndications" class="form-check-input" type="radio" ng-model="model.content.init_as_indication" name="keyAsIndication" id="radioKeyIndication" value="{{false}}" ng-disabled="!model.content.generate_indication">Utiliser une clé comme indication
         </label>
-        <select class="form-control" ng-model="model.content.indication_key" ng-disabled="model.content.generate_indication == false">
+        <!--<select class="form-control" ng-model="model.content.indication_key" ng-disabled="model.content.generate_indication == false">
             <option value="none" selected disabled hidden>Choisissez une clé</option>
             <option ng-repeat="answerTag in tagsList track by $index" value="{{answerTag}}">{{answerTag}}</option>
-        </select>
+        </select>-->
+            <input id="select-indication-tag" class="form-control" list="list-tags"  ng-model="model.content.indication_key"></input>
         </div>
         <div ng-if="model.content.answer_modality == 'dragAndDrop'" style="display: flex;flex-direction: column;">
             <hr>

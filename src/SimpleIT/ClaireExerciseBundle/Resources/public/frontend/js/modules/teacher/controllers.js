@@ -1868,7 +1868,6 @@ modelControllers.controller('modelListController', ['$scope', 'Model', '$locatio
 modelControllers.controller('modelEditController', ['$scope', 'Model','ModelDirectory','DirectoryList','DirectorySelect', 'Resource', '$location', '$stateParams',
     function ($scope, Model,ModelDirectory,DirectoryList, DirectorySelect, Resource, $location, $stateParams) {
 
-
         $scope.freeDirectories =DirectoryList.query(
             function(){
                 console.log('load free directories');
@@ -1885,59 +1884,83 @@ modelControllers.controller('modelEditController', ['$scope', 'Model','ModelDire
         $scope.addItem = function () {
             $scope.initAnswerLists();
             $scope.initTagsList();
+            $scope.checkCoverageAndResources();
         }
 
         $scope.initAnswerLists = function () {
             $scope.answerLists = [];
-            for (let resource of $scope.model.content.ressources){
-                for (let annotationlist of $scope.resources[resource.id].content.annotations_list){
-                        $scope.answerLists.push(annotationlist.name);
-                }
-            }
-            $scope.answerLists = [...new Set($scope.answerLists)];
-            for(let answer of $scope.answerLists) {
-                let present = false;
                 for (let resource of $scope.model.content.ressources) {
-                    let presentInRessource = false;
-                    for (let annotationList of $scope.resources[resource.id].content.annotations_list) {
-                        if (annotationList.name == answer) {
-                            presentInRessource = true;
-                        }
+                    for (let annotationlist of $scope.resources[resource.id].content.annotations_list) {
+                        $scope.answerLists.push(annotationlist.name);
                     }
-                    if (!presentInRessource) {
-                        if (!present) {
-                            $scope.answerLists.splice($scope.answerLists.indexOf(answer), 1);
+                }
+                $scope.answerLists = [...new Set($scope.answerLists)];
+                for (let answer of $scope.answerLists) {
+                    let present = false;
+                    for (let resource of $scope.model.content.ressources) {
+                        let presentInRessource = false;
+                        for (let annotationList of $scope.resources[resource.id].content.annotations_list) {
+                            if (annotationList.name == answer) {
+                                presentInRessource = true;
+                            }
+                        }
+                        if (!presentInRessource) {
+                            if (!present) {
+                                $scope.answerLists.splice($scope.answerLists.indexOf(answer), 1);
+                            }
                         }
                     }
                 }
-            }
+        };
+
+        $scope.checkCoverageAndResources = function () {
+            $scope.resourcesErrorList = {};
+                for (let coverage of $scope.model.content.coverages) {
+                    for (let resource of $scope.model.content.ressources) {
+                        if (!coverage.isGlobal) {
+                            let presentInRessource = false;
+                            for (let annotation of $scope.resources[resource.id].content.annotations) {
+                                if (annotation.cle == coverage.listName) {
+                                    presentInRessource = true;
+                                }
+                            }
+                            if (!presentInRessource) {
+                                console.log($scope.resourcesErrorList);
+                                if ($scope.resourcesErrorList[resource.id] == null) {
+                                    $scope.resourcesErrorList[resource.id] = coverage.listName;
+                                }
+                            }
+                        }
+                        console.log($scope.resourcesErrorList);
+                    }
+                }
         };
 
         $scope.initTagsList = function () {
             $scope.tagsList = [];
-            for (let resource of $scope.model.content.ressources){
-                for (let annotation of $scope.resources[resource.id].content.annotations){
-                    if($scope.tagsList.indexOf(annotation.cle) == -1) {
-                        $scope.tagsList.push(annotation.cle);
-                    }
-                }
-            }
-            for(let tag of $scope.tagsList){
-                let present = false;
-                for(let resource of $scope.model.content.ressources){
-                    let presentInRessource = false;
-                    for (let annotation of $scope.resources[resource.id].content.annotations){
-                        if(annotation.cle == tag){
-                            presentInRessource = true;
-                        }
-                    }
-                    if (!presentInRessource){
-                        if (!present){
-                            $scope.tagsList.splice($scope.tagsList.indexOf(tag),1);
+                for (let resource of $scope.model.content.ressources) {
+                    for (let annotation of $scope.resources[resource.id].content.annotations) {
+                        if ($scope.tagsList.indexOf(annotation.cle) == -1) {
+                            $scope.tagsList.push(annotation.cle);
                         }
                     }
                 }
-            }
+                for (let tag of $scope.tagsList) {
+                    let present = false;
+                    for (let resource of $scope.model.content.ressources) {
+                        let presentInRessource = false;
+                        for (let annotation of $scope.resources[resource.id].content.annotations) {
+                            if (annotation.cle == tag) {
+                                presentInRessource = true;
+                            }
+                        }
+                        if (!presentInRessource) {
+                            if (!present) {
+                                $scope.tagsList.splice($scope.tagsList.indexOf(tag), 1);
+                            }
+                        }
+                    }
+                }
         };
 
         $scope.initIndications = function () {
@@ -1983,6 +2006,7 @@ modelControllers.controller('modelEditController', ['$scope', 'Model','ModelDire
                     $scope.initAnswerLists();
                     $scope.initTagsList();
                     $scope.initIndications();
+                    $scope.checkCoverageAndResources();
                     $scope.selectedAnnotationList = "";
                     break;
             }
@@ -1992,12 +2016,23 @@ modelControllers.controller('modelEditController', ['$scope', 'Model','ModelDire
             $scope.selectedAnnotationList = document.getElementById('select-annotation-list').value
         }
 
+        $scope._selectAnswerTag = function () {
+            $scope.model.content.responses_tag = document.getElementById('select-answer-tag').value;
+        }
+
+        $scope._selectIndicationTag = function () {
+            $scope.model.content.indication_key = document.getElementById('select-answer-tag').value;
+        }
+
+
+
         $scope._removeAnnotationList = function(listName){
             $scope.model.content.annotations_lists.splice($scope.model.content.annotations_lists.indexOf(listName),1);
             for(let coverage in $scope.model.content.coverages){
                 console.log(coverage);
                 if($scope.model.content.coverages[coverage].listName == listName){
                     $scope.model.content.coverages.splice(coverage,1);
+                    $scope.checkCoverageAndResources();
                 }
             }
         }
@@ -2009,9 +2044,11 @@ modelControllers.controller('modelEditController', ['$scope', 'Model','ModelDire
                 'type': 'percent',
                 'value': 100
             });
+            $scope.checkCoverageAndResources();
         }
 
         $scope.addAnnotationList = function() {
+            $scope._selectAnnotation();
             if ($scope.model.content.annotations_lists.indexOf($scope.selectedAnnotationList) == -1) {
                 $scope.model.content.annotations_lists.push($scope.selectedAnnotationList);
                 $scope.addCoverage($scope.selectedAnnotationList);
@@ -2040,9 +2077,6 @@ modelControllers.controller('modelEditController', ['$scope', 'Model','ModelDire
                     break;
                 case 'open-ended-question':
                     $scope.fillConstraints(model.content.question_blocks);
-                    break;
-                case 'text-with-holrd':
-                    $scope.fillConstraints(model.content.text_blocks);
                     break;
             }
         };

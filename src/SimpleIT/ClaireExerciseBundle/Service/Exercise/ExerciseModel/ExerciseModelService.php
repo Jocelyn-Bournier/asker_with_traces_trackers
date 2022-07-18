@@ -848,6 +848,13 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
     }
 
     /**
+     * Checks if ressources allow exercise generation
+     */
+    private function checkResourcesHolesGeneration(){
+        return true;
+    }
+
+    /**
      * Checks if a resource block is complete
      *
      * @param ResourceBlock $block

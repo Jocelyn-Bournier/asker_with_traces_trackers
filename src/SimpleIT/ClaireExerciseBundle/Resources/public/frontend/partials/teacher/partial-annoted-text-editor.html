@@ -859,9 +859,15 @@ mark{
     </div>
 
     <div class="panel panel-success" style="float:left; width:45vw; margin:2em;">
-        <h3 class="panel-title" style="padding:1em;">Liste d'étiquettes</h3>
-        <div style="margin:0em 1em 0em 1em;">
-            <div id="container-constraints">
+        <div class="panel-heading">
+            <h3 class="panel-title">Listes d'étiquettes</h3>
+        </div>
+
+        <div class="panel panel-success" style="margin:1em;">
+            <div class="panel-heading">
+                <h3 class="panel-title">Listes d'étiquettes existantes</h3>
+            </div>
+            <div id="container-constraints" style="margin: 1em;">
                 <span class="label label-success" style="margin:0.5em" draggable="true" onclick="updateConstraint(event)" ng-repeat="constraint in editedResource.content.annotations_list track by constraint.name" id="constraint-list-{{constraint.name}}">{{constraint.name}}</span>
             </div>
             <div id="trash-constraint-list" class="panel panel-danger trash-constraint-list" style="display:none;margin:.5em;">
@@ -872,11 +878,16 @@ mark{
                     Déposez l'élément ici afin de le supprimer
                 </div>
             </div>
-            <br>
-            Nom de la liste d'étiquettes
-            <input id="input-annotation-name" type="text" class="form-control" placeholder="Nom de la liste">
         </div>
-        <div class="panel-heading">
+
+        <div class="panel panel-success" style="margin:1em;">
+            <div class="panel-heading">
+                <h3 class="panel-title">Création d'une nouvelle liste d'étiquette</h3>
+            </div>
+            <div style="margin:1em;">Nom de la liste d'étiquettes
+            <input id="input-annotation-name" type="text" class="form-control" placeholder="Nom de la liste">
+                </div>
+        <div class="panel-heading" style="margin:1em;">
             Choisissez un opérateur
             <div id="container-constraint" class="containerConstraints" style="display:flex;align-items: center; font-size:80%"></div>
             <div id="trash-constraint" class="panel panel-danger trash-constraint" style="display:none;margin:.5em;">
@@ -911,15 +922,16 @@ mark{
                 <span class="label label-default operator" id="operator-ge" style="margin:0.5em;" onclick="selectOperator('ge')">&ge;</span>
             </div>
             <button id="btnCreateTagConstraint" class="btn btn-success" style="margin-top:1em;" onclick="createTagConstraint()">Créer l'étiquette  </button>
-        </div>
+            </div>
 
         <button id="btnCreateTagConstraints" class="btn btn-success" style="margin:1em;" onclick="createConstraintList()">Créer la liste d'étiquettes</button>
-
-
-    </div>
+        </div>
+        </div>
 
     <div class="panel panel-success" style="float:left; width:45vw; margin:2em;">
-        <h3 class="panel-title" style="padding:1em;">Liste d'erreurs / d'éléments perturbateurs</h3>
+        <div class="panel-heading">
+            <h3 class="panel-title">Liste d'erreurs / d'éléments perturbateurs</h3>
+        </div>
 
         <div style="margin:0em 1em 0em 1em;">
             <div class="label label-success" ng-repeat="err in editedResource.content.errors_list track by err.name" ng-click="_selectErrorList(err.name)" style="margin:0.5em">{{err.name}}</div>
