@@ -118,17 +118,24 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                         console.log($scope.recommendations);
                         document.getElementById('recommendations-loader').classList.add('hidden');
                         console.log("debug");
-                        /*for (let i = 0; i < $scope.recommendations.length; i++) {
-                            console.log("go");
-                            $scope.recommendations[i].learning_type = $scope.typeToAsker($scope.recommendations[i].title);
-                        }
 
-                         */
-
+                        let cpt = 1;
                         for(let recommendation in $scope.recommendations){
                             console.log($scope.recommendations[recommendation]);
                             $scope.recommendations[recommendation].learning_type = $scope.typeToAsker($scope.recommendations[recommendation].title);
+                            $scope.recommendations[recommendation].index = cpt;
+                            cpt = cpt + 1;
                         }
+
+                        $scope.recommendations = Object.values($scope.recommendations);
+                        $scope.recommendations.sort(function(a, b){
+                            if(a.index < b.index){
+                                return -1;
+                            }else if(a.index > b.index){
+                                return 1;
+                            }
+                            return 0;
+                        });
 
 
                         $scope.retrieveGenerationObjectives(directory);

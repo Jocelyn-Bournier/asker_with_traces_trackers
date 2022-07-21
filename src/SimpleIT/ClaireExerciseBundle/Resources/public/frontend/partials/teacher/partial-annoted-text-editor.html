@@ -391,6 +391,7 @@ function drawMetadatas(){
 }
 
 function handleFocusOut(event){
+    console.log("here");
     document.getElementById("myTextArea").select();
     document.getElementById("myTextArea").selectionStart = selectionStart;
     document.getElementById("myTextArea").selectionEnd = selectionStop;
@@ -455,7 +456,14 @@ function format(action){
     }
 }
 
+document.addEventListener('selectionchange', (event) => {
+    if(document.activeElement.id == "myTextArea"){
+        handleSelection(event);
+    }
+});
+
 function handleSelection(event){
+    console.log("here2");
     if(document.getElementById("myTextArea").selectionEnd != 0){
     selectionStart = document.getElementById("myTextArea").selectionStart;
     selectionStop = document.getElementById("myTextArea").selectionEnd;

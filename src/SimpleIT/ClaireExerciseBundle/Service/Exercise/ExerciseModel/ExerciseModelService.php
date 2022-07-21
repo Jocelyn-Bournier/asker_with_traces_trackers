@@ -26,6 +26,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use JMS\Serializer\SerializationContext;
+use SimpleIT\ClaireExerciseBundle\Entity\AskerUser;
 use SimpleIT\ClaireExerciseBundle\Entity\DomainKnowledge\Knowledge;
 use SimpleIT\ClaireExerciseBundle\Entity\ExerciseModel\ExerciseModel;
 use SimpleIT\ClaireExerciseBundle\Entity\ExerciseModel\Metadata;
@@ -421,11 +422,12 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
      * @param string $type
      * @param int $parentId
      * @param $content
+     * @param $owner
      *
      * @throws \SimpleIT\ClaireExerciseBundle\Exception\InconsistentEntityException
      * @return boolean True if the model is complete
      */
-    protected function checkEntityComplete($entity, $type, $parentId, $content)
+    protected function checkEntityComplete($entity, $type, $parentId, $content, $owner=null)
     {
         $errorCode = null;
 
@@ -817,24 +819,26 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
 
                 foreach ($content->getCoverages() as $coverage) {
                     if ($coverage['type'] == "nbElements") {
-                        foreach ($content->getRessources() as $resource) {
-                            $res = $this->exerciseResourceService->get($resource);
-                            $res = json_decode($res->getContent());
-                            $res = get_object_vars($res);
-                            foreach($res['annotations_list'] as $constraint){
-                                $constraint = get_object_vars($constraint);
-                                if($coverage['isGlobal'] || $constraint['name'] == $coverage['listName']){
-                                    if(!$this->checkCoverage($res['annotations'],$constraint['constraint'], $coverage['value'])){
-                                        $errorCode = '1003';
+                        if ($content->isList()) {
+                            foreach ($content->getRessources() as $resource) {
+                                $res = $this->exerciseResourceService->get($resource);
+                                $res = json_decode($res->getContent());
+                                $res = get_object_vars($res);
+                                foreach ($res['annotations_list'] as $constraint) {
+                                    $constraint = get_object_vars($constraint);
+                                    if ($coverage['isGlobal'] || $constraint['name'] == $coverage['listName']) {
+                                        if (!$this->checkCoverage($res['annotations'], $constraint['constraint'], $coverage['value'])) {
+                                            $errorCode = '1003';
 
-                                        return false;
+                                            return false;
+                                        }
                                     }
                                 }
                             }
                         }
+                        // TODO : faire pour les contraintes
+                        }
                     }
-                }
-
         return true;
     }
 
@@ -844,13 +848,6 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
         if ($coverNb < $value){
             return false;
         }
-        return true;
-    }
-
-    /**
-     * Checks if ressources allow exercise generation
-     */
-    private function checkResourcesHolesGeneration(){
         return true;
     }
 

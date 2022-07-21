@@ -106,21 +106,32 @@ class Exercise extends CommonExercise
             }
         }
 
-        foreach ($content->annotations as $annotation) {
-            if($annotation->cle == $model->getResponsesTag()){
-                foreach($holes as $hole){
-                    if($hole->indiceDebut == $annotation->indiceDebut && $hole->indiceFin == $annotation->indiceFin){
-                        $obj = new stdClass;
-                        $obj->answer = $annotation->valeur;
-                        $hole = (object) array_merge((array)$hole, (array)$obj);
-                        array_push($holesWithAnswers, $hole);
+
+            if($model->getResponsesTag()!='') {
+                foreach ($content->annotations as $annotation) {
+                    if ($annotation->cle == $model->getResponsesTag()) {
+                        foreach ($holes as $hole) {
+                            if ($hole->indiceDebut == $annotation->indiceDebut && $hole->indiceFin == $annotation->indiceFin) {
+                                $obj = new stdClass;
+                                $obj->answer = $annotation->valeur;
+                                $hole = (object)array_merge((array)$hole, (array)$obj);
+                                array_push($holesWithAnswers, $hole);
+                            }
+                        }
                     }
                 }
+            }else {
+                foreach ($holes as $hole) {
+                        $obj = new stdClass;
+                        $obj->answer = substr($content->text, $hole->indiceDebut, $hole->indiceFin - $hole->indiceDebut);
+                        $hole = (object)array_merge((array)$hole, (array)$obj);
+                        array_push($holesWithAnswers, $hole);
+                }
             }
-        }
 
         $holesWithIndications = Array();
         if($model->getGenerateIndication()){
+            if(!$model->getInitAsIndication()) {
                 foreach ($content->annotations as $annotation) {
                     if ($annotation->cle == $model->getIndicationKey()) {
                         foreach ($holesWithAnswers as $hole) {
@@ -133,6 +144,14 @@ class Exercise extends CommonExercise
                         }
                     }
                 }
+            } else {
+                foreach ($holesWithAnswers as $hole) {
+                        $obj = new stdClass;
+                        $obj->indication = substr($content->text, $hole->indiceDebut, $hole->indiceFin - $hole->indiceDebut);
+                        $hole = (object)array_merge((array)$hole, (array)$obj);
+                        array_push($holesWithIndications, $hole);
+                }
+            }
 
             usort($holesWithIndications, function($a, $b){
                 $value = $a->indiceDebut - $b->indiceFin;

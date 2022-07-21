@@ -96,7 +96,7 @@
         <hr>
 
         <label class="checkbox-inline" >
-            <input class="form-check-input" type="checkbox" value="" id="checkAnswersDifferents" style="float:left;" ng-checked="model.content.responses_tag != ''">Les réponses sont différentes du texte initial
+            <input class="form-check-input" type="checkbox" value="" id="checkAnswersDifferents" style="float:left;" ng-checked="model.content.responses_tag != ''" ng-click="_changeInitAsAnswer()">Les réponses sont différentes du texte initial
         </label>
         <!--<select class="form-control" ng-model="model.content.responses_tag">
             <option ng-repeat="answerTag in tagsList track by $index" value="{{answerTag}}">{{answerTag}}</option>
@@ -127,10 +127,10 @@
         </label>
 
         <label class="checkbox-inline">
-            <input class="form-check-input" type="radio" ng-model="model.content.init_as_indication" name="initialElementAsIndication" id="radioInitialElement" value="{{true}}"  ng-disabled="!model.content.generate_indication">Utiliser l'élément initial comme indication
+            <input class="form-check-input" type="radio" ng-checked="model.content.init_as_indication" name="initialElementAsIndication" id="radioInitialElement" value="{{true}}"  ng-disabled="!model.content.generate_indication" ng-click="model.content.init_as_indication = true;">Utiliser l'élément initial comme indication
         </label>
         <label class="checkbox-inline">
-            <input id="checkedIndications" class="form-check-input" type="radio" ng-model="model.content.init_as_indication" name="keyAsIndication" id="radioKeyIndication" value="{{false}}" ng-disabled="!model.content.generate_indication">Utiliser une clé comme indication
+            <input id="checkedIndications" class="form-check-input" type="radio" ng-checked="!model.content.init_as_indication" name="keyAsIndication" id="radioKeyIndication" value="{{false}}" ng-disabled="!model.content.generate_indication" ng-click="model.content.init_as_indication = false;">Utiliser une clé comme indication
         </label>
         <!--<select class="form-control" ng-model="model.content.indication_key" ng-disabled="model.content.generate_indication == false">
             <option value="none" selected disabled hidden>Choisissez une clé</option>

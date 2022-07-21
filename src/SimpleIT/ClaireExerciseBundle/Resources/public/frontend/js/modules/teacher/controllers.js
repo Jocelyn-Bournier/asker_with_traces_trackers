@@ -2024,6 +2024,17 @@ modelControllers.controller('modelEditController', ['$scope', 'Model','ModelDire
             $scope.model.content.indication_key = document.getElementById('select-answer-tag').value;
         }
 
+        $scope._changeInitAsAnswer = function () {
+            if($scope.model.content.responses_tag != ''){
+                $scope.model.content.responses_tag = '';
+            }
+
+        }
+
+        $scope._initAsIndication = function (isIndication) {
+            $scope.model.init_as_indication = isIndication;
+        }
+
 
 
         $scope._removeAnnotationList = function(listName){

@@ -1,0 +1,122 @@
+<tabset>
+    <tab>
+        <tab-heading
+                title="Lister explicitement les ressources. Pensez à cocher la case si c'est le choix que vous retenez. Vous pouvez tout de même sauvegarder des informations dans l'autre onglet.">
+            Liste
+        </tab-heading>
+<div class="panel-body panel panel-primary"
+     ui-on-Drop="onDropResource($event,$data,model.content.ressources)">
+    <accordion close-others="true">
+        <accordion-group
+                         data-ng-repeat="blockResourceId in model.content.ressources track by $index"
+                         ng-class="resourcesErrorList[blockResourceId.id] == null ? 'panel panel-success' : 'panel panel-danger'"
+                         class="row"
+                         style="margin:1em;">
+            <accordion-heading class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-2">
+                        <div >
+                            <span title="Texte annoté" class="glyphicon glyphicon-indent-right" style="font-size: 260%"></span>
+                        </div>
+                    </div>
+                    <div class="col-xs-8">
+                        <h4>{{ resources[blockResourceId.id].title }}&nbsp;<span class="caret"></span>
+                        </h4>
+                    </div>
+                    <div class="col-xs-1">
+
+                    </div>
+                    <div class="col-xs-1">
+                            <span data-ng-click="model.content.ressources.splice($index, 1); addItem();"
+                                  class="glyphicon glyphicon-remove"></span>
+                    </div>
+                </div>
+                <div ng-if="resourcesErrorList[blockResourceId.id] != null" style="margin-top:0.5em;">La resource ne contient pas la liste suivante {{resourcesErrorList[blockResourceId.id]}}</div>
+            </accordion-heading>
+            <div class="col-centered">
+                <label>ID&nbsp;:&nbsp;</label>{{
+                resources[blockResourceId.id].id }}
+            </div>
+            <div class="col-centered">
+                <label>Auteur&nbsp;:&nbsp;</label>{{
+                users[resources[blockResourceId.id].author]["user_name"] }}
+            </div>
+            <div class="col-centered">
+                <label>Propriétaire&nbsp;:&nbsp;</label>{{
+                users[resources[blockResourceId.id].owner]["user_name"] }}
+            </div>
+            <div class="col-centered">
+                <label>Partagé&nbsp;:&nbsp;</label>
+                <ng-switch on="resources[blockResourceId.id].public">
+                    <span ng-switch-when="true">Oui</span>
+                    <span ng-switch-when="false">Non</span>
+                </ng-switch>
+            </div>
+            <div class="col-centered">
+                <label>Complet&nbsp;:&nbsp;</label>
+                <ng-switch on="resources[blockResourceId.id].complete">
+                    <span ng-switch-when="true">Oui</span>
+                    <span ng-switch-when="false">Non</span>
+                </ng-switch>
+            </div>
+            <div class="col-centered"
+                 ng-switch="resources[blockResourceId.id].type">
+                <div ng-switch-when="text">
+                    <label>Contenu&nbsp;:&nbsp;</label>{{
+                    resources[blockResourceId.id].content.text }}
+                </div>
+                <div ng-switch-when="picture">
+                    <label>Contenu&nbsp;:&nbsp;</label>
+                    <a href="{{BASE_CONFIG.urls.images.uploads}}{{resources[blockResourceId.id].content.source}}"
+                       data-lightbox="res" data-title="La ressource">
+                        <img ng-src="{{BASE_CONFIG.urls.images.uploads}}{{resources[blockResourceId.id].content.source}}"/>
+                    </a>
+                </div>
+                <div ng-switch-when="multiple-choice-question">
+                    <label>Question&nbsp;:&nbsp;</label>{{
+                    resources[blockResourceId.id].content.question }}
+                </div>
+                <div ng-switch-when="open-ended-question">
+                    <label>Question&nbsp;:&nbsp;</label>{{
+                    resources[blockResourceId.id].content.question }}
+                </div>
+            </div>
+            <div class="col-centered"
+                 ng-switch="resources[blockResourceId.id].type">
+                <div ng-switch-when="multiple-choice-question">
+                    <label>Commentaire&nbsp;:&nbsp;</label>{{
+                    resources[blockResourceId.id].content.comment }}
+                </div>
+                <div ng-switch-when="open-ended-question">
+                    <label>Commentaire&nbsp;:&nbsp;</label>{{
+                    resources[blockResourceId.id].content.comment }}
+                </div>
+            </div>
+        </accordion-group>
+    </accordion>
+</div>
+    </tab>
+        <tab>
+            <tab-heading
+                    title="Sélectionner les ressources par contraintes. Pensez à cocher la case si c'est le choix que vous retenez. Vous pouvez tout de même sauvegarder des informations dans l'autre onglet.">
+                Contraintes
+            </tab-heading>
+            <div data-ng-init="metadata_constraints = model.content.resource_constraint.metadata_constraints">
+                <label>Liste des containtes</label><br>
+
+                <div ng-include src="BASE_CONFIG.urls.partials.teacher+'/fragment-constraint-list.html'"></div>
+            </div>
+        </tab>
+</tabset>
+<br>
+<span data-ng-click="model.content.is_list=!model.content.s_list">
+    <span class="glyphicon"
+          ng-class="{'glyphicon-check': model.content.is_list, 'glyphicon-unchecked': !model.content.is_list}"></span>
+    Sélection des ressources par liste
+</span>
+
+&nbsp;&nbsp;
+<span data-ng-click="model.content.is_list=!model.content.is_list">
+    <span class="glyphicon"
+          ng-class="{'glyphicon-unchecked': model.content.is_list, 'glyphicon-check': !model.content.is_list}"></span>
+Sélection par contraintes

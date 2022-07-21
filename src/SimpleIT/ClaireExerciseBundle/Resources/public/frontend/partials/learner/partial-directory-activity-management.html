@@ -173,7 +173,7 @@
                         <h3 class="panel-title" style="float:left;">{{recommendationNode.replaceAll("_"," ");}}</h3>
                     </div>
                     <div id="content-{{recommendationNode}}" class="content-recommendation panel-body content" style="display:block;">
-                        <div ng-repeat="recommendation in recommendations" ng-if="recommendationNode == recommendation.objectiveNode">
+                        <div ng-repeat="recommendation in recommendations track by recommendation.index" ng-if="recommendationNode == recommendation.objectiveNode">
                             <div class="panel">
                                 <div ng-include="BASE_CONFIG.urls.partials.learner+'/fragment-recommendation.html'">
                                 </div>
