@@ -36,6 +36,9 @@ use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseObject\ExerciseSequenc
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseObject\ExerciseTextObject;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ItemResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ItemResourceFactory;
+use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\Order\OrderBlock;
+use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\Order\OrderItem;
+use stdClass;
 
 /**
  * Service which manages Order Items Exercises.
@@ -84,6 +87,13 @@ class OrderItemsService extends ExerciseCreationService
 
         $la = AnswerResourceFactory::create($answer);
         $learnerAnswers = $la->getContent();
+
+        $learnerAnswersId = array();
+        if ($item->getType() == 'order'){
+            foreach ($learnerAnswers as $ans){
+                $learnerAnswersId[$ans] = $item->getObjects()[$ans]->getOriginResource();
+            }
+        }
         #die(var_dump($learnerAnswers));
 
         $item->setAnswers($learnerAnswers);
@@ -92,15 +102,25 @@ class OrderItemsService extends ExerciseCreationService
         $sol = $item->getSolutions();
         #die(var_dump($learnerAnswers) . var_dump($sol));
 
-        // if it matches the answer, set it as solution
-        if ($this->matchSolution($learnerAnswers, $sol)) {
-            $sol = $learnerAnswers;
-        } // else, take the basic solution
-        else {
-            $sol = $this->getBasicSolution($sol);
-        }
+        //echo json_encode($sol);
 
-        $item->setSolutions($sol);
+        if ($item->getType() == "order") {
+            $newSol = $learnerAnswers;
+            $this->correctOrder(array_values($learnerAnswersId), $sol, $newSol);
+
+            $item->setSolutions($newSol);
+        }
+        else {
+            // if it matches the answer, set it as solution
+            if ($this->matchSolution($learnerAnswers, $sol)) {
+                $sol = $learnerAnswers;
+            } // else, take the basic solution
+            else {
+                $sol = $this->getBasicSolution($sol);
+            }
+
+            $item->setSolutions($sol);
+        }
 
         $this->mark($item);
 
@@ -177,6 +197,9 @@ class OrderItemsService extends ExerciseCreationService
         // If object list
         if ($model->getIsSequence()) {
             $this->exerciseFromSequence($model, $solutions, $objects, $owner);
+        } else if ($model->getUseOrderResource()){
+            $this->exerciseFromOrder($model, $solutions, $objects, $owner);
+            $item->setType('order');
         } else {
             $this->exerciseFromObjList($model, $solutions, $objects, $values, $owner);
         }
@@ -192,7 +215,7 @@ class OrderItemsService extends ExerciseCreationService
         }
 
         // shuffle the order of the objects
-        $item->shuffleObjects();
+        //$item->shuffleObjects();
 
         // set give first and last
         if ($model->isGiveFirst()) {
@@ -254,6 +277,82 @@ class OrderItemsService extends ExerciseCreationService
         } else {
             return $solutions[$maxKey];
         }
+    }
+
+    /**
+     * Create the exercise from a sequence
+     *
+     * @param Model $model
+     * @param array $solutions
+     * @param array $objects
+     * @param AskerUser  $owner
+     */
+    private function exerciseFromOrder(
+        Model $model,
+        array &$solutions,
+        array &$objects,
+        AskerUser $owner
+    )
+    {
+        $order = $this->exerciseResourceService->getExerciseObject($model->getOrderResource(), $owner);
+        $this->getObjectsFromOrderBlock($order->getOrderResource()->getBlock(), $objects, $solutions);
+        
+        //echo json_encode($solutions);
+
+    }
+
+    
+    private function getObjectsFromOrderBlock(
+        OrderBlock $block,
+        array &$objects,
+        array &$solutions,
+        int &$index=0,
+        int $blockId=0
+    )
+    {
+        $count = 0;
+        $shiftBlock = array();
+        foreach ($block->getItems() as $key => $item) {
+            /** @var OrderItem */
+
+            //constraints 
+            if ($block->getRule() == "position") {
+                //echo 'pos ';
+                $solutions[$key]['position'] = $block->getPositions()[$key];
+                $this->rescalePositions($solutions[$key]['position'], -1);
+            }
+            else if ($block->getRule() == "constraint") {
+                //echo 'constr ';
+                //echo json_encode($block->getRules()[$key]);
+                $solutions[$key]['constraints'] = $block->getRules()[$key];
+                $this->rescaleConstraints($solutions[$key]['constraints'], $blockId);
+                //echo json_encode($solutions[$key]);
+            }
+
+            //objects
+            if ($item->getItemType() == "text") {
+                //echo ' text ';
+                $objects[] = ExerciseTextFactory::createFromText($item->getText(), $index);
+                $solutions[$key]['objId'] = $index;
+                $count++;
+                $index++;
+            }
+            else if (($item->getItemType() == "block")) {
+                //echo ' block ';
+                $solutions[$key]['objId'] = $index;
+                $solutions[$key]['block'] = array();
+                $solutions[$key]["answerBloc"] = array();
+                $start=++$index;
+                $length=$this->getObjectsFromOrderBlock($item->getBlock(), $objects, $solutions[$key]['block'],$index, $index);
+                $shiftBlock[] = [$start,$length]; 
+                $count+=$length;
+            }
+
+        }
+        foreach ($shiftBlock as $shift) {
+            $this->shiftConstraints($solutions, $shift[0], $shift[1]);
+        }
+        return $count;
     }
 
     /**
@@ -1099,5 +1198,232 @@ class OrderItemsService extends ExerciseCreationService
         $content->setSolutions(null);
 
         return $itemResource;
+    }
+
+    /**
+     * rescale values of a tab
+     */
+    private function rescalePositions(&$tab, $value)
+    {
+        foreach ($tab as $key => $val) {
+            $tab[$key]+=$value;
+        }
+    }
+
+    /**
+     * change the values of constraints by adding $index
+     */
+    private function rescaleConstraints(&$tab, $index)
+    {
+        foreach ($tab as $key1 => $val1) {
+            $this->rescalePositions($tab[$key1]["values"], -1);
+                foreach ($tab[$key1]["values"] as $key2 => $val2) {
+                    $tab[$key1]["values"][$key2] += $index;
+                    if($tab[$key1]["type"] == "fixe") {
+                        $tab[$key1]["values"][$key2]--;
+                    }
+                
+            }
+        }
+    }
+
+    private function shiftConstraints(&$tab, $start, $length)
+    {
+        //echo "shifting from ".$start." with ".$length;
+        foreach ($tab as $key => $val) {
+            if (isset($val["constraints"])) {
+                foreach ($tab[$key]["constraints"] as $key2=>$val2){
+                    foreach ($tab[$key]["constraints"][$key2]["values"] as $key3 => $val3) {
+                        //echo " val : ".$val3;
+                        if($val3 >= $start && $val3<=($start+$length)) {
+                            //echo " found ".$val3;
+                            $tab[$key]["constraints"][$key2]["values"][$key3]+=$length;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * correct the exercise when it uses an order resource
+     */
+    private function correctOrder($learnerAnswers, $solutions, &$newSolution)
+    {
+        //echo json_encode($learnerAnswers);
+        $this->checkIfBlockMatchesSolutions($learnerAnswers, $solutions, $newSolution);
+        echo json_encode($solutions);
+    }
+
+    /**
+     * check if a block matches the solution
+     */
+    private function checkIfBlockMatchesSolutions(
+        $learnerAnswers,
+        &$solutions,
+        &$newSolution,
+        &$objectList = null
+    ){
+        foreach ($solutions as $key=>$sol) {
+            if (isset($sol["block"])){
+                //echo " found block ".$sol["objId"];
+                $list = array();
+                $newId = $this->checkIfBlockMatchesSolutions($learnerAnswers, $sol["block"], $newSolution, $list);
+                $this->replaceBlockId($solutions, $sol["objId"], $newId);
+                $solutions[$key]["objId"] = $newId;
+                $solutions[$key]["answerBloc"] = $list;
+                //echo "block has list ".json_encode($list);
+                foreach ($learnerAnswers as $key1 => $ans) {
+                    //echo $ans." in array ".in_array($ans, $solutions[$key]["answerBloc"]).";";
+                    if ($this->belongsInGroup($solutions[$key]["block"], $ans) && !in_array($ans, $solutions[$key]["answerBloc"])) {
+                        //echo $ans."devient faux (hors bloc) ";
+                        $id = array_search($ans, $learnerAnswers);
+                        //echo " en position ".$id;
+                        $newSolution[$id] = "false";
+                    }
+                }
+            }
+        }
+
+        $objectList = $this->determineBetterGroup($solutions, $learnerAnswers);
+        //echo "group is ";
+        //echo json_encode($objectList);
+
+        if (isset($solutions[0]["constraints"])) {
+            foreach ($solutions as $sol) {
+                foreach ($sol["constraints"] as $constraint) {
+                    if (!$this->checkConstraint($sol["objId"], $constraint, $learnerAnswers)) {
+                        //echo " contrainte de ".$sol["objId"]." non respectée ";
+                        if (isset($sol["block"])) {
+                            foreach ($sol["answerBloc"] as $obj) {
+                                //echo $obj." devient faux (bloc) ";
+                                $id = array_search($obj, $learnerAnswers);
+                                $newSolution[$id] = "false";
+                            }
+                        }
+                        else {
+                        //echo $sol["objId"]." devient faux ";
+                        $id = array_search($sol["objId"], $learnerAnswers);
+                        $newSolution[$id] = "false";
+                        }
+                    }
+                }
+            }
+        } else if (isset($solutions[0]["positions"])){
+            foreach ($solutions as $key => $sol) {
+                if (!$this->checkPosition($sol["positions"], $learnerAnswers, $key)) {
+                    if (isset($sol["block"])) {
+                        foreach ($sol["answerBloc"] as $obj) {
+                            $id = array_search($obj, $learnerAnswers);
+                            $newSolution[$id] = "false";
+                        }
+                    }
+                    else {
+                    $id = array_search($sol["objId"], $learnerAnswers);
+                    $newSolution[$id] = "false";
+                    }
+                }
+                if (isset($sol["block"])) {
+                    foreach ($solutions as $key1 => $sol1) {
+                        if($key1>$key) {
+                            $this->rescalePositions($solutions[$key1]["positions"],sizeof($sol["block"]));
+                        }
+                    }
+                }
+            }
+        }
+
+        //idem pour les positions, évaluer au sein du bloc (fonction réutilisable pour contrainte->"fix")
+
+        return $objectList[0];
+    }
+
+    /**
+     * check if a constraint is true
+     */
+    private function checkConstraint($objId, $constr, $learnerAnswers)
+    {
+        switch ($constr["type"]) {
+            case "avant":
+                $objPos=array_search($objId,$learnerAnswers);
+                $constrPos=array_search($constr["values"][0],$learnerAnswers);
+                return $objPos<$constrPos;
+            case "après":
+                $objPos=array_search($objId,$learnerAnswers);
+                $constrPos=array_search($constr["values"][0],$learnerAnswers);
+                return $objPos>$constrPos;
+            case "fixe":
+                return $this->checkPosition(array($constr["values"][0]), $learnerAnswers, $objId);
+
+        }
+    }
+
+    private function checkPosition($positions, $learnerAnswers, $objId)
+    {
+        $objPos=array_search($objId,$learnerAnswers);
+        if (in_array($objPos, $positions)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * replace all constraints on a block with another Id
+     */
+    private function replaceBlockId(&$solutions, $blockId, $newId)
+    {
+        foreach ($solutions as &$sol) {
+
+            if (isset($sol["constraints"])) {
+                foreach ($sol["constraints"] as &$constr) {
+
+                    if($constr["type"] != "fix") {
+                        foreach ($constr["values"] as &$val) {
+
+                            if ($val == $blockId) {
+                                $val = $newId;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private function determineBetterGroup($block, $learnerAnswers)
+    {
+        $finalGroup = array();
+        $compGroup = array();
+        $i = 0;
+        while ($i<sizeof($learnerAnswers)) {
+            while ($i<sizeof($learnerAnswers) && $this->belongsInGroup($block, $learnerAnswers[$i])) {
+                $compGroup[] = $learnerAnswers[$i];
+                $i++;
+            }
+            if(sizeof($compGroup) > sizeof($finalGroup)) {
+                $finalGroup = $compGroup;
+            }
+            if (sizeof($compGroup) == 0) {
+                $i++;
+            }
+            $compGroup = array();
+        }
+
+        return $finalGroup;
+    }
+
+    private function belongsInGroup($block, $id)
+    {
+        foreach ($block as $val) {
+            if ($val["objId"] == $id) {
+                return true;
+            }
+            if (isset($val["block"]) && in_array($id, $val["answerBloc"])) {
+                return true;
+            }
+        }
+        return false;
     }
 }

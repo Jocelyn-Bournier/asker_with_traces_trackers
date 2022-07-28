@@ -19,13 +19,32 @@
 namespace SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseObject;
 
 use JMS\Serializer\Annotation as Serializer;
+use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\OrderResource;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * A picture object in an exercise.
+ * An order object in an exercise.
  */
 class ExerciseOrderObject extends ExerciseObject
 {
     const OBJECT_TYPE = "order";
 
+    /**
+     * @var OrderResource
+     * @Serializer\Type("SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\OrderResource")
+     * @Serializer\Groups({"details", "resource_storage", "resource_storage"})
+     * @Assert\NotBlank(groups={"create"})
+     * @Assert\Valid
+     */
+    private $orderResource;
+
+    public function getOrderResource(){
+        return $this->orderResource;
+    }
+
+    public function setOrderResource($orderResource){
+        //echo json_encode($orderResource->getBlock()->getItems()[0]);
+        $this->orderResource = $orderResource;
+    }
 
 }

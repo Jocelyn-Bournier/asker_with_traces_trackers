@@ -321,6 +321,7 @@ class ExerciseResourceService extends SharedEntityService implements ExerciseRes
         }
 
         $class = ResourceResource::getSerializationClass($res->getType());
+        //echo $res->getContent();
 
         return $this->serializer->jmsDeserialize($res->getContent(), $class, 'json');
     }
@@ -344,6 +345,7 @@ class ExerciseResourceService extends SharedEntityService implements ExerciseRes
             $requiredResources[$req->getId()] = $this->createResourceObjectFromResourceEntity($req);
         }
 
+        //echo json_encode($resource->getBlock()->getItems());
         return ExerciseObjectFactory::createExerciseObject(
             $resource,
             $resEntity->getMetadata(),

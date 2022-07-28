@@ -84,6 +84,7 @@ abstract class ExerciseObjectFactory
 
             case ResourceResource::ORDER_CLASS:
                 /** @var OrderResource $resource */
+                //echo json_encode($resource->getBlock()->getItems());
                 $object = ExerciseOrderFactory::createFromCommonResource($resource);
                 break;
                 

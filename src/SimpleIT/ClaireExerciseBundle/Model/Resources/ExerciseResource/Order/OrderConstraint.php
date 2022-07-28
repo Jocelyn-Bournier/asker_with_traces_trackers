@@ -22,55 +22,31 @@ use JMS\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class OrderBlock
+ * Class OrderConstraint
  *
  */
-class OrderBlock
+class OrderConstraint
 {
     /**
-     * @var string $rule
+     * @var string $type
      * @Serializer\Type("string")
      * @Serializer\Groups({"details", "resource_storage"})
-     * @Assert\NotBlank(groups={"create"})
      */
-    private $rule;
+    private $type;
 
     /**
-     * @var array $rules
+     * @var array $values
      * @Serializer\Type("array")
      * @Serializer\Groups({"details", "resource_storage"})
      */
-    private $rules = array();
+    private $values = array();
 
-    /**
-     * @var array $positions
-     * @Serializer\Type("array")
-     * @Serializer\Groups({"details", "resource_storage"})
-     * @Assert\NotBlank(groups={"create"})
-     */
-    private $positions = array();
-
-    /**
-     * @var array $items
-     * @Serializer\Type("array<SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\Order\OrderItem>")
-     * @Serializer\Groups({"details", "resource_storage"})
-     * @Assert\NotBlank(groups={"create"})
-     */
-    private $items = array();
-
-    public function getRule(){
-        return $this->rule;
+    public function getType(){
+        return $this->type;
     }
 
-    public function getItems(){
-        return $this->items;
-    }
-    
-    public function getRules(){
-        return $this->rules;
+    public function getValues(){
+        return $this->values;
     }
 
-    public function getPositions(){
-        return $this->positions;
-    }
 }

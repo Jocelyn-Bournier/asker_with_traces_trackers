@@ -27,7 +27,7 @@ use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\OrderResource
  *
  * @author Baptiste Cablé <baptiste.cable@liris.cnrs.fr>
  */
-class OrderFactory
+class ExerciseOrderFactory
 {
     /**
      * Create a model question from an exerciseResource
@@ -39,6 +39,8 @@ class OrderFactory
     public static function createFromCommonResource(OrderResource $res)
     {
         $order = new ExerciseOrderObject();
+
+        $order->setOrderResource($res);
 
         return $order;
     }

@@ -399,6 +399,7 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
                         "block": {
                             "rule": "position",
                             "items": [],
+                            "positions": [],
                             "rules": []
                         }                     
                     },
@@ -408,15 +409,17 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
                 "order_block": {
                     "rule": "position",
                     "items": [],
-                    "rules": []
+                    "rules": [],
+                    "positions": []
                 },
                 "order_item": {
                     "id": null,
                     "item_type": "text",
-                    "content": null
+                    "text": null,
+                    "block": null
                 },
                 "order_constraint": {
-                    "type": "before",
+                    "type": "avant",
                     "values":[] 
                 }
             }
@@ -884,24 +887,26 @@ resourceControllers.controller('resourceSelectListController', ['$scope', 'BASE_
 resourceControllers.controller('resourceEditOrderController', ['$scope',
     function ($scope, $stateParams){
 
-        $scope.typeOfConstraints=["fix","before","after"];
+        console.log($scope.editedResource);
 
+        $scope.typeOfConstraints=["fixe","avant","après"];
 
         $scope.addGroup = function(resource, position, rule){
-            console.log("add in position "+position);
+            //console.log("add in position "+position);
+            //console.log(resource);
             resource.items.splice(
                 position,
                 0,
                 jQuery.extend(true, {}, $scope.resourceContext.newResources.order_item));
-            resource.items[position].content=jQuery.extend(true, {}, $scope.resourceContext.newResources.order_block);
+            resource.items[position].block=jQuery.extend(true, {}, $scope.resourceContext.newResources.order_block);
             resource.items[position].id=resource.items.length;
             resource.items[position].item_type="block";
-            if(rule == 'position'){
-                resource.rules[position]=[position+1]
-            }
-            else{
-                resource.rules[position]=[];
-            }
+            resource.positions.splice(
+                position,
+                0,
+                [position+1]
+            );
+            resource.rules[position]=[];
             console.log(resource);
         }
 
@@ -913,12 +918,12 @@ resourceControllers.controller('resourceEditOrderController', ['$scope',
                 jQuery.extend(true, {}, $scope.resourceContext.newResources.order_item));
             resource.items[position].id=resource.items.length;
             resource.items[position].item_type="text";
-            if(rule == 'position'){
-                resource.rules[position]=[position+1]
-            }
-            else{
-                resource.rules[position]=[];
-            }
+            resource.positions.splice(
+                position,
+                0,
+                [position+1]
+            );
+            resource.rules[position]=[];
             console.log(resource);
         }
 
@@ -927,6 +932,7 @@ resourceControllers.controller('resourceEditOrderController', ['$scope',
             console.log(resource);
             resource.items.splice(id,1);
             resource.rules.splice(id,1);
+            resource.positions.splice(id,1);
             for(i=id; i<resource.items.length; i++){
                 resource.items[i].id-=1;
             }
@@ -945,10 +951,16 @@ resourceControllers.controller('resourceEditOrderController', ['$scope',
         }
 
         $scope.addPosition = function(resource, id){
-            resource.rules[id].splice(
-                resource.rules.length,
+            num = id+1;
+            resource.positions[id].splice(
+                resource.positions.length,
                 0,
-                id+1);
+                2);
+            console.log(resource.positions[id]);
+        }
+
+        $scope.removePosition = function(resource, idItem, idPosition){
+            resource.positions[idItem].splice(idPosition,1);
         }
 
         $scope.generateNumbers = function(number, exclude1=0, exclude2=0){
@@ -1714,6 +1726,7 @@ modelControllers.controller('modelEditController', ['$scope', 'Model','ModelDire
             if (resource.type == 'text' || resource.type == 'picture' || resource.type == 'document') {
                 $scope.modelAddBlockResourceField(documents, resource.id);
             }
+            console.log(documents);
         };
 
         $scope.openFirstBlocks = {};
@@ -1825,6 +1838,8 @@ modelControllers.controller('modelEditOrderItemsController', ['$scope',
 
 modelControllers.controller('modelEditMultipleChoiceController', ['$scope',
     function ($scope) {
+
+        console.log($scope.model);
 
         $scope.modelAddBlockField = function (collection) {
             collection.splice(

@@ -20,6 +20,7 @@ mainAppControllers.controller('mainManagerController', ['$scope', '$sce', '$rout
             '306': 'Le nombre d\'objets à piocher dans le bloc doit être strictement positif',
             '307': 'Chaque bloc dit contenir au moins une ressource ou avoir des contraintes',
             '308': 'Un bloc est en mode liste mais ne contient aucune ressource dans la liste',
+            '309': 'Il manque une ressource Ordre',
             '401': 'Le type de ressource choisit en contrainte n\'est pas valide pour ce type d\'exercise',
             '402': 'Il faut au moins une contrainte dans chaque bloc ou l\'option contrainte est choisie',
             '501': 'Une ressource comporte un id vide',

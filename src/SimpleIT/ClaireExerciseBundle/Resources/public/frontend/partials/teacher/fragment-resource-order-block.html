@@ -6,11 +6,11 @@
             <div ng-switch-when="text">
                 <div class="panel panel-success">
                     <div class="panel-heading">
-                        <div class="row">
+                        <div class="row ng-scope">
                             <div class="col-centered pull-left">
                                 <h4>{{item.id}}. Texte</h4>
                             </div>
-                            <input type="text" ng-model="item.content"/>
+                            <input type="text" ng-model="item.text"/>
                             <div class="col-centered pull-right"
                                 style="margin-right:1%">
                                     <strong ng-if="parentBlock.rule=='constraint'" data-ng-click="addConstraint(parentBlock,itemIndex)">Ajouter contrainte</strong>
@@ -27,13 +27,16 @@
                             <div class="row">
                                 <div class="col-centered pull-left">
                                     <strong>Position(s) acceptée(s) :</strong>
-                                    <span data-ng-repeat="itemRule in parentBlock.rules[itemIndex] track by $index">
-                                        <select ng-model="itemRule" ng-options="x for x in generateNumbers(parentBlock.items.length)" 
-                                        style="width:auto">
-                                        </select>
+                                    <span data-ng-repeat="itemRule in parentBlock.positions[itemIndex] track by $index">
+                                        {{itemRule}}
+                                        <span data-ng-click="removePosition(parentBlock, itemIndex, $index)"
+                                        class="glyphicon glyphicon-remove"></span>
                                     </span>&nbsp;
-                                    <span data-ng-click="addPosition(parentBlock,itemIndex)"
-                                        class="glyphicon glyphicon-plus"></span>
+                                    <select ng-model="value" ng-options="x for x in generateNumbers(parentBlock.items.length)" 
+                                        style="width:auto">
+                                    </select>
+                                    <span data-ng-click="parentBlock.positions[itemIndex].push(value)"
+                                        class="glyphicon glyphicon-ok"></span>
                                 </div>
                             </div>
                         </div>
@@ -47,9 +50,9 @@
                                 </div>
                                 <div class="col-centered">
                                     <div ng-switch="constraint.type">
-                                        <div ng-switch-when="fix">
+                                        <div ng-switch-when="fixe">
                                            <strong>à la position </strong>
-                                           <select ng-model="constraint.values[0]" ng-options="x for x in generateNumbers(parentBlock.items.length,itemIndex+1)">
+                                           <select ng-model="constraint.values[0]" ng-options="x for x in generateNumbers(parentBlock.items.length)">
                                            </select> 
                                         </div>
                                         <div ng-switch-default>
@@ -68,7 +71,7 @@
             <div ng-switch-when="block">
                 <accordion-group class="panel panel-success" is-open="true">
                     <accordion-heading class="panel-heading">
-                        <div class="row">
+                        <div class="row ng-scope">
                             <div class="col-centered pull-left">
                                 <h4>{{item.id}}. Bloc de niveau {{level}}</h4>
                             </div>
@@ -89,13 +92,16 @@
                             <div class="row">
                                 <div class="col-centered pull-left">
                                     <strong>Position(s) acceptée(s) :</strong>
-                                    <span data-ng-repeat="itemRule in parent.rules[itemIndex] track by $index">
-                                        <select ng-model="itemRule" ng-options="x for x in generateNumbers(parent.items.length)" 
-                                        style="width:auto" data-ng-click="$event.stopPropagation();">
-                                        </select>
+                                    <span data-ng-repeat="itemRule in parent.positions[itemIndex] track by $index">
+                                        {{itemRule}}
+                                        <span data-ng-click="$event.stopPropagation();removePosition(parent, itemIndex, $index)"
+                                        class="glyphicon glyphicon-remove"></span>
                                     </span>&nbsp;
-                                    <span data-ng-click="$event.stopPropagation(); addPosition(parent,itemIndex)"
-                                        class="glyphicon glyphicon-plus"></span>
+                                    <select ng-model="value" ng-options="x for x in generateNumbers(parent.items.length)" 
+                                        style="width:auto" data-ng-click="$event.stopPropagation();">
+                                    </select>
+                                    <span data-ng-click="$event.stopPropagation();parent.positions[itemIndex].push(value)"
+                                        class="glyphicon glyphicon-ok"></span>
                                 </div>
                             </div>
                             <br>
@@ -110,10 +116,10 @@
                                 </div>
                                 <div class="col-centered pull-left">
                                     <div ng-switch="constraint.type">
-                                        <div ng-switch-when="fix">
+                                        <div ng-switch-when="fixe">
                                            <strong>à la position </strong>
                                            <select ng-model="constraint.values[0]" data-ng-click="$event.stopPropagation();"
-                                           ng-options="x for x in generateNumbers(parent.items.length,itemIndex+1)">
+                                           ng-options="x for x in generateNumbers(parent.items.length)">
                                            </select> 
                                         </div>
                                         <div ng-switch-default>
@@ -142,7 +148,7 @@
                             </div>
                         </div>
                     </accordion-heading>
-                <div ng-init="parent=parentBlock; parentBlock = item.content; level=level+1;"
+                <div ng-init="parent=parentBlock; parentBlock = item.block; level=level+1;"
                     ng-include="BASE_CONFIG.urls.partials.teacher+'/fragment-resource-order-block.html'">
                 </div>
                 </accordion-group>
@@ -165,6 +171,7 @@
         <strong>Ajouter un bloc</strong>
     </div>
 </div>
+<br>
 
 
 

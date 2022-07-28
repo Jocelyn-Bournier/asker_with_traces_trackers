@@ -81,7 +81,8 @@
                 </div>
             </div>
         </accordion-heading>
-        <div ng-include src="BASE_CONFIG.urls.partials.teacher+'/fragment-resources-in-block.html'"></div>
+        <div ng-include src="BASE_CONFIG.urls.partials.teacher+'/fragment-resources-in-block.html'"
+            data-ng-controller="modelEditController"></div>
     </accordion-group>
 
     <div class="panel panel-primary">
@@ -112,7 +113,7 @@
                 <div class="panel-body panel panel-primary"
                     ui-on-Drop="onDropResourceToBlock($event,$data)">
                     <accordion close-others="true">
-                        <accordion-group class="panel panel-success"  ng-if="model.content.order_resource.type != null">
+                        <accordion-group class="panel panel-success"  ng-if="model.content.order_resource != null">
                             <accordion-heading class="panel-heading">
                                 <div class="row">
                                     <div class="col-xs-2">
@@ -121,7 +122,7 @@
                                         </div>
                                     </div>
                                     <div class="col-xs-8">
-                                        <h4>{{ model.content.order_resource.title }}
+                                        <h4>{{ resources[model.content.order_resource.id].title }}
                                             &nbsp;<span class="caret"></span>
                                         </h4>
                                     </div>
@@ -139,21 +140,21 @@
                                 model.content.order_resource.id }}
                             </div>
                             <div class="col-centered">
-                                <label>Auteur&nbsp;:&nbsp;</label>{{ users[model.content.order_resource.author].user_name }}
+                                <label>Auteur&nbsp;:&nbsp;</label>{{ users[resources[model.content.order_resource.id].author].user_name }}
                             </div>
                             <div class="col-centered">
-                                <label>Propriétaire&nbsp;:&nbsp;</label>{{ users[model.content.order_resource.owner].user_name }}
+                                <label>Propriétaire&nbsp;:&nbsp;</label>{{ users[resources[model.content.order_resource.id].owner].user_name }}
                             </div>
                             <div class="col-centered">
                                 <label>Partagé&nbsp;:&nbsp;</label>
-                                <ng-switch on="model.content.order_resource.public">
+                                <ng-switch on="resources[model.content.order_resource.id].public">
                                     <span ng-switch-when="true">Oui</span>
                                     <span ng-switch-when="false">Non</span>
                                 </ng-switch>
                             </div>
                             <div class="col-centered">
                                 <label>Complet&nbsp;:&nbsp;</label>
-                                <ng-switch on="model.content.order_resource.complete">
+                                <ng-switch on="resources[model.content.order_resource.id].complete">
                                     <span ng-switch-when="true">Oui</span>
                                     <span ng-switch-when="false">Non</span>
                                 </ng-switch>

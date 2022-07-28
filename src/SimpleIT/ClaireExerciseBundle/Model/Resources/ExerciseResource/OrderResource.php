@@ -52,7 +52,7 @@ class OrderResource extends CommonResource
      *
      * @return \SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\Order\OrderBlock
      */
-    public function getblock()
+    public function getBlock()
     {
         return $this->block;
     }

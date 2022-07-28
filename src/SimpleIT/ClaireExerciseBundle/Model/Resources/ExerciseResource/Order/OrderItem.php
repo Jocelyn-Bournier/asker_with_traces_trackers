@@ -22,55 +22,58 @@ use JMS\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class OrderBlock
+ * Class OrderItem
  *
  */
-class OrderBlock
+class OrderItem
 {
     /**
-     * @var string $rule
+     * @var string $text
      * @Serializer\Type("string")
      * @Serializer\Groups({"details", "resource_storage"})
      * @Assert\NotBlank(groups={"create"})
      */
-    private $rule;
+    private $text;
 
     /**
-     * @var array $rules
-     * @Serializer\Type("array")
-     * @Serializer\Groups({"details", "resource_storage"})
-     */
-    private $rules = array();
-
-    /**
-     * @var array $positions
-     * @Serializer\Type("array")
+     * @var OrderBlock $block
+     * @Serializer\Type("SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\Order\OrderBlock")
      * @Serializer\Groups({"details", "resource_storage"})
      * @Assert\NotBlank(groups={"create"})
      */
-    private $positions = array();
+    private $block;
 
-    /**
-     * @var array $items
-     * @Serializer\Type("array<SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\Order\OrderItem>")
-     * @Serializer\Groups({"details", "resource_storage"})
-     * @Assert\NotBlank(groups={"create"})
-     */
-    private $items = array();
-
-    public function getRule(){
-        return $this->rule;
-    }
-
-    public function getItems(){
-        return $this->items;
-    }
     
-    public function getRules(){
-        return $this->rules;
+
+    /**
+     * @var int id
+     * @Serializer\Type("int")
+     * @Serializer\Groups({"details", "resource_storage"})
+     * @Assert\NotBlank(groups={"create"})
+     */
+    private $id;
+
+    /**
+     * @var string $item_type
+     * @Serializer\Type("string")
+     * @Serializer\Groups({"details", "resource_storage"})
+     * @Assert\NotBlank(groups={"create"})
+     */
+    private $item_type;
+
+    public function getText(){
+        return $this->text;
     }
 
-    public function getPositions(){
-        return $this->positions;
+    public function getBlock(){
+        return $this->block;
+    }
+
+    public function getId(){
+        return $this->id;
+    }
+
+    public function getItemType(){
+        return $this->item_type;
     }
 }

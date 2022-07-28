@@ -20,6 +20,7 @@ namespace SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModel\OrderItems
 
 use JMS\Serializer\Annotation as Serializer;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModel\Common\CommonModel;
+use SimpleIT\ClaireExerciseBundle\Model\Resources\ModelObject\ObjectId;
 
 /**
  * Model of a OrderItems exercise.
@@ -95,11 +96,11 @@ class Model extends CommonModel
     private $useOrderResource = null;
 
     /**
-     * @var OrderResource $orderResource
-     * @Serializer\Type("SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\OrderResource")
+     * @var A ModelDocument
+     * @Serializer\Type("SimpleIT\ClaireExerciseBundle\Model\Resources\ModelObject\ObjectId")
      * @Serializer\Groups({"details", "exercise_model_storage"})
      */
-    private $orderResource = null;
+    protected $orderResource = null;
     
 
     /**
@@ -265,5 +266,45 @@ class Model extends CommonModel
     public function getIsSequence()
     {
         return $this->isSequence;
+    }
+
+    /**
+     * Set useOrderResource
+     *
+     * @param boolean $useOrderResource
+     */
+    public function setuseOrderResource($useOrderResource)
+    {
+        $this->useOrderResource = $useOrderResource;
+    }
+
+    /**
+     * Get useOrderResource
+     *
+     * @return boolean
+     */
+    public function getUseOrderResource()
+    {
+        return $this->useOrderResource;
+    }
+
+    /**
+     * Set orderResource
+     *
+     * @param ObjectId $orderResource
+     */
+    public function setOrderResource($orderResource)
+    {
+        $this->orderResource = $orderResource;
+    }
+
+    /**
+     * Get orderResource
+     *
+     * @return ObjectId
+     */
+    public function getOrderResource()
+    {
+        return $this->orderResource;
     }
 }
