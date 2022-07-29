@@ -232,7 +232,7 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
             archived: false, // select archived resources or not (boolean)
             public: false, // select public resources or not (boolean)
             type: { // resources types to be selected
-                multiple_choice_question: 'multiple-choice-question', text_with_holes: 'text-with-holes', document: 'document', text: 'text', picture: 'picture', open_ended_question: 'open-ended-question', sequence: ''
+                multiple_choice_question: 'multiple-choice-question', text_with_holes: 'text-with-holes', document: 'document', text: 'text',order: 'order', picture: 'picture', open_ended_question: 'open-ended-question', sequence: ''
             },
             keywords: [], // list of keywords that a resource must have to be selected
             metadata: [] // list of metadata objects that a resource must have to be selected
@@ -245,6 +245,7 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
                 $scope.filters.type.picture = 'picture';
                 $scope.filters.type.open_ended_question = '';
                 $scope.filters.type.sequence = '';
+                $scope.filters.type.order = '';
                 $scope.filters.type.text_with_holes = '';
             } else if (newValue == 'multiple-choice') {
                 $scope.filters.type.multiple_choice_question = 'multiple-choice-question';
@@ -252,6 +253,7 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
                 $scope.filters.type.picture = '';
                 $scope.filters.type.open_ended_question = '';
                 $scope.filters.type.sequence = '';
+                $scope.filters.type.order = '';
                 $scope.filters.type.text_with_holes = '';
             } else if (newValue == 'group-items') {
                 $scope.filters.type.multiple_choice_question = '';
@@ -259,12 +261,14 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
                 $scope.filters.type.picture = 'picture';
                 $scope.filters.type.open_ended_question = '';
                 $scope.filters.type.sequence = '';
-            } else if (newValue == 'sequence') {
+                $scope.filters.type.order = '';
+            } else if (newValue == 'order-items') {
                 $scope.filters.type.multiple_choice_question = '';
                 $scope.filters.type.text = '';
                 $scope.filters.type.picture = '';
                 $scope.filters.type.open_ended_question = '';
                 $scope.filters.type.sequence = '';
+                $scope.filters.type.order = 'order';
                 $scope.filters.type.text_with_holes = '';
             } else if (newValue == 'open-ended-question') {
                 $scope.filters.type.multiple_choice_question = '';
@@ -272,6 +276,7 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
                 $scope.filters.type.picture = '';
                 $scope.filters.type.open_ended_question = 'open-ended-question';
                 $scope.filters.type.sequence = '';
+                $scope.filters.type.order = '';
                 $scope.filters.type.text_with_holes = '';
             } else if (newValue == 'text-with-holes') {
                 $scope.filters.type.multiple_choice_question = '';
@@ -423,6 +428,43 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
                     },
                     "required_exercise_resources": null,
                     "required_knowledges": null
+                },
+                "order": {
+                    "type": "order",
+                    "title": "",
+                    "public": false,
+                    "archived": false,
+                    "draft": false,
+                    "complete": null,
+                    "metadata": [],
+                    "keywords": [],
+                    "content": {
+                        "object_type": "order",
+                        "block": {
+                            "rule": "position",
+                            "items": [],
+                            "positions": [],
+                            "rules": []
+                        }                     
+                    },
+                    "required_exercise_resources": null,
+                    "required_knowledges": null
+                },
+                "order_block": {
+                    "rule": "position",
+                    "items": [],
+                    "rules": [],
+                    "positions": []
+                },
+                "order_item": {
+                    "id": null,
+                    "item_type": "text",
+                    "text": null,
+                    "block": null
+                },
+                "order_constraint": {
+                    "type": "avant",
+                    "values":[] 
                 }
             }
         };
@@ -575,9 +617,18 @@ resourceControllers.controller('resourceListController', ['$scope', '$state', 'R
                         $state.go('resourceEdit', {resourceid: data.id});
                     }
                 });
+            } else if (type == 'order') {
+                Resource.save($scope.resourceContext.newResources.order, function (data) {
+                    $scope.resources[data.id] = data;
+                    if ($scope.parentSection === 'model') {
+                        $state.go('modelEdit.resourceEdit', {resourceid: data.id});
+                    } else {
+                        $state.go('resourceEdit', {resourceid: data.id});
+                    }
+                });
             } else if (type == 'multiple-choice-question') {
                 Resource.save($scope.resourceContext.newResources.multiple_choice_question, function (data) {
-                    $scope.resources[data.id] = data;
+                    $scope.resources[data.id] = data;modelRemoveOrderResource
                     if ($scope.parentSection === 'model') {
                         $state.go('modelEdit.resourceEdit', {resourceid: data.id});
                     } else {
@@ -1222,6 +1273,96 @@ resourceControllers.controller('resourceSelectListController', ['$scope', 'BASE_
         };
     }]);
 
+resourceControllers.controller('resourceEditOrderController', ['$scope',
+    function ($scope, $stateParams){
+
+        console.log($scope.editedResource);
+
+        $scope.typeOfConstraints=["fixe","avant","après"];
+
+        $scope.addGroup = function(resource, position, rule){
+            //console.log("add in position "+position);
+            //console.log(resource);
+            resource.items.splice(
+                position,
+                0,
+                jQuery.extend(true, {}, $scope.resourceContext.newResources.order_item));
+            resource.items[position].block=jQuery.extend(true, {}, $scope.resourceContext.newResources.order_block);
+            resource.items[position].id=resource.items.length;
+            resource.items[position].item_type="block";
+            resource.positions.splice(
+                position,
+                0,
+                [position+1]
+            );
+            resource.rules[position]=[];
+            console.log(resource);
+        }
+
+        $scope.addText = function (resource, position, rule){
+            console.log("add in position "+position);
+            resource.items.splice(
+                position,
+                0,
+                jQuery.extend(true, {}, $scope.resourceContext.newResources.order_item));
+            resource.items[position].id=resource.items.length;
+            resource.items[position].item_type="text";
+            resource.positions.splice(
+                position,
+                0,
+                [position+1]
+            );
+            resource.rules[position]=[];
+            console.log(resource);
+        }
+
+        $scope.removeFromBlock = function(resource, id){
+            console.log("remove element "+id+" from ");
+            console.log(resource);
+            resource.items.splice(id,1);
+            resource.rules.splice(id,1);
+            resource.positions.splice(id,1);
+            for(i=id; i<resource.items.length; i++){
+                resource.items[i].id-=1;
+            }
+            console.log(resource);
+        }
+
+        $scope.addConstraint = function(resource, id){
+            resource.rules[id].splice(
+                0,
+                0,
+                jQuery.extend(true, {}, $scope.resourceContext.newResources.order_constraint));
+        }
+
+        $scope.removeConstraint = function(resource, idItem, idConstraint){
+            resource.rules[idItem].splice(idConstraint,1);
+        }
+
+        $scope.addPosition = function(resource, id){
+            num = id+1;
+            resource.positions[id].splice(
+                resource.positions.length,
+                0,
+                2);
+            console.log(resource.positions[id]);
+        }
+
+        $scope.removePosition = function(resource, idItem, idPosition){
+            resource.positions[idItem].splice(idPosition,1);
+        }
+
+        $scope.generateNumbers = function(number, exclude1=0, exclude2=0){
+            tab = [];
+            for (i=1; i<=number; i++){
+                if(i!=exclude1 && i!=exclude2){
+                    tab.push(i);
+                }
+            }
+            return tab;
+        }
+
+    }]);
 
 var modelControllers = angular.module('modelControllers', ['ui.router']);
 
@@ -1310,7 +1451,8 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
                                 "meta_key": ""
                             }
                         ],
-                        "is_sequence": false,
+                        "use_order_resource": false,
+                        "order_resource": null,
                         "give_first": false,
                         "give_last": false,
                         "order": "asc",
@@ -2174,6 +2316,7 @@ modelControllers.controller('modelEditController', ['$scope', 'Model','ModelDire
             if (resource.type == 'text' || resource.type == 'picture' || resource.type == 'document') {
                 $scope.modelAddBlockResourceField(documents, resource.id);
             }
+            console.log(documents);
         };
 
         $scope.openFirstBlocks = {};
@@ -2284,10 +2427,34 @@ modelControllers.controller('modelEditOrderItemsController', ['$scope',
             });
             return returnValue;
         };
+
+        $scope.modelRemoveOrderResource = function(model){
+            model.content.order_resource = null;
+        };
+
+        $scope.onDropResourceToBlock = function (event, resource) {
+            if (resource.type == 'order') {
+                if (resource.owner === BASE_CONFIG.currentUserId) {
+                    $scope.model.content.order_resource = resource;
+                } else {
+                    var dial = confirm("Pour utiliser cette ressource qui ne vous appartient pas, vous devez l'importer dans votre espace personnel. Pour cela, vous pouvez vous abonner à cette ressource. Vous bénéficierez des modifications apportées par l'auteur et ne pourrez la modifier de votre côté. Il faudrait pour cela l'importer.\n\nVoulez-vous vous abonner à cette ressource ?");
+                    if (dial == true) {
+                        Resource.subscribe({id: resource.id}, function (data) {
+                            $scope.resources[data.id] = data;
+                            $scope.model.content.order_resource = resource;
+                        });
+                    }
+                }
+            }
+        };
+
     }]);
 
 modelControllers.controller('modelEditMultipleChoiceController', ['$scope',
     function ($scope) {
+
+        console.log($scope.model);
+
         $scope.modelAddBlockField = function (collection) {
             collection.splice(
                 collection.length,

@@ -97,6 +97,13 @@ class Item extends CommonItem
     private $values = array();
 
     /**
+     * @var string
+     * @Serializer\Type("string")
+     * @Serializer\Groups({"details", "corrected", "item_storage"})
+     */
+    private $type;
+
+    /**
      * Get solution
      *
      * @return array
@@ -281,5 +288,15 @@ class Item extends CommonItem
     public function getValues()
     {
         return $this->values;
+    }
+
+    public function setType($type) 
+    {
+        $this->type = $type;
+    }
+
+    public function getType()
+    {
+        return $this->type;
     }
 }

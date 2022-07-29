@@ -60,7 +60,7 @@
         </div>
       </div>
     </div>
-    <div class="col-xs-8">
+    <div class="col-xs-8" ng-if="!item['content'].solutions.includes('false')">
       <b>Solution:</b>
       <div ng-repeat="object in solution track by $index" class="row">
         <div class="col-xs-6">

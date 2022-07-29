@@ -23,6 +23,9 @@
             <div ng-switch-when="sequence">
                 <span class="glyphicon glyphicon-sort-by-order" style="font-size: 320%"></span>
             </div>
+            <div ng-switch-when="order">
+                <span class="glyphicon glyphicon-sort" style="font-size: 320%"></span>
+            </div>
         </div>
 
         <div class="col-xs-11">
@@ -152,6 +155,9 @@
     </div>
     <div ng-switch-when="sequence">
         <label>Type de ressource&nbsp;:&nbsp;</label>Séquence
+    </div>
+    <div ng-switch-when="order">
+        <label>Type de ressource&nbsp;:&nbsp;</label>Ordre
     </div>
 </div>
 <div class="col-centered" ng-switch="resource.type">

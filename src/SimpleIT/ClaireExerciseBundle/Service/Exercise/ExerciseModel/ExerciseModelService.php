@@ -701,13 +701,22 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
                 return false;
             }
 
-            if (!$this->checkBlockComplete(
-                $sequenceBlock,
-                array(CommonResource::SEQUENCE),
-                $errorCode
-            )
-            ) {
-                return false;
+            echo $content->getUseOrderResource();
+            if($content->getUseOrderResource()) {
+                if($content->getOrderResource() === null) {
+                    $errorCode = '309';
+
+                    return false;
+                }
+            } else {
+                if (!$this->checkBlockComplete(
+                    $sequenceBlock,
+                    array(CommonResource::SEQUENCE),
+                    $errorCode
+                )
+                ) {
+                    return false;
+                }
             }
         } else {
             if ($content->getOrder() != OrderItems::ASCENDENT
@@ -724,26 +733,34 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
                 return false;
             }
 
-            /** @var OIObjectBlock $objectBlock */
-            foreach ($objectBlocks as $objectBlock) {
-                if ($objectBlock->getMetaKey() === null) {
-                    $errorCode = '305';
+            if($content->getUseOrderResource()) {
+                if($content->getOrderResource() === null) {
+                    $errorCode = '309';
 
                     return false;
                 }
+            } else {
+                /** @var OIObjectBlock $objectBlock */
+                foreach ($objectBlocks as $objectBlock) {
+                    if ($objectBlock->getMetaKey() === null) {
+                        $errorCode = '305';
 
-                if (
-                !$this->checkBlockComplete(
-                    $objectBlock,
-                    array(
-                        CommonResource::PICTURE,
-                        CommonResource::TEXT
-                    ),
-                    $errorCode,
-                    $objectBlock->getMetaKey()
-                )
-                ) {
-                    return false;
+                        return false;
+                    }
+
+                    if (
+                    !$this->checkBlockComplete(
+                        $objectBlock,
+                        array(
+                            CommonResource::PICTURE,
+                            CommonResource::TEXT
+                        ),
+                        $errorCode,
+                        $objectBlock->getMetaKey()
+                    )
+                    ) {
+                        return false;
+                    }
                 }
             }
         }

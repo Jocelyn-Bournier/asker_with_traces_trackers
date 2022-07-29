@@ -28,6 +28,9 @@
                         <div ng-switch-when="sequence">
                             <span title="Exercice d'appariement" class="glyphicon glyphicon-random" style="font-size: 500%"></span>
                         </div>
+                        <div ng-switch-when="order">
+                            <span title="Ordre" class="glyphicon glyphicon-sort" style="font-size: 500%"></span>
+                        </div>
                     </div>
                     <div class="col-xs-6">
                         <div class="col-xs-6">
@@ -219,6 +222,37 @@
                         <strong>Ajouter une proposition</strong>
                     </div>
                     <br>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div ng-switch-when="order">
+        <div data-ng-controller="resourceEditOrderController">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-centered pull-left">
+                            <h4>Bloc de niveau {{level}}</h4>
+                        </div>
+                        <div class="col-centered">
+                            <strong>Ordonner selon :</strong>
+                            <span data-ng-click="parentBlock.rule='position';$event.stopPropagation()">
+                                <span ng-if="parentBlock.rule=='position'" class="glyphicon glyphicon-check"></span>
+                                <span ng-if="parentBlock.rule!='position'" class="glyphicon glyphicon-unchecked"></span>
+                                Position
+                            </span> &nbsp;&nbsp;
+                            <span data-ng-click="parentBlock.rule='constraint';$event.stopPropagation()">
+                                <span ng-if="parentBlock.rule=='constraint'" class="glyphicon glyphicon-check"></span>
+                                <span ng-if="parentBlock.rule!='constraint'" class="glyphicon glyphicon-unchecked"></span>
+                                Contrainte
+                            </span> &nbsp;&nbsp;
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div ng-init="parentBlock = editedResource.content.block; level=1;"
+                ng-include="BASE_CONFIG.urls.partials.teacher+'/fragment-resource-order-block.html'">
                 </div>
             </div>
         </div>

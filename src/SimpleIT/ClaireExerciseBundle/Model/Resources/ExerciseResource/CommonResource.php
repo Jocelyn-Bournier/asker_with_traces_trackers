@@ -29,10 +29,11 @@ use SimpleIT\ClaireExerciseBundle\Model\Resources\Validable;
  *    "picture": "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\PictureResource",
  *    "document": "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\DocumentResource",
  *    "text": "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\TextResource",
+ *    "order": "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\OrderResource",
  *    "text_with_holes": "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\TextWithHolesResource",
  *    "sequence": "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\SequenceResource",
  *    "multiple_choice_question": "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\MultipleChoiceQuestionResource",
- *    "open_ended_question": "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\OpenEndedQuestionResource"
+ *    "open_ended_question": "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\OpenEndedQuestionResource"      
  * })
  */
 abstract class CommonResource implements Validable
@@ -51,6 +52,11 @@ abstract class CommonResource implements Validable
      * @const TEXT = "text"
      */
     const TEXT = "text";
+
+    /**
+     * @const ORDER = "order"
+     */
+    const ORDER = "order";
 
     /**
      * @const MULTIPLE_CHOICE_QUESTION = "multiple-choice-question"
@@ -113,6 +119,7 @@ abstract class CommonResource implements Validable
             || $type === self::SEQUENCE
             || $type === self::PICTURE
             || $type === self::DOCUMENT
+            || $type === self::ORDER
             || $type === self::MULTIPLE_CHOICE_QUESTION
             || $type === self::OPEN_ENDED_QUESTION
             || $type === self::TEXT_WITH_HOLES

@@ -68,6 +68,8 @@
                                 <button class="btn" title="Question à réponse courte ouverte" ng-model="$parent.$parent.filters.type.open_ended_question" btn-checkbox-true="'open-ended-question'" btn-checkbox-false="''" btn-checkbox>
                                     <span class="glyphicon glyphicon-question-sign"></span>
                                 </button>
+                                <button class="btn" title="Ordre" ng-model="$parent.$parent.filters.type.order" btn-checkbox-true="'order'" btn-checkbox-false="''" btn-checkbox>
+                                    <span class="glyphicon glyphicon-sort"></span>
                                 <button class="btn" title="Texte annoté" ng-model="$parent.$parent.filters.type.text_with_holes" btn-checkbox-true="'text-with-holes'" btn-checkbox-false="''" btn-checkbox>
                                     <span class="glyphicon glyphicon-indent-right"></span>
                                 </button>
@@ -162,6 +164,9 @@
                         <a data-ng-click="createResource('text-with-holes')" href class="list-group-item"><span title="Texte" class="glyphicon glyphicon-indent-right"></span>&nbsp;Créer un texte annoté
                             <span class="panel panel-danger"><span class="panel-heading">Attention, les textes annotés sont une fonctionnalité en cours de développement</span></span></a>
 
+                    </div>
+                    <div>
+                        <a data-ng-click="createResource('order')" href class="list-group-item"><span class="glyphicon glyphicon-sort"></span>&nbsp;Créer un ordre</a>
                     </div>
                     <div>
                         <a data-ng-click="createResource('multiple-choice-question')" href class="list-group-item"><span title="Question de QCM" class="glyphicon glyphicon-check"></span>&nbsp;Créer une question à choix multiple</a>

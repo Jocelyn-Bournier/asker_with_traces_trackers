@@ -28,7 +28,8 @@ use JMS\Serializer\Annotation as Serializer;
  *    "picture":  "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseObject\ExercisePictureObject",
  *    "document":  "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseObject\ExerciseDocumentObject",
  *    "text":     "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseObject\ExerciseTextObject",
- *    "sequence": "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseObject\ExerciseSequenceObject"
+ *    "sequence": "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseObject\ExerciseSequenceObject",
+ *    "order": "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseObject\ExerciseOrderObject"
  * })
  */
 abstract class ExerciseObject
