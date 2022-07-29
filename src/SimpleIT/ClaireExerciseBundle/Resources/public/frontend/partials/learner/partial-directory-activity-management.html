@@ -156,7 +156,7 @@
         <div id="recommendations-loader">
             <div class='olm-loader'></div>
             <p>
-                Chargement des recommendations.
+                Chargement des recommandations.
                 Cette opération peut prendre plusieurs secondes.
             </p>
         </div>
@@ -167,13 +167,13 @@
             </span>
         </div>
         <div id="recommendations-container" style="flex:1;">
-            <div ng-if="recommendations.length === 0">Vous n'avez pas de recommendations proposées.</div>
+            <div ng-if="recommendations.length === 0">Vous n'avez pas de recommandations proposées.</div>
                 <div ng-repeat="recommendationNode in recommendationsNodes" class="panel panel-default">
                     <div id="panel-{{recommendationNode}}" class="panel-recommendation panel-heading collapsible active" ng-click="collapse(recommendationNode);">
                         <h3 class="panel-title" style="float:left;">{{recommendationNode.replaceAll("_"," ");}}</h3>
                     </div>
                     <div id="content-{{recommendationNode}}" class="content-recommendation panel-body content" style="display:block;">
-                        <div ng-repeat="recommendation in recommendations" ng-if="recommendationNode == recommendation.objectiveNode">
+                        <div ng-repeat="recommendation in recommendations track by recommendation.index" ng-if="recommendationNode == recommendation.objectiveNode">
                             <div class="panel">
                                 <div ng-include="BASE_CONFIG.urls.partials.learner+'/fragment-recommendation.html'">
                                 </div>
@@ -189,6 +189,7 @@
 </div>
 <div class="right" style="flex: 1; display:flex;flex-direction: column;">
     <h4>Mon profil</h4>
+    <h5>Dernière mise à jour le {{framework['computedAt']['date']}}</h5>
     <div style="padding-bottom: 1em;">
         <button ng-click="updateProfile(directory, true)" type="button" class="btn btn-primary">Mettre à jour mon profil</button>
         <button ng-if="selectedOption == 0" ng-click="hideResource()" id="buttonShowExercises" type="button" class="btn btn-primary">Cacher les resources</button>
@@ -208,6 +209,17 @@
                 Chargement du profil.
                 Cette opération peut prendre plusieurs secondes, notamment lors de l'initialisation du profil...
             </p>
+        </div>
+        <div>
+            <div style="float:left"><h5>Taux de maîtrise </h5></div>
+            <div id="olm-colors" style="width:50%; height: 30px;float:left;margin-left:.5em;" onmouseenter="document.getElementById('helper-colors').style.display = 'block'" onmouseleave="document.getElementById('helper-colors').style.display = 'none'"></div>
+        </div>
+        <div id="helper-colors" style="display:none;border-radius: 15px;padding: 30px;border: 1px solid darkgray; position: absolute;margin-top: 40px;background-color: white;z-index: 9;">
+            Le niveau de maîtrise est représentée par la couleur de la pastille à gauche de chaque noeud du profil :
+            <ul style="list-style-type: none;"><li>Rouge (entre 0% et {{(framework.colors[0])*100}}%) : notion non maîtrisée</li>
+                <li style="list-style-type: none;">Orange (entre {{(framework.colors[0])*100}}% et {{(framework.colors[1])*100}}%) : notion peu maîtrisée</li>
+                <li style="list-style-type: none;">Jaune (entre {{((framework.colors[1])*100)+1}}% et {{(framework.colors[2])*100}}%) : notion partiellement maîtrisée</li>
+                <li style="list-style-type: none;">Vert (entre {{((framework.colors[2])*100)+1}}% et 100%) : notion maîtrisée</li></ul>
         </div>
         <div id="olm-target" style="flex:1;"></div>
     </div>

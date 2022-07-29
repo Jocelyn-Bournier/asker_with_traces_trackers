@@ -8,7 +8,10 @@
                 <div class="row">
                     <div class="col-xs-1" ng-switch="editedResource.type">
                         <div ng-switch-when="text">
-                            <span title="Texte" class="glyphicon glyphicon-font" style="font-size: 500%"></span>
+                            <span title="Texte" class="glyphicon glyphicon-align-left" style="font-size: 500%"></span>
+                        </div>
+                        <div ng-switch-when="text-with-holes">
+                            <span title="Texte à trous" class="glyphicon glyphicon-indent-right" style="font-size: 500%"></span>
                         </div>
                         <div ng-switch-when="picture">
                             <span class="glyphicon glyphicon-picture" style="font-size: 500%"></span>
@@ -110,8 +113,12 @@
                 </div>
             </div>
         </div>
-
     </div>
+
+    <div ng-switch-when="text-with-holes" id="twh">
+        <div ng-include src="BASE_CONFIG.urls.partials.teacher+'/partial-annoted-text-editor.html'"></div>
+    </div>
+
     <div ng-switch-when="picture">
         <div class="panel panel-success">
             <div class="panel-heading">
@@ -497,11 +504,11 @@
     </div>
 </div>
 
-<div class="panel panel-success">
-    <div class="panel-heading">
-        <h4>Mots-clés</h4>
+<div class="panel panel-success" >
+    <div class="panel-heading" style="background:white;">
 
         <div class="row">
+            <h4 class="col-xs-5" style="width:100%">Mots-clés</h4>
             <div ng-repeat="keyword in editedResource.keywords track by $index">
                 <div class="col-xs-5">
                     <input type="text" ng-model="keyword" class="form-control" disabled>
@@ -525,7 +532,7 @@
 </div>
 
 <div class="panel panel-success">
-    <div class="panel-heading">
+    <div class="panel-heading" style="background:white">
         <h4>Métadonnées</h4>
 
         <div class="row">

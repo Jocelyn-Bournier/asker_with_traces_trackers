@@ -30,7 +30,8 @@ use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseObject\ExerciseObject;
  *    "pair-items": "SimpleIT\ClaireExerciseBundle\Model\Resources\Exercise\PairItems\Exercise",
  *    "order-items": "SimpleIT\ClaireExerciseBundle\Model\Resources\Exercise\OrderItems\Exercise",
  *    "multiple-choice": "SimpleIT\ClaireExerciseBundle\Model\Resources\Exercise\MultipleChoice\Exercise",
- *    "open-ended-question": "SimpleIT\ClaireExerciseBundle\Model\Resources\Exercise\OpenEndedQuestion\Exercise"
+ *    "open-ended-question": "SimpleIT\ClaireExerciseBundle\Model\Resources\Exercise\OpenEndedQuestion\Exercise",
+ *    "text-with-holes": "SimpleIT\ClaireExerciseBundle\Model\Resources\Exercise\TextWithHoles\Exercise"
  * })
  */
 abstract class CommonExercise
@@ -59,6 +60,11 @@ abstract class CommonExercise
      * @const OPEN_ENDED_QUESTION = 'open-ended-question'
      */
     const OPEN_ENDED_QUESTION = 'open-ended-question';
+
+    /**
+     * @const TEXT_WITH_HOLES = 'text-with-holes'
+     */
+    const TEXT_WITH_HOLES = 'text-with-holes';
 
     /**
      * @var string $wording The wording

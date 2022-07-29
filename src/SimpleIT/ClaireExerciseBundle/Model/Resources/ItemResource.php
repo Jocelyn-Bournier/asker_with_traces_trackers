@@ -60,6 +60,11 @@ class ItemResource
     const PAIR_ITEMS_CLASS = 'SimpleIT\ClaireExerciseBundle\Model\Resources\Exercise\PairItems\Item';
 
     /**
+     * @const TEXT_WITH_HOLES_CLASS = 'SimpleIT\ClaireExerciseBundle\Model\Resources\Exercise\TextWithHoles\Item'
+     */
+    const TEXT_WITH_HOLES_CLASS = 'SimpleIT\ClaireExerciseBundle\Model\Resources\Exercise\TextWithHoles\Item';
+
+    /**
      * @var int $itemId Id of item
      * @Serializer\Type("integer")
      * @Serializer\Groups({"details", "exercise", "list", "corrected", "not_corrected"})
@@ -192,6 +197,9 @@ class ItemResource
                 break;
             case CommonExercise::PAIR_ITEMS:
                 $class = self::PAIR_ITEMS_CLASS;
+                break;
+            case CommonExercise::TEXT_WITH_HOLES:
+                $class = self::TEXT_WITH_HOLES_CLASS;
                 break;
             default:
                 throw new \LogicException('Unknown type');

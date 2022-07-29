@@ -1,0 +1,167 @@
+<div class="panel panel-danger"><div class="panel-heading">Attention, les textes annotés sont une fonctionnalité en cours de développement</div></div></a>
+
+<accordion>
+<accordion-group class="panel panel-primary" is-open="true">
+    <accordion-heading class="panel-heading" style="margin:0px; padding:0px;">
+        <div class="row">
+            <div class="col-xs-12">
+                Modalité de réponse&nbsp;<span class="caret"></span>
+            </div>
+        </div>
+    </accordion-heading>
+    <div class="panel-body" style="display: flex;justify-content: space-between;">
+        <label class="checkbox-inline">
+            <input type="radio" ng-model="model.content.answer_modality" name="answerModality" id="answerModalityHoles" ng-value="'holes'"> Texte à trous
+        </label>
+        <!--
+        <label class="checkbox-inline">
+            <input type="radio" ng-model="model.content.answer_modality" name="answerModality" id="answerModalityList" ng-value="'list'"> Liste
+        </label>
+        <label class="checkbox-inline">
+            <input type="radio" ng-model="model.content.answer_modality" name="answerModality" id="answerModalityDragAndDrop" ng-value="'dragAndDrop'"> Glisser/déposer
+        </label>
+        -->
+    </div>
+</accordion-group>
+</accordion>
+
+<accordion>
+    <accordion-group class="panel panel-primary" is-open="true">
+        <accordion-heading class="panel-heading" style="margin:0px; padding:0px;">
+        <div class="row">
+            <div class="col-xs-12">
+                Ressources&nbsp;<span class="caret"></span>
+            </div>
+        </div>
+        </accordion-heading>
+        <div ng-include src="BASE_CONFIG.urls.partials.teacher+'/fragment-resources-TWH.html'"></div>
+    </accordion-group>
+</accordion>
+
+<accordion>
+    <accordion-group class="panel panel-primary" is-open="true">
+        <accordion-heading class="panel-heading" style="margin:0px; padding:0px;">
+            <div class="row">
+                <div class="col-xs-12">
+                    Génération des mots à supprimer et des bonnes réponses&nbsp;<span class="caret"></span>
+                </div>
+            </div>
+        </accordion-heading>
+    <div class="panel-body">
+        <!--<select id="select-annotation-list" class="form-control" ng-model="selectedAnnotationlist" ng-change="_selectAnnotation()">
+            <option ng-repeat="answerList in answerLists track by $index" value="{{answerList}}">{{answerList}}</option>
+        </select>-->
+        <input id="select-annotation-list" class="form-control" list="list-answers"  ng-change="_selectAnnotation()">
+        <datalist id="list-answers">
+            <option ng-repeat="answerList in answerLists track by $index" value="{{answerList}}">{{answerList}}</option>
+        </datalist>
+        </input>
+        <button class="btn btn-primary" ng-click="addAnnotationList()" style="margin-top: 1em;width: 33%;">Ajouter la liste</button>
+        <div>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Nom de la liste</th>
+                    <th scope="col">Couverture</th>
+                    <th scope="col">Type de couverture</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="coverage in model.content.coverages" ng-if="coverage.listName != null">
+                    <th><h4>{{coverage.listName}}</h4></th>
+                    <th><input type="number" min="0" max="100" class="form-control" placeholder="couverture pour la liste" ng-model="coverage.value"></th>
+                <th>
+                    <label class="checkbox-inline" >
+                        <input class="form-check-input" ng-model="coverage.type" type="radio" id="radioPercent{{annotationList}}" value="percent"> Pourcents
+                    </label>
+                    <label class="checkbox-inline">
+                        <input class="form-check-input" ng-model="coverage.type" type="radio" id="radionbElement{{annotationList}}" value="nbElements"> Nombre d'éléments
+                    </label>
+                    <div style="margin-left:1em; color:red;cursor:pointer;" class="glyphicon glyphicon-trash" ng-click="_removeAnnotationList(coverage.listName)"></div>
+                </th>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <hr>
+            <div ng-repeat="coverage in model.content.coverages" ng-if="coverage.listName == null" style="display:flex;align-items:center;">
+                <span>Couverture globale : </span>
+            <input class="form-control" type="number" placeholder="couverture globale" style="width: 25%; margin-left: 1em;" ng-model="coverage.value">
+
+                <label class="checkbox-inline" >
+                    <input class="form-check-input" ng-model="coverage.type" type="radio" id="radioPercent" value="percent"> Pourcents
+                </label>
+                <label class="checkbox-inline">
+                    <input class="form-check-input" ng-model="coverage.type" type="radio" id="radionbElement" value="nbElements"> Nombre d'éléments
+                </label>
+            </div>
+        <hr>
+
+        <label class="checkbox-inline" >
+            <input class="form-check-input" type="checkbox" value="" id="checkAnswersDifferents" style="float:left;" ng-checked="model.content.responses_tag != ''" ng-click="_changeInitAsAnswer()">Les réponses sont différentes du texte initial
+        </label>
+        <!--<select class="form-control" ng-model="model.content.responses_tag">
+            <option ng-repeat="answerTag in tagsList track by $index" value="{{answerTag}}">{{answerTag}}</option>
+        </select>
+        -->
+        <input id="select-answer-tag" class="form-control" list="list-tags"  ng-model="model.content.responses_tag">
+        <datalist id="list-tags">
+            <option ng-repeat="answerTag in tagsList track by $index" value="{{answerTag}}">{{answerTag}}</option>
+        </datalist>
+        </input>
+    </div>
+    </accordion-group>
+</accordion>
+
+<accordion>
+    <accordion-group class="panel panel-primary" is-open="true">
+        <accordion-heading class="panel-heading" style="margin:0px; padding:0px;">
+            <div class="row">
+                <div class="col-xs-12">
+                    Affichage pour les apprenants&nbsp;<span class="caret"></span>
+                </div>
+            </div>
+        </accordion-heading>
+    <div class="panel-body" >
+        <div style="display: flex;flex-direction: column;">
+        <label class="checkbox-inline">
+            <input ng-model="model.content.generate_indication" type="checkbox" id="generateIndications" value="" style="float:left;" ng-change="_checkGenerateIndications()"> Générer des indications pour l'exercice
+        </label>
+
+        <label class="checkbox-inline">
+            <input class="form-check-input" type="radio" ng-checked="model.content.init_as_indication" name="initialElementAsIndication" id="radioInitialElement" value="{{true}}"  ng-disabled="!model.content.generate_indication" ng-click="model.content.init_as_indication = true;">Utiliser l'élément initial comme indication
+        </label>
+        <label class="checkbox-inline">
+            <input id="checkedIndications" class="form-check-input" type="radio" ng-checked="!model.content.init_as_indication" name="keyAsIndication" id="radioKeyIndication" value="{{false}}" ng-disabled="!model.content.generate_indication" ng-click="model.content.init_as_indication = false;">Utiliser une clé comme indication
+        </label>
+        <!--<select class="form-control" ng-model="model.content.indication_key" ng-disabled="model.content.generate_indication == false">
+            <option value="none" selected disabled hidden>Choisissez une clé</option>
+            <option ng-repeat="answerTag in tagsList track by $index" value="{{answerTag}}">{{answerTag}}</option>
+        </select>-->
+            <input id="select-indication-tag" class="form-control" list="list-tags"  ng-model="model.content.indication_key"></input>
+        </div>
+        <div ng-if="model.content.answer_modality == 'dragAndDrop'" style="display: flex;flex-direction: column;">
+            <hr>
+            <label class="checkbox-inline">
+                <input ng-model="model.content.do_not_remove_tag" type="checkbox" id="removeTags" value="" style="float:left;"> Ne pas enlever les étiquettes une fois utilisées
+            </label>
+            <label class="checkbox-inline" style="margin-left:0px;">
+                <input ng-model="model.content.remove_duplicates" type="checkbox" id="removeDuplicates" value="" style="float:left;"> Enlever les doublons
+            </label>
+        </div>
+        <div ng-if="model.content.answer_modality == 'list' || model.content.answer_modality == 'dragAndDrop'" style="display: flex;flex-direction: column;">
+            <hr>
+            <label class="checkbox-inline">
+                <input ng-model="model.content.generate_perturbators" type="checkbox" id="generatePerturbators" value="" style="float:left;"> Générer des éléments perturbateurs
+            </label>
+            <h4>Eléments perturbateurs :</h4>
+            <select id="select-perturbators-list" class="form-control" ng-model="selectedPerturbatorsList">
+                <option ng-repeat="answerList in answerLists track by $index" value="{{answerList}}">{{answerList}}</option>
+            </select>
+            <button class="btn btn-primary" style="margin-top: 1em; width: 33%">Ajouter la liste</button>
+            Nombre de perturbateurs à générer
+            <input ng-model="model.content.nb_perturbators" type="number" id="nbPerturbators" placeholder="0" style="float:left;">
+        </div>
+    </div>
+    </accordion-group>
+</accordion>

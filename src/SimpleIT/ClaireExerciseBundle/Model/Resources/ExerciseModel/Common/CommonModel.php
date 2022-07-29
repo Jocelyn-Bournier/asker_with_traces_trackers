@@ -30,7 +30,8 @@ use SimpleIT\ClaireExerciseBundle\Model\Resources\ModelObject\ModelDocument;
  *    "pair-items": "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModel\PairItems\Model",
  *    "order-items": "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModel\OrderItems\Model",
  *    "multiple-choice": "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModel\MultipleChoice\Model",
- *    "open-ended-question": "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModel\OpenEndedQuestion\Model"
+ *    "open-ended-question": "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModel\OpenEndedQuestion\Model",
+ *    "text-with-holes": "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModel\TextWithHoles\Model"
  * })
  */
 abstract class CommonModel
@@ -54,6 +55,11 @@ abstract class CommonModel
      * @const PAIR_ITEMS = "pair-items"
      */
     const PAIR_ITEMS = "pair-items";
+
+    /**
+     * @const TEXT_WITH_HOLES = "text-with-holes"
+     */
+    const TEXT_WITH_HOLES = "text-with-holes";
 
     /**
      * @const OPEN_ENDED_QUESTION = "open-ended-question"

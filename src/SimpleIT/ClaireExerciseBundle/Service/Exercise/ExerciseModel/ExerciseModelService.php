@@ -26,6 +26,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use JMS\Serializer\SerializationContext;
+use SimpleIT\ClaireExerciseBundle\Entity\AskerUser;
 use SimpleIT\ClaireExerciseBundle\Entity\DomainKnowledge\Knowledge;
 use SimpleIT\ClaireExerciseBundle\Entity\ExerciseModel\ExerciseModel;
 use SimpleIT\ClaireExerciseBundle\Entity\ExerciseModel\Metadata;
@@ -35,6 +36,7 @@ use SimpleIT\ClaireExerciseBundle\Exception\InconsistentEntityException;
 use SimpleIT\ClaireExerciseBundle\Exception\InvalidTypeException;
 use SimpleIT\ClaireExerciseBundle\Exception\NoAuthorException;
 use SimpleIT\ClaireExerciseBundle\Exception\NonExistingObjectException;
+use SimpleIT\ClaireExerciseBundle\Model\ExerciseObject\ExerciseTextWithHoles;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\DomainKnowledge\Formula\LocalFormula;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\Exercise\Common\CommonExercise;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModel\Common\CommonModel;
@@ -51,9 +53,11 @@ use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModel\OrderItems\Model
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModel\OrderItems\ObjectBlock as OIObjectBlock;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModel\PairItems\Model as PairItems;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModel\PairItems\PairBlock;
+use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModel\TextWithHoles\Model;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModelResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModelResourceFactory;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\CommonResource;
+use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\TextWithHolesResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\KnowledgeResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ModelObject\MetadataConstraint;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ModelObject\ModelDocument;
@@ -182,6 +186,9 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
             case CommonExercise::OPEN_ENDED_QUESTION:
                 $class = ExerciseModelResource::OPEN_ENDED_QUESTION_CLASS;
                 break;
+            case CommonExercise::TEXT_WITH_HOLES:
+                $class = ExerciseModelResource::TEXT_WITH_HOLES_CLASS;
+                break;
             default:
                 throw new \LogicException('Unknown type of model');
         }
@@ -206,7 +213,6 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
 
         parent::fillFromResource($model, $modelResource);
         $model = $this->computeRequirements($modelResource, $model);
-
         return $model;
     }
 
@@ -416,11 +422,12 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
      * @param string $type
      * @param int $parentId
      * @param $content
+     * @param $owner
      *
      * @throws \SimpleIT\ClaireExerciseBundle\Exception\InconsistentEntityException
      * @return boolean True if the model is complete
      */
-    protected function checkEntityComplete($entity, $type, $parentId, $content)
+    protected function checkEntityComplete($entity, $type, $parentId, $content, $owner=null)
     {
         $errorCode = null;
 
@@ -449,6 +456,10 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
                         /** @var OpenEnded $content */
                         $complete = $this->checkOEQComplete($content, $errorCode);
                         break;
+                    case CommonModel::TEXT_WITH_HOLES:
+                        /** @var OrderItems $content */
+                        $complete = $this->checkTWHComplete($content, $errorCode);
+                        break;
                     default:
                         throw new InconsistentEntityException('Invalid type');
                 }
@@ -476,7 +487,7 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
 
     /**
      * Check if an Exercise has a title
-     * 
+     *
      * @param ExerciseModel $entity
      * @param $errorCode
      * @return boolean True if it has a title
@@ -767,7 +778,7 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
      */
     private function checkOEQComplete(
         OpenEnded $content,
-        &$errorCode
+                  &$errorCode
     )
     {
         if (is_null($content->isShuffleQuestionsOrder())) {
@@ -794,6 +805,66 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
             }
         }
 
+        return true;
+    }
+
+    /**
+     * Check if a text with hole model is complete
+     *
+     * @param Model $content
+     * @param string $errorCode
+     *
+     * @return bool
+     */
+    private function checkTWHComplete(
+        Model $content,
+        &$errorCode
+    )
+    {
+
+        if (count($content->getRessources()) == 0) {
+            $errorCode = '1001';
+
+            return false;
+        }
+
+        if (count($content->getAnnotationsLists()) == 0) {
+            $errorCode = '1002';
+
+            return false;
+        }
+
+                foreach ($content->getCoverages() as $coverage) {
+                    if ($coverage['type'] == "nbElements") {
+                        if ($content->isList()) {
+                            foreach ($content->getRessources() as $resource) {
+                                $res = $this->exerciseResourceService->get($resource);
+                                $res = json_decode($res->getContent());
+                                $res = get_object_vars($res);
+                                foreach ($res['annotations_list'] as $constraint) {
+                                    $constraint = get_object_vars($constraint);
+                                    if ($coverage['isGlobal'] || $constraint['name'] == $coverage['listName']) {
+                                        if (!$this->checkCoverage($res['annotations'], $constraint['constraint'], $coverage['value'])) {
+                                            $errorCode = '1003';
+
+                                            return false;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        // TODO : faire pour les contraintes
+                        }
+                    }
+        return true;
+    }
+
+    private function checkCoverage($annotations, $constraint, $value): bool {
+        $filteredElements = TextWithHolesResource::filterByConstraint($annotations, $constraint);
+        $coverNb = count($filteredElements);
+        if ($coverNb < $value){
+            return false;
+        }
         return true;
     }
 
@@ -1049,6 +1120,8 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
                 get_class($content) !== ExerciseModelResource::PAIR_ITEMS_MODEL_CLASS)
             || ($type === CommonModel::OPEN_ENDED_QUESTION &&
                 get_class($content) !== ExerciseModelResource::OPEN_ENDED_QUESTION_CLASS)
+            || ($type === CommonModel::TEXT_WITH_HOLES &&
+                get_class($content) !== ExerciseModelResource::TEXT_WITH_HOLES_CLASS)
         ) {
             throw new InvalidTypeException('Content does not match exercise model type');
         }
@@ -1115,19 +1188,6 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
                         )
                 );
                 break;
-            case ExerciseModelResource::PAIR_ITEMS_MODEL_CLASS:
-                /** @var PairItems $content */
-                $reqRes = array_merge(
-                    $reqRes,
-                    $this->computeRequiredResourcesFromModelBlocks
-                        (
-                            $content->getPairBlocks(),
-                            $import,
-                            $ownerId,
-                            $originalOwner
-                        )
-                );
-                break;
             case ExerciseModelResource::GROUP_ITEMS_MODEL_CLASS:
                 /** @var GroupItems $content */
                 $reqRes = array_merge(
@@ -1140,6 +1200,9 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
                             $originalOwner
                         )
                 );
+                break;
+            case ExerciseModelResource::TEXT_WITH_HOLES_CLASS:
+                $resRes = [];
                 break;
             case ExerciseModelResource::MULTIPLE_CHOICE_MODEL_CLASS:
             case ExerciseModelResource::OPEN_ENDED_QUESTION_CLASS:

@@ -45,6 +45,7 @@ use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\SequenceResou
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\TextResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\OrderResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\Order\OrderBlock;
+use SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\TextWithHolesResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\KnowledgeResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\MetadataResource;
 use SimpleIT\ClaireExerciseBundle\Model\Resources\ModelObject\ObjectConstraints;
@@ -120,7 +121,7 @@ class ExerciseResourceService extends SharedEntityService implements ExerciseRes
             $oc,
             $owner
         );
-        
+
         $resListObj = [];
         foreach ($resList as $res) {
             $resListObj[] = $this->getExerciseObjectFromEntity($res);
@@ -402,6 +403,9 @@ class ExerciseResourceService extends SharedEntityService implements ExerciseRes
                     case CommonResource::ORDER:
                         /** @var OrderResource $content */
                         $complete = $this->checkOrderComplete($content, $errorCode);
+                    case CommonResource::TEXT_WITH_HOLES:
+                        /** @var DocumentResource $content */
+                        $complete = $this->checkTextWithHolesComplete($content, $errorCode);;
                         break;
                     default:
                         throw new InconsistentEntityException('Invalid type');
@@ -428,7 +432,7 @@ class ExerciseResourceService extends SharedEntityService implements ExerciseRes
 
     /**
      * Check if a Resource has a title
-     * 
+     *
      * @param ExerciseModel $entity
      * @param $errorCode
      * @return boolean True if it has a title
@@ -480,6 +484,34 @@ class ExerciseResourceService extends SharedEntityService implements ExerciseRes
     {
         if ($content->getText() === null) {
             $errorCode = '802';
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Check if a text with holes resource is complete
+     *
+     * @param TextWithHolesResource $content
+     * @param string $errorCode
+     *
+     * @return bool
+     */
+    private function checkTextWithHolesComplete(
+        TextWithHolesResource $content,
+                     &$errorCode
+    )
+    {
+        if ($content->getText() === null) {
+            $errorCode = '802';
+
+            return false;
+        }
+
+        if (!$content->checkAnnotationsListHolesGeneration()){
+            $errorCode = '812';
 
             return false;
         }
@@ -659,6 +691,8 @@ class ExerciseResourceService extends SharedEntityService implements ExerciseRes
                 get_class($content) !== ResourceResource::SEQUENCE_CLASS)
             || ($type === CommonResource::TEXT &&
                 get_class($content) !== ResourceResource::TEXT_CLASS)
+            || ($type === CommonResource::TEXT_WITH_HOLES &&
+                get_class($content) !== ResourceResource::TEXT_WITH_HOLES_CLASS)
             || ($type === CommonResource::PICTURE &&
                 get_class($content) !== ResourceResource::PICTURE_CLASS)
             || ($type === CommonResource::DOCUMENT &&
@@ -691,6 +725,7 @@ class ExerciseResourceService extends SharedEntityService implements ExerciseRes
             case ResourceResource::PICTURE_CLASS:
             case ResourceResource::DOCUMENT_CLASS:
             case ResourceResource::TEXT_CLASS:
+            case ResourceResource::TEXT_WITH_HOLES_CLASS:
             case ResourceResource::MULTIPLE_CHOICE_QUESTION_CLASS:
             case ResourceResource::ORDER_CLASS:
             case ResourceResource::OPEN_ENDED_QUESTION_CLASS:

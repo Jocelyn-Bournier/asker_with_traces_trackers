@@ -30,6 +30,7 @@ use SimpleIT\ClaireExerciseBundle\Model\Resources\Validable;
  *    "document": "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\DocumentResource",
  *    "text": "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\TextResource",
  *    "order": "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\OrderResource",
+ *    "text_with_holes": "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\TextWithHolesResource",
  *    "sequence": "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\SequenceResource",
  *    "multiple_choice_question": "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\MultipleChoiceQuestionResource",
  *    "open_ended_question": "SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\OpenEndedQuestionResource"      
@@ -71,6 +72,11 @@ abstract class CommonResource implements Validable
      * @const SEQUENCE = "sequence"
      */
     const SEQUENCE = "sequence";
+
+    /**
+     * @const TEXT_WITH_HOLES = "text-with-holes"
+     */
+    const TEXT_WITH_HOLES = "text-with-holes";
 
     /**
      * @var array An array of LocalFormula
@@ -116,6 +122,7 @@ abstract class CommonResource implements Validable
             || $type === self::ORDER
             || $type === self::MULTIPLE_CHOICE_QUESTION
             || $type === self::OPEN_ENDED_QUESTION
+            || $type === self::TEXT_WITH_HOLES
         ) {
             return true;
         }

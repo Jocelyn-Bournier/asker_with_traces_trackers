@@ -75,6 +75,11 @@ class ResourceResource extends SharedResource
     const TEXT_CLASS = 'SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\TextResource';
 
     /**
+     * @const TEXT_WITH_HOLES = 'SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\TextWithHolesResource'
+     */
+    const TEXT_WITH_HOLES_CLASS = 'SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseResource\TextWithHolesResource';
+
+    /**
      * @var int $id Id of resource
      * @Serializer\Type("integer")
      * @Serializer\Groups({"details", "list", "resource_list"})
@@ -303,6 +308,9 @@ class ResourceResource extends SharedResource
                 break;
             case CommonResource::TEXT:
                 $class = self::TEXT_CLASS;
+                break;
+            case CommonResource::TEXT_WITH_HOLES:
+                $class = self::TEXT_WITH_HOLES_CLASS;
                 break;
             case CommonResource::OPEN_ENDED_QUESTION:
                 $class = self::OPEN_ENDED_QUESTION_CLASS;

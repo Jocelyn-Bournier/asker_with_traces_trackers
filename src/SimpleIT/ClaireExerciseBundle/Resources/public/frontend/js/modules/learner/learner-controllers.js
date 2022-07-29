@@ -57,6 +57,19 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
         }
 
         /**
+         * Génère un exercise en enregistrant la source de génération
+         * @param location l'url de l'exercise
+         */
+        $scope._createExerciseFromId = function (modelId) {
+            $.cookie('exerciseGeneratedFrom', 'profile');
+
+                exercise = ExerciseByModel.try({modelId: modelId},
+                    function (exercise) {
+                        $scope.tryExercise(exercise);
+                    });
+        }
+
+        /**
          * Sélectionne un onglet entre l'onglet d'activités ou de gestion de l'activité (profil et recommandations)
          * @param tab L'onglet à ouvrir'
          */
@@ -105,17 +118,24 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                         console.log($scope.recommendations);
                         document.getElementById('recommendations-loader').classList.add('hidden');
                         console.log("debug");
-                        /*for (let i = 0; i < $scope.recommendations.length; i++) {
-                            console.log("go");
-                            $scope.recommendations[i].learning_type = $scope.typeToAsker($scope.recommendations[i].title);
-                        }
 
-                         */
-
+                        let cpt = 1;
                         for(let recommendation in $scope.recommendations){
                             console.log($scope.recommendations[recommendation]);
                             $scope.recommendations[recommendation].learning_type = $scope.typeToAsker($scope.recommendations[recommendation].title);
+                            $scope.recommendations[recommendation].index = cpt;
+                            cpt = cpt + 1;
                         }
+
+                        $scope.recommendations = Object.values($scope.recommendations);
+                        $scope.recommendations.sort(function(a, b){
+                            if(a.index < b.index){
+                                return -1;
+                            }else if(a.index > b.index){
+                                return 1;
+                            }
+                            return 0;
+                        });
 
 
                         $scope.retrieveGenerationObjectives(directory);
@@ -156,6 +176,7 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                 success: function (data, textStatus) {
                     $scope.profileComputed = true;
                     $scope.framework = data;
+                    $scope.framework['computedAt']['date'] = $scope.framework['computedAt']['date'].split('.')[0];
                     $scope.drawProfile();
 
 
@@ -451,7 +472,10 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                 "fontColor": "rgba(0, 0, 0, .85)",
                 "backgroundColor": "rgba(255, 255, 255, .95)",
                 "showCover": $.cookie('userRoleStudentOnly') === 'false',
-                "showExercises": $scope.showResources
+                "showTrust": $.cookie('userRoleStudentOnly') === 'false',
+                "showExercises": $scope.showResources,
+                "useLegend": false,
+                "colors" : [{to:parseFloat($scope.framework.colors[0]),color:"#cf000f"},{to:parseFloat($scope.framework.colors[1]),color:"#f57f17"},{to:parseFloat($scope.framework.colors[2]),color:"#ffee58"},{color:"#4caf50"}]
             }
 
             switch($scope.selectedOption){
@@ -478,10 +502,34 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
             };
             $scope.profileVisu.onMouseEnter = (node) => {};
             $scope.profileVisu.draw();
+
+            for(let exercise of document.getElementsByClassName('exercise-olm')){
+                let exerciseName = exercise.id.split("exercise-")[1];
+                let location = $scope.titleToLocation(exerciseName);
+                exercise.addEventListener('click', function() {
+                    $scope._createExerciseFromId(location);
+
+                }, false);
+                exercise.addEventListener('mouseenter', function() {
+                    exercise.style.cursor = "pointer";
+                    exercise.style.fontWeight = "bold";
+
+                }, false);
+                exercise.addEventListener('mouseleave', function() {
+                    exercise.style.fontWeight = "normal";
+                }, false);
+            }
             document.getElementById('olm-options').classList.remove('hidden');
 
-        }
-
+            document.getElementById('olm-colors').innerHTML = `
+                <div style="width: calc(${parseFloat($scope.framework.colors[0])*100}% - 15px); float:left; background-color:#cf000f; height:20px; margin-top:5px;border-radius: 5px 0px 0px 5px"></div>
+                <div style="width: 30px; background-color:lightgray; height:30px; display: flex; justify-content: center; align-items: center; float:left;border-radius: 5px;border: 1px solid gray;">${parseFloat($scope.framework.colors[0])*100}</div>
+                <div style="width: calc(${(parseFloat($scope.framework.colors[1])-parseFloat($scope.framework.colors[0]))*100}% - 30px); float:left; background-color:#f57f17; height:20px; margin-top:5px;"></div>
+                <div style="width: 30px; background-color:lightgray; height:30px;  display: flex; justify-content: center; align-items: center; float:left;border-radius: 5px;border: 1px solid gray;">${parseFloat($scope.framework.colors[1]) * 100}</div>
+                <div style="width: calc(${(parseFloat($scope.framework.colors[2])-parseFloat($scope.framework.colors[1]))*100}% - 30px); float:left; background-color:#ffee58; height:20px; margin-top:5px;"></div>
+                <div style="width: 30px; background-color:lightgray; height:30px;  display: flex; justify-content: center; align-items: center; float:left;;border-radius: 5px;border: 1px solid gray;">${parseFloat($scope.framework.colors[2]) * 100}</div>
+                <div style="width: calc(${(100-(parseFloat($scope.framework.colors[2])*100))}% - 15px); background-color:#4caf50; height:20px; float:left; margin-top:5px;border-radius: 0px 5px 5px 0px"></div>`;
+            }
         /**
          * Récupère le profil de l'apprenant sur un répertoire donné
          * @param directory le répertoire sur lequel le profil récupéré correspond
@@ -497,6 +545,7 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                     success: function (data, textStatus) {
                         $scope.profileComputed = true;
                         $scope.framework = data;
+                        $scope.framework['computedAt']['date'] = $scope.framework['computedAt']['date'].split('.')[0]
                         $scope.drawProfile();
                     }
                 });
@@ -532,6 +581,7 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                     console.log(data);
                     $scope.profileComputed = true;
                     $scope.framework = data;
+                    $scope.framework['computedAt']['date'] = $scope.framework['computedAt']['date'].split('.')[0]
                     document.getElementById('olm-target-loader').classList.add('hidden');
                     document.getElementById('olm-target').classList.remove('hidden');
                     $scope.drawProfile();
@@ -617,6 +667,28 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
             }
         };
 
+        $scope.titleToLocation = function (title) {
+            console.log(title);
+            if ($scope.directory.models != null){
+                for(let model of $scope.directory.models){
+                    if (title == model.title){
+                        return model.id;
+                    }
+                }
+            }
+            if($scope.directory.subs != null){
+                for(let sub of $scope.directory.subs){
+                    if (sub.models != null){
+                        for(let model of sub.models){
+                            if (title == model.title){
+                                return model.id;
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
         $scope._changeOLMVisu = function (){
             $scope.selectedOption = parseInt(document.getElementById("olm-options").value);
             document.getElementById('olm-target').innerHTML = '';
@@ -631,6 +703,8 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                 "fontColor": "rgba(0, 0, 0, .85)",
                 "backgroundColor": "rgba(255, 255, 255, .95)",
                 "showCover": $.cookie('userRoleStudentOnly') === 'false',
+                "showTrust": $.cookie('userRoleStudentOnly') === 'false',
+                "useLegend": false,
                 "showExercises": $scope.showResources
             }
             switch($scope.selectedOption){
@@ -652,12 +726,27 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
                     action = 'change_to_treeSunburst';
                     break;
             }
-            $scope.profileVisu.onClick = (node) => {
-                $scope.selectedNode = node.data.name;
-                $scope.selectionIntention.style.display = "block";
-            };
+
             $scope.profileVisu.onMouseEnter = (node) => {};
             $scope.profileVisu.draw();
+            for(let exercise of document.getElementsByClassName('exercise-olm')){
+                let exerciseName = exercise.id.split("exercise-")[1];
+                let location = $scope.titleToLocation(exerciseName);
+                console.log(exerciseName);
+                console.log(location);
+                exercise.addEventListener('click', function() {
+                    $scope._createExerciseFromId(location);
+
+                }, false);
+                exercise.addEventListener('mouseenter', function() {
+                    exercise.style.cursor = "pointer";
+                    exercise.style.fontWeight = "bold";
+
+                }, false);
+                exercise.addEventListener('mouseleave', function() {
+                    exercise.style.fontWeight = "normal";
+                }, false);
+            }
             document.getElementById('olm-options').classList.remove('hidden');
         }
 

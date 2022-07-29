@@ -55,6 +55,9 @@
                                 <h4 ng-switch-when="open-ended-question">
                                     {{ resources[blockResourceId.id].title }}&nbsp;<span class="caret"></span>
                                 </h4>
+                                <h4 ng-switch-when="text-with-holes">
+                                    {{ resources[blockResourceId.id].title }}&nbsp;<span class="caret"></span>
+                                </h4>
                             </ng-switch>
                         </div>
                         <div class="col-xs-1">
@@ -137,12 +140,6 @@
             <label>Type de ressource</label><br>
 
             <div class="btn-group">
-                <!--<button class="btn btn-info"-->
-                        <!--ng-model="block.resource_constraint.type"-->
-                        <!--btn-radio="null"-->
-                        <!--title="N'importe">-->
-                    <!--&forall;-->
-                <!--</button>-->
                 <button ng-if="blockTypes.indexOf('text') !== -1"
                         class="btn btn"
                         ng-model="block.resource_constraint.type"

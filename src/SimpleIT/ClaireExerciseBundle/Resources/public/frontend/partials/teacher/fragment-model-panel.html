@@ -16,6 +16,9 @@
                     <div ng-switch-when="group-items">
                         <span title="Exercice de groupement" class="glyphicon glyphicon-link" style="font-size: 320%"></span>
                     </div>
+                    <div ng-switch-when="text-with-holes">
+                        <span title="Exercice de texte à trous" class="glyphicon glyphicon-list-alt" style="font-size: 320%"></span>
+                    </div>
                 </div>
 
                 <div class="col-xs-11">
@@ -31,7 +34,7 @@
                                 </span>
                           </button>
                           <form action="https://comper.projet.liris.cnrs.fr/sites/plateform-to-ref/linkResource.php"
-                          method="post" target="_blank" id="comper3-{{model.id}}" style="display:none;">
+                          method="post"  id="comper3-{{model.id}}" style="display:none;">
                             <input type="hidden" name="id" value="asker:{{model.id}}"></input>
                             <input type="hidden" name="title" value="{{model.title}}"></input>
                             <input type="hidden" name="interactivityType" value="active"></input>
@@ -148,6 +151,9 @@
             </div>
             <div ng-switch-when="group-items">
                 <label>Type de modèle&nbsp;:&nbsp;</label>Exercice de groupement
+            </div>
+            <div ng-switch-when="text-with-holes">
+                <label>Type de modèle&nbsp;:&nbsp;</label>Exercice de texte à trous
             </div>
         </div>
         <div class="col-centered">

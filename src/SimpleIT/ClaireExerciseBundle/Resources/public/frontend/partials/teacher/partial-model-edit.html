@@ -22,6 +22,9 @@
                             <div ng-switch-when="group-items">
                                 <span title="Exercice de groupement" class="glyphicon glyphicon-link" style="font-size: 500%"></span>
                             </div>
+                            <div ng-switch-when="text-with-holes-">
+                                <span title="Exercice de texte à trous" class="glyphicon glyphicon-link" style="font-size: 500%"></span>
+                            </div>
                         </div>
                         <div class="col-xs-6 col-centered">
                             <div class="col-xs-6">
@@ -228,6 +231,11 @@
             <div ng-include
                  src="BASE_CONFIG.urls.partials.teacher+'/partial-model-edit-open-ended-question.html'"
                  data-ng-controller="modelEditOpenEndedQuestionController"></div>
+        </div>
+        <div ng-switch-when="text-with-holes">
+            <div ng-include
+                 src="BASE_CONFIG.urls.partials.teacher+'/partial-model-edit-text-with-holes.html'"
+                 data-ng-controller="modelEditOrderItemsController"></div>
         </div>
     </div>
     

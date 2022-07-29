@@ -176,3 +176,10 @@ ul.brand-size * {
 .filter-item{
     margin-top: 1em;
 }
+
+#float-tooltip {
+    position: absolute;
+}
+#float-tooltip + .tooltip {
+    pointer-events: none;
+}

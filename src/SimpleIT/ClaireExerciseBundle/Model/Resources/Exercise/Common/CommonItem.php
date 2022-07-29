@@ -28,6 +28,7 @@ use JMS\Serializer\Annotation as Serializer;
  *    "group-items": "SimpleIT\ClaireExerciseBundle\Model\Resources\Exercise\GroupItems\Item",
  *    "pair-items": "SimpleIT\ClaireExerciseBundle\Model\Resources\Exercise\PairItems\Item",
  *    "order-items": "SimpleIT\ClaireExerciseBundle\Model\Resources\Exercise\OrderItems\Item",
+ *    "text-with-holes": "SimpleIT\ClaireExerciseBundle\Model\Resources\Exercise\TextWithHoles\Item",
  *    "multiple-choice-question": "SimpleIT\ClaireExerciseBundle\Model\Resources\Exercise\MultipleChoice\Question",
  *    "open-ended-question": "SimpleIT\ClaireExerciseBundle\Model\Resources\Exercise\OpenEndedQuestion\Question"
  * })

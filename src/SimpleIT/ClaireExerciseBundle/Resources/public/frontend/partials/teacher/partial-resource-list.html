@@ -70,6 +70,8 @@
                                 </button>
                                 <button class="btn" title="Ordre" ng-model="$parent.$parent.filters.type.order" btn-checkbox-true="'order'" btn-checkbox-false="''" btn-checkbox>
                                     <span class="glyphicon glyphicon-sort"></span>
+                                <button class="btn" title="Texte annoté" ng-model="$parent.$parent.filters.type.text_with_holes" btn-checkbox-true="'text-with-holes'" btn-checkbox-false="''" btn-checkbox>
+                                    <span class="glyphicon glyphicon-indent-right"></span>
                                 </button>
                                 <!--<button class="btn" title="sequence" ng-model="$parent.$parent.filters.type.sequence" btn-checkbox-true="'sequence'" btn-checkbox-false="''" btn-checkbox>-->
                                     <!--<span class="glyphicon glyphicon-sort-by-order"></span>-->
@@ -156,7 +158,12 @@
                         <a data-ng-click="createResource('document')" href class="list-group-item"><span class="glyphicon glyphicon-file"></span>&nbsp;Créer un document</a>
                     </div>
                     <div>
-                        <a data-ng-click="createResource('text')" href class="list-group-item"><span title="Texte" class="glyphicon glyphicon-font"></span>&nbsp;Créer un texte</a>
+                        <a data-ng-click="createResource('text')" href class="list-group-item"><span title="Texte" class="glyphicon glyphicon-align-left"></span>&nbsp;Créer un texte</a>
+                    </div>
+                    <div>
+                        <a data-ng-click="createResource('text-with-holes')" href class="list-group-item"><span title="Texte" class="glyphicon glyphicon-indent-right"></span>&nbsp;Créer un texte annoté
+                            <span class="panel panel-danger"><span class="panel-heading">Attention, les textes annotés sont une fonctionnalité en cours de développement</span></span></a>
+
                     </div>
                     <div>
                         <a data-ng-click="createResource('order')" href class="list-group-item"><span class="glyphicon glyphicon-sort"></span>&nbsp;Créer un ordre</a>

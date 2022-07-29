@@ -1,0 +1,948 @@
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap-theme.min.css" integrity="sha384-6pzBo3FDv/PJ8r2KRkGHifhEocL+1X2rVCTTkUfGk7/0pbek5mMa1upzvWbrUbOZ" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+
+<script>
+let textArea = document.getElementById("myTextArea");
+textArea.value = angular.element("#twh").scope().editedResource.content.text;
+let customArea = document.querySelector(".custom-area");
+let backdrop = document.querySelector(".backdrop");
+let selectionStart = 0;
+let selectionStop = 0;
+let oldTag = null;
+let oldMetadata = null;
+let jsonConstraint = {};
+let constraintList = [];
+let oldConstraintName = "";
+
+//let tags = [];
+let keys = [];
+let metadatas = [];
+
+drawText();
+drawKeys();
+//drawConstraintList();
+
+function allowDrop(ev) {
+  ev.preventDefault();
+}
+
+document.addEventListener("dragstart", function(ev) {
+    ev.dataTransfer.setData("text", ev.target.id);
+    var data = ev.dataTransfer.getData("text");
+    if (data.split("tag-")[0] != data) {
+        document.getElementById("trash-tag").style.display = "block";
+    } else if (data.split("constraint-list")[0] != data) {
+        document.getElementById("trash-constraint-list").style.display = "block";
+    } else if (data.split("metadata-")[0] != data) {
+        document.getElementById("trash-metadata").style.display = "block";
+    } else if(data.split("div-operator")[0] != data || data.split("constraint")[0] != data){
+        document.getElementById("trash-constraint").style.display = "block";
+    }
+});
+
+document.addEventListener("drop", function(ev) {
+    ev.preventDefault();
+  if(ev.target.classList.contains("inputConstraint") || ev.target.classList.contains("containerConstraints")){
+    var data = ev.dataTransfer.getData("text");
+    ev.target.appendChild(document.getElementById(data));
+  }
+
+  // trash constraint
+  if(ev.target.classList.contains("trash-constraint")){
+    var data = ev.dataTransfer.getData("text");
+    if(data.split("div-operator")[0] != data || data.split("constraint")[0] != data){
+        document.getElementById(data).remove();
+    }
+  }
+
+  //trash metadata
+  if(ev.target.classList.contains("trash-metadata")){
+    var data = ev.dataTransfer.getData("text");
+    if(data.split("metadata-")[0] != data){
+        let content = document.getElementById(data).innerHTML;
+        removeMetadata(content);
+        document.getElementById(data).remove();
+    }
+  }
+
+  //trash constraint list
+  if(ev.target.classList.contains("trash-constraint-list")){
+    var data = ev.dataTransfer.getData("text");
+    if(data.split("constraint-list-")[0] != data){
+        let content = document.getElementById(data).innerHTML;
+        removeConstraintList(content);
+        document.getElementById(data).remove();
+    }
+  }
+
+  // trash tag
+  if(ev.target.classList.contains("trash-tag")){
+    var data = ev.dataTransfer.getData("text");
+    if(data.split("tag")[0] != data){
+        let content = document.getElementById(data).innerHTML;
+        removeTag(content);
+        document.getElementById(data).remove();
+    }
+  }
+  document.getElementById("trash-constraint").style.display = "none";
+  //document.getElementById("trash-metadata").style.display = "none";
+  document.getElementById("trash-constraint-list").style.display = "none";
+  document.getElementById("trash-tag").style.display = "none";
+});
+
+document.addEventListener("dragover", function(ev) {
+    ev.preventDefault();
+});
+
+function removeMetadata(metadata){
+    let key = metadata.split(" : ")[0];
+    let value = metadata.split(" : ")[1];
+    metadatas = metadatas.filter(metadata => (metadata.cle != key || metadata.valeur != value));
+}
+
+function removeConstraintList(listName){
+    angular.element("#twh").scope().editedResource.content.annotations_list = angular.element("#twh").scope().editedResource.content.annotations_list.filter(list => list.name != listName);
+}
+
+function removeTag(tag){
+    let key = tag.split(" : ")[0];
+    let value = tag.split(" : ")[1];
+    angular.element("#twh").scope().editedResource.content.annotations = angular.element("#twh").scope().editedResource.content.annotations.filter(tag => (tag.indiceDebut != selectionStart || tag.indiceFin != selectionStop || tag.cle != key || tag.valeur != value));
+}
+
+
+function createConstraintList(){
+    let name = document.getElementById('input-annotation-name').value;
+    let node = document.getElementById('container-constraint').childNodes[0];
+    if(node != null && name != null){
+        /*for(let constraintE of angular.element("#twh").scope().editedResource.content.annotations_list){
+            if (constraintE.name == name){
+                constraintE.constraint = parseConstraint(node);
+                return;
+            }
+        }
+
+         */
+        let constraintE = parseConstraint(node);
+        console.log(constraintE)
+        if(oldConstraintName != "") {
+            for(let constraint of angular.element("#twh").scope().editedResource.content.annotations_list){
+                console.log(constraint, oldConstraintName)
+                if (constraint.name == oldConstraintName){
+                    constraint.name = name;
+                    constraint.constraint = constraintE;
+                }
+            }
+            oldConstraintName = "";
+            document.getElementById('btnCreateTagConstraints').innerHTML = "Créer la liste d'étiquette";
+        } else {
+            angular.element("#twh").scope().editedResource.content.annotations_list.push({
+                'name': name,
+                'constraint': constraintE
+            });
+        }
+        clearConstraint();
+        drawConstraintList();
+        angular.element("#twh").scope().$apply();
+    }
+    clearConstraint();
+}
+
+
+
+function clearConstraint(){
+    document.getElementById("container-constraint").innerHTML = "";
+    document.getElementById("input-annotation-name").value = "";
+    document.getElementById("input-key-constraint").value = "";
+    document.getElementById("input-value-constraint").value = "";
+}
+
+function drawConstraintList(){
+    document.getElementById("container-constraints").innerHTML = "";
+    for(constraint of angular.element("#twh").scope().editedResource.content.annotations_list){
+        let span = document.createElement('span');
+        span.classList.add("label");
+        span.classList.add("label-success");
+        span.style.margin = "0.5em";
+        span.innerHTML = constraint.name;
+        span.id = `constraint-list-${generateId()}`;
+        span.draggable = true;
+        span.onclick = updateConstraint;
+        document.getElementById("container-constraints").appendChild(span);
+    }
+}
+
+function updateConstraint(event){
+    let name = event.target.innerHTML;
+    oldConstraintName = name;
+    document.getElementById('input-annotation-name').value = name;
+    document.getElementById('btnCreateTagConstraints').innerHTML = "Mettre à jour la liste d'étiquette";
+    for(constraint of angular.element("#twh").scope().editedResource.content.annotations_list){
+        if (constraint.name == name){
+            let template = constraintToHTML(constraint.constraint);
+            document.getElementById('container-constraint').innerHTML = template;
+            return;
+        }
+    }
+}
+
+function selectOperator(operator){
+    resetOperators();
+    document.getElementById(`operator-${operator}`).classList.remove('label-default');
+    document.getElementById(`operator-${operator}`).classList.add('label-success');
+}
+
+function generateId(){
+    let ID = "";
+    let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    for ( var i = 0; i < 12; i++ ) {
+        ID += characters.charAt(Math.floor(Math.random() * 36));
+    }
+    return ID;
+}
+
+function parseConstraint(node){
+    if(node.id.split("constraint-")[0] != node.id){
+        let operator = "";
+        let key = node.innerHTML;
+        let value = "";
+        if(node.innerHTML.split(' = ') != node.innerHTML){
+            operator = " = ";
+            key = node.innerHTML.split(' = ')[0];
+            value = node.innerHTML.split(' = ')[1];
+        } else if(node.innerHTML.split(' ≠ ') != node.innerHTML){
+            operator = " ≠ ";
+            key = node.innerHTML.split(' ≠ ')[0];
+            value = node.innerHTML.split(' ≠ ')[1];
+        } else if(node.innerHTML.split('&gt') != node.innerHTML){
+            operator = "&gt";
+            key = node.innerHTML.split('&gt')[0];
+            value = node.innerHTML.split('&gt')[1];
+        } else if(node.innerHTML.split('&ge') != node.innerHTML){
+            operator = "&ge";
+            key = node.innerHTML.split('&ge')[0];
+            value = node.innerHTML.split('&ge')[1];
+        } else if(node.innerHTML.split('&lt') != node.innerHTML){
+            operator = "&lt";
+            key = node.innerHTML.split('&lt')[0];
+            value = node.innerHTML.split('&lt')[1];
+        } else if(node.innerHTML.split('&lq') != node.innerHTML){
+            operator = "&lq";
+            key = node.innerHTML.split('&lq')[0];
+            value = node.innerHTML.split('&lq')[1];
+        }
+        return {
+            'cle': key,
+            'valeur': value,
+            'operateur': operator}
+    } else if (node.id.split("operator-")[0] != node.id){
+        return {
+            'operateur': node.childNodes[1].innerHTML,
+            'filsGauche': parseConstraint(node.childNodes[0].childNodes[0]),
+            'filsDroit': parseConstraint(node.childNodes[2].childNodes[0])
+        }
+    }
+}
+
+function constraintToHTML(constraint){
+        let id = generateId();
+    if(constraint.cle != null){
+        return `<span id="constraint-${id}" class="label label-success" style="margin: 0.5em; font-size: inherit;" draggable="true">${constraint.cle} ${constraint.operateur} ${constraint.valeur}</span>`;
+    } else if(constraint.filsGauche != null && constraint.filsDroit != null){
+        let html = `<div id="div-operator-${id}" draggable="true" style="font-size: inherit; margin: 0.5em; display: flex; align-items: center;" class="label label-success">
+            <div style="min-width: 2em; min-height: 2em; font-size: inherit; background-color: white; float: left; align-items: center; display: flex;" class="inputConstraint">`;
+        html = html + constraintToHTML(constraint.filsGauche);
+        html = html + `</div>
+            <span style="float: left; margin-left: 0.5em; margin-right: 0.5em; font-size: inherit;">
+                ${constraint.operateur}
+            </span>
+            <div style="min-width: 2em; min-height: 2em; background-color: white; float: left; align-items: center; display: flex; font-size: inherit;" class="inputConstraint">`;
+        html = html + constraintToHTML(constraint.filsDroit);
+        html = html + `</div></div>`;
+
+        return html
+    }
+}
+
+function addOperator(operator){
+    let ID = generateId();
+    let div = document.createElement('div');
+    let inputLeft = document.createElement('div');
+    let inputRight = document.createElement('div');
+    let span = document.createElement('span');
+    div.id = `div-operator-${ID}`;
+    div.draggable = true;
+    div.style.fontSize = "inherit";
+    span.innerHTML = operator;
+    span.style.float = "left";
+    span.style.marginLeft = ".5em";
+    span.style.marginRight = ".5em";
+    span.style.fontSize = "inherit";
+    div.classList.add('label');
+    div.classList.add('label-success');
+    div.style.margin="0.5em";
+    div.style.display="flex";
+    div.style.alignItems = "center";
+    inputLeft.style.minWidth = "2em";
+    inputLeft.style.minHeight = "2em";
+    inputLeft.style.fontSize = "inherit";
+    inputLeft.style.backgroundColor = "white";
+    inputLeft.style.float = "left";
+    inputLeft.classList.add("inputConstraint");
+    inputLeft.style.alignItems = "center";
+    inputLeft.style.display="flex";
+    inputRight.style.minWidth = "2em";
+    inputRight.style.minHeight = "2em";
+    inputRight.style.backgroundColor = "white";
+    inputRight.style.float = "left";
+    inputRight.style.alignItems = "center";
+    inputRight.classList.add("inputConstraint");
+    inputRight.style.display="flex";
+    inputRight.style.fontSize = "inherit";
+    div.appendChild(inputLeft);
+    div.appendChild(span);
+    div.appendChild(inputRight);
+    document.getElementById('container-constraint').appendChild(div);
+}
+
+function resetConstraint(){
+    resetOperators();
+    resetConstraintInput();
+}
+
+function resetOperators(){
+    for(labelOperator of document.getElementsByClassName('operator')){
+        labelOperator.classList.remove('label-success');
+        labelOperator.classList.add('label-default');
+    }
+}
+
+function resetConstraintInput(){
+    document.getElementById('input-value-constraint').value = "";
+    document.getElementById('input-key-constraint').value = "";
+}
+
+function createTagConstraint(){
+    let operator = "";
+    for (elemOperator of document.getElementsByClassName("operator")){
+        if (elemOperator.classList.contains("label-success")){
+            operator = elemOperator.innerHTML;
+        }
+    }
+    if(document.getElementById('input-key-constraint').value == ""){
+        alert('Vous devez spécifier la clé');
+    } else {
+        let ID = 'constraint-'+generateId();
+
+        let span = document.createElement('span');
+        let key = document.getElementById('input-key-constraint').value;
+        let value = document.getElementById('input-value-constraint').value;
+
+        if (operator == "" && value != "") {
+            alert('Vous devez choisir un opérateur');
+            return;
+        }
+        span.id = ID;
+        span.classList.add("label");
+        span.classList.add("label-success");
+        span.style.margin = "0.5em";
+        span.draggable = true;
+        span.style.fontSize = "inherit";
+        span.innerHTML = (value != "" ? `${key} ${operator} ${value}` : `${key}`);
+        document.getElementById("container-constraint").appendChild(span);
+        resetConstraint();
+    }
+}
+
+function drawKeys(){
+    updateKeys();
+    document.getElementById("container-keys").innerHTML = "";
+    for(key of keys){
+        let span = document.createElement('span');
+        span.classList.add("label");
+        span.classList.add("label");
+        span.classList.add("label-success");
+        span.style.margin = "0.5em";
+        span.innerHTML = `${key['key']} (${key['count']})`;
+        span.onclick = drawTags;
+        document.getElementById("container-keys").appendChild(span);
+    }
+}
+
+function drawMetadatas(){
+    document.getElementById("container-metadatas").innerHTML = "";
+    for(metadata of metadatas){
+        let span = document.createElement('span');
+        span.classList.add("label");
+        span.draggable = true;
+        span.classList.add("label-success");
+        span.style.margin = "0.5em";
+        span.innerHTML = `${metadata['cle']} : ${metadata['valeur']}`;
+        span.onclick = updateMetadata;
+        span.id = `metadata-${generateId()}`;
+        document.getElementById("container-metadatas").appendChild(span);
+    }
+}
+
+function handleFocusOut(event){
+    console.log("here");
+    document.getElementById("myTextArea").select();
+    document.getElementById("myTextArea").selectionStart = selectionStart;
+    document.getElementById("myTextArea").selectionEnd = selectionStop;
+    drawText();
+}
+
+function format(action){
+    if (selectionStart != selectionStop){
+        let ind;
+        let cpt =0;
+        let finded = false;
+        switch (action){
+
+            case "bold":
+                for(let elem of angular.element("#twh").scope().editedResource.content.bold){
+                    if(elem[0] == selectionStart && elem[1] == selectionStop){
+                        finded = true;
+                    }
+                    cpt++;
+                }
+                if(!finded) {
+                    angular.element("#twh").scope().editedResource.content.bold.push([selectionStart, selectionStop]);
+                } else {
+                    angular.element("#twh").scope().editedResource.content.bold = angular.element("#twh").scope().editedResource.content.bold.filter(elem => {
+                        return !(elem[0] == selectionStart && elem[1] == selectionStop);
+                    });
+                }
+                break;
+            case "italize":
+                for(let elem of angular.element("#twh").scope().editedResource.content.italize){
+                    if(elem[0] == selectionStart && elem[1] == selectionStop){
+                        finded = true;
+                    }
+                    cpt++;
+                }
+                if(!finded) {
+                    angular.element("#twh").scope().editedResource.content.italize.push([selectionStart, selectionStop]);
+                } else {
+                    angular.element("#twh").scope().editedResource.content.italize = angular.element("#twh").scope().editedResource.content.italize.filter(elem => {
+                        return !(elem[0] == selectionStart && elem[1] == selectionStop);
+                    });
+                }
+                break;
+            case "underline":
+                for(let elem of angular.element("#twh").scope().editedResource.content.underline){
+                if(elem[0] == selectionStart && elem[1] == selectionStop){
+                    finded = true;
+                }
+                cpt++;
+            }
+                if(!finded) {
+                    angular.element("#twh").scope().editedResource.content.underline.push([selectionStart, selectionStop]);
+                } else {
+                    angular.element("#twh").scope().editedResource.content.underline = angular.element("#twh").scope().editedResource.content.underline.filter(elem => {
+                        return !(elem[0] == selectionStart && elem[1] == selectionStop);
+                    });
+                }
+                break;
+        }
+        angular.element("#twh").scope().$apply();
+        drawText();
+    }
+}
+
+document.addEventListener('selectionchange', (event) => {
+    if(document.activeElement.id == "myTextArea"){
+        handleSelection(event);
+    }
+});
+
+function handleSelection(event){
+    console.log("here2");
+    if(document.getElementById("myTextArea").selectionEnd != 0){
+    selectionStart = document.getElementById("myTextArea").selectionStart;
+    selectionStop = document.getElementById("myTextArea").selectionEnd;
+    }
+    drawSelectionTags();
+}
+
+function drawSelectionTags(){
+    document.getElementById("container-tags").innerHTML = "";
+    for(tag of angular.element("#twh").scope().editedResource.content.annotations){
+        if(tag["indiceDebut"] == selectionStart && tag["indiceFin"] == selectionStop){
+            let span = document.createElement('span');
+            span.classList.add("label");
+            span.style.margin = "0.5em";
+            span.classList.add("label-success");
+            span.onclick = updateTag;
+            span.draggable = true;
+            span.id = `tag-${generateId()}`;
+            span.innerHTML = `${tag['cle']} : ${tag['valeur']}`;
+            document.getElementById("container-tags").appendChild(span);
+        }
+    }
+}
+
+function tagElement(){
+
+    if (selectionStart != selectionStop){
+        let key = document.getElementById("input-key-tag").value;
+        let value = document.getElementById("input-value-tag").value;
+        if(key != "" && value != ""){
+        if(oldTag == null){
+        let founded = false;
+        for(tag of angular.element("#twh").scope().editedResource.content.annotations){
+            if (tag["cle"] == key && tag.selectionEnd == selectionStart && tag.selectionStop == selectionStop){
+                founded = true;
+            }
+        }
+        if (!founded){
+        angular.element("#twh").scope().editedResource.content.annotations.push({
+            "cle": key,
+            "valeur": value,
+            "indiceDebut": selectionStart,
+            "indiceFin": selectionStop
+            });
+            angular.element("#twh").scope().$apply();
+        }
+        } else {
+            for(tag of angular.element("#twh").scope().editedResource.content.annotations){
+                if(tag["cle"] == oldTag["cle"]){
+                    tag["cle"] = key;
+                    tag["valeur"] = value;
+                }
+            }
+        }
+        angular.element("#twh").scope()._selectErrors(angular.element("#twh").scope().selectedErrors.constraintName,true);
+        drawKeys();
+        drawSelectionTags();
+        document.getElementById("input-value-tag").value = "";
+        document.getElementById("input-key-tag").value = "";
+        document.getElementById("list-keys").innerHTML = "";
+        oldTag = null;
+        for(key of keys){
+        let option = document.createElement("option");
+        option.value = key['key'];
+        document.getElementById("list-keys").appendChild(option);
+        }
+        let constraintFinded = false;
+        for(let constraint of angular.element("#twh").scope().editedResource.content.annotations_list){
+            if(constraint.name == key['key']){
+                constraintFinded = true;
+                break;
+            }
+        }
+        if(!constraintFinded){
+            let newConstraint = {"name":key['key'],"constraint":{"cle":key['key'],"valeur":"","operateur":""}};
+            angular.element("#twh").scope().editedResource.content.annotations_list.push(newConstraint);
+            drawConstraintList();
+        }
+    }
+    }
+}
+
+function createMetadata(){
+        let key = document.getElementById("input-key-metadata").value;
+        let value = document.getElementById("input-value-metadata").value;
+        if(key != "" && value != ""){
+        if(oldMetadata == null){
+        let founded = false;
+        for(metadata of metadatas){
+            if (metadata["cle"] == key){
+                founded = true;
+            }
+        }
+        if (!founded){
+        metadatas.push({
+            "cle": key,
+            "valeur": value,
+            });
+        }
+        } else {
+            for(metadata of metadatas){
+                if(metadata["cle"] == oldMetadata["cle"]){
+                    metadata["cle"] = key;
+                    metadata["valeur"] = value;
+                }
+            }
+        }
+        drawMetadatas();
+        document.getElementById("input-value-metadata").value = "";
+        document.getElementById("input-key-metadata").value = "";
+        oldMetadata = null;
+        }
+        }
+
+function updateTag(event){
+    let key = event.target.innerHTML.split(" : ")[0];
+    let value = event.target.innerHTML.split(" : ")[1];
+    oldTag = {
+            "cle": key,
+            "valeur": value
+            };
+    document.getElementById("input-key-tag").value = key;
+    document.getElementById("input-value-tag").value = value;
+}
+
+function updateMetadata(event){
+    let key = event.target.innerHTML.split(" : ")[0];
+    let value = event.target.innerHTML.split(" : ")[1];
+    oldMetadata = {
+            "cle": key,
+            "valeur": value
+            };
+    document.getElementById("input-key-metadata").value = key;
+    document.getElementById("input-value-metadata").value = value;
+}
+
+function drawTags(event){
+    let key = event.target.innerHTML.split(" (")[0];
+    drawText(key);
+}
+
+
+function drawText(tagName = null){
+
+let orderedIndices = [];
+
+if(tagName != null){
+    for(tag of angular.element("#twh").scope().editedResource.content.annotations){
+        if(tag['cle'] == tagName){
+        orderedIndices.push(["mo", tag["indiceDebut"]]);
+        orderedIndices.push(["mf", tag["indiceFin"]]);
+        }
+    }
+}
+if(selectionStart != selectionStop){
+orderedIndices.push(["so", selectionStart]);
+orderedIndices.push(["sf", selectionStop]);
+}
+for (indice of angular.element("#twh").scope().editedResource.content.bold){
+    orderedIndices.push(["bo",indice[0]]);
+    orderedIndices.push(["bf", indice[1]]);
+}
+for (indice of angular.element("#twh").scope().editedResource.content.italize){
+    orderedIndices.push(["io",indice[0]]);
+    orderedIndices.push(["if", indice[1]]);
+}
+for (indice of angular.element("#twh").scope().editedResource.content.underline){
+    orderedIndices.push(["uo",indice[0]]);
+    orderedIndices.push(["uf", indice[1]]);
+}
+
+orderedIndices.sort(function(a, b) {
+  return b[1] - a[1];
+});
+
+    cpt = 0;
+    let copieValue = textArea.value;
+    let newStr = "";
+    for(lettre of copieValue){
+        for(indice of orderedIndices){
+            if (cpt == indice[1]){
+                switch (indice[0]) {
+                case "so" :
+                    lettre = `<mark style="background-color: grey; color: white;">${lettre}`;
+                    break;
+                case "sf" :
+                    lettre = `</mark>${lettre}`;
+                    break;
+                case "io" :
+                    lettre = `<i>${lettre}`;
+                    break;
+                case "uo" :
+                    lettre = `<u>${lettre}`;
+                    break;
+                case "bo" :
+                    lettre = `<b>${lettre}`;
+                    break;
+                case "mo" :
+                    lettre = `<mark style="background-color: #5cb85c;">${lettre}`;
+                    break;
+                case "if" :
+                    lettre = `</i>${lettre}`;
+                    break;
+                case "bf" :
+                    lettre = `</b>${lettre}`;
+                    break;
+                case "uf" :
+                    lettre = `</u>${lettre}`;
+                    break;
+                case "mf" :
+                    lettre = `</mark>${lettre}`;
+                    break;
+                }
+            }
+        }
+        cpt = cpt + 1;
+        newStr += lettre;
+    }
+
+    customArea.innerHTML = newStr;
+}
+
+// Event listeners.
+
+document.addEventListener('cut', function(e) {
+    alert("La commande Ctrl + X est interdite dans l'éditeur");
+});
+
+textArea.addEventListener("input", function()
+{
+    drawText();
+});
+
+textArea.addEventListener("scroll", function()
+{
+    backdrop.scrollTop = textArea.scrollTop;
+});
+
+function updateKeys(){
+    keys = [];
+    for(tag of angular.element("#twh").scope().editedResource.content.annotations){
+        let keyIndex = keys.map(function (e) {
+            return e.key;
+        }).indexOf(tag["cle"]);
+        if (keyIndex == -1){
+            keys.push({"key":tag["cle"], "count": 1});
+        } else {
+            keys[keyIndex].count ++;
+        }
+    }
+    for(key of keys){
+        let option = document.createElement("option");
+        option.value = key['key'];
+        document.getElementById("list-keys").appendChild(option);
+    }
+}
+
+</script>
+<style>
+.backdrop, #myTextArea {
+  font: 12px 'Open Sans', sans-serif;
+  letter-spacing: 1px;
+  width: 300px;
+  height: 100px;
+}
+
+#myTextArea {
+  margin: 0;
+  margin-top: -3px;
+  margin-left: -5px;
+  position: absolute;
+  border-radius: 0;
+  background-color: transparent;
+  color: transparent;
+  caret-color: #555555;
+  z-index: 2;
+  resize: none;
+}
+
+.backdrop {
+  position: absolute;
+  z-index: 1;
+  border: 2px solid transparent;
+  overflow: auto;
+  pointer-events: none;
+}
+
+mark{
+    padding:0px;
+}
+
+.custom-area {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+</style>
+
+<div class="panel panel-danger"><div class="panel-heading">Attention, les textes annotés sont une fonctionnalité en cours de développement</div></div></a>
+
+<div style="width:47%; float:left;">
+    <div class="panel panel-success" style="float:left; width:45vw; margin:2em;">
+        <div class="panel-heading">
+            <h3 class="panel-title">Texte à annoter</h3>
+        </div>
+        <div class="panel-body">
+            <div style="margin-bottom:1em;"><button onclick="format('bold')"><b>B</b></button>
+                <button onclick="format('italize')"><i>i</i></button>
+                <button onclick="format('underline')"><u>u</u></button>
+            </div>
+            <div class="container" style="float:left; height:50vh">
+                <div class="backdrop" style="width:40%; height:50vh;">
+                    <div class="custom-area" style=" height:40%;font-family: Courier New;" ng-model="editedResource.content.text">
+                    </div>
+                </div>
+                <textarea ng-model="editedResource.content.text" id="myTextArea" style="width:40%; height:50vh;font-family: Courier New;" onselectionchange="handleSelection(event)" ng-keypress="_updateIndices($event,'key');" ng-keydown="_handleDown($event)" ng-paste="_updateIndices($event,'paste')" onclick="drawText()" onfocusout="handleFocusOut(event)"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="width:47%; float:left;">
+    <div class="panel panel-success" style="float:left; width:45vw; margin:2em;">
+        <div class="panel-heading">
+            <h3 class="panel-title">Annotation de l'élément surligné</h3>
+        </div>
+        <div class="panel-body">
+
+            <div class="panel panel-success" style="margin:1em;">
+                <div class="panel-heading">
+                    Indiquez une clé
+                    <input id="input-key-tag" list="list-keys" type="text" class="form-control" placeholder="clé">
+                    <datalist id="list-keys-annotations">
+                    </datalist>
+                    <br>
+                    Indiquez une valeur correspondante
+                    <input id="input-value-tag" type="text" class="form-control" placeholder="valeur">
+                    <button id="btnTag" class="btn btn-success" style="margin-top:1em;" onclick="tagElement()" >Créer/modifier l'étiquette  </button>
+                </div>
+            </div>
+
+
+            <div class="panel panel-success" style="margin:1em;">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Annotations existantes pour l'élément sélectionné</h3>
+                </div>
+                <div id="container-tags" class="panel-body">
+                </div>
+                <div id="trash-tag" class="panel panel-danger trash-tag" style="display:none;margin:.5em;">
+                    <div class="panel-heading trash-tag">
+                        <h3 class="panel-title trash-tag">Supprimer l'élément</h3>
+                    </div>
+                    <div class="panel-body trash-tag" style="color:#a94442;">
+                        Déposez l'élément ici afin de le supprimer
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="panel panel-success" style="margin:1em;">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Etiquettes existantes dans le texte</h3>
+                </div>
+                <div id="container-keys" class="panel-body">
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="panel panel-success" style="float:left; width:45vw; margin:2em;">
+        <div class="panel-heading">
+            <h3 class="panel-title">Listes d'étiquettes</h3>
+        </div>
+
+        <div class="panel panel-success" style="margin:1em;">
+            <div class="panel-heading">
+                <h3 class="panel-title">Listes d'étiquettes existantes</h3>
+            </div>
+            <div id="container-constraints" style="margin: 1em;">
+                <span class="label label-success" style="margin:0.5em" draggable="true" onclick="updateConstraint(event)" ng-repeat="constraint in editedResource.content.annotations_list track by constraint.name" id="constraint-list-{{constraint.name}}">{{constraint.name}}</span>
+            </div>
+            <div id="trash-constraint-list" class="panel panel-danger trash-constraint-list" style="display:none;margin:.5em;">
+                <div class="panel-heading trash-constraint-list">
+                    <h3 class="panel-title trash-constraint-list">Supprimer l'élément</h3>
+                </div>
+                <div class="panel-body trash-constraint-list" style="color:#a94442;">
+                    Déposez l'élément ici afin de le supprimer
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-success" style="margin:1em;">
+            <div class="panel-heading">
+                <h3 class="panel-title">Création d'une nouvelle liste d'étiquette</h3>
+            </div>
+            <div style="margin:1em;">Nom de la liste d'étiquettes
+            <input id="input-annotation-name" type="text" class="form-control" placeholder="Nom de la liste">
+                </div>
+        <div class="panel-heading" style="margin:1em;">
+            Choisissez un opérateur
+            <div id="container-constraint" class="containerConstraints" style="display:flex;align-items: center; font-size:80%"></div>
+            <div id="trash-constraint" class="panel panel-danger trash-constraint" style="display:none;margin:.5em;">
+                <div class="panel-heading trash-constraint">
+                    <h3 class="panel-title trash-constraint">Supprimer l'élément</h3>
+                </div>
+                <div class="panel-body trash-constraint" style="color:#a94442;">
+                    Déposez l'élément ici afin de le supprimer
+                </div>
+            </div>
+
+            <div>
+                <span class="label label-success" style="margin:0.5em;" onclick="addOperator('ET')">ET</span>
+                <span class="label label-success" style="margin:0.5em;" onclick="addOperator('OU')">OU</span>
+                <span class="label label-success" style="margin:0.5em;" onclick="addOperator('OU EXCLUSIF')">OU EXCLUSIF</span>
+            </div>
+
+            OU
+            Indiquez une clé
+            <input id="input-key-constraint" list="list-keys" type="text" class="form-control" placeholder="clé">
+            <br>
+            Indiquez une valeur correspondante
+            <input id="input-value-constraint" type="text" class="form-control" placeholder="valeur">
+            <br>
+            Sélectionnez un opérateur
+            <div>
+                <span class="label label-default operator" id="operator-eq" style="margin:0.5em;" onclick="selectOperator('eq')">=</span>
+                <span class="label label-default operator" id="operator-ne" style="margin:0.5em;" onclick="selectOperator('ne')">&ne;</span>
+                <span class="label label-default operator" id="operator-lt" style="margin:0.5em;" onclick="selectOperator('lt')">&lt;</span>
+                <span class="label label-default operator" id="operator-le" style="margin:0.5em;" onclick="selectOperator('le')">&le;</span>
+                <span class="label label-default operator" id="operator-gt" style="margin:0.5em;" onclick="selectOperator('gt')">&gt;</span>
+                <span class="label label-default operator" id="operator-ge" style="margin:0.5em;" onclick="selectOperator('ge')">&ge;</span>
+            </div>
+            <button id="btnCreateTagConstraint" class="btn btn-success" style="margin-top:1em;" onclick="createTagConstraint()">Créer l'étiquette  </button>
+            </div>
+
+        <button id="btnCreateTagConstraints" class="btn btn-success" style="margin:1em;" onclick="createConstraintList()">Créer la liste d'étiquettes</button>
+        </div>
+        </div>
+
+    <div class="panel panel-success" style="float:left; width:45vw; margin:2em;">
+        <div class="panel-heading">
+            <h3 class="panel-title">Liste d'erreurs / d'éléments perturbateurs</h3>
+        </div>
+
+        <div style="margin:0em 1em 0em 1em;">
+            <div class="label label-success" ng-repeat="err in editedResource.content.errors_list track by err.name" ng-click="_selectErrorList(err.name)" style="margin:0.5em">{{err.name}}</div>
+        </div>
+
+        <div class="panel panel-success" style="margin:1em;">
+            <div class="panel-heading">
+                Indiquez un nom pour la liste d'erreurs
+                <input ng-model="selectedErrors.name" id="input-errors-name" type="text" class="form-control" placeholder="Nom de la liste d'erreurs">
+                <datalist id="list-keys">
+                </datalist>
+            </div>
+        </div>
+
+        <div class="panel panel-success" style="margin:1em;">
+            <div class="panel-heading">
+                Sélectionnez une liste de contrainte associée à la liste d'erreurs
+                <select id="select-constraint-list" class="form-control" ng-model="selectedErrors.constraintName" ng-change="_selectErrors(errorName)">
+                    <option ng-repeat="constraint in editedResource.content.annotations_list track by constraint.name" value="{{constraint.name}}">{{constraint.name}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="panel panel-success" style="margin:1em;">
+            <div class="panel-heading">
+                Indiquez le nombre d'erreurs pour chaque mot
+                <input id="input-nb-error" type="number" class="form-control" ng-model="selectedErrors.nbErrors" ng-change="_updateErrorsInput()">
+            </div>
+        </div>
+
+        <div class="panel panel-success" style="margin:1em;">
+            <div class="panel-heading">
+                <div ng-repeat="erreur in selectedErrors.errors" style="display:flex;flex-wrap: wrap;" id="error-{{erreur.indiceDebut}}-{{erreur.indiceFin}}"><div style="width:20%; margin:.5em;display:flex;align-items: center;">{{editedResource.content.text.substring(erreur.indiceDebut, erreur.indiceFin)}}</div>
+                    <div ng-repeat="err in erreur.errors track by $index" style="width:20%; margin:.5em;"><input ng-model="err" id="error-{{erreur.indiceDebut}}-{{erreur.indiceFin}}-{{$index}}" class="form-control" ng-change="_changeError(erreur, $index)"></div></div>
+                <button class="btn-success" ng-click="_updateErrorList()">Ajouter/éditer la liste d'erreurs</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>

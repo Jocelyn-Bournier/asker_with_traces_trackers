@@ -2,10 +2,14 @@
     <div class="row">
         <div class="col-xs-1" ng-switch="resource.type" ui-draggable="true" drag="resource">
             <div ng-switch-when="text">
-                <span title="Texte" class="glyphicon glyphicon-font" style="font-size: 320%"></span>
+                <span title="Texte" class="glyphicon glyphicon-align-left" style="font-size: 320%"></span>
+            </div>
+            <div ng-switch-when="text-with-holes">
+                <span title="Texte à trous" class="glyphicon glyphicon-indent-right" style="font-size: 320%"></span>
             </div>
             <div ng-switch-when="picture">
-                <img ng-src="{{BASE_CONFIG.urls.images.uploads}}{{resource.content.source}}" style="width: 55px; height: 55px;"/>
+                <span title="Image" class="glyphicon glyphicon-picture" style="font-size: 320%"></span>
+                <!--<img ng-src="{{BASE_CONFIG.urls.images.uploads}}{{resource.content.source}}" style="width: 55px; height: 55px;"/>-->
             </div>
             <div ng-switch-when="document">
                 <span title="Document" class="glyphicon glyphicon-file" style="font-size: 320%"></span>
@@ -101,6 +105,12 @@
                            title="Mot-clé de cette ressource"
                            data-ng-repeat="keyword in resource.keywords track by $index" style="margin: 2px;">
                         &nbsp;{{ keyword }}&nbsp;
+                    </label>
+                    <label class="panel panel-success"
+                           title="Annotation de cette ressource"
+                           data-ng-repeat="annotation in resource.content.annotations_list track by $index" style="margin: 2px;">
+                        &nbsp;{{ annotation.name }}&nbsp;
+
                     </label>
                 </div>
             </div>

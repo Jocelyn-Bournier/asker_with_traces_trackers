@@ -1,0 +1,29 @@
+<div data-ng-controller="textWithHolesController">
+
+    <div class="panel">
+        <div class="panel-heading row">
+            <strong>Texte à travailler :</strong>
+        </div>
+        <div id="textWithHoleElement">
+            <span ng-repeat="separateElement in separatedText track by $index">
+                <span ng-bind-html="separateElement"></span>
+                <input ng-if="$index != separatedText.length - 1" class="input-TWH" ng-value="item.content['answers'][$index]"
+                       ng-class="{'good-answer-input': item.corrected && item.content.answers[$index] == item.content['holes'][$index].answer,
+                       'wrong-answer-input': item.corrected && item.content.answers[$index] != item.content['holes'][$index].answer}"
+                       ng-disabled="item.corrected">
+                <span class="label-solution" ng-if="item.corrected && item.content.answers[$index] != item.content['holes'][$index].answer">
+                    {{item.content['holes'][$index].answer}}
+                </span>
+            </span>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div ng-hide="!item.corrected">
+            <strong>Votre score :</strong> {{ item.content.mark | number:0 }}%
+        </div>
+    </div>
+
+    <ng-include src="navBarUrl"></ng-include>
+</div>

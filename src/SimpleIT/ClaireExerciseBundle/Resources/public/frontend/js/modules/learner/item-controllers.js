@@ -34,6 +34,7 @@ attemptControllers.controller('attemptController', ['$scope', '$state', 'Attempt
         $scope.gotoItem = function (index) {
             // switch item
             $scope.item = $scope.items[index];
+            console.log($scope.item);
             // when data loaded
             // its cleaner but it makes a loop between controllers
             //$state.go('attempt.order-items', {itemId: $scope.item.item_id}, {location: false});
@@ -48,7 +49,11 @@ attemptControllers.controller('attemptController', ['$scope', '$state', 'Attempt
                 $state.go('attempt.multiple-choice', {itemId: index}, {location: false});
             } else if ($scope.item.type == 'open-ended-question') {
                 $state.go('attempt.open-ended-question', {itemId: index}, {location: false});
+            } else if ($scope.item.type == 'text-with-holes') {
+                console.log("twh");
+                $state.go('attempt.text-with-holes', {itemId: index}, {location: false});
             }
+
         };
 
         $scope.viewAttempt = function (attempt) {
@@ -278,6 +283,183 @@ itemControllers.controller('orderItemsController', ['$scope', 'Answer', '$routeP
         // dnd init
         //$scope.toDrop = {'id': null, 'data': null};
         //$scope.toDrag = {'id': null};
+    }]);
+
+itemControllers.controller('textWithHolesController', ['$scope', 'Answer', '$routeParams', '$location', '$stateParams',
+    function ($scope, Answer, $routeParams, $location, $stateParams) {
+
+        $scope.item.corrected = false;
+        $scope.validable = true;
+
+        $scope.saveAnswer = function () {
+            var answer = new Answer;
+            $scope.validable = false;
+            answer.content = [];
+            var answersInput = document.getElementsByClassName('input-TWH');
+            for(let answerValue of answersInput){
+                if (answerValue.value!= null) {
+                    answer.content.push(answerValue.value);
+                }
+            }
+
+            answer.$save({itemId: $scope.item.item_id, attemptId: $stateParams.attemptId},
+                function (item) {
+                    $scope.items[$stateParams.itemId] = item;
+                    $scope.item = item;
+                    $scope.displayCorrection(item)
+                });
+
+        };
+
+        // correction
+        $scope.displayCorrection = function (item) {
+            $scope.item.corrected = true;
+            //$scope.item['content']['comment'] = item['content']['comment'];
+            $scope.item['content']['mark'] = item['content']['mark'];
+        };
+
+        // display learner answers
+        $scope.fillLearnerAnswers = function () {
+        };
+
+        $scope.splitText = function () {
+
+            let orderedIndices = [];
+
+            for (let indice of $scope.item.content.bold){
+                orderedIndices.push(["bo",indice[0]]);
+                orderedIndices.push(["bf", indice[1]]);
+            }
+            for (let indice of $scope.item.content.italize){
+                orderedIndices.push(["io",indice[0]]);
+                orderedIndices.push(["if", indice[1]]);
+            }
+            for (let indice of $scope.item.content.underline){
+                orderedIndices.push(["uo",indice[0]]);
+                orderedIndices.push(["uf", indice[1]]);
+            }
+
+            orderedIndices.sort(function(a, b) {
+                return b[1] - a[1];
+            });
+
+            let cpt = 0;
+            let nbThree = 0;
+            let nbFour = 0;
+            let copieValue = $scope.item.content.text;
+            console.log(copieValue);
+            let newStr = "";
+            for(let lettre of copieValue){
+                for(let indice of orderedIndices){
+                    if (cpt == indice[1]) {
+                        switch (indice[0]) {
+                            case "io" :
+                                lettre = `<i>${lettre}`;
+                                break;
+                                case "uo" :
+                                    lettre = `<u>${lettre}`;
+                                    break;
+                                case "bo" :
+                                    lettre = `<b>${lettre}`;
+                                    break;
+                                case "if" :
+                                    lettre = `</i>${lettre}`;
+                                    break;
+                                case "bf" :
+                                    lettre = `</b>${lettre}`;
+                                    break;
+                                case "uf" :
+                                    lettre = `</u>${lettre}`;
+                                    break;
+                        }
+                    }
+                }
+                cpt = cpt + 1;
+                newStr += lettre;
+            }
+            let lines = newStr.split(/\r\n|\r|\n/g);
+            newStr = "";
+            let newLines = [];
+            let indexNewLine = 0;
+            for(let line of lines) {
+                newStr += line + '<br>';
+                indexNewLine += line.length;
+                newLines.push(indexNewLine);
+            }
+            $scope.item.content.text = newStr;
+
+            $scope.item.content.holes.sort(function(a, b) {
+                return b.indice_debut - a.indice_febut;
+            });
+
+            for(let hole of $scope.item.content.holes){
+                let mooveHoleBegin = 0;
+                let mooveHoleEnd = 0;
+                for(let format of orderedIndices) {
+                    switch (format[0]) {
+                        case "io":
+                        case "uo":
+                        case "bo":
+                            if (format[1] <= hole.indice_debut) {
+                                mooveHoleBegin += 3;
+                            }
+                            if (format[1] <= hole.indice_fin) {
+                                mooveHoleEnd += 3;
+                            }
+                            break;
+                        case "if":
+                        case "uf":
+                        case "bf":
+                            if (format[1] <= hole.indice_debut) {
+                                mooveHoleBegin += 4;
+                            }
+                            if (format[1] <= hole.indice_fin) {
+                                mooveHoleEnd += 4;
+                            }
+                            break;
+                    }
+                }
+                for(let newLine of newLines) {
+                    if (newLine <= hole.indice_debut + mooveHoleBegin) {
+                        mooveHoleBegin += 4;
+                    }
+                    if (newLine <= hole.indice_fin + mooveHoleEnd) {
+                        mooveHoleEnd += 4;
+                    }
+                }
+                hole.indice_debut += mooveHoleBegin;
+                hole.indice_fin += mooveHoleEnd;
+                console.log(hole.indice_debut);
+                console.log(hole.indice_fin);
+            }
+        }
+
+        $scope.splitText();
+        $scope.separatedText = [];
+        let textToPush = $scope.item.content.text.substring(0,$scope.item.content.holes[0].indice_debut);
+        if($scope.item.content.holes[0].indication != null){
+            textToPush += `<b>(${$scope.item.content.holes[0].indication})</b>`;
+        }
+        $scope.separatedText.push(textToPush);
+        for(let i = 1; i < $scope.item.content.holes.length; i++){
+            textToPush = $scope.item.content.text.substring($scope.item.content.holes[i-1].indice_fin, $scope.item.content.holes[i].indice_debut);
+            if($scope.item.content.holes[i].indication != null){
+                textToPush += `<b>(${$scope.item.content.holes[i].indication})</b>`;
+            }
+            $scope.separatedText.push(textToPush);
+        }
+        $scope.separatedText.push($scope.item.content.text.substring($scope.item.content.holes[$scope.item.content.holes.length-1].indice_fin));
+
+        if ($scope.item.content['answers'] != null && $scope.item.content['answers'].length > 0) {
+            $scope.validable = false;
+            $scope.fillLearnerAnswers();
+            $scope.displayCorrection($scope.item);
+        }
+
+        $scope.item.content.holes.sort((a, b) => {
+            return a.indice_debut - b.indice_debut;
+        });
+
     }]);
 
 itemControllers.controller('multipleChoiceController', ['$scope', 'Answer', '$routeParams', '$location', '$stateParams',

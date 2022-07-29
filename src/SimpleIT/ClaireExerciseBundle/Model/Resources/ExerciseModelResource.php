@@ -61,6 +61,11 @@ class ExerciseModelResource extends SharedResource
     const OPEN_ENDED_QUESTION_CLASS = 'SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModel\OpenEndedQuestion\Model';
 
     /**
+     * @const TEXT_WITH_HOLES_CLASS = 'SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModel\TextWithHoles\Model'
+     */
+    const TEXT_WITH_HOLES_CLASS = 'SimpleIT\ClaireExerciseBundle\Model\Resources\ExerciseModel\TextWithHoles\Model';
+
+    /**
      * @var int $id Id of exercise model
      * @Serializer\Type("integer")
      * @Serializer\Groups({"details", "list", "exercise"})
@@ -346,6 +351,9 @@ class ExerciseModelResource extends SharedResource
                 break;
             case CommonExercise::OPEN_ENDED_QUESTION:
                 $class = self::OPEN_ENDED_QUESTION_CLASS;
+                break;
+            case CommonExercise::TEXT_WITH_HOLES:
+                $class = self::TEXT_WITH_HOLES_CLASS;
                 break;
             default:
                 throw new \LogicException('Unknown type');

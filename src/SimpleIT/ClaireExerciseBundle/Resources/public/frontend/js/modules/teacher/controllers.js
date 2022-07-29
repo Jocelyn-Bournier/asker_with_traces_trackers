@@ -98,10 +98,16 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
                         type:        "PUT",
                         crossDomain: true,
                         async:       false,
-                        success: function(data, textStatus) {}});
+                        success: function(data, textStatus) {
+                            $scope.activateComper(directory);
+                        }});
                 }
             });
         };
+        $scope.setExerciseVisible = function(directory,$index){
+            directory.visible_exercise[$index]=!directory.visible_exercise[$index];
+            console.log(directory);
+        }
         $scope.activateComper = function (directory) {
             document.getElementById("progress-bar-comper-creation").style.width= '100%';
             document.getElementById("progress-bar-comper-creation").classList.add("progress-bar-striped");
@@ -195,7 +201,11 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
             if ($scope.directory.models === undefined){
                 $scope.directory.models = [];
             }
+            if ($scope.directory.visible_exercise === undefined){
+                $scope.directory.visible_exercise = [];
+            }
             $scope.directory.models.push(model);
+            $scope.directory.visible_exercise.push(true);
         };
         $scope.directoryRemoveField = function (collection, index) {
             collection.splice(index, 1);
@@ -222,7 +232,7 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
             archived: false, // select archived resources or not (boolean)
             public: false, // select public resources or not (boolean)
             type: { // resources types to be selected
-                multiple_choice_question: 'multiple-choice-question', text: 'text', picture: 'picture', document: 'document', open_ended_question: 'open-ended-question', order: 'order', sequence: ''
+                multiple_choice_question: 'multiple-choice-question', text_with_holes: 'text-with-holes', document: 'document', text: 'text',order: 'order', picture: 'picture', open_ended_question: 'open-ended-question', sequence: ''
             },
             keywords: [], // list of keywords that a resource must have to be selected
             metadata: [] // list of metadata objects that a resource must have to be selected
@@ -236,6 +246,7 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
                 $scope.filters.type.open_ended_question = '';
                 $scope.filters.type.sequence = '';
                 $scope.filters.type.order = '';
+                $scope.filters.type.text_with_holes = '';
             } else if (newValue == 'multiple-choice') {
                 $scope.filters.type.multiple_choice_question = 'multiple-choice-question';
                 $scope.filters.type.text = '';
@@ -243,6 +254,7 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
                 $scope.filters.type.open_ended_question = '';
                 $scope.filters.type.sequence = '';
                 $scope.filters.type.order = '';
+                $scope.filters.type.text_with_holes = '';
             } else if (newValue == 'group-items') {
                 $scope.filters.type.multiple_choice_question = '';
                 $scope.filters.type.text = 'text';
@@ -257,6 +269,7 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
                 $scope.filters.type.open_ended_question = '';
                 $scope.filters.type.sequence = '';
                 $scope.filters.type.order = 'order';
+                $scope.filters.type.text_with_holes = '';
             } else if (newValue == 'open-ended-question') {
                 $scope.filters.type.multiple_choice_question = '';
                 $scope.filters.type.text = '';
@@ -264,6 +277,14 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
                 $scope.filters.type.open_ended_question = 'open-ended-question';
                 $scope.filters.type.sequence = '';
                 $scope.filters.type.order = '';
+                $scope.filters.type.text_with_holes = '';
+            } else if (newValue == 'text-with-holes') {
+                $scope.filters.type.multiple_choice_question = '';
+                $scope.filters.type.text = '';
+                $scope.filters.type.picture = '';
+                $scope.filters.type.open_ended_question = '';
+                $scope.filters.type.sequence = '';
+                $scope.filters.type.text_with_holes = 'text-with-holes';
             }
         });
 
@@ -303,6 +324,29 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
                     "content": {
                         "text": null,
                         "object_type": "text"
+                    },
+                    "required_exercise_resources": null,
+                    "required_knowledges": null
+                },
+                "text_with_holes": {
+                    "type": "text-with-holes",
+                    "title": "Nouveau texte annoté",
+                    "public": false,
+                    "archived": false,
+                    "draft": false,
+                    "complete": null,
+                    "metadata": [],
+                    "keywords": [],
+                    "content": {
+                        "answerModality": 'holes',
+                        "annotationsList": [],
+                        "errorsList": [],
+                        "bold": [],
+                        "italize": [],
+                        "underline": [],
+                        "annotations": [],
+                        "text": "Nouveau texte.",
+                        "object_type": "text_with_holes"
                     },
                     "required_exercise_resources": null,
                     "required_knowledges": null
@@ -545,7 +589,17 @@ resourceControllers.controller('resourceListController', ['$scope', '$state', 'R
                         $state.go('resourceEdit', {resourceid: data.id});
                     }
                 });
-            } else if (type == 'picture') {
+            }
+            else if (type == 'text-with-holes') {
+                Resource.save($scope.resourceContext.newResources.text_with_holes, function (data) {
+                    $scope.resources[data.id] = data;
+                    if ($scope.parentSection === 'model') {
+                        $state.go('modelEdit.resourceEdit', {resourceid: data.id});
+                    } else {
+                        $state.go('resourceEdit', {resourceid: data.id});
+                    }
+                });
+            }  else if (type == 'picture') {
                 Resource.save($scope.resourceContext.newResources.picture, function (data) {
                     $scope.resources[data.id] = data;
                     if ($scope.parentSection === 'model') {
@@ -735,6 +789,341 @@ resourceControllers.controller('resourceEditController', ['$scope', '$modal', 'R
         // resource for md link
         $scope.resource = null;
         $scope.resourceAddMD = {key: '', value: ''};
+
+
+        $scope.errorsName = "";
+        $scope.selectedErrors = {
+            "name": "",
+            "nbErrors": 1,
+            "errors": [],
+            "constraintName": ""
+        };
+        $scope.errorLists = [];
+        $scope.nbErrors = [];
+        $scope.states = ["",""];
+
+        $scope._handleDown = function (event){
+            $scope.states[0] = $scope.states[1];
+            $scope.states[1] = event.key;
+
+            if ($scope.states[0] == "Control" && $scope.states[1] == "x"){
+                event.preventDefault();
+                alert("Il est impossible d'utiliser la commande Ctrl + X sur cette page");
+            }
+            if ($scope.states[0] == "Control" && $scope.states[1] == "z"){
+                event.preventDefault();
+                alert("Il est impossible d'utiliser la commande Ctrl + Z sur cette page");
+            }
+            if (event.key == "Backspace"){
+                $scope._updateIndices(event, "backspace");
+            }
+        }
+
+        $scope._updateIndices = function (event, action){
+            let positionStart = event.target.selectionStart;
+            let positionStop = event.target.selectionEnd;
+            let diff = positionStop - positionStart;
+            let addDiffValue, addValue;
+
+            if(action == "paste"){
+                texte = event.clipboardData.getData("text");
+                let tailleTexte = texte.length;
+                addDiffValue = tailleTexte - diff;
+                addValue = tailleTexte;
+            } else if (action == "key"){
+                addDiffValue = 1 - diff;
+                addValue = 1;
+            } else if (action == "backspace"){
+                addDiffValue = -diff;
+                addValue = -1;
+            }
+
+            let boldToRemove = [];
+            for(indice of $scope.editedResource.content.bold){
+                if (positionStart < indice[0]){
+                    if (positionStart != positionStop){
+                        indice[0] = indice[0] + addDiffValue;
+                        indice[1] = indice[1] + addDiffValue;
+                    } else {
+                        indice[0] += addValue;
+                        indice[1] += addValue;
+                    }
+                } else if (positionStart >= indice[0] && positionStart <= indice[1]) {
+                    if (positionStart != positionStop){
+                        indice[1] = indice[1] + addDiffValue;
+                    } else {
+                        indice[1] += addValue;
+                    }
+                }
+                if(indice[0] >= indice[1]){
+                    boldToRemove.push(tag);
+                }
+            }
+            for(tag of boldToRemove){
+                $scope.editedResource.content.bold.splice($scope.editedResource.content.bold.indexOf(tag),1);
+            }
+            let italizeToRemove = [];
+            for(indice of $scope.editedResource.content.italize){
+                if (positionStart < indice[0]){
+                    if (positionStart != positionStop){
+                        indice[0] = indice[0] + addDiffValue;
+                        indice[1] = indice[1] + addDiffValue;
+                    } else {
+                        indice[0] += addValue;
+                        indice[1] += addValue;
+                    }
+                } else if (positionStart >= indice[0] && positionStart <= indice[1]) {
+                    if (positionStart != positionStop){
+                        indice[1] = indice[1] + addDiffValue;
+                    } else {
+                        indice[1] += addValue;
+                    }
+                }
+                if(indice[0] >= indice[1]){
+                    italizeToRemove.push(tag);
+                }
+            }
+            for(tag of italizeToRemove){
+                $scope.editedResource.content.italize.splice($scope.editedResource.content.italize.indexOf(tag),1);
+            }
+            let underlineToRemove = [];
+            for(indice of $scope.editedResource.content.underline){
+                if (positionStart < indice[0]){
+                    if (positionStart != positionStop){
+                        indice[0] = indice[0] + addDiffValue;
+                        indice[1] = indice[1] + addDiffValue;
+                    } else {
+                        indice[0] += addValue;
+                        indice[1] += addValue;
+                    }
+                } else if (positionStart >= indice[0] && positionStart <= indice[1]) {
+                    if (positionStart != positionStop){
+                        indice[1] = indice[1] + addDiffValue;
+                    } else {
+                        indice[1] += addValue;
+                    }
+                }
+                if(indice[0] >= indice[1]){
+                    underlineToRemove.push(tag);
+                }
+            }
+            for(tag of underlineToRemove){
+                $scope.editedResource.content.underline.splice($scope.editedResource.content.underline.indexOf(tag),1);
+            }
+            let annotationsToRemove = [];
+            for(tag of $scope.editedResource.content.annotations){
+                if (positionStart < tag["indiceDebut"]){
+                    if (positionStart != positionStop){
+                        tag["indiceDebut"] = tag["indiceDebut"] + addDiffValue;
+                        tag["indiceFin"] = tag["indiceFin"] + addDiffValue;
+                    } else {
+                        tag["indiceDebut"] += addValue;
+                        tag["indiceFin"] += addValue;
+                    }
+                } else if (positionStart >= tag["indiceDebut"] && positionStart <= tag["indiceFin"]+1) {
+                    if (positionStart != positionStop){
+                        tag["indiceFin"] = tag["indiceFin"] + addDiffValue;
+                    } else {
+                        tag["indiceFin"] += addValue;
+                    }
+                }
+                if(tag["indiceDebut"] >= tag["indiceFin"]){
+                    annotationsToRemove.push(tag);
+                }
+            }
+            for(tag of annotationsToRemove){
+                $scope.editedResource.content.annotations.splice($scope.editedResource.content.annotations.indexOf(tag),1);
+            }
+            for(errors of $scope.editedResource.content.errors_list) {
+                for (err of errors.errors) {
+                    if (positionStart < err["indiceDebut"]) {
+                        if (positionStart != positionStop) {
+                            err["indiceDebut"] = err["indiceDebut"] + addDiffValue;
+                            err["indiceFin"] = err["indiceFin"] + addDiffValue;
+                        } else {
+                            err["indiceDebut"] += addValue;
+                            err["indiceFin"] += addValue;
+                        }
+                    } else if (positionStart >= err["indiceDebut"] && positionStart <= err["indiceFin"] + 1) {
+                        if (positionStart != positionStop) {
+                            err["indiceFin"] = err["indiceFin"] + addDiffValue;
+                        } else {
+                            err["indiceFin"] += addValue;
+                        }
+                    }
+                    if(err["indiceDebut"] >= err["indiceFin"]){
+                        errors.errors.splice(errors.errors.indexOf(err), 1);
+                    }
+                }
+            }
+        }
+
+        $scope._updateErrorList = function () {
+            let found = false;
+            $scope.selectedErrors = {
+                "name": "",
+                "nbErrors": 1,
+                "errors": [],
+                "constraintName": ""
+            };
+            for(eList of $scope.editedResource.content.errors_list){
+                if (eList.name == $scope.selectedErrors.name){
+                    found = true;
+                }
+            }
+            if(!found) {
+                $scope.editedResource.content.errors_list.push($scope.selectedErrors);
+            }
+        }
+
+        $scope._updateErrorsInput = function () {
+            //$scope.selectedErrors.nbErrors = document.getElementById("input-nb-error").value;
+            for (error of $scope.selectedErrors.errors){
+                console.log(error);
+                error.errors.length = document.getElementById("input-nb-error").value;
+            }
+        }
+
+        $scope._selectErrorList = function (errorName) {
+            for(errorList of $scope.editedResource.content.errors_list){
+                if (errorList.name == errorName){
+                    console.log($scope.editedResource.content.errors_list);
+                    $scope.selectedErrors = errorList;
+                }
+            }
+        }
+
+        $scope._changeError = function (erreur, index) {
+            console.log($scope.selectedErrors);
+            for(err of $scope.selectedErrors.errors){
+                if(err.indiceDebut == erreur.indiceDebut && err.indiceFin == erreur.indiceFin){
+                    err.errors[index] = document.getElementById(`error-${erreur.indiceDebut}-${erreur.indiceFin}-${index}`).value;
+                    return;
+                }
+            }
+            console.log($scope.selectedErrors);
+        }
+
+
+        $scope._selectErrors = function (errorName, apply=false) {
+            $scope.errorsName = document.getElementById('select-constraint-list').value;
+            let constraintList = $scope.editedResource.content.annotations_list;
+            let annotations = $scope.editedResource.content.annotations;
+            for(constraint of constraintList) {
+                if (constraint.name == $scope.errorsName) {
+                    $scope.selectedErrors.errors = filterByConstraint(annotations, constraint.constraint);
+                    $scope.selectedErrors.errors = filterByUniqueIndices($scope.selectedErrors.errors);
+                    for (err of $scope.selectedErrors.errors){
+                        err.errors = Array();
+                        err.errors.length= document.getElementById('input-nb-error').value;
+                    }
+                    if(apply){$scope.$apply();}
+                    return;
+                }
+            }
+        }
+
+        function filterByUniqueIndices(errors){
+            newErrors = [];
+            for(err of errors){
+                if(newErrors.length == 0){
+                    newErrors.push({"indiceDebut": err.indiceDebut, "indiceFin" : err.indiceFin});
+                } else {
+                    let finded = false
+                    for (newErr of newErrors){
+                        if(newErr.indiceFin == err.indiceFin && newErr.indiceDebut == err.indiceDebut){
+                            finded = true;
+                            break;
+                        }
+                    }
+                    if (!finded){
+                        newErrors.push({"indiceDebut": err.indiceDebut, "indiceFin" : err.indiceFin});
+                    }
+                }
+            }
+            return newErrors;
+        }
+
+        function filterByConstraint(annotations, constraint){
+            if (constraint.cle != null){
+                if(constraint.valeur == ""){
+                    let tabCle = annotations.filter((annotation) => {return annotation.cle == constraint.cle});
+                    let tabCleValeur = [];
+                    for(annotation of annotations) {
+                        for(cle of tabCle){
+                            if(cle.indiceDebut == annotation.indiceDebut && cle.indiceFin == annotation.indiceFin){
+                                if(tabCleValeur.indexOf(cle) === -1 ){tabCleValeur.push(cle);}
+                                if(tabCleValeur.indexOf(annotation) === -1){tabCleValeur.push(annotation);}
+                            }
+                        }
+                    }
+                    return tabCleValeur;
+                } else {
+                    let tabCle = annotations.filter((annotation) => {return annotation.cle == constraint.cle});
+                    let tabValeur = [];
+                    let tabCleValeur = [];
+                    let tabValeurToRemove = [];
+                    switch (constraint.operateur){
+                        case "=" :
+                            tabValeur = annotations.filter((annotation) => {return annotation.cle == constraint.cle && annotation.valeur == constraint.valeur});
+                            break;
+                        case "≠" :
+                            tabValeur = annotations.filter((annotation) => {return annotation.valeur != constraint.valeur});
+                            tabValeurToRemove = annotations.filter((annotation) => {return annotation.valeur == constraint.valeur});
+                            break;
+                        case "<" :
+                            tabValeur = annotations.filter((annotation) => {return annotation.cle == constraint.cle && annotation.valeur < constraint.valeur});
+                            break;
+                        case ">" :
+                            tabValeur = annotations.filter((annotation) => {return annotation.cle == constraint.cle && annotation.valeur > constraint.valeur});
+                            break;
+                        case "≤" :
+                            tabValeur = annotations.filter((annotation) => {return annotation.cle == constraint.cle && annotation.valeur <= constraint.valeur});
+                            break;
+                        case "≥" :
+                            tabValeur = annotations.filter((annotation) => {return annotation.cle == constraint.cle && annotation.valeur >= constraint.valeur});
+                            break;
+
+                    }
+                    for(cle of tabCle) {
+                        for(valeur of tabValeur){
+                            if(valeur.indiceDebut == cle.indiceDebut && valeur.indiceFin == cle.indiceFin){
+                                if(tabCleValeur.indexOf(cle) === -1 ){tabCleValeur.push(cle);}
+                                if(tabCleValeur.indexOf(valeur) === -1){tabCleValeur.push(valeur);}
+                            }
+                        }
+                    }
+                    for(annotation of annotations){
+                        for(valeur of tabValeur){
+                            if(tabCleValeur.indexOf(annotation) === -1 && annotation.indiceDebut == valeur.indiceDebut && annotation.indiceFin == valeur.indiceFin) {
+                                tabCleValeur.push(annotation);
+                            }
+                        }
+                    }
+                    if (tabValeurToRemove != []){
+                        for(valeur of tabValeurToRemove){
+                            tabCleValeur = tabCleValeur.filter((annotation) => {return (annotation.indiceDebut != valeur.indiceDebut || annotation.indiceFin != valeur.indiceFin)});
+                        }
+                    }
+                    return tabCleValeur;
+                }
+            } else if (constraint.operateur == "ET") {
+                return filterByConstraint(filterByConstraint(annotations, constraint.filsGauche), constraint.filsDroit);
+
+            } else if (constraint.operateur == "OU") {
+                let left = filterByConstraint(annotations, constraint.filsGauche);
+                let right = filterByConstraint(annotations, constraint.filsDroit);
+                for(elem of right){
+                    if(left.indexOf(elem) === -1){
+                        left.push(elem);
+                    }
+                }
+                return left;
+
+            } else if (constraint.operateur == "OU EXCLUSIF") {
+                return;
+            }
+        }
 
         // update resource method
         $scope.updateResource = function () {
@@ -992,7 +1381,7 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
             archived: false, // select archived resources or not (boolean)
             public: false, // select public resources or not (boolean)
             type: { // resources types to be selected
-                multiple_choice: 'multiple-choice', pair_items: 'pair-items', order_items: 'order-items', open_ended_question: 'open-ended-question', group_items: 'group-items'
+                multiple_choice: 'multiple-choice', text_with_holes: 'text-with-holes', pair_items: 'pair-items', order_items: 'order-items', open_ended_question: 'open-ended-question', group_items: 'group-items'
             },
             keywords: [], // list of keywords that a resource must have to be selected
             metadata: [] // list of metadata objects that a resource must have to be selected
@@ -1205,9 +1594,49 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
                             "excluded": []
                         }
                     }
+                },
+                "text_with_holes": {
+                    "type": "text-with-holes",
+                    "title": "Nouveau modèle d'exercice de texte à trous",
+                    "public": false,
+                    "archived": false,
+                    "draft": false,
+                    "complete": null,
+                    "metadata": [],
+                    "keywords": [],
+                    "content": {
+
+                        "wording": null,
+                        "learnersVisualisation": {
+                            'indicationShowed': false,
+                            'initialElementAsIndication': true,
+                            'keyAsIndication': null
+                        },
+                        "is_list": true,
+                        "resource_constraint": [],
+                        "ressources": [],
+                        "sharedTags": [],
+                        "sharedConstraint": [],
+                        'annotationsLists': [],
+                        'coverages': [{
+                            'isGlobal': true,
+                            'listName': null,
+                            'type': 'percent',
+                            'value': 100
+                        }],
+                        "generateIndication": false,
+                        "initAsIndication": true,
+                        "indicationKey": null,
+                        'responsesTag': "",
+                        "documents": [],
+                        "exercise_model_type": "text-with-holes"
+                    },
+                    "required_exercise_resources": null,
+                    "required_knowledges": null
                 }
             }
         };
+
         $scope.modelAddDirectoryField = function (newDir, model) {
             model.push(newDir.name);
             //DirectorySelect.save({
@@ -1246,6 +1675,7 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
         };
 
         $scope.modelAddBlockResourceConstraint = function (metadata_constraints, type) {
+            console.log(metadata_constraints);
             var newElement;
             if (type == 'exists') {
                 newElement = jQuery.extend(true, {}, $scope.modelContext.newModel.block_constraint.exists);
@@ -1569,6 +1999,10 @@ modelControllers.controller('modelListController', ['$scope', 'Model', '$locatio
                 Model.save($scope.modelContext.newModel.open_ended_question, function (data) {
                     $location.path('/teacher/model/' + data.id)
                 });
+            } else if (type == 'text-with-holes') {
+                Model.save($scope.modelContext.newModel.text_with_holes, function (data) {
+                    $location.path('/teacher/model/' + data.id)
+                });
             }
         };
     }]);
@@ -1588,6 +2022,98 @@ modelControllers.controller('modelEditController', ['$scope', 'Model','ModelDire
                 }
             }
         };
+
+        $scope.addItem = function () {
+            $scope.initAnswerLists();
+            $scope.initTagsList();
+            $scope.checkCoverageAndResources();
+        }
+
+        $scope.initAnswerLists = function () {
+            $scope.answerLists = [];
+                for (let resource of $scope.model.content.ressources) {
+                    for (let annotationlist of $scope.resources[resource.id].content.annotations_list) {
+                        $scope.answerLists.push(annotationlist.name);
+                    }
+                }
+                $scope.answerLists = [...new Set($scope.answerLists)];
+                for (let answer of $scope.answerLists) {
+                    let present = false;
+                    for (let resource of $scope.model.content.ressources) {
+                        let presentInRessource = false;
+                        for (let annotationList of $scope.resources[resource.id].content.annotations_list) {
+                            if (annotationList.name == answer) {
+                                presentInRessource = true;
+                            }
+                        }
+                        if (!presentInRessource) {
+                            if (!present) {
+                                $scope.answerLists.splice($scope.answerLists.indexOf(answer), 1);
+                            }
+                        }
+                    }
+                }
+        };
+
+        $scope.checkCoverageAndResources = function () {
+            $scope.resourcesErrorList = {};
+                for (let coverage of $scope.model.content.coverages) {
+                    for (let resource of $scope.model.content.ressources) {
+                        if (!coverage.isGlobal) {
+                            let presentInRessource = false;
+                            for (let annotation of $scope.resources[resource.id].content.annotations) {
+                                if (annotation.cle == coverage.listName) {
+                                    presentInRessource = true;
+                                }
+                            }
+                            if (!presentInRessource) {
+                                console.log($scope.resourcesErrorList);
+                                if ($scope.resourcesErrorList[resource.id] == null) {
+                                    $scope.resourcesErrorList[resource.id] = coverage.listName;
+                                }
+                            }
+                        }
+                        console.log($scope.resourcesErrorList);
+                    }
+                }
+        };
+
+        $scope.initTagsList = function () {
+            $scope.tagsList = [];
+                for (let resource of $scope.model.content.ressources) {
+                    for (let annotation of $scope.resources[resource.id].content.annotations) {
+                        if ($scope.tagsList.indexOf(annotation.cle) == -1) {
+                            $scope.tagsList.push(annotation.cle);
+                        }
+                    }
+                }
+                for (let tag of $scope.tagsList) {
+                    let present = false;
+                    for (let resource of $scope.model.content.ressources) {
+                        let presentInRessource = false;
+                        for (let annotation of $scope.resources[resource.id].content.annotations) {
+                            if (annotation.cle == tag) {
+                                presentInRessource = true;
+                            }
+                        }
+                        if (!presentInRessource) {
+                            if (!present) {
+                                $scope.tagsList.splice($scope.tagsList.indexOf(tag), 1);
+                            }
+                        }
+                    }
+                }
+        };
+
+        $scope.initIndications = function () {
+          $scope.keyAsIndication = "";
+          $scope.generateIndications = false;
+        };
+
+        $scope._checkGenerateIndications = function () {
+            $scope.generateIndications = document.getElementById('generateIndications').checked;
+            console.log($scope.generateIndications);
+        }
 
         $scope.model = Model.get({id: $stateParams.modelid}, function () {
             // fill each block with empty constraints
@@ -1616,13 +2142,77 @@ modelControllers.controller('modelEditController', ['$scope', 'Model','ModelDire
                     $scope.acceptedTypes = ['picture', 'text'];
                     $scope.comperType = "matching";
                     break;
+                case 'text-with-holes':
+                    $scope.acceptedTypes = ['text-with-holes'];
+                    $scope.comperType = "fill-in";
+                    $scope.initAnswerLists();
+                    $scope.initTagsList();
+                    $scope.initIndications();
+                    $scope.checkCoverageAndResources();
+                    $scope.selectedAnnotationList = "";
+                    break;
             }
         });
+
+        $scope._selectAnnotation = function() {
+            $scope.selectedAnnotationList = document.getElementById('select-annotation-list').value
+        }
+
+        $scope._selectAnswerTag = function () {
+            $scope.model.content.responses_tag = document.getElementById('select-answer-tag').value;
+        }
+
+        $scope._selectIndicationTag = function () {
+            $scope.model.content.indication_key = document.getElementById('select-answer-tag').value;
+        }
+
+        $scope._changeInitAsAnswer = function () {
+            if($scope.model.content.responses_tag != ''){
+                $scope.model.content.responses_tag = '';
+            }
+
+        }
+
+        $scope._initAsIndication = function (isIndication) {
+            $scope.model.init_as_indication = isIndication;
+        }
+
+
+
+        $scope._removeAnnotationList = function(listName){
+            $scope.model.content.annotations_lists.splice($scope.model.content.annotations_lists.indexOf(listName),1);
+            for(let coverage in $scope.model.content.coverages){
+                console.log(coverage);
+                if($scope.model.content.coverages[coverage].listName == listName){
+                    $scope.model.content.coverages.splice(coverage,1);
+                    $scope.checkCoverageAndResources();
+                }
+            }
+        }
+
+        $scope.addCoverage = function(annotationList) {
+            $scope.model.content.coverages.push({
+                'isGlobal': false,
+                'listName': annotationList,
+                'type': 'percent',
+                'value': 100
+            });
+            $scope.checkCoverageAndResources();
+        }
+
+        $scope.addAnnotationList = function() {
+            $scope._selectAnnotation();
+            if ($scope.model.content.annotations_lists.indexOf($scope.selectedAnnotationList) == -1) {
+                $scope.model.content.annotations_lists.push($scope.selectedAnnotationList);
+                $scope.addCoverage($scope.selectedAnnotationList);
+            }
+        }
         //$scope.usedDirectories =ModelDirectory.query({modelId:$stateParams.modelid},
         //    function(){
         //        console.log('load directories for model');
         //    }
         //);
+
 
         $scope.fillBlockConstraints = function (model) {
             switch (model.type) {
@@ -1758,16 +2348,38 @@ modelControllers.controller('modelEditController', ['$scope', 'Model','ModelDire
             if ($scope.acceptedTypes.indexOf(resource.type) != -1) {
                 if (resource.owner === BASE_CONFIG.currentUserId) {
                     $scope.modelAddBlockResourceField(collection, resource.id);
+                    $scope.addItem();
                 } else {
                     var dial = confirm("Pour utiliser cette ressource qui ne vous appartient pas, vous devez l'importer dans votre espace personnel. Pour cela, vous pouvez vous abonner à cette ressource. Vous bénéficierez des modifications apportées par l'auteur et ne pourrez la modifier de votre côté. Il faudrait pour cela l'importer.\n\nVoulez-vous vous abonner à cette ressource ?");
                     if (dial == true) {
                         Resource.subscribe({id: resource.id}, function (data) {
                             $scope.resources[data.id] = data;
                             $scope.modelAddBlockResourceField(collection, data.id);
+                            $scope.addItem();
                         });
                     }
                 }
             }
+        };
+
+        $scope.onDropResource = function (event, resource, collection) {
+            if ($scope.acceptedTypes.indexOf(resource.type) != -1) {
+                if (resource.owner === BASE_CONFIG.currentUserId) {
+                    $scope.modelAddBlockResourceField(collection, resource.id);
+                    $scope.addItem();
+                } else {
+                    var dial = confirm("Pour utiliser cette ressource qui ne vous appartient pas, vous devez l'importer dans votre espace personnel. Pour cela, vous pouvez vous abonner à cette ressource. Vous bénéficierez des modifications apportées par l'auteur et ne pourrez la modifier de votre côté. Il faudrait pour cela l'importer.\n\nVoulez-vous vous abonner à cette ressource ?");
+                    if (dial == true) {
+                        Resource.subscribe({id: resource.id}, function (data) {
+                            $scope.resources[data.id] = data;
+                            $scope.modelAddBlockResourceField(collection, data.id);
+                            $scope.addItem();
+                        });
+                    }
+                }
+            }
+            console.log(collection);
+            console.log($scope.resources[resource.id]);
         };
     }]);
 
@@ -1782,6 +2394,8 @@ modelControllers.controller('modelEditPairItemsController', ['$scope',
                 jQuery.extend(true, {}, $scope.modelContext.newModel.sub_pair_items.block_field)
             );
         };
+
+
 
         $scope.getMobilePart = function (collection, key) {
             var returnValue = '';

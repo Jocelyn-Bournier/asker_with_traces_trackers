@@ -54,7 +54,6 @@ class ApiResourceParamConverter implements ParamConverterInterface
                 || $configuration->getClass() == 'Doctrine\Common\Collections\Collection'
             ) {
                 $options = $configuration->getOptions();
-
                 if (array_key_exists('type', $options)) {
                     $type = 'ArrayCollection<' . $options['type'] . '>';
                     $resource = $this->serializer->deserialize(
@@ -88,7 +87,7 @@ class ApiResourceParamConverter implements ParamConverterInterface
     }
 
     /**
-     * Supports
+     * SupportsException
      *
      * @param ParamConverter $configuration Configuration
      *

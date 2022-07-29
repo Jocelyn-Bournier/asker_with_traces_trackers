@@ -1,4 +1,4 @@
-<style>
+<!--<style>
   .olm-loader,
   .olm-loader:after {
     border-radius: 50%;
@@ -48,6 +48,7 @@
     <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
       <h4 class="modal-title" id="myModalLabel">Mon profil {{directory.name}}</h4>
+      <h5>Dernière mise à jour le {{framework['computedAt']['date']}}</h5>
     </div>
     <div class="modal-body" style="height: 60vh;">
       <div id="olm-target-loader" class="hidden">
@@ -56,6 +57,10 @@
           Chargement du profil. 
           Cette opération peut prendre plusieurs secondes, notamment lors de l'initialisation du profil...
         </p>
+      </div>
+      <div>
+      <div class="left"><h4>Niveaux de maîtrise :</h4></div>
+      <div class="left" id="olm-colors" style="width:75%; height: 30px;"></div>
       </div>
       <div id="olm-target" style="position: relative; height: 100%; width: 100%;"></div>
     </div>
@@ -82,6 +87,7 @@
       "fontHoverColor":  "rgba(0, 0, 0, 1)",
       "fontColor":       "rgba(0, 0, 0, .85)",
       "backgroundColor": "rgba(255, 255, 255, .95)"
+
     };
     let OLM = document._OLM;
     document.getElementById('olm-target').innerHTML = '';
@@ -123,3 +129,4 @@
     });
   }
 </script>
+-->
