@@ -1252,7 +1252,7 @@ class OrderItemsService extends ExerciseCreationService
     {
         //echo json_encode($learnerAnswers);
         $this->checkIfBlockMatchesSolutions($learnerAnswers, $solutions, $newSolution);
-        echo json_encode($solutions);
+        //echo json_encode($solutions);
     }
 
     /**
@@ -1332,8 +1332,6 @@ class OrderItemsService extends ExerciseCreationService
                 }
             }
         }
-
-        //idem pour les positions, évaluer au sein du bloc (fonction réutilisable pour contrainte->"fix")
 
         return $objectList[0];
     }
