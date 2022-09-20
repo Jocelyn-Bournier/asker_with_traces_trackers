@@ -39,7 +39,7 @@
             </div>
         </accordion-heading>
         <div ng-repeat="model in sub.models  track by $index">
-            <div ng-if="model.has_attempts && directory.visible_exercise[$index]">
+            <div ng-if="model.has_attempts && sub.visible_exercise[$index]">
                 <accordion>
                     <accordion-group
                             class="panel panel-default">
