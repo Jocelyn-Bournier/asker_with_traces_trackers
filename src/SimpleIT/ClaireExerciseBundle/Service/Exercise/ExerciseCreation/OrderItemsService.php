@@ -215,7 +215,7 @@ class OrderItemsService extends ExerciseCreationService
         }
 
         // shuffle the order of the objects
-        //$item->shuffleObjects();
+        $item->shuffleObjects();
 
         // set give first and last
         if ($model->isGiveFirst()) {
@@ -296,12 +296,12 @@ class OrderItemsService extends ExerciseCreationService
     {
         $order = $this->exerciseResourceService->getExerciseObject($model->getOrderResource(), $owner);
         $this->getObjectsFromOrderBlock($order->getOrderResource()->getBlock(), $objects, $solutions);
-        
+
         //echo json_encode($solutions);
 
     }
 
-    
+
     private function getObjectsFromOrderBlock(
         OrderBlock $block,
         array &$objects,
@@ -315,7 +315,7 @@ class OrderItemsService extends ExerciseCreationService
         foreach ($block->getItems() as $key => $item) {
             /** @var OrderItem */
 
-            //constraints 
+            //constraints
             if ($block->getRule() == "position") {
                 //echo 'pos ';
                 $solutions[$key]['position'] = $block->getPositions()[$key];
@@ -344,7 +344,7 @@ class OrderItemsService extends ExerciseCreationService
                 $solutions[$key]["answerBloc"] = array();
                 $start=++$index;
                 $length=$this->getObjectsFromOrderBlock($item->getBlock(), $objects, $solutions[$key]['block'],$index, $index);
-                $shiftBlock[] = [$start,$length]; 
+                $shiftBlock[] = [$start,$length];
                 $count+=$length;
             }
 
@@ -1222,7 +1222,7 @@ class OrderItemsService extends ExerciseCreationService
                     if($tab[$key1]["type"] == "fixe") {
                         $tab[$key1]["values"][$key2]--;
                     }
-                
+
             }
         }
     }
