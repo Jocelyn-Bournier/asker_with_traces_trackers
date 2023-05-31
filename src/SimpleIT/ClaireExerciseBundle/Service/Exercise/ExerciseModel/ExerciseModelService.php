@@ -1217,7 +1217,6 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
             case ExerciseModelResource::TEXT_WITH_HOLES_CLASS:
                 $resRes = [];
                 break;
-            case ExerciseModelResource::PAIR_ITEMS_MODEL_CLASS:
             case ExerciseModelResource::MULTIPLE_CHOICE_MODEL_CLASS:
             case ExerciseModelResource::OPEN_ENDED_QUESTION_CLASS:
                 /** @var MultipleChoice|OpenEnded $content */
