@@ -403,6 +403,7 @@ class ExerciseResourceService extends SharedEntityService implements ExerciseRes
                     case CommonResource::ORDER:
                         /** @var OrderResource $content */
                         $complete = $this->checkOrderComplete($content, $errorCode);
+						break;
                     case CommonResource::TEXT_WITH_HOLES:
                         /** @var DocumentResource $content */
                         $complete = $this->checkTextWithHolesComplete($content, $errorCode);;
