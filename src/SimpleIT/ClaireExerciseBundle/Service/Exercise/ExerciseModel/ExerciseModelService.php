@@ -1188,6 +1188,19 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
                         )
                 );
                 break;
+            case ExerciseModelResource::PAIR_ITEMS_MODEL_CLASS:
+                /** @var PairItems $content */
+                $reqRes = array_merge(
+                    $reqRes,
+                    $this->computeRequiredResourcesFromModelBlocks
+                        (
+                            $content->getPairBlocks(),
+                            $import,
+                            $ownerId,
+                            $originalOwner
+                        )
+                );
+                break;
             case ExerciseModelResource::GROUP_ITEMS_MODEL_CLASS:
                 /** @var GroupItems $content */
                 $reqRes = array_merge(
@@ -1204,6 +1217,7 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
             case ExerciseModelResource::TEXT_WITH_HOLES_CLASS:
                 $resRes = [];
                 break;
+            case ExerciseModelResource::PAIR_ITEMS_MODEL_CLASS:
             case ExerciseModelResource::MULTIPLE_CHOICE_MODEL_CLASS:
             case ExerciseModelResource::OPEN_ENDED_QUESTION_CLASS:
                 /** @var MultipleChoice|OpenEnded $content */
