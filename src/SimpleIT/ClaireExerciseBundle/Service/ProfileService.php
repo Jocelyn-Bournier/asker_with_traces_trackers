@@ -170,7 +170,6 @@ class ProfileService
 
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         $response = curl_exec($curl);
-        echo $response;
     }
 
 }
