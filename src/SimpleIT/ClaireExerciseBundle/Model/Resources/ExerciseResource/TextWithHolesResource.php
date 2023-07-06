@@ -325,7 +325,6 @@ class TextWithHolesResource extends CommonResource
      */
     public function  validate($param = null)
     {
-        echo "toto";
         if (is_null($this->text) || $this->text == '') {
             throw new InvalidExerciseResourceException('A text is needed');
         }
