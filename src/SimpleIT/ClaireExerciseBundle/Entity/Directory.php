@@ -136,7 +136,6 @@ class Directory
             if ($user->getUser()->getId()  !== $this->getOwner()->getId()){
                 foreach($user->getUser()->getRoles() as $role){
                     if ($role->getName() == "ROLE_WS_CREATOR"){
-                        echo $user->getUser()->getId();
                         $managers[] = $user;
                         break;
                     }
@@ -354,7 +353,7 @@ class Directory
     {
         $this->isVisible = $isVisible;
     }
-    
+
     public function getVisibleExercise()
     {
         return $this->visibleExercise;
