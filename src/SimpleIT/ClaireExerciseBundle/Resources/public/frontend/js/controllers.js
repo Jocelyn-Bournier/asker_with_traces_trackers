@@ -70,7 +70,6 @@ mainAppControllers.controller('mainManagerController', ['$scope', '$sce', '$rout
             keywords: [], // list of keywords that a resource must have to be selected
             metadata: [] // list of metadata objects that a resource must have to be selected
         };
-      console.log($scope.filters)
 
         if (typeof $rootScope.models === 'undefined') {
             $rootScope.models = null;
