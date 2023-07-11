@@ -222,7 +222,7 @@
       <div class="panel-body">
         <div class="panel panel-default">
           <div class="panel-heading">
-            Liste des gestionnaires
+            Liste des responsables
             <div class="row">
               <div ng-repeat="manager in directory.managers track by $index">
                 <div class="col-xs-5" ng-if="manager.username != users[directory.owner].user_name">
@@ -232,7 +232,7 @@
                 ng-if="manager.username != users[directory.owner].user_name">
                   <span data-ng-click="directoryRemoveField(directory.managers, $index)"
                   class="glyphicon glyphicon-remove"
-                  title="Supprimer ce gestionnaire">
+                  title="Supprimer ce responsable">
                   </span>
                 </div>
               </div>
@@ -244,13 +244,13 @@
                   ng-model="newManager"
                   ng-options="user.username for user in availableManagers
                   | filter:filterAlreadyAdded">
-                  <option value="">Choisir un gestionnaire</option>
+                  <option value="">Choisir un responsable</option>
                 </select>
               </div>
               <div class="col-xs-1" ng-show="!directory.is_child">
                 <span data-ng-click="directoryAddManager(newManager, directory.managers)"
                 class="glyphicon glyphicon-ok"
-                title="Ajouter cet enseignant comme gestionnaire">
+                title="Ajouter comme responsable">
                 </span>
               </div>
             </div>
@@ -273,7 +273,7 @@
                 title="Créer les profils comper">
           Créer les profils comper
         </button>
-        <button 
+        <button
         ng-if="directory.total_subs ===0"
         ng-click="deleteDirectory(directory)" back-Button
         class="btn btn-danger pull-right"
