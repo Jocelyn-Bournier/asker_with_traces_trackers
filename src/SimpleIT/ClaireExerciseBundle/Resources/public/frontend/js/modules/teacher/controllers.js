@@ -232,7 +232,14 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
             archived: false, // select archived resources or not (boolean)
             public: false, // select public resources or not (boolean)
             type: { // resources types to be selected
-                multiple_choice_question: 'multiple-choice-question', text_with_holes: 'text-with-holes', document: 'document', text: 'text',order: 'order', picture: 'picture', open_ended_question: 'open-ended-question', sequence: ''
+              multiple_choice_question: 'multiple-choice-question',
+              text_with_holes: 'text-with-holes',
+              document: 'document',
+              text: 'text',
+              order: 'order',
+              picture: 'picture',
+              open_ended_question: 'open-ended-question',
+              sequence: ''
             },
             keywords: [], // list of keywords that a resource must have to be selected
             metadata: [] // list of metadata objects that a resource must have to be selected
@@ -445,7 +452,7 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
                             "items": [],
                             "positions": [],
                             "rules": []
-                        }                     
+                        }
                     },
                     "required_exercise_resources": null,
                     "required_knowledges": null
@@ -464,7 +471,7 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
                 },
                 "order_constraint": {
                     "type": "avant",
-                    "values":[] 
+                    "values":[]
                 }
             }
         };
