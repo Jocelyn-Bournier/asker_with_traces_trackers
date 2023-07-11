@@ -106,7 +106,6 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
         };
         $scope.setExerciseVisible = function(directory,$index){
             directory.visible_exercise[$index]=!directory.visible_exercise[$index];
-            console.log(directory);
         }
         $scope.activateComper = function (directory) {
             document.getElementById("progress-bar-comper-creation").style.width= '100%';
@@ -222,28 +221,6 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
     function ($scope, $modal) {
 
         $scope.section = 'resource';
-
-        /*
-         * Here is a contextual client-side object used to specify user's filters information.
-         * These values are bi-directionally data-bound to filters section fields in list views.
-         */
-        $scope.filters = {
-            search: '', // search field
-            archived: false, // select archived resources or not (boolean)
-            public: false, // select public resources or not (boolean)
-            type: { // resources types to be selected
-              multiple_choice_question: 'multiple-choice-question',
-              text_with_holes: 'text-with-holes',
-              document: 'document',
-              text: 'text',
-              order: 'order',
-              picture: 'picture',
-              open_ended_question: 'open-ended-question',
-              sequence: ''
-            },
-            keywords: [], // list of keywords that a resource must have to be selected
-            metadata: [] // list of metadata objects that a resource must have to be selected
-        };
 
         $scope.$parent.$watch("subSection", function (newValue) {
             if (newValue == 'pair-items') {
@@ -1382,7 +1359,6 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
         /*
          * Here is a contextual client-side object used to specify user's filters information.
          * These values are bi-directionally data-bound to filters section fields in list views.
-         */
         $scope.filters = {
             search: '', // search field
             archived: false, // select archived resources or not (boolean)
@@ -1393,6 +1369,8 @@ modelControllers.controller('modelController', ['$scope', 'ExerciseByModel', 'At
             keywords: [], // list of keywords that a resource must have to be selected
             metadata: [] // list of metadata objects that a resource must have to be selected
         };
+            If no one complains: remove this comment RC 10/07/2023
+         */
 
         $scope.modelContext = {
             "newModel": {
