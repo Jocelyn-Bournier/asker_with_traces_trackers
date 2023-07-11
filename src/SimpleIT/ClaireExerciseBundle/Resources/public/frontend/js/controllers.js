@@ -49,6 +49,29 @@ mainAppControllers.controller('mainManagerController', ['$scope', '$sce', '$rout
             '1003': 'Au moins une des ressources sélectionnées ne permet pas de générer sufisament d\'éléments pour le taux de couverture indiqué'
         };
 
+        /*
+         * Here is a contextual client-side object used to specify user's filters information.
+         * These values are bi-directionally data-bound to filters section fields in list views.
+         */
+        $scope.filters = {
+            search: '', // search field
+            archived: false, // select archived resources or not (boolean)
+            public: false, // select public resources or not (boolean)
+            type: { // resources types to be selected
+              multiple_choice_question: 'multiple-choice-question',
+              text_with_holes: 'text-with-holes',
+              document: 'document',
+              text: 'text',
+              order: 'order',
+              picture: 'picture',
+              open_ended_question: 'open-ended-question',
+              sequence: ''
+            },
+            keywords: [], // list of keywords that a resource must have to be selected
+            metadata: [] // list of metadata objects that a resource must have to be selected
+        };
+      console.log($scope.filters)
+
         if (typeof $rootScope.models === 'undefined') {
             $rootScope.models = null;
         }
