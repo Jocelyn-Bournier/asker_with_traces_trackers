@@ -334,7 +334,7 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
         //recuperation des ids
         $ids = array_column($parents,"id");
         $qb =$this->createQueryBuilder('d')
-            ->select('d.id, d.isVisible as is_visible, d.code, d.frameworkId, d.name, p.id as idp')
+            ->select('d.id, d.isVisible as is_visible, d.code, d.frameworkId, d.name, aud.isReader as is_reader, p.id as idp')
             ->leftJoin('d.users', 'aud')
             ->leftJoin('d.parent', 'p')
         ;
@@ -344,7 +344,8 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
                 $qb->expr()->orX(
                     $qb->expr()->in('d.parent',$ids),
                     $qb->expr()->eq('d.owner',':user'),
-                    $qb->expr()->eq('aud.isManager',1)
+                    $qb->expr()->eq('aud.isManager',1),
+                    $qb->expr()->eq('aud.isReader',1)
                 )
             )
             ->setParameter('user', $user)
