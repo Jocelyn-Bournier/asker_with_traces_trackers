@@ -118,7 +118,7 @@ mainAppControllers.controller('mainManagerController', ['$scope', '$sce', '$rout
                     $scope.resources = jQuery.extend(publicResources, privateResources);
                     // migrate to UserSharedDataService RC 11/07/2023
                     //$scope.loadUsers($scope.resources);
-                    UserSharedDataService.initData($scope.resources, User);
+                    UserSharedDataService.initData($scope.resources, BASE_CONFIG.currentUserId, User);
                     $scope.users = UserSharedDataService.getUsers();
                 });
             });
@@ -129,9 +129,9 @@ mainAppControllers.controller('mainManagerController', ['$scope', '$sce', '$rout
         }
 
         // initial loading
+        $scope.BASE_CONFIG = BASE_CONFIG;
         $scope.loadResourcesAndUsers();
         //$scope.loadModelsAndUsers();
-        $scope.BASE_CONFIG = BASE_CONFIG;
     }]);
 
 mainAppControllers.controller('mainUserController', ['$scope', '$sce', '$routeParams', '$location', 'BASE_CONFIG', 'User',
@@ -178,7 +178,7 @@ mainAppControllers.service('UserSharedDataService', function() {
     getUsers: function() {
       return sharedUsers;
     },
-    initData: function(resourcesData, User){
+    initData: function(resourcesData, currentUserId, User){
       var userIds = [];
       for (var i in resourcesData) {
           if (resourcesData.hasOwnProperty(i) && i != "$promise" && i != "$resolved") {
@@ -191,6 +191,7 @@ mainAppControllers.service('UserSharedDataService', function() {
           }
       }
 
+      sharedUsers[currentUserId] =  User.get({userId: currentUserId})
       for (i in userIds) {
           if (typeof sharedUsers[userIds[i]] === 'undefined') {
               sharedUsers[userIds[i]] = User.get({userId: userIds[i]});
