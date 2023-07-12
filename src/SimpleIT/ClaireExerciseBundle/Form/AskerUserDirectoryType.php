@@ -21,6 +21,12 @@ class AskerUserDirectoryType extends AbstractType
     {
         $userId = $options['userId'];
         $builder
+            ->add('isReader', CheckboxType::class,
+                array(
+                    'label' => " ", # do not display "is Manager"
+                    'required' => false,
+                )
+            )
             ->add('isManager', CheckboxType::class,
                 array(
                     'label' => " ", # do not display "is Manager"

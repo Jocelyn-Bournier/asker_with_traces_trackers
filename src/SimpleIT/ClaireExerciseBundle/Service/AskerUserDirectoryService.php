@@ -148,6 +148,7 @@ class AskerUserDirectoryService extends TransactionalService
         foreach($user->getDirectories() as $aud){
             if ($aud->getDirectory()->getOwner()->getId() !== $user->getId()){
                 $isManager = $aud->getIsManager();
+                $isReader = $aud->getIsReader();
                 $end = $aud->getEndDate();
                 $start = $aud->getStartDate();
                 foreach($aud->getDirectory()->getSubs() as $sub){
@@ -160,6 +161,7 @@ class AskerUserDirectoryService extends TransactionalService
                         $this->em->persist($audSub);
                     }
                     $audSub->setIsManager($isManager);
+                    $audSub->setIsReader($isReader);
                     $audSub->setDirectory($sub);
                     $audSub->setEndDate($end);
                     $audSub->setStartDate($start);
@@ -191,6 +193,7 @@ class AskerUserDirectoryService extends TransactionalService
             $dirs[$aur['user_id']][] =  array(
                 'name' => $aur['name'],
                 'isManager' => (bool) $aur['isManager'],
+                'isReader' => (bool) $aur['isReader'],
                 'isOwner' => ($aur['user_id'] === $aur['owner_id']) ? true : false,
             );
         }
