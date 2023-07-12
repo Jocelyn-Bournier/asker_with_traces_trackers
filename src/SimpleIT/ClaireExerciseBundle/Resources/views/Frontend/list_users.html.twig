@@ -145,6 +145,8 @@
           msg += `<div class="label label-primary"><span class="glyphicon glyphicon-home"></span> ${directories[key].name}</div> `
         } else if (directories[key].isManager) {
           msg += `<div class="label label-primary"><span class="glyphicon glyphicon-pencil"></span> ${directories[key].name}</div> `
+        } else if (directories[key].isReader) {
+          msg += `<div class="label label-primary"><span class="glyphicon glyphicon-eye-open"></span> ${directories[key].name}</div> `
         } else{
           msg += `<div class="label label-primary">${directories[key].name}</div> `
         }
