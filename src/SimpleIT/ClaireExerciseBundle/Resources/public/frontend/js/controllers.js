@@ -1,7 +1,7 @@
 var mainAppControllers = angular.module('mainAppControllers', ['ui.router']);
 
-mainAppControllers.controller('mainManagerController', ['$scope', '$sce', '$routeParams', '$location', 'BASE_CONFIG', 'User', 'Resource','Model', '$rootScope',
-    function ($scope, $sce, $routeParams, $location, BASE_CONFIG, User, Resource,Model, $rootScope) {
+mainAppControllers.controller('mainManagerController', ['$scope', '$sce', '$routeParams', '$location', 'BASE_CONFIG', 'User', 'Resource','Model', '$rootScope','UserSharedDataService',
+    function ($scope, $sce, $routeParams, $location, BASE_CONFIG, User, Resource,Model, $rootScope,UserSharedDataService) {
         // Error codes for complete
         $scope.completeError = {
             '101': 'Le modèle parent n\'est pas public',
@@ -81,7 +81,6 @@ mainAppControllers.controller('mainManagerController', ['$scope', '$sce', '$rout
             }
 
             var userIds = [];
-
             for (var i in resourcesData) {
                 if (resourcesData.hasOwnProperty(i) && i != "$promise" && i != "$resolved") {
                     if (userIds.indexOf(resourcesData[i].author) == -1) {
@@ -117,8 +116,10 @@ mainAppControllers.controller('mainManagerController', ['$scope', '$sce', '$rout
                     }
 
                     $scope.resources = jQuery.extend(publicResources, privateResources);
-
-                    $scope.loadUsers($scope.resources);
+                    // migrate to UserSharedDataService RC 11/07/2023
+                    //$scope.loadUsers($scope.resources);
+                    UserSharedDataService.initData($scope.resources, User);
+                    $scope.users = UserSharedDataService.getUsers();
                 });
             });
         };
@@ -168,3 +169,34 @@ mainAppControllers.controller('mainUserController', ['$scope', '$sce', '$routePa
         $scope.BASE_CONFIG = BASE_CONFIG;
         $location.path($location.path());
     }]);
+
+// Définir un service pour stocker les données
+mainAppControllers.service('UserSharedDataService', function() {
+  var sharedUsers = [];
+
+  return {
+    getUsers: function() {
+      return sharedUsers;
+    },
+    initData: function(resourcesData, User){
+      var userIds = [];
+      for (var i in resourcesData) {
+          if (resourcesData.hasOwnProperty(i) && i != "$promise" && i != "$resolved") {
+              if (userIds.indexOf(resourcesData[i].author) == -1) {
+                  userIds.push(resourcesData[i].author);
+              }
+              if (userIds.indexOf(resourcesData[i].owner) == -1) {
+                  userIds.push(resourcesData[i].owner);
+              }
+          }
+      }
+
+      for (i in userIds) {
+          if (typeof sharedUsers[userIds[i]] === 'undefined') {
+              sharedUsers[userIds[i]] = User.get({userId: userIds[i]});
+          }
+      }
+    }
+  };
+});
+
