@@ -292,6 +292,10 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
 
     public function findMine($user)
     {
+		/* il faudrait résoudre le bug suivant:
+		 *  ce code retourne une erreur 500 si l'utilisateur
+		 *  ne possede aucun dossier
+		 */
         //selection des parents
         //$parents = $this->createQueryBuilder('d')
         //    ->select('d.id')
