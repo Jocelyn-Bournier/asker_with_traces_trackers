@@ -26,7 +26,7 @@
             <div class="col-xs-2 col-sm-2">
               <div class="col-centered pull-right">
                 <h4>
-                  <button ng-if="directory.frameworkId != null && directory.frameworkId != ''" type="submit" name="fromPlatform" 
+                  <button ng-if="directory.frameworkId != null && directory.frameworkId != ''" type="submit" name="fromPlatform"
                           form="comper-profile-explorer" ng-click="$event.stopPropagation();getComperJWT(directory.frameworkId, 'asker:group-'+directory.id+'-'+directory.frameworkId)"
                           title="Paramètres COMPER et profils étudiants" style="background: none; border: none; padding: 0;" value="asker">
                     <span class="glyphicon  glyphicon-cloud-upload"></span>
@@ -46,6 +46,7 @@
                   </form>
 
                   <span class="glyphicon" ng-class="
+                  ng-if="!directory.is_reader"
                   directory.is_visible ? 'glyphicon-eye-open'
                   : 'glyphicon-eye-close'"
                   ng-click="$event.stopPropagation();setVisible(directory)"
@@ -55,19 +56,28 @@
                   : 'Ce dossier est invisible.'}}">
                   </span>
                   <span
+                    ng-if="!directory.is_reader"
                     class="glyphicon glyphicon-plus"
                     ng-click="$event.stopPropagation();createDirectory(directory.id)"
                     title="Création d'un sous dossier">
                   </span>
                   <span
                     class="glyphicon glyphicon-remove"
+                    ng-if="directory.owner_id === BASE_CONFIG.currentUserId"
                     ng-click="$event.stopPropagation();deleteDirectory(directory)"
                     title="Supprimer le sous dossier">
                   </span>
                   <span
                     class="glyphicon glyphicon-edit"
+                    ng-if="!directory.is_reader"
                     ng-click="$event.stopPropagation();editDirectory(directory)"
                     title="Editer le répertoire">
+                  </span>
+                  <span
+                    ng-if="directory.is_reader"
+                    class="glyphicon glyphicon-book"
+                    ng-click="$event.stopPropagation();createDirectory(directory.id)"
+                    title="Importer ce répertoire">
                   </span>
                 </h4>
               </div>

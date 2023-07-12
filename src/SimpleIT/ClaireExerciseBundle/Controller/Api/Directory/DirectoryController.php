@@ -179,6 +179,8 @@ class DirectoryController extends BaseController
                 $val = $repo->countChildrens($dir["id"]);
                 $directories[$key]["subs"] = $val[0]["total"];
             }
+
+			$directories[$key]["owner_id"] = $repo->find($dir["id"])->getOwner()->getId();
             $directories[$key]["models"] = $repo->countModels($dir["id"])[0]["total"];
             $directories[$key]["nbVisibleExercise"] = $repo->countVisibleModels($dir["id"]);
         }

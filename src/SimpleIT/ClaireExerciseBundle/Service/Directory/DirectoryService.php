@@ -234,8 +234,10 @@ class DirectoryService extends TransactionalService
             $entity->setCode($resource->getCode());
             $entity->setFrameworkId($resource->getFrameworkId());
             $this->askerUserDirectoryService->updateManager($entity,$resource);
+            $this->askerUserDirectoryService->updateReader($entity,$resource);
             foreach($entity->getSubs() as $dir){
                 $this->askerUserDirectoryService->updateManager($dir, $resource);
+                $this->askerUserDirectoryService->updateReader($dir, $resource);
             }
             // Create comper profile if they doesn't exist
             /*
@@ -302,6 +304,7 @@ class DirectoryService extends TransactionalService
         $dirUser = new AskerUserDirectory();
         $dirUser->setUser($user);
         $dirUser->setIsManager(false);
+        $dirUser->setIsReader(false);
         $dirUser->setDirectory($dir);
         $this->em->persist($dirUser);
         $this->em->persist($dir);

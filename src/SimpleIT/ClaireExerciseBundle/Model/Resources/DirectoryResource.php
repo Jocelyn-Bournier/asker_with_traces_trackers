@@ -115,6 +115,12 @@ class DirectoryResource
      */
     protected $managers;
 
+    /**
+     * @var array
+     * @Serializer\Type("array<SimpleIT\ClaireExerciseBundle\Model\Resources\AskerUserResource>")
+     * @Serializer\Groups({"details"})
+     */
+    protected $readers;
 
 
     /**
@@ -221,7 +227,35 @@ class DirectoryResource
       $this->managers->removeElement($manager);
     }
 
-    
+    /**
+     * Get readers.
+     *
+     * @return readers.
+     */
+    public function getReaders()
+    {
+        return $this->readers;
+    }
+    /**
+     * Set readers.
+     *
+     */
+    public function setReaders($readers)
+    {
+        $this->readers = $readers;
+    }
+
+    public function addReader(AU $reader)
+    {
+      $this->readers[] = $reader;
+      return $this;
+    }
+
+    public function removeReader(AU $reader)
+    {
+      $this->readers->removeElement($reader);
+    }
+
     /**
      * Get totalSubs.
      *
@@ -231,7 +265,7 @@ class DirectoryResource
     {
         return $this->totalSubs;
     }
-    
+
     /**
      * Set totalSubs.
      *
@@ -241,7 +275,7 @@ class DirectoryResource
     {
         $this->totalSubs = $totalSubs;
     }
-    
+
     /**
      * Get code.
      *
@@ -251,7 +285,7 @@ class DirectoryResource
     {
         return $this->code;
     }
-    
+
     /**
      * Set code.
      *
@@ -271,7 +305,7 @@ class DirectoryResource
     {
         return $this->frameworkId;
     }
-    
+
     /**
      * Set frameworkId.
      *
@@ -281,7 +315,7 @@ class DirectoryResource
     {
         $this->frameworkId = $frameworkId;
     }
-    
+
     /**
      * Get subs.
      *
@@ -311,7 +345,7 @@ class DirectoryResource
     {
         return $this->owner;
     }
-    
+
     /**
      * Set owner.
      *
@@ -321,7 +355,7 @@ class DirectoryResource
     {
         $this->owner = $owner;
     }
-    
+
     /**
      * Get isChild.
      *
@@ -331,7 +365,7 @@ class DirectoryResource
     {
         return $this->isChild;
     }
-    
+
     /**
      * Set isChild.
      *
@@ -341,7 +375,7 @@ class DirectoryResource
     {
         $this->isChild = $isChild;
     }
-    
+
     /**
      * Get isVisible.
      *
@@ -351,7 +385,7 @@ class DirectoryResource
     {
         return $this->isVisible;
     }
-    
+
     /**
      * Set isVisible.
      *

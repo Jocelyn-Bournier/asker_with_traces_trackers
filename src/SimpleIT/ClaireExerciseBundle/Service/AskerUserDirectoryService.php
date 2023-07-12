@@ -81,10 +81,45 @@ class AskerUserDirectoryService extends TransactionalService
             if ($aud === null){
                 $aud = new AskerUserDirectory();
                 $aud->setIsManager(true);
+				$aud->setIsReader(false);
                 $aud->setDirectory($dir);
                 #$aud->setIsOld(false);
                 //if inject wrong data it wont work
                 $user = $this->askerUserRepository->findOneByUsername($manager->getUsername());
+                $aud->setUser($user);
+                $user->addDirectory($aud);
+                $dir->addUser($aud);
+                $this->em->persist($aud);
+            }
+        }
+    }
+    public function updateReader(Directory $dir, $data)
+    {
+        //return users with roles ROLE_WS_CREATOR and wont return owner
+        foreach($dir->getReaders() as $user){
+            $aud = $this->askerUserDirectoryRepository->findByUserIdDir($user->getUser()->getId(), $dir);
+            if ($aud !== null)
+            {
+                $this->em->remove($aud);
+            }
+        }
+        $this->em->flush();
+        foreach($data->getReaders() as $reader){
+            //$reader is a model ressource not an entity managed by doctrine
+            $entityUser = $this->askerUserRepository->findOneByUsername($reader->getUsername());
+            if (!$entityUser){
+                throw new MissingIdException();
+            }
+            $aud = $this->askerUserDirectoryRepository->findByUserIdDir($entityUser->getId(), $dir);
+            // the owner already exist so we wont create him
+            if ($aud === null){
+                $aud = new AskerUserDirectory();
+                $aud->setIsManager(false);
+				$aud->setIsReader(true);
+                $aud->setDirectory($dir);
+                #$aud->setIsOld(false);
+                //if inject wrong data it wont work
+                $user = $this->askerUserRepository->findOneByUsername($reader->getUsername());
                 $aud->setUser($user);
                 $user->addDirectory($aud);
                 $dir->addUser($aud);
@@ -113,6 +148,7 @@ class AskerUserDirectoryService extends TransactionalService
         foreach($user->getDirectories() as $aud){
             if ($aud->getDirectory()->getOwner()->getId() !== $user->getId()){
                 $isManager = $aud->getIsManager();
+                $isReader = $aud->getIsReader();
                 $end = $aud->getEndDate();
                 $start = $aud->getStartDate();
                 foreach($aud->getDirectory()->getSubs() as $sub){
@@ -125,6 +161,7 @@ class AskerUserDirectoryService extends TransactionalService
                         $this->em->persist($audSub);
                     }
                     $audSub->setIsManager($isManager);
+                    $audSub->setIsReader($isReader);
                     $audSub->setDirectory($sub);
                     $audSub->setEndDate($end);
                     $audSub->setStartDate($start);
@@ -156,6 +193,7 @@ class AskerUserDirectoryService extends TransactionalService
             $dirs[$aur['user_id']][] =  array(
                 'name' => $aur['name'],
                 'isManager' => (bool) $aur['isManager'],
+                'isReader' => (bool) $aur['isReader'],
                 'isOwner' => ($aur['user_id'] === $aur['owner_id']) ? true : false,
             );
         }

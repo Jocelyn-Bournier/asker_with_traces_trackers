@@ -39,6 +39,9 @@
       <td>
         {{form_widget(form.isManager)}}
       </td>
+      <td>
+        {{form_widget(form.isReader)}}
+      </td>
   </div>
 {% endblock %}
 {% block content %}
@@ -70,7 +73,8 @@
                 </span>
               </th>
               <th>Propriétaire</th>
-              <th>Gestionnaire</th>
+              <th>Responsable</th>
+              <th>Enseignant</th>
               <th>Action</th>
             </thead>
             <tbody id="tabbody" data-prototype="{{ form_widget(form.directories.vars.prototype)|e('html_attr') }}">
@@ -87,7 +91,10 @@
               {% endfor %}
             </tbody>
           </table>
-          <button type="button" id="add_directory_button" class="btn btn-success">Ajouter un répertoire</button>
+          <button type="button" id="add_directory_button" class="btn btn-info">
+            <span class="glyphicon glyphicon-plus-sign"></span>
+            Dossier supplémentaire
+          </button>
           <input type="submit" value="Editer"
           class="btn btn-warning" />
         {{ form_end(form) }}
