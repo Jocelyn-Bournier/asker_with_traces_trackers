@@ -226,10 +226,10 @@
             <span class="glyphicon glyphicon-question-sign" title="Un responsable peut modifier le dossier"></span>
             <div class="row">
               <div ng-repeat="manager in directory.managers track by $index">
-                <div class="col-xs-5" ng-if="manager.username != users[directory.owner].user_name">
+                <div class="col-xs-10 col-md-5" ng-if="manager.username != users[directory.owner].user_name">
                   <input type="text" ng-model="manager.username" class="form-control" disabled>
                 </div>
-                <div class="col-xs-1" ng-show="!directory.is_child"
+                <div class="col-xs-2 col-md-1" ng-show="!directory.is_child"
                 ng-if="manager.username != users[directory.owner].user_name">
                   <span data-ng-click="directoryRemoveField(directory.managers, $index)"
                   class="glyphicon glyphicon-remove"
@@ -239,7 +239,7 @@
               </div>
             </div>
             <div class="row">
-              <div class='col-xs-5'  ng-show="!directory.is_child">
+              <div class='col-xs-10 col-md-5'  ng-show="!directory.is_child">
               <ui-select ng-model="$parent.newManager">
                 <ui-select-match>
                   <span ng-bind="$select.selected.username"></span>
@@ -250,7 +250,7 @@
               </ui-select>
               </div>
 
-              <div class="col-xs-1" ng-show="!directory.is_child">
+              <div class="col-xs-2 col-md-1" ng-show="!directory.is_child">
                 <span data-ng-click="directoryAddManager(newManager, directory.managers);; newReader = null; newManager = null; "
                 class="glyphicon glyphicon-ok"
                 title="Ajouter comme responsable">
@@ -268,10 +268,10 @@
 
             <div class="row">
               <div ng-repeat="reader in directory.readers track by $index">
-                <div class="col-xs-5" ng-if="reader.username != users[directory.owner].user_name">
+                <div class="col-xs-10 col-md-5" ng-if="reader.username != users[directory.owner].user_name">
                   <input type="text" ng-model="reader.username" class="form-control" disabled>
                 </div>
-                <div class="col-xs-1" ng-show="!directory.is_child"
+                <div class="col-xs-2 col-md-1" ng-show="!directory.is_child"
                 ng-if="reader.username != users[directory.owner].user_name">
                   <span data-ng-click="directoryRemoveField(directory.readers, $index)"
                   class="glyphicon glyphicon-remove"
@@ -281,7 +281,7 @@
               </div>
             </div>
             <div class="row">
-              <div class='col-xs-5'  ng-show="!directory.is_child">
+              <div class='col-xs-10 col-md-5'  ng-show="!directory.is_child">
               <ui-select ng-model="$parent.newReader">
                 <ui-select-match>
                   <span ng-bind="$select.selected.username"></span>
@@ -292,7 +292,7 @@
               </ui-select>
               </div>
 
-              <div class="col-xs-1" ng-show="!directory.is_child">
+              <div class="col-xs-2 col-md-1" ng-show="!directory.is_child">
                 <span data-ng-click="directoryAddReader(newReader, directory.readers); newReader = null; newManager = null;"
                 class="glyphicon glyphicon-ok"
                 title="Ajouter comme enseignant">
