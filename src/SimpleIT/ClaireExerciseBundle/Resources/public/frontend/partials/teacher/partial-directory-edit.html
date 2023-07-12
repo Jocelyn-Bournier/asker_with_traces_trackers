@@ -40,21 +40,21 @@
                   <h4>Titre</h4>
                   <input type="text" ng-model="directory.name" class="form-control"/>
                 </div>
-                <div class="col-xs-3">
+                <div class="col-xs-2">
                   <h4>Code Apogee</h4>
                   <input ng-if="directory.is_child" type="text" ng-model="directory.code"
                   placeholder="Code Apogee pour l'inscription automatique" class="form-control" disabled/>
                   <input ng-if="!directory.is_child" type="text" ng-model="directory.code"
                   placeholder="Code Apogee pour l'inscription automatique" class="form-control"/>
                 </div>
-                <div class="col-xs-3">
+                <div class="col-xs-2">
                   <h4>Code Référentiel</h4>
                   <input ng-if="directory.is_child" type="text" ng-model="directory.framework_id"
                   placeholder="Code Référentiel pour l'utilisation des recommandations (ANR COMPER)" class="form-control" disabled/>
                   <input ng-if="!directory.is_child" type="text" ng-model="directory.framework_id"
                   placeholder="Code Référentiel pour l'utilisation des recommandations (ANR COMPER)" class="form-control"/>
                 </div>
-                <div class="col-xs-3">
+                <div class="col-xs-2">
                   <h4>Propriétaire</h4>
                   <input type="text" ng-model="users[directory.owner].user_name"
                     class="form-control" disabled/>
@@ -222,35 +222,80 @@
       <div class="panel-body">
         <div class="panel panel-default">
           <div class="panel-heading">
-            Liste des gestionnaires
+            Liste des responsables
+            <span class="glyphicon glyphicon-question-sign" title="Un responsable peut modifier le dossier"></span>
             <div class="row">
               <div ng-repeat="manager in directory.managers track by $index">
-                <div class="col-xs-5" ng-if="manager.username != users[directory.owner].user_name">
+                <div class="col-xs-10 col-md-5" ng-if="manager.username != users[directory.owner].user_name">
                   <input type="text" ng-model="manager.username" class="form-control" disabled>
                 </div>
-                <div class="col-xs-1" ng-show="!directory.is_child"
+                <div class="col-xs-2 col-md-1" ng-show="!directory.is_child"
                 ng-if="manager.username != users[directory.owner].user_name">
                   <span data-ng-click="directoryRemoveField(directory.managers, $index)"
                   class="glyphicon glyphicon-remove"
-                  title="Supprimer ce gestionnaire">
+                  title="Supprimer ce responsable">
                   </span>
                 </div>
               </div>
             </div>
             <div class="row">
-              <div class='col-xs-5'  ng-show="!directory.is_child">
-                <select
-                  class="form-control"
-                  ng-model="newManager"
-                  ng-options="user.username for user in availableManagers
-                  | filter:filterAlreadyAdded">
-                  <option value="">Choisir un gestionnaire</option>
-                </select>
+              <div class='col-xs-10 col-md-5'  ng-show="!directory.is_child">
+              <ui-select ng-model="$parent.newManager">
+                <ui-select-match>
+                  <span ng-bind="$select.selected.username"></span>
+                </ui-select-match>
+                <ui-select-choices repeat="user in (availableManagers |  filter:filterAlreadyAdded  |filter: $select.search) ">
+                    <span ng-bind="user.username"></span>
+                </ui-select-choices>
+              </ui-select>
               </div>
-              <div class="col-xs-1" ng-show="!directory.is_child">
-                <span data-ng-click="directoryAddManager(newManager, directory.managers)"
+
+              <div class="col-xs-2 col-md-1" ng-show="!directory.is_child">
+                <span data-ng-click="directoryAddManager(newManager, directory.managers);; newReader = null; newManager = null; "
                 class="glyphicon glyphicon-ok"
-                title="Ajouter cet enseignant comme gestionnaire">
+                title="Ajouter comme responsable">
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Liste des enseignants
+            <span class="glyphicon glyphicon-question-sign" title="Un enseignent est un utilisateur qui peut observer et dupliquer un dossier sans pouvoir réaliser des modifications"></span>
+
+            <div class="row">
+              <div ng-repeat="reader in directory.readers track by $index">
+                <div class="col-xs-10 col-md-5" ng-if="reader.username != users[directory.owner].user_name">
+                  <input type="text" ng-model="reader.username" class="form-control" disabled>
+                </div>
+                <div class="col-xs-2 col-md-1" ng-show="!directory.is_child"
+                ng-if="reader.username != users[directory.owner].user_name">
+                  <span data-ng-click="directoryRemoveField(directory.readers, $index)"
+                  class="glyphicon glyphicon-remove"
+                  title="Supprimer cet enseignant">
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class='col-xs-10 col-md-5'  ng-show="!directory.is_child">
+              <ui-select ng-model="$parent.newReader">
+                <ui-select-match>
+                  <span ng-bind="$select.selected.username"></span>
+                </ui-select-match>
+                <ui-select-choices repeat="user in (availableManagers |  filter:filterAlreadyAdded  |filter: $select.search) ">
+                    <span ng-bind="user.username"></span>
+                </ui-select-choices>
+              </ui-select>
+              </div>
+
+              <div class="col-xs-2 col-md-1" ng-show="!directory.is_child">
+                <span data-ng-click="directoryAddReader(newReader, directory.readers); newReader = null; newManager = null;"
+                class="glyphicon glyphicon-ok"
+                title="Ajouter comme enseignant">
                 </span>
               </div>
             </div>
@@ -273,7 +318,7 @@
                 title="Créer les profils comper">
           Créer les profils comper
         </button>
-        <button 
+        <button
         ng-if="directory.total_subs ===0"
         ng-click="deleteDirectory(directory)" back-Button
         class="btn btn-danger pull-right"

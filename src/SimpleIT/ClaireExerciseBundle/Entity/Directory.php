@@ -144,6 +144,21 @@ class Directory
         }
         return $managers;
     }
+    public function getReaders()
+    {
+        $readers = [];
+        foreach($this->getUsers() as $user){
+            if ($user->getUser()->getId()  !== $this->getOwner()->getId()){
+                foreach($user->getUser()->getRoles() as $role){
+                    if ($role->getName() == "ROLE_WS_CREATOR"){
+                        $readers[] = $user;
+                        break;
+                    }
+                }
+            }
+        }
+        return $readers;
+    }
 
     public function realUsers()
     {

@@ -50,6 +50,13 @@ class AskerUserDirectory
     private $isManager;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="isReader", type="boolean")
+     */
+    private $isReader;
+
+    /**
      *
      *
      *  @ORM\JoinColumn(nullable=false)
@@ -155,6 +162,25 @@ class AskerUserDirectory
         $this->isManager = $isManager;
     }
     /**
+     * Get isReader.
+     *
+     * @return isReader.
+     */
+    public function getIsReader()
+    {
+        return $this->isReader;
+    }
+
+    /**
+     * Set isReader.
+     *
+     * @param isReader the value to set.
+     */
+    public function setIsReader($isReader)
+    {
+        $this->isReader = $isReader;
+    }
+    /**
      * Get startDate.
      *
      * @return startDate.
@@ -199,4 +225,5 @@ class AskerUserDirectory
         }
         return false;
     }
+
 }

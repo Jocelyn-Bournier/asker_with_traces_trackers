@@ -3,6 +3,7 @@
 namespace SimpleIT\ClaireExerciseBundle\Entity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * AskerUser
  */
@@ -463,6 +464,31 @@ class AskerUser implements UserInterface
         }
         return false;
     }
+
+    /**
+     * @Assert\IsTrue(message="Il n'est pas possible d'être enseignant et responsable en même temps!")
+     */
+    public function isOnlyOneOptionSelected()
+    {
+		foreach($this->getDirectories() as $aud){
+			$selectedOptions = 0;
+			if ($aud->getIsReader()) {
+        	    $selectedOptions++;
+        	}
+
+        	if ($aud->getIsManager()) {
+        	    $selectedOptions++;
+        	}
+
+        	if ($aud->isOwner()) {
+        	    $selectedOptions++;
+        	}
+			if ($selectedOptions >1){
+				return 0;
+			}
+		}
+		return 1;
+	}
 
     public function realDirectories()
     {

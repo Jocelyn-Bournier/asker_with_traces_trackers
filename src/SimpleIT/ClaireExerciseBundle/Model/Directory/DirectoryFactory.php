@@ -58,12 +58,18 @@ abstract class DirectoryFactory
                 if ($user->getIsManager()){
                     $directoryResource->addManager(AskerUserResourceFactory::create($user));
                 }
+				if ($user->getIsReader()){
+                    $directoryResource->addReader(AskerUserResourceFactory::create($user));
+				}
             }else{
                     $directoryResource->addManager(AskerUserResourceFactory::create($user));
             }
         }
         if (empty($directoryResource->getManagers())){
                 $directoryResource->setManagers(array());
+        }
+        if (empty($directoryResource->getReaders())){
+                $directoryResource->setReaders(array());
         }
         foreach($directory->getModels() as $model){
             //$directoryResource->addModel($model);
@@ -97,12 +103,19 @@ abstract class DirectoryFactory
                 if ($user->getIsManager()){
                     $directoryResource->addManager(AskerUserResourceFactory::create($user));
                 }
+				if ($user->getIsReader()){
+                    $directoryResource->addReader(AskerUserResourceFactory::create($user));
+				}
             }else{
                     $directoryResource->addManager(AskerUserResourceFactory::create($user));
+
             }
         }
         if (empty($directoryResource->getManagers())){
                 $directoryResource->setManagers(array());
+        }
+        if (empty($directoryResource->getReaders())){
+                $directoryResource->setReaders(array());
         }
         foreach($directory->getModels() as $model){
             //$directoryResource->addModel($model);

@@ -5,6 +5,7 @@
       <generator strategy="AUTO"/>
     </id>
     <field name="isManager" type="boolean" column="isManager"/>
+    <field name="isReader" type="boolean" column="isReader"/>
     <field name="startDate" type="datetime" column="startDate"/>
     <field name="endDate" type="datetime" column="endDate" nullable="true"/>
     <many-to-one field="directory"

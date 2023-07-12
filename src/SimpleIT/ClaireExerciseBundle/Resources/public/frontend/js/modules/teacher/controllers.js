@@ -2,7 +2,7 @@
  *
  * Created by bryan on 25/06/14.
  */
-var directoryControllers = angular.module('directoryControllers', ['ui.router']);
+var directoryControllers = angular.module('directoryControllers', ['ui.router', 'ui.select']);
 directoryControllers.controller('directoryController',  ['$scope', '$modal',
     function ($scope, $modal) {
         $scope.section = 'directory';
@@ -81,10 +81,13 @@ directoryControllers.controller('directoryListController', ['$scope', 'MyDirecto
         }
     }
 ]);
-directoryControllers.controller('directoryEditController', ['$scope','$stateParams', 'MyDirectory', 'AvailableManagers',
-    function ($scope, $stateParams, MyDirectory, AvailableManagers) {
+directoryControllers.controller('directoryEditController', ['$scope','$stateParams', 'MyDirectory', 'AvailableManagers', 'UserSharedDataService',
+    function ($scope, $stateParams, MyDirectory, AvailableManagers, UserSharedDataService) {
+        $scope.users = UserSharedDataService.getUsers();
+        $scope.owner = ""
 
-        $scope.directory = MyDirectory.get({id: $stateParams.directoryid}, function () {
+        $scope.directory = MyDirectory.get({id: $stateParams.directoryid}, function (data) {
+          $scope.owner = $scope.users[data.owner].user_name;
         });
         $scope.availableManagers = AvailableManagers.query({}, function(){
         });
@@ -124,7 +127,7 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
             let nbUsers;
             let users;
 
-            document.getElementById("action-creation").innerHTML = "Ajout des enseignants";
+            document.getElementById("action-creation").innerHTML = "Ajout des responsables";
             $.ajax({
                 url: `${BASE_CONFIG.urls.api.directories}comper/${directoryId}/managers/addManagers`,
                 type: "GET",
@@ -168,16 +171,21 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
             return true;
         }
         $scope.filterAlreadyAdded = function(item) {
-            if ($scope.users != null ) {
-                if (item.username !== $scope.users[$scope.directory.owner].user_name) {
-                    if ($scope.directory.managers.map(
-                        function (manager) {
-                            return manager.username
-                        }).indexOf(item.username) == -1) {
-                        return item;
-                    }
-                }
+          if (item.username !== $scope.owner) {
+            if (typeof $scope.directory.managers !== 'undefined'){
+              if ($scope.directory.managers.map(
+                  function (manager) {
+                      return manager.username
+                  }).indexOf(item.username) == -1 &&
+                  $scope.directory.readers.map(
+                    function (manager) {
+                        return manager.username
+                  }).indexOf(item.username) == -1)
+                {
+                  return item;
+              }
             }
+          }
         };
         $scope.directoryAddModel = function (collection, id) {
             var isAlreadyAdded = false;
@@ -192,6 +200,11 @@ directoryControllers.controller('directoryEditController', ['$scope','$statePara
         };
         $scope.directoryAddManager = function(newManager, managers){
             managers.push(newManager);
+            //$scope.filterAlreadyAdded(newManager);
+        }
+        $scope.directoryAddReader = function(newReader, readers){
+            readers.push(newReader);
+            //$scope.filterAlreadyAdded(newManager);
         }
         $scope.deleteDirectory = function (directory) {
             directory.$delete({id: directory.id})

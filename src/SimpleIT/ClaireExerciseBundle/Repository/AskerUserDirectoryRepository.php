@@ -14,7 +14,7 @@ class AskerUserDirectoryRepository extends \Doctrine\ORM\EntityRepository
 {
     public function nativeAll(){
         $sql = "
-            SELECT d.name, user_id, isManager, d.owner_id
+            SELECT d.name, user_id, isManager, d.owner_id, isReader
             FROM asker_user_directory aud
             JOIN directory d
             ON d.id = aud.directory_id
