@@ -44,11 +44,18 @@
                         method="post"  style="display:none;">
                     <input type="hidden" id="comper-jwt-input" name="token" />
                   </form>
+                  <span
+                    ng-if="directory.is_reader"
+                    style="color: #31708f;"
+                    class="glyphicon glyphicon-duplicate"
+                    ng-click="$event.stopPropagation();cloneDirectory(directory.id)"
+                    title="Importer ce dossier">
+                  </span>
 
                   <span class="glyphicon" ng-class="
-                  ng-if="!directory.is_reader"
                   directory.is_visible ? 'glyphicon-eye-open'
                   : 'glyphicon-eye-close'"
+                  ng-if="!directory.is_reader"
                   ng-click="$event.stopPropagation();setVisible(directory)"
                   ng-attr-title="
                   {{directory.is_visible
@@ -56,34 +63,32 @@
                   : 'Ce dossier est invisible.'}}">
                   </span>
                   <span
-                    ng-if="!directory.is_reader"
-                    class="glyphicon glyphicon-plus"
-                    ng-click="$event.stopPropagation();createDirectory(directory.id)"
-                    title="Création d'un sous dossier">
-                  </span>
-                  <span
                     class="glyphicon glyphicon-remove"
+                    style="color: #b94a48;"
                     ng-if="directory.owner_id === BASE_CONFIG.currentUserId"
                     ng-click="$event.stopPropagation();deleteDirectory(directory)"
                     title="Supprimer le sous dossier">
                   </span>
                   <span
+                    ng-if="!directory.is_reader"
+                    style="color: #3c763d;"
+                    class="glyphicon glyphicon-plus"
+                    ng-click="$event.stopPropagation();createDirectory(directory.id)"
+                    title="Création d'un sous dossier">
+                  </span>
+                  <span
+                    class="glyphicon glyphicon-check"
+                    style="color: #8a6d3b;"
+                    ng-if="directory.is_reader"
+                    ng-click="$event.stopPropagation();editDirectory(directory)"
+                    title="Regarder le dossier">
+                  </span>
+                  <span
                     class="glyphicon glyphicon-edit"
+                    style="color: #8a6d3b;"
                     ng-if="!directory.is_reader"
                     ng-click="$event.stopPropagation();editDirectory(directory)"
                     title="Editer le dossier">
-                  </span>
-                  <span
-                    ng-if="directory.is_reader"
-                    class="glyphicon glyphicon-book"
-                    ng-click="$event.stopPropagation();createDirectory(directory.id)"
-                    title="Importer ce dossier">
-                  </span>
-                  <span
-                    ng-if="directory.is_reader"
-                    class="glyphicon glyphicon-book"
-                    ng-click="$event.stopPropagation();createDirectory(directory.id)"
-                    title="Importer ce répertoire">
                   </span>
                 </h4>
               </div>
