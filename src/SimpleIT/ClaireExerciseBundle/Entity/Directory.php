@@ -182,6 +182,18 @@ class Directory
         }
         return false;
     }
+    public function hasReader(AskerUser $has)
+    {
+        foreach($this->getUsers() as $user){
+            if ($has->getId() == $user->getUser()->getId()
+                && $user->getIsReader()
+            )
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public function hasUser(AskerUser $has){
         foreach($this->getUsers() as $user){

@@ -22,6 +22,9 @@ directoryControllers.controller('directoryListController', ['$scope', 'MyDirecto
             }
 
         });
+        $scope.cloneDirectory = function(directory_id){
+            MyDirectory.clone({id:directory_id})
+        }
         $scope.setVisible = function(directory){
             MyDirectory.visible({id:directory.id},function (data){
                 directory.is_visible = data.is_visible;

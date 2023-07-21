@@ -148,6 +148,14 @@ myDirectoryServices.factory('MyDirectory', ['$resource',
                     },
                     url: BASE_CONFIG.urls.api.directories +'visible/:id'
                 },
+                clone: {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    url: BASE_CONFIG.urls.api.directories +'clone/:id'
+                },
                 savechild: {
                     method: 'POST',
                     headers: {
