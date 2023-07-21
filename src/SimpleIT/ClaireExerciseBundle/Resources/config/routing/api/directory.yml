@@ -71,6 +71,12 @@ api_directory_visible:
     methods: [PUT]
     requirements:
         _format: json
+api_directory_clone:
+    path:  /clone/{directory}
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Directory/Directory:clone}
+    methods: [POST]
+    requirements:
+        _format: json
 
 api_directory_jwt:
     path: /jwt/{frameworkId}/{role}

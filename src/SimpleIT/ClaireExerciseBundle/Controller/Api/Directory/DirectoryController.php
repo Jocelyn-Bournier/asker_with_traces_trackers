@@ -291,6 +291,48 @@ class DirectoryController extends BaseController
             throw new ApiBadRequestException($ede->getMessage());
         }
     }
+
+	public function cloneAction(Directory $directory)
+	{
+		$user = $this->getUser();
+        if (!$directory->hasReader($user)
+            && !$directory->hasManager($user)
+        ){
+            throw new AccessDeniedException();
+        }
+        try {
+			$exerciseModelService = $this->get('simple_it.exercise.exercise_model');
+			foreach($directory->GetModels() as $m){
+				dump($m);
+				//$model = $this->get('simple_it.exercise.exercise_model')->import(
+            	//    $this->getUserId(),
+				//	$m->getId(),
+            	//);
+				$model = $this->get('simple_it.exercise.exercise_model')->importByEntity(
+            	    $this->getUserId(),
+					$m,
+            	);
+
+			}
+            //$directoryEntity = $this->get('simple_it.exercise.directory')->clone
+            //(
+            //    $directory,
+			//	$user
+            //);
+            $directoryResource = DirectoryFactory::create($directory, false, 0);
+            return new ApiEditedResponse($directoryResource);
+
+        } catch (NonExistingObjectException $neoe) {
+            throw new ApiNotFoundException(DirectoryResource::RESOURCE_NAME);
+        } catch (DBALException $eoe) {
+            throw new ApiConflictException($eoe->getMessage());
+        } catch (NoAuthorException $nae) {
+            throw new ApiBadRequestException($nae->getMessage());
+        } catch (InvalidTypeException $ite) {
+            throw new ApiBadRequestException($ite->getMessage());
+        }
+	}
+
     /**
      * Edit a directory
      *
@@ -311,11 +353,12 @@ class DirectoryController extends BaseController
      */
     public function editAction(DirectoryResource $directoryResource,$directoryId)
     {
+		$user = $this->getUser();
         try {
             $directory = $this->get('simple_it.exercise.directory')->edit
             (
                 $directoryResource,
-                $this->getUser()
+				$user
             );
             $directoryResource = DirectoryFactory::create($directory, false, 0);
 
