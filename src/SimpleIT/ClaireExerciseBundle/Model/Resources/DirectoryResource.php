@@ -82,6 +82,12 @@ class DirectoryResource
      * @Serializer\Groups({"details", "directory"})
      */
     private $isVisible;
+    /**
+     * @var string $isReader
+     * @Serializer\Type("boolean")
+     * @Serializer\Groups({"details", "directory"})
+     */
+    private $isReader;
 
 
     /**
@@ -394,5 +400,25 @@ class DirectoryResource
     public function setIsVisible($isVisible)
     {
         $this->isVisible = $isVisible;
+    }
+
+    /**
+     * Get isReader.
+     *
+     * @return isReader.
+     */
+    public function getIsReader()
+    {
+        return $this->isReader;
+    }
+
+    /**
+     * Set isReader.
+     *
+     * @param isReader the value to set.
+     */
+    public function setIsReader($isReader)
+    {
+        $this->isReader = $isReader;
     }
 }
