@@ -72,7 +72,13 @@ class AskerUserDirectoryService extends TransactionalService
         $this->em->flush();
         foreach($data->getManagers() as $manager){
             //$manager is a model ressource not an entity managed by doctrine
-            $entityUser = $this->askerUserRepository->findOneByUsername($manager->getUsername());
+			//if ($manager instanceof  SimpleIT\ClaireExerciseBundle\Entity\AskerUserDirectory){
+			if ($manager instanceof AskerUserDirectory){
+				$entityUser = $this->askerUserRepository->findOneByUsername($manager->getUser()->getUsername());
+			}else{
+				$entityUser = $this->askerUserRepository->findOneByUsername($manager->getUsername());
+			}
+
             if (!$entityUser){
                 throw new MissingIdException();
             }
@@ -85,9 +91,9 @@ class AskerUserDirectoryService extends TransactionalService
                 $aud->setDirectory($dir);
                 #$aud->setIsOld(false);
                 //if inject wrong data it wont work
-                $user = $this->askerUserRepository->findOneByUsername($manager->getUsername());
-                $aud->setUser($user);
-                $user->addDirectory($aud);
+				//$user = $this->askerUserRepository->findOneByUsername($manager->getUsername());
+                $aud->setUser($entityUser);
+                $entityUser->addDirectory($aud);
                 $dir->addUser($aud);
                 $this->em->persist($aud);
             }
@@ -106,7 +112,11 @@ class AskerUserDirectoryService extends TransactionalService
         $this->em->flush();
         foreach($data->getReaders() as $reader){
             //$reader is a model ressource not an entity managed by doctrine
-            $entityUser = $this->askerUserRepository->findOneByUsername($reader->getUsername());
+			if ($reader instanceof  AskerUserDirectory){
+				$entityUser = $this->askerUserRepository->findOneByUsername($reader->getUser()->getUsername());
+			}else{
+				$entityUser = $this->askerUserRepository->findOneByUsername($reader->getUsername());
+			}
             if (!$entityUser){
                 throw new MissingIdException();
             }
@@ -119,9 +129,9 @@ class AskerUserDirectoryService extends TransactionalService
                 $aud->setDirectory($dir);
                 #$aud->setIsOld(false);
                 //if inject wrong data it wont work
-                $user = $this->askerUserRepository->findOneByUsername($reader->getUsername());
-                $aud->setUser($user);
-                $user->addDirectory($aud);
+                //$user = $this->askerUserRepository->findOneByUsername($reader->getUsername());
+                $aud->setUser($entityUser);
+                $entityUser->addDirectory($aud);
                 $dir->addUser($aud);
                 $this->em->persist($aud);
             }
