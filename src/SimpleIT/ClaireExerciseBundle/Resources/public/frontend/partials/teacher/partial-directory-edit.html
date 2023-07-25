@@ -38,20 +38,23 @@
               <div class="col-xs-11 col-centered">
                 <div class="col-xs-3">
                   <h4>Titre</h4>
-                  <input type="text" ng-model="directory.name" class="form-control"/>
+                  <input type="text" ng-model="directory.name" class="form-control"
+                  ng-disabled="directory.is_reader" />
                 </div>
                 <div class="col-xs-2">
                   <h4>Code Apogee</h4>
                   <input ng-if="directory.is_child" type="text" ng-model="directory.code"
                   placeholder="Code Apogee pour l'inscription automatique" class="form-control" disabled/>
                   <input ng-if="!directory.is_child" type="text" ng-model="directory.code"
-                  placeholder="Code Apogee pour l'inscription automatique" class="form-control"/>
+                ng-disabled="directory.is_reader"
+                placeholder="Code Apogee pour l'inscription automatique" class="form-control"/>
                 </div>
                 <div class="col-xs-2">
                   <h4>Code Référentiel</h4>
                   <input ng-if="directory.is_child" type="text" ng-model="directory.framework_id"
                   placeholder="Code Référentiel pour l'utilisation des recommandations (ANR COMPER)" class="form-control" disabled/>
                   <input ng-if="!directory.is_child" type="text" ng-model="directory.framework_id"
+                  ng-disabled="directory.is_reader"
                   placeholder="Code Référentiel pour l'utilisation des recommandations (ANR COMPER)" class="form-control"/>
                 </div>
                 <div class="col-xs-2">
@@ -62,7 +65,7 @@
                 <div class="col-xs-2">
                   <div title="Est ce que ce répertoire est visible pour les utilisateurs?" data-ng-click="directory.is_visible=!directory.is_visible">
                     <h4>Visible</h4>
-                    <span class="glyphicon" ng-class="{'glyphicon-check': directory.is_visible, 'glyphicon-unchecked': !directory.is_visible}"></span>
+                    <span ng-disabled="directory.is_reader" class="glyphicon" ng-class="{'glyphicon-check': directory.is_visible, 'glyphicon-unchecked': !directory.is_visible}"></span>
                   </div>
                 </div>
               </div>
@@ -138,12 +141,14 @@
                         directory.visible_exercise[$index] ? 'glyphicon-eye-open'
                         : 'glyphicon-eye-close'"
                         ng-click="$event.stopPropagation();setExerciseVisible(directory,$index)"
+                        ng-if="!directory.is_reader"
                         ng-attr-title="
                         {{directory.visible_exercise[$index]
                         ? 'Ce dossier est visible.'
                         : 'Ce dossier est invisible.'}}">
                       </span>
                       <span
+                      ng-if="!directory.is_reader"
                       data-ng-click="$event.stopPropagation();directoryRemoveField(directory.models, $index, directory.visible_exercise)"
                       class="glyphicon glyphicon-remove"></span>
                     </div>
@@ -233,6 +238,7 @@
                 ng-if="manager.username != users[directory.owner].user_name">
                   <span data-ng-click="directoryRemoveField(directory.managers, $index)"
                   class="glyphicon glyphicon-remove"
+                  ng-show="!directory.is_reader"
                   title="Supprimer ce responsable">
                   </span>
                 </div>
@@ -240,7 +246,8 @@
             </div>
             <div class="row">
               <div class='col-xs-10 col-md-5'  ng-show="!directory.is_child">
-              <ui-select ng-model="$parent.newManager">
+              <ui-select ng-model="$parent.newManager" ng-disabled="directory.is_reader">
+
                 <ui-select-match>
                   <span ng-bind="$select.selected.username"></span>
                 </ui-select-match>
@@ -250,8 +257,8 @@
               </ui-select>
               </div>
 
-              <div class="col-xs-2 col-md-1" ng-show="!directory.is_child">
-                <span data-ng-click="directoryAddManager(newManager, directory.managers);; newReader = null; newManager = null; "
+              <div class="col-xs-2 col-md-1" ng-show="!directory.is_child && !directory.is_reader">
+                <span data-ng-click="directoryAddManager(newManager, directory.managers); newReader = null; newManager = null; "
                 class="glyphicon glyphicon-ok"
                 title="Ajouter comme responsable">
                 </span>
@@ -264,7 +271,7 @@
         <div class="panel panel-default">
           <div class="panel-heading">
             Liste des enseignants
-            <span class="glyphicon glyphicon-question-sign" title="Un enseignent est un utilisateur qui peut observer et dupliquer un dossier sans pouvoir réaliser des modifications"></span>
+            <span class="glyphicon glyphicon-question-sign" title="Un enseignant est un utilisateur qui peut observer et dupliquer un dossier sans pouvoir réaliser des modifications"></span>
 
             <div class="row">
               <div ng-repeat="reader in directory.readers track by $index">
@@ -275,6 +282,7 @@
                 ng-if="reader.username != users[directory.owner].user_name">
                   <span data-ng-click="directoryRemoveField(directory.readers, $index)"
                   class="glyphicon glyphicon-remove"
+                  ng-show="!directory.is_reader"
                   title="Supprimer cet enseignant">
                   </span>
                 </div>
@@ -282,7 +290,7 @@
             </div>
             <div class="row">
               <div class='col-xs-10 col-md-5'  ng-show="!directory.is_child">
-              <ui-select ng-model="$parent.newReader">
+              <ui-select ng-model="$parent.newReader"   ng-disabled="directory.is_reader">
                 <ui-select-match>
                   <span ng-bind="$select.selected.username"></span>
                 </ui-select-match>
@@ -292,8 +300,8 @@
               </ui-select>
               </div>
 
-              <div class="col-xs-2 col-md-1" ng-show="!directory.is_child">
-                <span data-ng-click="directoryAddReader(newReader, directory.readers); newReader = null; newManager = null;"
+              <div class="col-xs-2 col-md-1" ng-show="!directory.is_child && !directory.is_reader">
+                <span data-ng-click="directoryAddReader(newReader, directory.readers); newReader = null; newManager = null"
                 class="glyphicon glyphicon-ok"
                 title="Ajouter comme enseignant">
                 </span>
@@ -309,17 +317,19 @@
         </button>
         <button
         ng-click="updateDirectory(directory)" class="btn btn-default"
+                ng-disabled="directory.is_reader"
         title="Sauvegarder les modifications. Ne peut pas être annulé.">
           Sauvegarder
         </button>
         <button
                 ng-if="directory.framework_id !== null"
                 ng-click="activateComper(directory)" class="btn btn-default"
+                ng-disabled="directory.is_reader"
                 title="Créer les profils comper">
           Créer les profils comper
         </button>
         <button
-        ng-if="directory.total_subs ===0"
+        ng-if="directory.total_subs === 0 && directory.owner === BASE_CONFIG.currentUserId"
         ng-click="deleteDirectory(directory)" back-Button
         class="btn btn-danger pull-right"
         title="Supprimer le répertoire">
