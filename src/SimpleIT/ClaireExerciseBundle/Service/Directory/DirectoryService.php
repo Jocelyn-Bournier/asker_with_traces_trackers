@@ -37,6 +37,10 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 class DirectoryService extends TransactionalService
 {
     /**
+     * @var exerciseModelService
+     */
+    private $exerciseModelService;
+    /**
      * @var askerUserDirectoryService
      */
     private $askerUserDirectoryService;
@@ -56,6 +60,17 @@ class DirectoryService extends TransactionalService
 
     /**
      * Set askerUserDirectoryService
+     *
+     * @param ExerciseModel $exerciseModelService
+     */
+    public function setExerciseModelService($exerciseModelService)
+    {
+        $this->exerciseModelService = $exerciseModelService;
+    }
+
+
+    /**
+     * Set exerciseModelService
      *
      * @param UserRepository $askerUserDirectoryService
      */
@@ -87,10 +102,11 @@ class DirectoryService extends TransactionalService
     {
         return $this->directoryRepository->findParents($user);
     }
-    public function findMine(AskerUser $user)
-    {
-        return $this->directoryRepository->findMine($user->getId());
-    }
+	// dead code RC 24/07/2023
+    //public function findMine(AskerUser $user)
+    //{
+    //    return $this->directoryRepository->findMine($user->getId());
+    //}
 
     public function findAllModelsIds($id)
     {
@@ -227,6 +243,7 @@ class DirectoryService extends TransactionalService
         }
         $entity->setIsVisible($resource->getIsVisible());
         $entity->setName($resource->getName());
+		//  the directory is root level
         if (!$entity->getParent()){
             // Check difference between frameworkId
             $frameworkChanged = ($resource->getFrameworkId() !== $entity->getFrameworkId());
@@ -256,7 +273,12 @@ class DirectoryService extends TransactionalService
                 }
             }
 
-        }
+		}else {
+            foreach($entity->getParent()->getSubs() as $dir){
+                $this->askerUserDirectoryService->updateManager($dir, $resource);
+                $this->askerUserDirectoryService->updateReader($dir, $resource);
+            }
+		}
         foreach($entity->getModels() as $model){
             $entity->removeModel($model);
         }
@@ -289,18 +311,42 @@ class DirectoryService extends TransactionalService
         $this->em->persist($entity);
         //$this->em->flush($entity);
     }
+
+	public function cloneModels($userId, $newDirectory, $clonedDirectory)
+	{
+		foreach($clonedDirectory->getModels() as $m){
+			$model = $this->exerciseModelService->import(
+				$userId,
+				$m,
+			);
+			$newDirectory->addModel($model);
+		}
+
+	}
+
+	public function clone($user, $directory)
+	{
+		$newDirectory = $this->create($user, 0);
+		$newDirectory->setName("Import - " .$directory->getName());
+		$this->exerciseModelService->setForcedImport(true);
+		$this->cloneModels($user->getId(), $newDirectory, $directory);
+		foreach($directory->getSubs() as $sub){
+			$subDirectory = $this->create($user, 0);
+			$subDirectory->setParent($newDirectory);
+			$subDirectory->setName($sub->getName());
+			$this->cloneModels($user->getId(), $subDirectory, $directory);
+		}
+        $this->em->flush();
+		$this->exerciseModelService->setForcedImport(0);
+        return $newDirectory;
+	}
+
     public function create($user, $directory)
     {
         $dir = new Directory();
         $dir->setName('');
         $dir->setIsVisible(true);
         $dir->setOwner($user);
-        if ($directory != 0){
-            $dir->setParent($this
-                ->directoryRepository
-                ->find($directory)
-            );
-        }
         $dirUser = new AskerUserDirectory();
         $dirUser->setUser($user);
         $dirUser->setIsManager(false);
@@ -308,6 +354,13 @@ class DirectoryService extends TransactionalService
         $dirUser->setDirectory($dir);
         $this->em->persist($dirUser);
         $this->em->persist($dir);
+        if ($directory != 0){
+			$parent = $this->directoryRepository->find($directory);
+            $dir->setParent($parent);
+			dump($parent->getManagers());
+            $this->askerUserDirectoryService->updateManager($dir, $parent);
+            $this->askerUserDirectoryService->updateReader($dir,$parent);
+        }
         $this->em->flush();
         return $dir;
     }
