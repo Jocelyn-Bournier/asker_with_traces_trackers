@@ -72,6 +72,20 @@ abstract class SharedEntityService extends TransactionalService implements Share
      */
     private $metadataService;
 
+	/**
+	 * @var ForcedImport
+	 */
+	protected $forcedImport;
+
+	public function setForcedImport(bool $bool)
+	{
+		$this->forcedImport = $bool;
+	}
+	public function getForcedImport()
+	{
+		return $this->forcedImport;
+	}
+
     /**
      * Set serializer
      *
@@ -778,7 +792,7 @@ abstract class SharedEntityService extends TransactionalService implements Share
         $original = $this->get($originalId);
         if ($original->getOwner()->getId() === $userId) {
             throw new BadRequestHttpException('Object is already owned.');
-        } elseif (!$original->getPublic()) {
+        } elseif (!$original->getPublic() && !$this->getForcedImport()) {
             throw new BadRequestHttpException('The imported object must be public');
         }
 
