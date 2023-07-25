@@ -133,14 +133,17 @@ class Directory
     {
         $managers = [];
         foreach($this->getUsers() as $user){
-            if ($user->getUser()->getId()  !== $this->getOwner()->getId()){
-                foreach($user->getUser()->getRoles() as $role){
-                    if ($role->getName() == "ROLE_WS_CREATOR"){
-                        $managers[] = $user;
-                        break;
-                    }
-                }
-            }
+			if ($user->getIsManager()){
+				$managers[] = $user;
+			}
+				// etude impact de la modifcation RC 25/07/2023
+            //if ($user->getUser()->getId()  !== $this->getOwner()->getId()){
+                //foreach($user->getUser()->getRoles() as $role){
+                //    if ($role->getName() == "ROLE_WS_CREATOR"){
+                //        $managers[] = $user;
+                //        break;
+                //    }
+                //}
         }
         return $managers;
     }
@@ -148,14 +151,17 @@ class Directory
     {
         $readers = [];
         foreach($this->getUsers() as $user){
-            if ($user->getUser()->getId()  !== $this->getOwner()->getId()){
-                foreach($user->getUser()->getRoles() as $role){
-                    if ($role->getName() == "ROLE_WS_CREATOR"){
-                        $readers[] = $user;
-                        break;
-                    }
-                }
-            }
+			if ($user->getIsReader()){
+				$readers[] = $user;
+			}
+            //if ($user->getUser()->getId()  !== $this->getOwner()->getId()){
+            //    foreach($user->getUser()->getRoles() as $role){
+            //        if ($role->getName() == "ROLE_WS_CREATOR"){
+            //            $readers[] = $user;
+            //            break;
+            //        }
+            //    }
+            //}
         }
         return $readers;
     }
