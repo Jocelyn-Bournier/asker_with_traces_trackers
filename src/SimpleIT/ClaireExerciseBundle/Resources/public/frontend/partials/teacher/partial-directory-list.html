@@ -47,7 +47,7 @@
                   <span
                     ng-if="directory.is_reader"
                     style="color: #31708f;"
-                    class="glyphicon glyphicon-duplicate"
+                    class="glyphicon glyphicon-log-in"
                     ng-click="$event.stopPropagation();cloneDirectory(directory.id)"
                     title="Importer ce dossier">
                   </span>
@@ -63,11 +63,20 @@
                   : 'Ce dossier est invisible.'}}">
                   </span>
                   <span
-                    class="glyphicon glyphicon-remove"
-                    style="color: #b94a48;"
-                    ng-if="directory.owner_id === BASE_CONFIG.currentUserId"
-                    ng-click="$event.stopPropagation();deleteDirectory(directory)"
-                    title="Supprimer le dossier">
+                      ng-attr-title="
+                       {{directory.subs > '0'
+                        ? 'Il est nécessaire de supprimer les sous-dossiers avant de supprimer un dossier parent.'
+                        : 'Supprimer le dossier.'}}"
+                      ng-attr-style="{{directory.subs > '0' ? 'cursor: not-allowed;' : 'cursor: pointer;'}}">
+                    <span
+                      class="glyphicon glyphicon-remove"
+                      ng-if="directory.owner_id === BASE_CONFIG.currentUserId"
+                      ng-readonly="directory.subs > '0'"
+                      ng-attr-style="{{directory.subs > '0'
+                      ? 'pointer-events: none; color: #b94a48;'
+                      : 'pointer-events: auto; color: #b94a48;'}}"
+                      ng-click="$event.stopPropagation();deleteDirectory(directory)">
+                    </span>
                   </span>
                   <span
                     ng-if="!directory.is_reader"
@@ -135,12 +144,22 @@
                           </span>
                           <span
                             class="glyphicon glyphicon-remove"
-                            ng-click="$event.stopPropagation();
-                            deleteDirectory(sub)"
+                            ng-click="$event.stopPropagation();deleteDirectory(sub);"
+                            style="color: #b94a48;"
+                            ng-if="directory.owner_id === BASE_CONFIG.currentUserId"
                             title="Supprimer le sous-dossier">
                           </span>
                           <span
+                            class="glyphicon glyphicon-check"
+                            style="color: #8a6d3b;"
+                            ng-if="directory.is_reader"
+                            ng-click="$event.stopPropagation();editDirectory(sub)"
+                            title="Regarder le dossier">
+                          </span>
+                          <span
                             class="glyphicon glyphicon-edit"
+                            style="color: #8a6d3b;"
+                            ng-if="!directory.is_reader"
                             ng-click="$event.stopPropagation();editDirectory(sub)"
                             title="Editer le dossier">
                           </span>
