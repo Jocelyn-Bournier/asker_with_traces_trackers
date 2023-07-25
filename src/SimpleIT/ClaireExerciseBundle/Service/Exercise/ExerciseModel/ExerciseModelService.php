@@ -235,7 +235,6 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
         parent::updateFromSharedResource($modelResource, $model, 'exercise_model_storage');
         $model = $this->computeRequirements($modelResource, $model);
 	# debug romain
-	#die(var_dump($model));
 
         if ($modelResource->getArchived() === true && $model->getArchived() === false) {
             $model->setArchived(true);
@@ -359,6 +358,8 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
         $originalOwner = null
     )
     {
+		$this->exerciseResourceService->setForcedImport($this->getForcedImport());
+		dump($this->getForcedImport() . "resource". $this->exerciseResourceService->getForcedImport());
         if ($modelResource->getContent() != null) {
             // required resources
             $modelResource = $this->computeRequiredResourcesFromResource(
@@ -411,6 +412,7 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
                 }
             }
         }
+		$this->exerciseResourceService->setForcedImport(false);
 
         return $model;
     }
