@@ -38,6 +38,13 @@ directoryControllers.controller('directoryListController', ['$scope', 'MyDirecto
             });
         }
         $scope.deleteDirectory = function (directory) {
+            if (directory.idp !== undefined){
+              for(var key in $scope.directories){
+                if (key == directory.idp){
+                  $scope.directories[key].subs--;
+                }
+              }
+            }
             directory.$delete({id: directory.id}, function () {
                 delete $scope.directories[directory.id];
             });
