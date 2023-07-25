@@ -44,13 +44,6 @@
                         method="post"  style="display:none;">
                     <input type="hidden" id="comper-jwt-input" name="token" />
                   </form>
-                  <span
-                    ng-if="directory.is_reader"
-                    style="color: #31708f;"
-                    class="glyphicon glyphicon-log-in"
-                    ng-click="$event.stopPropagation();cloneDirectory(directory.id)"
-                    title="Importer ce dossier">
-                  </span>
 
                   <span class="glyphicon" ng-class="
                   directory.is_visible ? 'glyphicon-eye-open'
@@ -61,6 +54,13 @@
                   {{directory.is_visible
                   ? 'Ce dossier est visible.'
                   : 'Ce dossier est invisible.'}}">
+                  </span>
+                  <span
+                    ng-if="directory.owner_id !== BASE_CONFIG.currentUserId"
+                    style="color: #31708f;"
+                    class="glyphicon glyphicon-log-in"
+                    ng-click="$event.stopPropagation();cloneDirectory(directory.id)"
+                    title="Importer ce dossier">
                   </span>
                   <span
                       ng-attr-title="
