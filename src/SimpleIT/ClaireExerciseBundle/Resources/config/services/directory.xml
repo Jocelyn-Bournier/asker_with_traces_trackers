@@ -26,6 +26,9 @@
             <call method="setAskerUserDirectoryService">
                 <argument type="service" id="simple_it.exercise.asker_user_directory"/>
             </call>
+	    <call method="setExerciseModelService">
+                <argument type="service" id="simple_it.exercise.exercise_model"/>
+            </call>
         </service>
 
     </services>
