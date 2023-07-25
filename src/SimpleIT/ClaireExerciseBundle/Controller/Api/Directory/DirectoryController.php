@@ -71,8 +71,12 @@ class DirectoryController extends BaseController
             if (
                 $this->getUser()->getId() == $directoryId->getOwner()->getId()
                 || $directoryId->hasManager($this->getUser())
+				|| $directoryId->hasReader($this->getUser())
             ){
                 $directoryResource = DirectoryFactory::create($directoryId);
+				if ($directoryId->hasReader($this->getUser())){
+					$directoryResource->setIsReader(true);
+				}
                 return new ApiGotResponse($directoryResource, array("details", 'Default'));
             }else{
                 throw new AccessDeniedException();
@@ -177,6 +181,7 @@ class DirectoryController extends BaseController
         foreach($directories as $key =>  $dir){
             if(!isset($dir['idp'])){
                 $val = $repo->countChildrens($dir["id"]);
+                //$directories[$key]["subs"] = (int)$val[0]["total"];
                 $directories[$key]["subs"] = $val[0]["total"];
             }
 
@@ -301,25 +306,12 @@ class DirectoryController extends BaseController
             throw new AccessDeniedException();
         }
         try {
-			$exerciseModelService = $this->get('simple_it.exercise.exercise_model');
-			foreach($directory->GetModels() as $m){
-				dump($m);
-				//$model = $this->get('simple_it.exercise.exercise_model')->import(
-            	//    $this->getUserId(),
-				//	$m->getId(),
-            	//);
-				$model = $this->get('simple_it.exercise.exercise_model')->importByEntity(
-            	    $this->getUserId(),
-					$m,
-            	);
-
-			}
-            //$directoryEntity = $this->get('simple_it.exercise.directory')->clone
-            //(
-            //    $directory,
-			//	$user
-            //);
-            $directoryResource = DirectoryFactory::create($directory, false, 0);
+			$new = $this->get('simple_it.exercise.directory')->clone(
+                $this->getUser(),
+                $directory
+			);
+			// maybe send a better
+            $directoryResource = DirectoryFactory::create($new, false, 0);
             return new ApiEditedResponse($directoryResource);
 
         } catch (NonExistingObjectException $neoe) {
