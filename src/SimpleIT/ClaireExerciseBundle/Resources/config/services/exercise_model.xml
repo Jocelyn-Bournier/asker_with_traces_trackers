@@ -58,6 +58,9 @@
             <call method="setResourceManager">
                 <argument type="service" id="simple_it.manager.resource_manager"/>
             </call>
+            <call method="setForcedImport">
+		    <argument>false</argument>
+            </call>
         </service>
 
         <service id="simple_it.exercise.exercise_model_metadata" class="%simple_it.exercise.exercise_model_metadata.class%">
