@@ -292,6 +292,21 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
 
     public function findMine($user)
     {
+        $qb = $this->createQueryBuilder('d')
+            ->select('d.id, d.isVisible as is_visible, d.code, d.frameworkId, d.name, aud.isReader as is_reader, p.id as idp')
+            ->leftJoin('d.users', 'aud')
+            ->leftJoin('d.parent', 'p');
+		return $qb->where($qb->expr()->eq('aud.user',':user'))
+			->andWhere(
+				$qb->expr()->orX(
+					$qb->expr()->eq('aud.isManager', 1),
+					$qb->expr()->eq('aud.isReader', 1),
+					$qb->expr()->eq('d.owner',':user')
+				)
+			)
+			->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
 		/* il faudrait résoudre le bug suivant:
 		 *  ce code retourne une erreur 500 si l'utilisateur
 		 *  ne possede aucun dossier
@@ -315,6 +330,7 @@ class DirectoryRepository extends \Doctrine\ORM\EntityRepository
                     $qb->expr()->eq('aud.user',':user'),
 		    $qb->expr()->orX(
                 $qb->expr()->eq('aud.isManager',1),
+                $qb->expr()->eq('aud.isReader',1),
 	    	$qb->expr()->eq('d.owner',':owner')
 		    )
 	    )
