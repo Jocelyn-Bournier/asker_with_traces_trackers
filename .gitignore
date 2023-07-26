@@ -1,5 +1,6 @@
 /web/bundles/
 /web/oracle.php
+/web/app_dev.php
 /web/uploads/claire_exercise/*
 !web/uploads/claire_exercise/ids
 /app/bootstrap.php.cache
