@@ -357,7 +357,6 @@ class DirectoryService extends TransactionalService
         if ($directory != 0){
 			$parent = $this->directoryRepository->find($directory);
             $dir->setParent($parent);
-			dump($parent->getManagers());
             $this->askerUserDirectoryService->updateManager($dir, $parent);
             $this->askerUserDirectoryService->updateReader($dir,$parent);
         }

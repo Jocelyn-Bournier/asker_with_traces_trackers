@@ -359,7 +359,6 @@ class ExerciseModelService extends SharedEntityService implements ExerciseModelS
     )
     {
 		$this->exerciseResourceService->setForcedImport($this->getForcedImport());
-		dump($this->getForcedImport() . "resource". $this->exerciseResourceService->getForcedImport());
         if ($modelResource->getContent() != null) {
             // required resources
             $modelResource = $this->computeRequiredResourcesFromResource(

@@ -73,7 +73,6 @@ class ExerciseModelController extends BaseController
                     $exerciseModelId,
                     $this->getUserId()
                 );
-            //die(var_dump($exerciseModelResource));
             return new ApiGotResponse($exerciseModelResource, array("details", 'Default'));
 
         } catch (NonExistingObjectException $neoe) {

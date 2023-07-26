@@ -94,13 +94,11 @@ class OrderItemsService extends ExerciseCreationService
                 $learnerAnswersId[$ans] = $item->getObjects()[$ans]->getOriginResource();
             }
         }
-        #die(var_dump($learnerAnswers));
 
         $item->setAnswers($learnerAnswers);
 
         // check the answers
         $sol = $item->getSolutions();
-        #die(var_dump($learnerAnswers) . var_dump($sol));
 
         //echo json_encode($sol);
 
