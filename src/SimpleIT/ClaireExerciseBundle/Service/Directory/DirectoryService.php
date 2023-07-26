@@ -151,7 +151,10 @@ class DirectoryService extends TransactionalService
             if($entity->getFrameworkId() !== null){
 
                 $adminController = new AdminController();
-                $adminController->createGroup($resource->getFrameworkId(), $resource->getId(), $resource->getName());
+				/* createGroup est un appel au service depuis le controller
+				 * => un peu la flemme mettre la suite au propre addComperTouser devrait tre dans un autre service
+				*/
+                //$adminController->createGroup($resource->getFrameworkId(), $resource->getId(), $resource->getName());
 
                 $userIds = $this->getIdUsers($entity, null);
 
@@ -165,8 +168,10 @@ class DirectoryService extends TransactionalService
         }
         return $userCreated;
     }
+	/*
+	 * remove RC 26/07/2023
 
-    public function createGroup($resource){
+    //public function createGroup($resource){
         $entity = $this->find($resource->getId());
         $groupCreated = false;
         if (!$entity->getParent()) {
@@ -179,6 +184,7 @@ class DirectoryService extends TransactionalService
         }
         return false;
     }
+	*/
 
     public function listUsers($resource){
         $entity = $this->find($resource->getId());

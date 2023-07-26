@@ -354,22 +354,10 @@ class DirectoryController extends BaseController
             );
             $directoryResource = DirectoryFactory::create($directory, false, 0);
 
-            $fwid = $directoryResource->getFrameworkId();
-            if ($fwid != null){
-                $jwtEncoder = $this->get('app.jwtService');
-                $timestamp  = new \DateTime();
-                $timestamp  = $timestamp->getTimestamp()+3000;
-                $payload    = [
-                    "fwid"     => intval($fwid),
-                    "platform" => 'asker',
-                    "platformGroupId" => 'asker:group-'.$directoryId.'-'.$fwid,
-                    "groupName" => 'Asker, dossier '.$directoryId.', framework '.$fwid
-                ];
-
-                $token = $jwtEncoder->getToken($payload);
-
-                $profileService = $this->container->get('app.profileService');
-                $profileService->createGroup($token);
+            if ($directoryResource->getFrameworkId()){
+                $this->container->get('app.profileService')->createGroupPayload(
+					$directory
+				);
             }
 
             return new ApiEditedResponse($directoryResource);
@@ -590,6 +578,7 @@ class DirectoryController extends BaseController
     public function activateComperAction($directoryId)
     {
         $dir = $this->get('simple_it.exercise.directory')->find($directoryId);
+		$this->container->get('app.profileService')->createGroupPayload($dir);
         $usersCreated = $this->get('simple_it.exercise.directory')->activateComper($dir);
         return new JsonResponse(array('usersCreated' => $usersCreated));
     }
@@ -606,8 +595,10 @@ class DirectoryController extends BaseController
      */
     public function createGroupAction($directoryId)
     {
-        $dir = $this->get('simple_it.exercise.directory')->find($directoryId);
-        $groupCreated = $this->get('simple_it.exercise.directory')->createGroup($dir);
+        $groupCreated = false;
+		$groupCreated = $this->container->get('app.profileService')->createGroupPayload(
+			$this->get('simple_it.exercise.directory')->find($directoryId)
+		);
         return new JsonResponse(array('groupCreated' => $groupCreated));
     }
 
