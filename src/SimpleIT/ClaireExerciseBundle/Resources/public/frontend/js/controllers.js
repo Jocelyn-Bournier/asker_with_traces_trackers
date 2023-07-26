@@ -58,13 +58,13 @@ mainAppControllers.controller('mainManagerController', ['$scope', '$sce', '$rout
             archived: false, // select archived resources or not (boolean)
             public: false, // select public resources or not (boolean)
             type: { // resources types to be selected
-              multiple_choice_question: 'multiple-choice-question',
-              text_with_holes: 'text-with-holes',
+              picture: 'picture',
               document: 'document',
               text: 'text',
-              order: 'order',
-              picture: 'picture',
+              multiple_choice_question: 'multiple-choice-question',
               open_ended_question: 'open-ended-question',
+              order: 'order',
+              text_with_holes: 'text-with-holes',
               sequence: ''
             },
             keywords: [], // list of keywords that a resource must have to be selected
@@ -75,18 +75,17 @@ mainAppControllers.controller('mainManagerController', ['$scope', '$sce', '$rout
             archived: false, // select archived resources or not (boolean)
             public: false, // select public resources or not (boolean)
             type: { // resources types to be selected
-              multiple_choice_question: 'multiple-choice-question',
-              text_with_holes: 'text-with-holes',
-              document: 'document',
-              text: 'text',
-              order: 'order',
-              picture: 'picture',
+              pair_items: "pair-items",
+              order_items: "order-items",
+              group_items: "group-items",
+              multiple_choice: 'multiple-choice',
               open_ended_question: 'open-ended-question',
-              sequence: ''
+              text_with_holes: 'text-with-holes'
             },
             keywords: [], // list of keywords that a resource must have to be selected
             metadata: [] // list of metadata objects that a resource must have to be selected
         };
+        console.log($scope.filters.model);
 
         if (typeof $rootScope.models === 'undefined') {
             $rootScope.models = null;
