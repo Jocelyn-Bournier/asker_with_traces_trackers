@@ -312,29 +312,43 @@ class DirectoryService extends TransactionalService
         //$this->em->flush($entity);
     }
 
-	public function cloneModels($userId, $newDirectory, $clonedDirectory)
+
+	public function generateModelsToClone(&$models, $user, $directory)
 	{
-		foreach($clonedDirectory->getModels() as $m){
-			$model = $this->exerciseModelService->import(
-				$userId,
-				$m,
-			);
-			$newDirectory->addModel($model);
+		foreach($directory->getModels() as $m){
+			if (!isset($models[$m->getId()])){
+				$models[$m->getId()] = $this->exerciseModelService->import(
+					$user->getId(),
+					$m
+				);
+			}
 		}
-
 	}
-
+	public function getRequiredModels($user, $directory)
+	{
+		$models = array();
+		$this->generateModelsToClone($models, $user, $directory);
+		foreach($directory->getSubs() as $sub){
+			$this->generateModelsToClone($models, $user, $sub);
+		}
+		return $models;
+	}
 	public function clone($user, $directory)
 	{
 		$newDirectory = $this->create($user, 0);
 		$newDirectory->setName("Import - " .$directory->getName());
 		$this->exerciseModelService->setForcedImport(true);
-		$this->cloneModels($user->getId(), $newDirectory, $directory);
+		$models = $this->getRequiredModels($user, $directory);
+		foreach($directory->getModels() as $m){
+			$newDirectory->addModel($models[$m->getId()]);
+		}
 		foreach($directory->getSubs() as $sub){
 			$subDirectory = $this->create($user, 0);
 			$subDirectory->setParent($newDirectory);
 			$subDirectory->setName($sub->getName());
-			$this->cloneModels($user->getId(), $subDirectory, $directory);
+			foreach($sub->getModels() as $m){
+				$subDirectory->addModel($models[$m->getId()]);
+			}
 		}
         $this->em->flush();
 		$this->exerciseModelService->setForcedImport(0);
