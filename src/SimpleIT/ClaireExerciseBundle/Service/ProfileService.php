@@ -17,6 +17,7 @@
  */
 
 namespace SimpleIT\ClaireExerciseBundle\Service;
+use SimpleIT\ClaireExerciseBundle\Entity\Directory;
 
 /**
  * Service which manages profiles
@@ -30,13 +31,15 @@ class ProfileService
     private $profileCreateEndpoint;
     private $groupCreateEndpoint;
     private $teacherManagerEndpoint;
+	private $jwtService;
 
-    function __construct($profileEndpoint, $profileCreateEndpoint, $groupCreateEndpoint, $teacherManagerEndpoint)
+    function __construct($profileEndpoint, $profileCreateEndpoint, $groupCreateEndpoint, $teacherManagerEndpoint, $jwtService)
     {
         $this->profileEndpoint = $profileEndpoint;
         $this->profileCreateEndpoint = $profileCreateEndpoint;
         $this->groupCreateEndpoint = $groupCreateEndpoint;
         $this->teacherManagerEndpoint = $teacherManagerEndpoint;
+        $this->jwtService = $jwtService;
     }
 
     /**
@@ -146,9 +149,48 @@ class ProfileService
         curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
 
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+
+		// debug curl php
+		//curl_setopt($curl, CURLOPT_VERBOSE, true);
+		//$streamVerboseHandle = fopen('/tmp/debugcurl', 'w+');
+		//curl_setopt($curl, CURLOPT_STDERR, $streamVerboseHandle);
+		//  fin debug
         return curl_exec($curl);
 
     }
+
+	// il se peut $directory soit parfois une ressource
+	public function createGroupPayload( Directory $directory)
+	{
+		if (!$directory->getParent()){
+			if ($directory->getFrameworkId() !== null){
+				$timestamp  = new \DateTime();
+				$timestamp  = $timestamp->getTimestamp()+3000;
+				$payload    = [
+				    "fwid"     => intval($directory->getFrameworkId()),
+				    "groupName" => 'Asker : '.$directory->getName(),
+				    "platform" => 'asker',
+				    "platformGroupId" => 'asker:group-'.$directory->getId().'-'.$directory->getFrameworkId(),
+					"students" => $this->userConverter($directory->getStudents()),
+					"teachers" => $this->userConverter($directory->getTeachers())
+				];
+				return $this->createGroup( $this->jwtService->getToken($payload));
+			}
+		}
+		return false;
+
+	}
+	public function userConverter($users)
+	{
+		$json = array();
+		foreach($users as $user){
+			 $u = new \stdClass();
+			 $u->username = $user->getUsername();
+			 $json[] = $u;
+		}
+		return $json;
+	}
 
     /**
      * Add the profile as a teacher for a repository in the profile engine.

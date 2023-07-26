@@ -147,6 +147,32 @@ class Directory
         }
         return $managers;
     }
+	public function getTeachers(){
+		$teachers = [];
+        foreach($this->getUsers() as $user){
+			if (
+				$user->getIsManager()
+				|| $user->getUser()->getId()  === $this->getOwner()->getId()
+			){
+				$teachers[] = $user->getUser();
+			}
+		}
+		return $teachers;
+	}
+
+	public function getStudents(){
+		$students = [];
+        foreach($this->getUsers() as $user){
+			if (
+				!$user->getIsManager()
+				&& $user->getUser()->getId()  !== $this->getOwner()->getId()
+				&& !$user->getIsReader()
+			){
+				$students[] = $user->getUser();
+			}
+		}
+		return $students;
+	}
     public function getReaders()
     {
         $readers = [];
@@ -209,6 +235,7 @@ class Directory
         }
         return false;
     }
+
 
     /**
      * Get models.

@@ -291,7 +291,8 @@ class AdminController extends BaseController
         }
     }
 
-    public function createGroup($frameworkId, $directoryId, $directoryName){
+	/* remove duplicated code -  RC 26/07/2023
+    //public function createGroup($frameworkId, $directoryId, $directoryName){
         $jwtEncoder = $this->get('app.jwtService');
         $timestamp  = new \DateTime();
         $timestamp  = $timestamp->getTimestamp()+3000;
@@ -308,6 +309,7 @@ class AdminController extends BaseController
         $groupCreated = $profileService->createGroup($token);
         return $groupCreated;
     }
+	 */
 
     public function addComperToUser($frameworkId, $userId, $role = "learner", $directoryId = null){
         $jwtEncoder = $this->get('app.jwtService');
