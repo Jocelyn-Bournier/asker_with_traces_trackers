@@ -27,4 +27,5 @@ http://*YOUR_IP*/asker/web/app_dev.php
 #generate release version  
 bash new_assets_release.sh
 
-
+# debug oracle:
+docker exec -it  asker_deploy_app_1 php web/oracle.php
