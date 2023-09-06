@@ -196,6 +196,7 @@ class UserService extends TransactionalService implements UserServiceInterface
                         $aud->setDirectory($directory);
                         $aud->setUser($check);
                         $aud->setIsManager(0);
+                        $aud->setIsReader(0);
                         $check->addDirectory($aud);
                         try{
                             $this->em->persist($aud);

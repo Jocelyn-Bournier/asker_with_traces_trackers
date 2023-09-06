@@ -187,6 +187,7 @@ class AskerUserDirectoryService extends TransactionalService
         $aud= new AskerUserDirectory();
         $aud->setUser($user);
         $aud->setIsManager(false);
+        $aud->setIsReader(false);
         $aud->setDirectory($directory);
         $this->updateForUser($user);
         $this->em->persist($aud);

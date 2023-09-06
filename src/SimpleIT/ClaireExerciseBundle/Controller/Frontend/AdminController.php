@@ -142,6 +142,7 @@ class AdminController extends BaseController
                     $user->addRole($roleUser);
                     $dirUser->setUser($user);
                     $dirUser->setIsManager(false);
+                    $dirUser->setIsReader(false);
                     $dirUser->setDirectory($dir);
                     $em->persist($dirUser);
                     if($dir->getFrameworkId() !== null){
