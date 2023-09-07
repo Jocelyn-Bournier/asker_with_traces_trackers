@@ -1,0 +1,21 @@
+imports:
+    - { resource: comper_secrets.yml }
+parameters:
+    comper_lrs_endpoint: 134.214.142.4:8080/trax/ws/xapi/statements
+    comper_jwt_key_path: jwtRS256.key
+    comper_api_url: https://comper.projet.liris.cnrs.fr/sites/profile-engine/api/
+    comper_profile_endpoint: https://comper.projet.liris.cnrs.fr/sites/profile-engine/api/profile/to-olm/index.php
+    comper_profile_create_endpoint: https://comper.projet.liris.cnrs.fr/sites/profile-engine/api/profile/create/index.php
+    comper_group_create_endpoint: https://comper.projet.liris.cnrs.fr/sites/profile-engine/api/group/create/index.php
+    comper_teacher_manager_endpoint: https://comper.projet.liris.cnrs.fr/sites/profile-engine/api/profile/addTeacher/index.php
+services:
+    app.jwtService:
+        class:     SimpleIT\ClaireExerciseBundle\Service\JwtService
+        arguments: ['%comper_jwt_key_path%', '%kernel.root_dir%']
+    app.statementFactoryService:
+        class:     SimpleIT\ClaireExerciseBundle\Service\StatementFactoryService
+        arguments: ['%comper_lrs_endpoint%', '%comper_lrs_creds%']
+    app.profileService:
+        class: SimpleIT\ClaireExerciseBundle\Service\ProfileService
+        arguments: ['%comper_profile_endpoint%', '%comper_profile_create_endpoint%', '%comper_group_create_endpoint%', '%comper_teacher_manager_endpoint%', '@app.jwtService']
+
