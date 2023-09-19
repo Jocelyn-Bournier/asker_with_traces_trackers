@@ -188,10 +188,10 @@ class ProfileService
 			$u = new \stdClass();
 			if ($type == "student"){
 				$u->user = "asker:$user->getId()";
-				$u->username = $user->getUsername();
 				$u->forename = $user->getFirstName();
+				$u->name = $user->getLastName();
 			}
-			$u->name = $user->getLastName();
+			$u->username = $user->getUsername();
 			$json[] = $u;
 		}
 		return $json;
