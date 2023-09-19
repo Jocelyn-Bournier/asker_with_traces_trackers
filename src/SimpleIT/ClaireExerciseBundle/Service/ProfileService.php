@@ -172,8 +172,8 @@ class ProfileService
 				    "groupName" => 'Asker : '.$directory->getName(),
 				    "platform" => 'asker',
 				    "platformGroupId" => 'asker:group-'.$directory->getId().'-'.$directory->getFrameworkId(),
-					"students" => $this->userConverter($directory->getStudents()),
-					"teachers" => $this->userConverter($directory->getTeachers())
+					"students" => $this->userConverter($directory->getStudents(), "student"),
+					"teachers" => $this->userConverter($directory->getTeachers(), "teacher")
 				];
 				return $this->createGroup( $this->jwtService->getToken($payload));
 			}
@@ -181,13 +181,18 @@ class ProfileService
 		return false;
 
 	}
-	public function userConverter($users)
+	public function userConverter($users, $type)
 	{
 		$json = array();
 		foreach($users as $user){
-			 $u = new \stdClass();
-			 $u->username = $user->getUsername();
-			 $json[] = $u;
+			$u = new \stdClass();
+			if ($type == "student"){
+				$u->user = "asker:$user->getId()";
+				$u->username = $user->getUsername();
+				$u->forename = $user->getFirstName();
+			}
+			$u->name = $user->getLastName();
+			$json[] = $u;
 		}
 		return $json;
 	}
