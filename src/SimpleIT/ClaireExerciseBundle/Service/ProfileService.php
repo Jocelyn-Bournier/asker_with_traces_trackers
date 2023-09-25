@@ -187,7 +187,7 @@ class ProfileService
 		foreach($users as $user){
 			$u = new \stdClass();
 			if ($type == "student"){
-				$u->user = "asker:$user->getId()";
+				$u->user = "asker:{$user->getId()}";
 				$u->username = $user->getUsername();
 				$u->forename = $user->getFirstName();
 			}
