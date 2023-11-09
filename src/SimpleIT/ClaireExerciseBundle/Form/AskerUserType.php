@@ -53,7 +53,6 @@ class AskerUserType extends AbstractType
                 array(
                     'label' => 'Compte actif',
                     'required' => false,
-					'disabled' => true,
                 )
             )
             ->add('isLdap', CheckboxType::class,
