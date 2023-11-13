@@ -220,7 +220,7 @@ class UserService extends TransactionalService implements UserServiceInterface
     }
     public function validUserFormat($username){
         # care if we want to allow to create LDAP teacher prenom.nom
-        $reg = array("/^(p|[0-9])[0-9]{7}$/","/ext_[a-zA-Z]{1,}\.[a-zA-Z]{1,};[^;]{6,}/");
+        $reg = array("/^(p|[0-9])[0-9]{7}$/","/ext_[a-zA-Z0-9]{1,}\.[a-zA-Z0-9]{1,};[^;]{6,}/");
         $datas = array();
         if (preg_match("/^(p|[0-9])[0-9]{7}$/", $username)){
             $datas['state'] = "student";
