@@ -343,6 +343,7 @@ class DirectoryService extends TransactionalService
 	{
 		$newDirectory = $this->create($user, 0);
 		$newDirectory->setName("Import - " .$directory->getName());
+		$newDirectory->setFrameworkId($directory->getFrameworkId());
 		$this->exerciseModelService->setForcedImport(true);
 		$models = $this->getRequiredModels($user, $directory);
 		foreach($directory->getModels() as $m){
