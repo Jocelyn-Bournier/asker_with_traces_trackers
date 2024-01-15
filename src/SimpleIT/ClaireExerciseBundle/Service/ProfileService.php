@@ -186,10 +186,16 @@ class ProfileService
 		$json = array();
 		foreach($users as $user){
 			$u = new \stdClass();
-			if ($type == "student"){
-				$u->user = "asker:{$user->getId()}";
-				$u->forename = $user->getFirstName();
-				$u->name = $user->getLastName();
+			switch ($type) {
+				case 'student':
+					$u->user = "asker:{$user->getId()}";
+					$u->forename = $user->getFirstName();
+					$u->name = $user->getLastName();
+					break;
+				case 'teacher':
+					$u->role = 'teacher_editor';
+					break;
+				default:
 			}
 			$u->username = $user->getUsername();
 			$json[] = $u;
