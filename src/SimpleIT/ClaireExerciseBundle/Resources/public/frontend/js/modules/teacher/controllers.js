@@ -641,7 +641,7 @@ resourceControllers.controller('resourceListController', ['$scope', '$state', 'R
                 });
             } else if (type == 'multiple-choice-question') {
                 Resource.save($scope.resourceContext.newResources.multiple_choice_question, function (data) {
-                    $scope.resources[data.id] = data;modelRemoveOrderResource
+                    $scope.resources[data.id] = data;
                     if ($scope.parentSection === 'model') {
                         $state.go('modelEdit.resourceEdit', {resourceid: data.id});
                     } else {
