@@ -253,6 +253,7 @@ class DirectoryController extends BaseController
      * @throws ApiBadRequestException
      * @return ApiGotResponse
      */
+
     #dead code i guess 27/11/2019
     #public function newInDirectoryAction(
     #    CollectionInformation $collectionInformation,
@@ -265,6 +266,7 @@ class DirectoryController extends BaseController
 
     #    return new ApiGotResponse($directories, array('list', 'Default'));
     #}
+
     /**
      * Delete a directory
      *
