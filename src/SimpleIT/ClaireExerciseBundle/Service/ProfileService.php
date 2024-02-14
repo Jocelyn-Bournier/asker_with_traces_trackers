@@ -163,8 +163,8 @@ class ProfileService
 	// il se peut $directory soit parfois une ressource
 	public function createGroupPayload( Directory $directory)
 	{
-		if (!$directory->getParent()){
-			if ($directory->getFrameworkId() !== null){
+		if (!$directory->getParent()) {
+			if ($directory->getFrameworkId() !== null) {
 				$timestamp  = new \DateTime();
 				$timestamp  = $timestamp->getTimestamp()+3000;
 				$payload    = [
@@ -173,7 +173,7 @@ class ProfileService
 				    "platform" => 'asker',
 				    "platformGroupId" => 'asker:group-'.$directory->getId().'-'.$directory->getFrameworkId(),
 					"students" => $this->userConverter($directory->getStudents(), "student"),
-					"teachers" => $this->userConverter($directory->getTeachers(), "teacher")
+                    "teachers" => $this->userConverter(array_merge($directory->getTeachers(), $directory->getReaders()), "teacher"),
 				];
 				return $this->createGroup( $this->jwtService->getToken($payload));
 			}
@@ -188,16 +188,21 @@ class ProfileService
 			$u = new \stdClass();
 			switch ($type) {
 				case 'student':
-					$u->user = "asker:{$user->getId()}";
-					$u->forename = $user->getFirstName();
-					$u->name = $user->getLastName();
+					$u->user = "asker:{$user->getUser()->getId()}";
+					$u->forename = $user->getUser()->getFirstName();
+					$u->name = $user->getUser()->getLastName();
 					break;
 				case 'teacher':
-					$u->role = 'teacher_editor';
+                    if ($user->getIsReader()){
+                        $u->role = 'teacher_viewer';
+                    }else{
+					    $u->role = 'teacher_editor';
+                    }
 					break;
 				default:
+                    break;
 			}
-			$u->username = $user->getUsername();
+			$u->username = $user->getUser()->getUsername();
 			$json[] = $u;
 		}
 		return $json;
