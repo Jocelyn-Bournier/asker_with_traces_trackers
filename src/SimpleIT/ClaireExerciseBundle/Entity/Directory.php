@@ -147,6 +147,7 @@ class Directory
         }
         return $managers;
     }
+    // this function return  an array of aud
 	public function getTeachers(){
 		$teachers = [];
         foreach($this->getUsers() as $user){
@@ -154,12 +155,24 @@ class Directory
 				$user->getIsManager()
 				|| $user->getUser()->getId()  === $this->getOwner()->getId()
 			){
-				$teachers[] = $user->getUser();
+				$teachers[] = $user;
 			}
 		}
 		return $teachers;
 	}
+    // this function return  an array of aud
+    public function getReaders()
+    {
+        $readers = [];
+        foreach($this->getUsers() as $user){
+			if ($user->getIsReader()){
+				$readers[] = $user;
+			}
+        }
+        return $readers;
+    }
 
+    // this function return  an array of aud
 	public function getStudents(){
 		$students = [];
         foreach($this->getUsers() as $user){
@@ -168,29 +181,11 @@ class Directory
 				&& $user->getUser()->getId()  !== $this->getOwner()->getId()
 				&& !$user->getIsReader()
 			){
-				$students[] = $user->getUser();
+				$students[] = $user;
 			}
 		}
 		return $students;
 	}
-    public function getReaders()
-    {
-        $readers = [];
-        foreach($this->getUsers() as $user){
-			if ($user->getIsReader()){
-				$readers[] = $user;
-			}
-            //if ($user->getUser()->getId()  !== $this->getOwner()->getId()){
-            //    foreach($user->getUser()->getRoles() as $role){
-            //        if ($role->getName() == "ROLE_WS_CREATOR"){
-            //            $readers[] = $user;
-            //            break;
-            //        }
-            //    }
-            //}
-        }
-        return $readers;
-    }
 
     public function realUsers()
     {
