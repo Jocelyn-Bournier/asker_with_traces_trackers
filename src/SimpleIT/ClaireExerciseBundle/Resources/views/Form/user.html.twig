@@ -72,9 +72,9 @@
                        de changer son statut de propriétaire">
                 </span>
               </th>
-              <th>Propriétaire</th>
-              <th>Responsable</th>
-              <th>Enseignant</th>
+              <th title="créateur du dossier - non modifiable">Propriétaire</th>
+              <th title="Peut modifier le dossier">Responsable</th>
+              <th title="Peut lire et importer le dossier">Enseignant</th>
               <th>Action</th>
             </thead>
             <tbody id="tabbody" data-prototype="{{ form_widget(form.directories.vars.prototype)|e('html_attr') }}">
