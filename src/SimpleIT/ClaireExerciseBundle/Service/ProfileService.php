@@ -181,6 +181,10 @@ class ProfileService
 		return false;
 
 	}
+
+    /*
+     * @return a json array containing a COMPER's user struct
+     */
 	public function userConverter($users, $type)
 	{
 		$json = array();
