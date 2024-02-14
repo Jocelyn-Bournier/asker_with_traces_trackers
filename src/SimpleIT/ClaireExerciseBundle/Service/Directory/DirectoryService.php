@@ -377,6 +377,10 @@ class DirectoryService extends TransactionalService
         $this->em->persist($dir);
         if ($directory != 0){
 			$parent = $this->directoryRepository->find($directory);
+            if ($parent->getFrameworkId() !== null) {
+                $dir->setFrameworkId($parent->getFrameworkId());
+            }
+
             $dir->setParent($parent);
             $this->askerUserDirectoryService->updateManager($dir, $parent);
             $this->askerUserDirectoryService->updateReader($dir,$parent);
