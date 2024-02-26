@@ -299,18 +299,47 @@ class DirectoryController extends BaseController
         }
     }
 
-	public function cloneAction(Directory $directory)
-	{
+    /**
+     * Duplicate a directory
+     *
+     * @param Directory $directory
+     *
+     * @throws ApiBadRequestException
+     * @throws ApiNotFoundException
+     * @return ApiResponse
+     */
+    public function duplicateAction(Directory $directory)
+    {
 		$user = $this->getUser();
-        if (!$directory->hasReader($user)
-            && !$directory->hasManager($user)
-        ){
+        if ($directory->getOwner()->getId() !== $user->getId()){
             throw new AccessDeniedException();
         }
         try {
-			$new = $this->get('simple_it.exercise.directory')->clone(
+			$new = $this->get('simple_it.exercise.directory')->duplicate(
                 $this->getUser(),
-                $directory
+                $directory,
+                true
+            );
+
+            $directoryResource = DirectoryFactory::create($new, false, 0);
+            return new ApiCreatedResponse($directoryResource, array("details", 'Default'));
+
+        } catch (NonExistingObjectException $neoe) {
+            throw new ApiNotFoundException(ResourceResource::RESOURCE_NAME);
+        }
+    }
+	public function cloneAction(Directory $directory)
+	{
+		$user = $this->getUser();
+        // reader or owner cannot clone. Owner has to use duplicateAction
+        if ($directory->hasReader($user) || $directory->getOwner()->getId() ==$user->getId() ){
+            throw new AccessDeniedException();
+        }
+        try {
+			$new = $this->get('simple_it.exercise.directory')->duplicate(
+                $this->getUser(),
+                $directory,
+                false
 			);
 			// maybe send a better
             $directoryResource = DirectoryFactory::create($new, false, 0);

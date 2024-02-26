@@ -22,6 +22,16 @@ directoryControllers.controller('directoryListController', ['$scope', 'MyDirecto
             }
 
         });
+        $scope.duplicateDirectory = function(directory_id){
+            MyDirectory.duplicate({id:directory_id}, function (d){
+              // on requete tous les directories de nouveau => juster ajouter la réponse en TODO
+              MyDirectory.query(function (datas) {
+                  for(var i = 0; i < datas.length; i++){
+                      $scope.directories[datas[i].id] = datas[i];
+                  }
+              });
+            })
+        };
         $scope.cloneDirectory = function(directory_id){
             MyDirectory.clone({id:directory_id}, function (d){
               MyDirectory.query(function (datas) {
