@@ -339,22 +339,33 @@ class DirectoryService extends TransactionalService
 		}
 		return $models;
 	}
-	public function clone($user, $directory)
+    /*
+     * $user => Askeruser
+     * $directory => Directory
+     * $isOwner if owner => duplicate else import
+     */
+	public function duplicate($user, $directory, $isOwner)
 	{
+        $action = "Duplicat - ";
+        if (!$isOwner){
+            //$action = "Import - ";
+		    $this->exerciseModelService->setForcedImport(true);
+		    $models = $this->getRequiredModels($user, $directory);
+        }
 		$newDirectory = $this->create($user, 0);
-		$newDirectory->setName("Import - " .$directory->getName());
+		$newDirectory->setName($action .$directory->getName());
 		$newDirectory->setFrameworkId($directory->getFrameworkId());
-		$this->exerciseModelService->setForcedImport(true);
-		$models = $this->getRequiredModels($user, $directory);
+        $newDirectory->setIsVisible($directory->getIsVisible());
 		foreach($directory->getModels() as $m){
-			$newDirectory->addModel($models[$m->getId()]);
+			$newDirectory->addModel($m);
 		}
 		foreach($directory->getSubs() as $sub){
 			$subDirectory = $this->create($user, 0);
 			$subDirectory->setParent($newDirectory);
+            $subDirectory->setIsVisible($sub->getIsVisible());
 			$subDirectory->setName($sub->getName());
 			foreach($sub->getModels() as $m){
-				$subDirectory->addModel($models[$m->getId()]);
+				$subDirectory->addModel($m);
 			}
 		}
         $this->em->flush();

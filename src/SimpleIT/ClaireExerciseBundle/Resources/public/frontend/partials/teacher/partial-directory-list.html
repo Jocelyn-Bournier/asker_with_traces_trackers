@@ -56,9 +56,16 @@
                   : 'Ce dossier est invisible.'}}">
                   </span>
                   <span
+                    ng-if="directory.owner_id === BASE_CONFIG.currentUserId"
+                    style="color: #31708f;"
+                    class="glyphicon glyphicon-duplicate"
+                    ng-click="$event.stopPropagation();duplicateDirectory(directory.id)"
+                    title="Dupliquer ce dossier">
+                  </span>
+                  <span
                     ng-if="directory.owner_id !== BASE_CONFIG.currentUserId"
                     style="color: #31708f;"
-                    class="glyphicon glyphicon-log-in"
+                    class="glyphicon glyphicon-import"
                     ng-click="$event.stopPropagation();cloneDirectory(directory.id)"
                     title="Importer ce dossier">
                   </span>

@@ -77,6 +77,13 @@ api_directory_clone:
     methods: [POST]
     requirements:
         _format: json
+api_directory_duplicate:
+    path:  /{directory}/duplicate
+    defaults: { _controller: SimpleITClaireExerciseBundle:Api/Directory/Directory:duplicate }
+    methods: [POST]
+    requirements:
+        _format: json
+        resourceId: \d+
 
 api_directory_jwt:
     path: /jwt/{frameworkId}/{role}

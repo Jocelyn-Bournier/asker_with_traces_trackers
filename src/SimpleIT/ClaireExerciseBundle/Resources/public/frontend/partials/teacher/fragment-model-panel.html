@@ -67,12 +67,12 @@
                             <span
                                 ng-if="model.owner == BASE_CONFIG.currentUserId"
                                 ng-click="$event.stopPropagation();duplicateModel(model)"
-                                class="glyphicon glyphicon-plus"
+                                class="glyphicon glyphicon-duplicate"
                                 title="Dupliquer ce modèle : créer un nouveau modèle identique à celui-ci."></span>
                             <span
                                 ng-if="model.owner !== BASE_CONFIG.currentUserId"
                                 ng-click="$event.stopPropagation();importModel(model)"
-                                class="glyphicon glyphicon-log-in"
+                                class="glyphicon glyphicon-import"
                                 title="Importer ce modèle : créer un nouveau modèle identique à celui-ci et dont vous êtes le propriétaire. Cette opération importe automatiquement les ressources publiques associées à ce modèle."></span>
                             <span
                                 ng-if="model.owner !== BASE_CONFIG.currentUserId"

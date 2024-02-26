@@ -51,12 +51,12 @@
                     <span
                         ng-if="resource.owner == BASE_CONFIG.currentUserId && resourcePanelContext == 'list' && !isSelectResource"
                         ng-click="$event.stopPropagation();duplicateResource(resource)"
-                        class="glyphicon glyphicon-plus"
+                        class="glyphicon glyphicon-duplicate"
                         title="Dupliquer cette ressource : créer une nouvelle ressource identique à celle-ci."></span>
                     <span
                         ng-if="resource.owner !== BASE_CONFIG.currentUserId && resourcePanelContext == 'list' && !isSelectResource"
                         ng-click="$event.stopPropagation();importResource(resource)"
-                        class="glyphicon glyphicon-log-in"
+                        class="glyphicon glyphicon-import"
                         title="Importer cette ressource : créer une nouvelle ressource identique à celle-ci et dont vous êtes le propriétaire."></span>
                     <span
                         ng-if="resource.owner !== BASE_CONFIG.currentUserId && resourcePanelContext == 'list' && !isSelectResource"
