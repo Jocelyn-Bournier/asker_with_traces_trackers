@@ -116,7 +116,7 @@
     </div>
 
     <div ng-switch-when="text-with-holes" id="twh">
-        <div ng-include src="BASE_CONFIG.urls.partials.teacher+'/partial-annoted-text-editor.html'"></div>
+      <div ng-include src="BASE_CONFIG.urls.partials.teacher+'/partial-annoted-text-editor.html?v='+ buildVersion"></div>
     </div>
 
     <div ng-switch-when="picture">
@@ -252,7 +252,7 @@
                 </div>
                 <br>
                 <div ng-init="parentBlock = editedResource.content.block; level=1;"
-                ng-include="BASE_CONFIG.urls.partials.teacher+'/fragment-resource-order-block.html'">
+                     ng-include="BASE_CONFIG.urls.partials.teacher+'/fragment-resource-order-block.html?v='+buildVersion">
                 </div>
             </div>
         </div>
@@ -548,7 +548,7 @@
                                close-others="true">
                         <accordion-group class="panel"
                                          data-ng-class="{'panel-success': resource.parent == null, 'panel-resource-subscribe': resource.parent != null, 'archived': resource.archived}">
-                            <div ng-include src="BASE_CONFIG.urls.partials.teacher+'/fragment-resource-panel.html'"></div>
+                            <div ng-include src="BASE_CONFIG.urls.partials.teacher+'/fragment-resource-panel.html?v='+buildVersion"></div>
                         </accordion-group>
                     </accordion>
                 </div>
@@ -571,7 +571,7 @@
                            close-others="true">
                     <accordion-group class="panel"
                                      data-ng-class="{'panel-success': resource.parent == null, 'panel-resource-subscribe': resource.parent != null, 'archived': resource.archived}">
-                        <div ng-include src="BASE_CONFIG.urls.partials.teacher+'/fragment-resource-panel.html'"></div>
+                      <div ng-include src="BASE_CONFIG.urls.partials.teacher+'/fragment-resource-panel.html?v='+buildVersion"></div>
                     </accordion-group>
                 </accordion>
             </div>

@@ -6,7 +6,7 @@ attemptControllers.controller('attemptController', ['$scope', '$state', 'Attempt
         $scope.imageUrl = BASE_CONFIG.urls.images.uploads;
         $scope.documentUrl = BASE_CONFIG.urls.documents.uploads;
         $scope.imageExoUrl = BASE_CONFIG.urls.images.exercise;
-        $scope.navBarUrl = BASE_CONFIG.urls.partials.learner + '/fragment-nav-bar.html';
+        $scope.navBarUrl = BASE_CONFIG.urls.partials.learner + '/fragment-nav-bar.html?v='+buildVersion;
 
         $scope.validable = false;
 
@@ -217,7 +217,7 @@ itemControllers.controller('orderItemsController', ['$scope', 'Answer', '$routeP
             $scope.item['content']['mark'] = item['content']['mark'];
         };
 
-        $timeout(function(){ 
+        $timeout(function(){
                 //$scope.item['content'].objects.splice($scope.item.content.give_first, 1);
             $("#toSortable").sortable({
                 receive: function( event, ui ) {

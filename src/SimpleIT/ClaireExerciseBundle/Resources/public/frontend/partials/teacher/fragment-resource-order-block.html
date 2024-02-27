@@ -32,7 +32,7 @@
                                         <span data-ng-click="removePosition(parentBlock, itemIndex, $index)"
                                         class="glyphicon glyphicon-remove"></span>
                                     </span>&nbsp;
-                                    <select ng-model="value" ng-options="x for x in generateNumbers(parentBlock.items.length)" 
+                                    <select ng-model="value" ng-options="x for x in generateNumbers(parentBlock.items.length)"
                                         style="width:auto">
                                     </select>
                                     <span data-ng-click="parentBlock.positions[itemIndex].push(value)"
@@ -53,7 +53,7 @@
                                         <div ng-switch-when="fixe">
                                            <strong>à la position </strong>
                                            <select ng-model="constraint.values[0]" ng-options="x for x in generateNumbers(parentBlock.items.length)">
-                                           </select> 
+                                           </select>
                                         </div>
                                         <div ng-switch-default>
                                             <strong>le numéro </strong>
@@ -82,7 +82,7 @@
                                     data-ng-click="$event.stopPropagation(); addConstraint(parent,itemIndex)"
                                     class="glyphicon glyphicon-plus"></span>
                                 <strong data-ng-click="removeFromBlock(parent, itemIndex)">Supprimer</strong>
-                                <span 
+                                <span
                                     data-ng-click="removeFromBlock(parent, itemIndex)"
                                     class="glyphicon glyphicon-remove">
                                 </span>
@@ -97,7 +97,7 @@
                                         <span data-ng-click="$event.stopPropagation();removePosition(parent, itemIndex, $index)"
                                         class="glyphicon glyphicon-remove"></span>
                                     </span>&nbsp;
-                                    <select ng-model="value" ng-options="x for x in generateNumbers(parent.items.length)" 
+                                    <select ng-model="value" ng-options="x for x in generateNumbers(parent.items.length)"
                                         style="width:auto" data-ng-click="$event.stopPropagation();">
                                     </select>
                                     <span data-ng-click="$event.stopPropagation();parent.positions[itemIndex].push(value)"
@@ -120,7 +120,7 @@
                                            <strong>à la position </strong>
                                            <select ng-model="constraint.values[0]" data-ng-click="$event.stopPropagation();"
                                            ng-options="x for x in generateNumbers(parent.items.length)">
-                                           </select> 
+                                           </select>
                                         </div>
                                         <div ng-switch-default>
                                             <strong>le numéro </strong>
@@ -149,7 +149,7 @@
                         </div>
                     </accordion-heading>
                 <div ng-init="parent=parentBlock; parentBlock = item.block; level=level+1;"
-                    ng-include="BASE_CONFIG.urls.partials.teacher+'/fragment-resource-order-block.html'">
+                    ng-include="BASE_CONFIG.urls.partials.teacher+'/fragment-resource-order-block.html?v='+buildVersion">
                 </div>
                 </accordion-group>
             </div>

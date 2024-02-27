@@ -360,7 +360,7 @@
     ng-class="{'col-xs-7': !$parent.toggleResourceList, 'hide': $parent.toggleResourceList}">
       <div ui-view>
         <div
-        data-ng-include="BASE_CONFIG.urls.partials.teacher+'/partial-model-list.html'">
+        data-ng-include="BASE_CONFIG.urls.partials.teacher+'/partial-model-list.html?v='+buildVersion">
       </div>
     </div>
   </div>

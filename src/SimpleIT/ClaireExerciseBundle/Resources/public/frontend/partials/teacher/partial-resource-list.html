@@ -193,7 +193,7 @@
             <accordion-group class="panel"
                              ng-repeat="resource in resources | filter:filters.search | myFilters:filters"
                              data-ng-class="{'panel-success': resource.parent == null, 'panel-resource-subscribe': resource.parent != null, 'archived': resource.archived}">
-                <div ng-include src="BASE_CONFIG.urls.partials.teacher+'/fragment-resource-panel.html'"></div>
+                <div ng-include src="BASE_CONFIG.urls.partials.teacher+'/fragment-resource-panel.html?v='+buildVersion"></div>
             </accordion-group>
         </accordion>
     </div>

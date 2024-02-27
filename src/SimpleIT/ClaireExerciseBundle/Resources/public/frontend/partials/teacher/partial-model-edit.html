@@ -130,7 +130,7 @@
                                     </h4>
                                 </div>
                                 <div class="col-xs-1">
-    
+
                                 </div>
                                 <div class="col-xs-1">
                                                 <span data-ng-click="$event.stopPropagation();modelRemoveField(model.content.documents, $index)"
@@ -192,7 +192,7 @@
             </div>
         </accordion-group>
     </accordion>
-    
+
     <accordion>
         <accordion-group class="panel panel-primary" is-open="true">
             <accordion-heading class="panel-heading">
@@ -205,40 +205,40 @@
             <textarea class="form-control" rows="5" placeholder="Consigne de l'exercice" ng-model="model.content.wording"></textarea>
         </accordion-group>
     </accordion>
-    
+
     <div ng-switch="model.type">
         <div ng-switch-when="pair-items">
             <div ng-include
-                 src="BASE_CONFIG.urls.partials.teacher+'/partial-model-edit-pair-items.html'"
+                 src="BASE_CONFIG.urls.partials.teacher+'/partial-model-edit-pair-items.html?v='+buildVersion"
                  data-ng-controller="modelEditPairItemsController"></div>
         </div>
         <div ng-switch-when="order-items">
             <div ng-include
-                 src="BASE_CONFIG.urls.partials.teacher+'/partial-model-edit-order-items.html'"
+                 src="BASE_CONFIG.urls.partials.teacher+'/partial-model-edit-order-items.html?v='+ buildVersion"
                  data-ng-controller="modelEditOrderItemsController"></div>
         </div>
         <div ng-switch-when="multiple-choice">
             <div ng-include
-                 src="BASE_CONFIG.urls.partials.teacher+'/partial-model-edit-multiple-choice.html'"
+                 src="BASE_CONFIG.urls.partials.teacher+'/partial-model-edit-multiple-choice.html?v='+buildVersion"
                  data-ng-controller="modelEditMultipleChoiceController"></div>
         </div>
         <div ng-switch-when="group-items">
             <div ng-include
-                 src="BASE_CONFIG.urls.partials.teacher+'/partial-model-edit-group-items.html'"
+                 src="BASE_CONFIG.urls.partials.teacher+'/partial-model-edit-group-items.html?v='+buildVersion"
                  data-ng-controller="modelEditGroupItemsController"></div>
         </div>
         <div ng-switch-when="open-ended-question">
             <div ng-include
-                 src="BASE_CONFIG.urls.partials.teacher+'/partial-model-edit-open-ended-question.html'"
+                 src="BASE_CONFIG.urls.partials.teacher+'/partial-model-edit-open-ended-question.html?v='+buildVersion"
                  data-ng-controller="modelEditOpenEndedQuestionController"></div>
         </div>
         <div ng-switch-when="text-with-holes">
             <div ng-include
-                 src="BASE_CONFIG.urls.partials.teacher+'/partial-model-edit-text-with-holes.html'"
+                 src="BASE_CONFIG.urls.partials.teacher+'/partial-model-edit-text-with-holes.html?v='+buildVersion"
                  data-ng-controller="modelEditOrderItemsController"></div>
         </div>
     </div>
-    
+
     <div class="panel panel-primary">
         <div class="panel-heading">
             Mots-clés
@@ -264,7 +264,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="panel panel-primary">
         <div class="panel-heading">
             Métadonnées
@@ -327,7 +327,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="navbar">
         <button back-Button class="btn btn-primary"
                 title="Retour à l'écran précédent. Toute modification non sauvegardée sera perdue.">Retour
@@ -368,31 +368,31 @@
             Supprimer
         </button>
     </div>
-    
+
     </div>
     </div>
-    
+
     <script>
         $(function () {
             var window_height = $(window).height(),
                 content_height = window_height - 190; // 484
-    
+
             $('.scrollContainer').height(content_height);
         });
-    
+
         $(window).resize(function () {
             var window_height = $(window).height(),
                 content_height = window_height - 190;
             $('.scrollContainer').height(content_height);
         });
     </script>
-    
+
     <div class="scrollContainer"
          ng-class="{'col-xs-7': !$parent.toggleResourceList, 'hide': $parent.toggleResourceList}">
         <div ui-view>
-            <div data-ng-include="BASE_CONFIG.urls.partials.teacher+'/partial-resource-list.html'"></div>
+          <div data-ng-include="BASE_CONFIG.urls.partials.teacher+'/partial-resource-list.html?v='+buildVersion"></div>
         </div>
     </div>
-  
+
   </div>
 </div>

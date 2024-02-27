@@ -163,7 +163,7 @@
     <accordion-group class="panel"
                      ng-repeat="model in models | filter:filters.model.search | myFilters:filters.model"
                      data-ng-class="{'panel-primary': model.parent == null, 'panel-model-subscribe': model.parent != null, 'archived': model.archived}">
-                <div ng-include src="BASE_CONFIG.urls.partials.teacher+'/fragment-model-panel.html'"></div>
+      <div ng-include src="BASE_CONFIG.urls.partials.teacher+'/fragment-model-panel.html?v='+buildVersion"></div>
     </accordion-group>
 </accordion>
 </div>

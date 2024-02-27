@@ -23,7 +23,7 @@
                 </div>
             </div>
         </accordion-heading>
-        <div ng-include src="BASE_CONFIG.urls.partials.teacher+'/fragment-resources-in-block.html'"></div>
+        <div ng-include src="BASE_CONFIG.urls.partials.teacher+'/fragment-resources-in-block.html?v='+buildVersion"></div>
     </accordion-group>
 
     <div class="panel panel-primary">
@@ -77,7 +77,7 @@
                                 class="glyphicon glyphicon-remove"></span>
                         </div><br>
                         <input type="text" ng-model="group.name" class="form-control"/>
-                        <div data-ng-include="BASE_CONFIG.urls.partials.teacher+'/fragment-constraint-list.html'"></div>
+                        <div data-ng-include="BASE_CONFIG.urls.partials.teacher+'/fragment-constraint-list.html?v='+buildVersion"></div>
                     </div>
                     <div data-ng-if="group.build_groups">
                         <label>Groupe automatique</label>

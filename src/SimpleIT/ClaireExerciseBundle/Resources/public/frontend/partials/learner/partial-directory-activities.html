@@ -4,7 +4,7 @@
         <accordion>
             <accordion-group
                     class="panel panel-default">
-                <div ng-include="BASE_CONFIG.urls.partials.learner+'/fragment-accordion-models.html'">
+                <div ng-include="BASE_CONFIG.urls.partials.learner+'/fragment-accordion-models.html?v='+buildVersion">
                 </div>
             </accordion-group>
         </accordion>
@@ -12,7 +12,7 @@
     <!-- every models if no attempts in directory -->
     <div ng-if="model.has_attempts == 0 && directory.visible_exercise[$index]" >
         <div class="margin-fix">
-            <div ng-include="BASE_CONFIG.urls.partials.learner+'/fragment-models.html'">
+            <div ng-include="BASE_CONFIG.urls.partials.learner+'/fragment-models.html?v='+buildVersion">
             </div>
         </div>
     </div>
@@ -43,7 +43,7 @@
                 <accordion>
                     <accordion-group
                             class="panel panel-default">
-                        <div ng-include="BASE_CONFIG.urls.partials.learner+'/fragment-accordion-models.html'">
+                        <div ng-include="BASE_CONFIG.urls.partials.learner+'/fragment-accordion-models.html?v='+buildVersion">
                         </div>
                     </accordion-group>
                 </accordion>
@@ -51,7 +51,7 @@
             <div ng-if="model.has_attempts == 0 && sub.visible_exercise[$index]">
 
                 <div class="margin-fix">
-                    <div ng-include="BASE_CONFIG.urls.partials.learner+'/fragment-models.html'">
+                    <div ng-include="BASE_CONFIG.urls.partials.learner+'/fragment-models.html?v='+buildVersion">
                     </div>
                 </div>
             </div>

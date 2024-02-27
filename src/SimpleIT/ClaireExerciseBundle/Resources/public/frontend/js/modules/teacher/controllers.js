@@ -494,7 +494,7 @@ resourceControllers.controller('resourceController', ['$scope', '$modal',
 
         $scope.viewResource = function (resource) {
             $modal.open({
-                templateUrl: BASE_CONFIG.urls.partials.teacher + '/partial-resource-preview.html',
+                templateUrl: BASE_CONFIG.urls.partials.teacher + '/partial-resource-preview.html?v='+buildVersion,
                 controller: 'resourceViewController',
                 size: 'lg',
                 resolve: {
@@ -1248,7 +1248,7 @@ resourceControllers.controller('resourceEditController', ['$scope', '$modal', 'R
 
         $scope.openSelectResource = function () {
             var modalInstance = $modal.open({
-                templateUrl: BASE_CONFIG.urls.partials.teacher + '/partial-resource-list.html',
+                templateUrl: BASE_CONFIG.urls.partials.teacher + '/partial-resource-list.html?v='+buildVersion,
                 controller: 'resourceSelectListController',
                 size: 'lg',
                 resolve: {
