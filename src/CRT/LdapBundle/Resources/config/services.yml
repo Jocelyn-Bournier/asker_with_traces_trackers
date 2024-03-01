@@ -17,13 +17,6 @@ services:
             - "%ldap_server.baseGroup%"
             - "%ldap_server.groupFilter%"
             - "%ldap_server.roleAttributs%"
-    ldap_user_provider:
-        class: "%ldap_user_provider.class%"
-        arguments:
-            - "@ldap_server"
-            - "@doctrine.orm.entity_manager"
-            - "@simple_it.exercise.asker_user_directory"
-            - "@monolog.logger.ldap"
     ldap.security.check.provider:
         class: CRT\LdapBundle\Security\Authentication\LdapAuthenticationProvider
         arguments:
@@ -34,3 +27,11 @@ services:
             - "%security.authentication.hide_user_not_found%"
             - "@ldap_server"
             - "@doctrine.orm.entity_manager"
+    ldap_user_provider:
+        class: "%ldap_user_provider.class%"
+        arguments:
+            - "@ldap_server"
+            - "@doctrine.orm.entity_manager"
+            - "@simple_it.exercise.asker_user_directory"
+            - "@monolog.logger.ldap"
+            - "%ref_password%"
