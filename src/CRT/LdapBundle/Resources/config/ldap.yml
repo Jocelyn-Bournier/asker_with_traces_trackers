@@ -5,7 +5,7 @@ parameters:
     ldap_server.port: "636"
     #ldap_server.address: "ldap://dsi-dc-ordi-4.univ-lyon1.fr"
     #ldap_server.port: "389"
-    ldap_server.bindUser: "cn=svc_asker_prod,ou=users,ou=d64,ou=sim,ou=univ-lyon1,dc=univ-lyon1,dc=fr"
+    ldap_server.bindUser: "cn=svc_asker_prod,ou=services,ou=users,ou=d64,ou=sim,ou=univ-lyon1,dc=univ-lyon1,dc=fr"
     ldap_server.baseUser: "dc=univ-lyon1,dc=fr"
     ldap_server.userFilter: "(sAMAccountName=!_username_!)"
     ldap_server.roleMethod: 1
