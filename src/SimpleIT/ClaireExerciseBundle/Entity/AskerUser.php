@@ -272,7 +272,7 @@ class AskerUser implements UserInterface
 
     public function removeRole( Role $role)
     {
-        $this->role->removeElement($role);
+        $this->roles->removeElement($role);
     }
     /**
      * Set roles.
@@ -302,7 +302,7 @@ class AskerUser implements UserInterface
 
     public function removePedagogic( Pedagogic $pedagogic)
     {
-        $this->pedagogic->removeElement($pedagogic);
+        $this->pedagogics->removeElement($pedagogic);
     }
 
     /**
