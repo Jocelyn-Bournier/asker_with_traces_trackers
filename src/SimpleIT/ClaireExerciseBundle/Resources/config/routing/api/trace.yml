@@ -1,0 +1,5 @@
+api_save_trace:
+    path: /save
+    methods: [POST]
+    defaults:
+        _controller: SimpleITClaireExerciseBundle:Api/Trace:saveTrace

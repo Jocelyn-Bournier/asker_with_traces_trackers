@@ -3,14 +3,12 @@
 namespace SimpleIT\ClaireExerciseBundle\Controller\Api;
 
 use SimpleIT\ClaireExerciseBundle\Service\TraceService;
+use SimpleIT\ClaireExerciseBundle\Controller\BaseController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Exception\InsufficientAuthenticationException;
 
-#[Route('/api/trace')]
-class TraceController extends AbstractController
+class TraceController extends BaseController
 {
     private TraceService $traceService;
 
@@ -20,27 +18,11 @@ class TraceController extends AbstractController
     }
 
     /**
-     * Get the current user's id
-     *
-     * @throws InsufficientAuthenticationException
-     * @return int
-     */
-    protected function getUserId()
-    {
-        if ($this->get('security.authorization_checker')->isGranted('ROLE_USER')) {
-            return $this->get('security.token_storage')->getToken()->getUser()->getId();
-        } else {
-            throw new InsufficientAuthenticationException();
-        }
-    }
-
-    #[Route('/save', methods: ['POST'])]
-    /**
      * Save a trace
      * @param Request $request
      * @return JsonResponse
     **/
-    public function saveTrace(Request $request): JsonResponse
+    public function saveTraceAction(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 

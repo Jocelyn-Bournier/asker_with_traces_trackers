@@ -55,6 +55,9 @@ api_profile:
     resource: "@SimpleITClaireExerciseBundle/Resources/config/routing/api/profile.yml"
     prefix:   /api/profile/
 
+api_trace:
+    resource: "@SimpleITClaireExerciseBundle/Resources/config/routing/api/trace.yml"
+    prefix:   /api/trace
 
 frontend:
     resource: "@SimpleITClaireExerciseBundle/Resources/config/routing/frontend/frontend.yml"

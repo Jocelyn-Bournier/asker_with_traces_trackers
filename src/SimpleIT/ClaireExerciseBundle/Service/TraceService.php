@@ -2,8 +2,8 @@
 
 namespace SimpleIT\ClaireExerciseBundle\Service;
 
-use SimpleIT\ClaireExerciseBundle\Entity\Trace;
 use Doctrine\ORM\EntityManagerInterface;
+use SimpleIT\ClaireExerciseBundle\Entity\Trace;
 
 class TraceService
 {
