@@ -144,14 +144,16 @@ mainAppControllers.controller('mainManagerController', ['$scope', '$sce', '$rout
             return $sce.trustAsHtml(html_code);
         }
 
+
+
         // initial loading
         $scope.BASE_CONFIG = BASE_CONFIG;
         $scope.loadResourcesAndUsers();
         //$scope.loadModelsAndUsers();
     }]);
 
-mainAppControllers.controller('mainUserController', ['$scope', '$sce', '$routeParams', '$location', 'BASE_CONFIG', 'User',
-    function ($scope, $sce, $routeParams, $location, BASE_CONFIG, User) {
+mainAppControllers.controller('mainUserController', ['$scope', '$sce', '$routeParams', '$location', '$http', 'BASE_CONFIG', 'User',
+    function ($scope, $sce, $routeParams, $location, $http, BASE_CONFIG, User) {
         // load only once every necessary user
         $scope.loadUsers = function (resourcesData) {
             if (typeof $scope.users === 'undefined') {
@@ -181,6 +183,22 @@ mainAppControllers.controller('mainUserController', ['$scope', '$sce', '$routePa
         $scope.to_trusted = function(html_code) {
             return $sce.trustAsHtml(html_code);
         }
+
+        // used to save students actions in the database 
+        $scope.saveTrace = function (actionType, content, context) {
+            $http.post('/api/trace/save', {
+                user_id: 1,
+                type: actionType,
+                dd: new Date().toISOString(),
+                df: new Date().toISOString(),
+                content: content,
+                context: context
+            }).then(function (response) {
+                console.log("Trace envoyée avec succès", response.data);
+            }).catch(function (error) {
+                console.error("Erreur lors de l'envoi du trace", error);
+            });
+        };
 
         $scope.BASE_CONFIG = BASE_CONFIG;
         $location.path($location.path());

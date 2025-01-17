@@ -795,6 +795,12 @@ learnerControllers.controller('learnerController', ['$scope', 'User', 'AttemptBy
                 function (exercise) {
                     $scope.tryExercise(exercise);
                 });
+
+            //save trace
+            actionType = "generateExercise";
+            content = {"test":"try model"};
+            context = {"test":"learner"};
+            $scope.saveTrace(actionType, content, context);
         };
 
     }]);

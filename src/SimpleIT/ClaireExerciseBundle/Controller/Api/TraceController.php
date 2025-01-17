@@ -4,24 +4,36 @@ namespace SimpleIT\ClaireExerciseBundle\Controller\Api;
 
 use SimpleIT\ClaireExerciseBundle\Service\TraceService;
 use SimpleIT\ClaireExerciseBundle\Controller\BaseController;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\InsufficientAuthenticationException;
 
-class TraceController extends BaseController
+/*
+class TraceController extends AbstractController
 {
-    private TraceService $traceService;
-
-    public function __construct(TraceService $traceService)
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     * 
+     **//*
+    public function saveTraceAction(Request $request): JsonResponse
     {
-        $this->traceService = $traceService;
+        return new JsonResponse(['message' => 'Test OK'], 200);
     }
+}
+*/
+
+class TraceController extends AbstractController
+{
 
     /**
      * Save a trace
      * @param Request $request
      * @return JsonResponse
     **/
+
     public function saveTraceAction(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -37,7 +49,9 @@ class TraceController extends BaseController
         $content = $data['content'];
         $context = $data['context'];
 
-        $trace = $this->traceService->saveTrace($user_id, $type, $dd, $df, $content, $context);
+        $trace_serv = new TraceService($this->getDoctrine()->getManager());
+
+        $trace = $trace_serv->saveTrace($user_id, $type, $dd, $df, $content, $context);
 
         return new JsonResponse($trace->getInteractionId(), 201);
     }

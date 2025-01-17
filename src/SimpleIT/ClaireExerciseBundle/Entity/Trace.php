@@ -4,33 +4,49 @@ namespace SimpleIT\ClaireExerciseBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity]
-#[ORM\Table(name: 'interaction_traces')]
-
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="interaction_traces")
+ */
 class Trace
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    private ?int $interaction_id = null;
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    private $interaction_id;
 
-    #[ORM\Column(type: 'integer')]
-    private int $user_id;
 
-    #[ORM\Column(type: 'string', length: 128)]
-    private string $type;
-    
-    #[ORM\Column(type: 'datetime')]
-    private \DateTime $dd;
-    
-    #[ORM\Column(type: 'datetime')]
-    private \DateTime $df;
-    
-    #[ORM\Column(type: 'json')]
-    private array $content;
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $user_id;
 
-    #[ORM\Column(type: 'json')]
-    private array $context;
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $type;
+    
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $dd;
+    
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $df;
+    
+    /**
+     * @ORM\Column(type="json")
+     */
+    private $content;
+
+    /**
+     * @ORM\Column(type="json")
+     */
+    private $context;
 
     public function __construct(int $user_id, string $type, \DateTime $dd, \DateTime $df, array $content, array $context)
     {
