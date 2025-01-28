@@ -248,7 +248,7 @@ itemControllers.controller('pairItemsController', ['$scope', 'Answer', '$routePa
                 {actionType: "place_element_pairing", 
                  dd:$scope.pairingDD, 
                  df:new Date().toISOString(), 
-                 content: JSON.stringify({"elt_proposition" : destID, "elt_response" : responseElement, "src_pairing" : src, "dest_pairing" : dest, "nb_responses" : $scope.item['content'].fix_parts.length}), 
+                 content: JSON.stringify({"elt_proposition" : destID, "elt_response" : responseElement, "src_pairing" : src, "dest_pairing" : dest, "nb_responses" : $scope.item['content'].fix_parts.length, "is_correct": -1}), 
                  context : JSON.stringify({"exercise_item_id":$scope.item.item_id})});
             }
         };
@@ -277,7 +277,7 @@ itemControllers.controller('pairItemsController', ['$scope', 'Answer', '$routePa
                 {actionType: "place_element_pairing", 
                  dd:$scope.pairingDD, 
                  df:new Date().toISOString(), 
-                 content: JSON.stringify({"elt_proposition" : destID, "elt_response" : responseElement, "src_pairing" : src, "dest_pairing" : dest, "nb_responses" : $scope.item['content'].fix_parts.length}), 
+                 content: JSON.stringify({"elt_proposition" : destID, "elt_response" : responseElement, "src_pairing" : src, "dest_pairing" : dest, "nb_responses" : $scope.item['content'].fix_parts.length, "is_correct": -1}), 
                  context : JSON.stringify({"exercise_itemID":$scope.item.item_id})});
             }
         };
@@ -664,7 +664,7 @@ itemControllers.controller('multipleChoiceController', ['$scope', 'Answer', '$ro
             $scope.inExerciseTraces.push(
                 {actionType: "select_answer_qcm", 
                  dd:date, df:date, 
-                 content: JSON.stringify({"position":index+1, "nb_positions": $scope.tick.length, "is_checked":isChecked}), 
+                 content: JSON.stringify({"elt": element, "position": index+1, "nb_propositions": $scope.tick.length, "is_checked": isChecked, "is_correct": -1}), 
                  context: JSON.stringify({"exercise_item_id":$scope.item.item_id})});
         };
 
@@ -835,7 +835,7 @@ itemControllers.controller('groupItemsController', ['$scope', 'Answer', '$routeP
             $scope.inExerciseTraces.push(
                 {actionType: "place_element_grouping", 
                  dd:$scope.groupingDD, df:new Date().toISOString(), 
-                 content: JSON.stringify({"elt" : item.origin_resource, "src" : src, "dest" : dest, "nb_groups" : $scope.groups.length}), 
+                 content: JSON.stringify({"elt" : item.origin_resource, "src" : src, "dest" : dest, "nb_groups" : $scope.groups.length, "is_correct": -1}), 
                  context: JSON.stringify({"exercise_item_id":$scope.item.item_id})});
         };
 
