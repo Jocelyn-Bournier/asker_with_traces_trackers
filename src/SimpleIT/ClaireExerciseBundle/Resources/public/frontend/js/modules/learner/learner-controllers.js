@@ -74,14 +74,13 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
          * @param tab L'onglet à ouvrir'
          */
         $scope._selectTab = function (tab) {
-            console.log($scope.directory);
             /*
                 save trace
             */
-            actionType = "select_tab";
-            content = JSON.stringify({"tab_name" : tab});
-            context = JSON.stringify({});
-            date = new Date().toISOString();
+            let actionType = "select_tab";
+            let content = JSON.stringify({"tab_name" : tab});
+            let context = JSON.stringify({"exercise_item_id":-1, "nb_steps":-1, "curr_step":-1});
+            let date = new Date().toISOString();
             $scope.saveTrace(actionType, content, context, date, date);
             /*
                  save trace
@@ -817,26 +816,26 @@ learnerControllers.controller('learnerController', ['$scope', 'User', 'AttemptBy
         };
         
         $scope.saveTraceDirectory = function (dir) {
-            actionType = "select_directory";
-            content = JSON.stringify({"directory_name": dir.name});
-            context = JSON.stringify({});
-            date = new Date().toISOString();
+            let actionType = "select_directory";
+            let content = JSON.stringify({"directory_name": dir.name});
+            let context = JSON.stringify({"exercise_item_id":-1, "nb_steps":-1, "curr_step":-1});
+            let date = new Date().toISOString();
             $scope.saveTrace(actionType, content, context, date, date);
         }
         
         $scope.saveTraceClass = function (dir) {
-            actionType = "select_class";
-            content = JSON.stringify({"class_name": dir.name});
-            context = JSON.stringify({});
-            date = new Date().toISOString();
+            let actionType = "select_class";
+            let content = JSON.stringify({"class_name": dir.name});
+            let context = JSON.stringify({"exercise_item_id":-1, "nb_steps":-1, "curr_step":-1});
+            let date = new Date().toISOString();
             $scope.saveTrace(actionType, content, context, date, date);
         }
 
         $scope.saveTraceGenerateExercise = function (model) {
-            actionType = "generate_exercise";
-            content = JSON.stringify({"from" : "directory"});
-            context = JSON.stringify({});
-            date = new Date().toISOString();
+            let actionType = "generate_exercise";
+            let content = JSON.stringify({"from" : "directory"});
+            let context = JSON.stringify({"exercise_item_id":-1, "nb_steps":-1, "curr_step":-1});
+            let date = new Date().toISOString();
             $scope.saveTrace(actionType, content, context, date, date);
         }
         

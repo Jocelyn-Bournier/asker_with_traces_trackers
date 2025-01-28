@@ -237,6 +237,9 @@ itemControllers.controller('pairItemsController', ['$scope', 'Answer', '$routePa
                     }
                 }
             }
+
+            let nbSteps = $scope.items.length;
+            let currStep = $scope.items.indexOf($scope.item) + 1;
             
             let responseElement = -1;
             if (dest != 0) {
@@ -249,7 +252,7 @@ itemControllers.controller('pairItemsController', ['$scope', 'Answer', '$routePa
                  dd:$scope.pairingDD, 
                  df:new Date().toISOString(), 
                  content: JSON.stringify({"elt_proposition" : destID, "elt_response" : responseElement, "src_pairing" : src, "dest_pairing" : dest, "nb_responses" : $scope.item['content'].fix_parts.length, "is_correct": -1}), 
-                 context : JSON.stringify({"exercise_item_id":$scope.item.item_id})});
+                 context : JSON.stringify({"exercise_item_id":$scope.item.item_id, "nb_steps":nbSteps, "curr_step":currStep})});
             }
         };
 
@@ -266,6 +269,9 @@ itemControllers.controller('pairItemsController', ['$scope', 'Answer', '$routePa
                     }
                 }
             }
+
+            let nbSteps = $scope.items.length;
+            let currStep = $scope.items.indexOf($scope.item) + 1;
             
             let responseElement = -1;
             if (dest != 0) {
@@ -278,7 +284,7 @@ itemControllers.controller('pairItemsController', ['$scope', 'Answer', '$routePa
                  dd:$scope.pairingDD, 
                  df:new Date().toISOString(), 
                  content: JSON.stringify({"elt_proposition" : destID, "elt_response" : responseElement, "src_pairing" : src, "dest_pairing" : dest, "nb_responses" : $scope.item['content'].fix_parts.length, "is_correct": -1}), 
-                 context : JSON.stringify({"exercise_itemID":$scope.item.item_id})});
+                 context : JSON.stringify({"exercise_item_id":$scope.item.item_id, "nb_steps":nbSteps, "curr_step":currStep})});
             }
         };
 
@@ -658,6 +664,12 @@ itemControllers.controller('multipleChoiceController', ['$scope', 'Answer', '$ro
             if (!$scope.item.corrected) {
                 $scope.tick[index] = !$scope.tick[index];
             }
+            $scope.saveTickAction();
+        };
+
+        $scope.saveTickAction = function () {
+            let nbSteps = $scope.items.length;
+            let currStep = $scope.items.indexOf($scope.item) + 1;
             let isChecked = $scope.tick[index];
             let element = $scope.item['content'].propositions[index];
             let date = new Date().toISOString();
@@ -665,7 +677,7 @@ itemControllers.controller('multipleChoiceController', ['$scope', 'Answer', '$ro
                 {actionType: "select_answer_qcm", 
                  dd:date, df:date, 
                  content: JSON.stringify({"elt": element, "position": index+1, "nb_propositions": $scope.tick.length, "is_checked": isChecked, "is_correct": -1}), 
-                 context: JSON.stringify({"exercise_item_id":$scope.item.item_id})});
+                 context: JSON.stringify({"exercise_item_id":$scope.item.item_id, "nb_steps":nbSteps, "curr_step":currStep})});
         };
 
         // init answer array
@@ -831,12 +843,15 @@ itemControllers.controller('groupItemsController', ['$scope', 'Answer', '$routeP
             if (src == dest){
                 return;
             }
+
+            let nbSteps = $scope.items.length;
+            let currStep = $scope.items.indexOf($scope.item) + 1;
             
             $scope.inExerciseTraces.push(
                 {actionType: "place_element_grouping", 
                  dd:$scope.groupingDD, df:new Date().toISOString(), 
                  content: JSON.stringify({"elt" : item.origin_resource, "src" : src, "dest" : dest, "nb_groups" : $scope.groups.length, "is_correct": -1}), 
-                 context: JSON.stringify({"exercise_item_id":$scope.item.item_id})});
+                 context: JSON.stringify({"exercise_item_id":$scope.item.item_id, "nb_steps":nbSteps, "curr_step":currStep})});
         };
 
         // drag and drop
