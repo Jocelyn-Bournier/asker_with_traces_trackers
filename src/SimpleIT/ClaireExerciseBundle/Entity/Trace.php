@@ -15,13 +15,13 @@ class Trace
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $interaction_id;
+    private $interactionId;
 
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $user_id;
+    private $userId;
 
     /**
      * @ORM\Column(type="string")
@@ -39,18 +39,18 @@ class Trace
     private $df;
     
     /**
-     * @ORM\Column(type="json")
+     * @ORM\Column(type="text")
      */
     private $content;
 
     /**
-     * @ORM\Column(type="json")
+     * @ORM\Column(type="text")
      */
     private $context;
 
-    public function __construct(int $user_id, string $type, \DateTime $dd, \DateTime $df, array $content, array $context)
+    public function __construct(int $user_id, string $type, \DateTime $dd, \DateTime $df, string $content, string $context)
     {
-        $this->user_id = $user_id;
+        $this->userId = $user_id;
         $this->type = $type;
         $this->dd = $dd;
         $this->df = $df;
@@ -60,12 +60,12 @@ class Trace
 
     public function getInteractionId(): ?int
     {
-        return $this->interaction_id;
+        return $this->interactionId;
     }
 
     public function getUserId(): int
     {
-        return $this->user_id;
+        return $this->userId;
     }
 
     public function getType(): string
@@ -83,12 +83,12 @@ class Trace
         return $this->df;
     }
 
-    public function getContent(): array
+    public function getContent(): string
     {
         return $this->content;
     }
     
-    public function getContext(): array
+    public function getContext(): string
     {
         return $this->context;
     }
@@ -96,8 +96,8 @@ class Trace
     public function __toArray(): array
     {
         return [
-            'interaction_id' => $this->interaction_id,
-            'user_id' => $this->user_id,
+            'interaction_id' => $this->interactionId,
+            'user_id' => $this->userId,
             'type' => $this->type,
             'dd' => $this->dd,
             'df' => $this->df,
@@ -108,7 +108,7 @@ class Trace
 
     public function setUserId(int $user_id): void
     {
-        $this->user_id = $user_id;
+        $this->userId = $user_id;
     }
     
     public function setType(string $type): void
@@ -126,19 +126,19 @@ class Trace
         $this->df = $df;
     }
 
-    public function setContent(array $content): void
+    public function setContent(string $content): void
     {
         $this->content = $content;
     }
 
-    public function setContext(array $context): void
+    public function setContext(string $context): void
     {
         $this->context = $context;
     }
 
     public function setInteractionId(int $interaction_id): void
     {
-        $this->interaction_id = $interaction_id;
+        $this->interactionId = $interaction_id;
     }
 
     public function __toString(): string

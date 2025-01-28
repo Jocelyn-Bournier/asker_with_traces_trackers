@@ -1,10 +1,10 @@
 <div class="navbar navbar-fixed-bottom navbar-inverse">
     <div class="col-xs-5">
-        <button back-Button class="btn btn-primary"
+        <button back-Button class="btn btn-primary" ng-click="saveTraceReturn()"
             title="Retour à la page précédente. Toute progression non sauvegardée sera perdue.">Retour</button>
-        <button ng-hide="!validable" ng-click="saveAnswer()" class="btn btn-primary" id='validable'
+        <button ng-hide="!validable" ng-click="saveTraceValidate();saveAnswer()" class="btn btn-primary" id='validable'
             title="Envoyer la réponse et obtenir la correction">Valider</button>
-        <button ng-click="tryModel(exercise.exercise_model)" class="btn btn-primary"
+        <button ng-click="saveTraceTryAgain();tryModel(exercise.exercise_model)" class="btn btn-primary"
                 title="Nouvelle tentative pour cet exercice">
             <span class="glyphicon glyphicon-repeat"></span>
         </button>
@@ -13,7 +13,7 @@
     <div class="col-xs-7">
         <button ng-if="items.length > 1"
                 ng-repeat="it in items track by $index"
-                ng-click="gotoItem($index)" class="btn"
+                ng-click="saveTraceStep($index);gotoItem($index)" class="btn"
                 data-ng-class="{'btn-primary': !it.corrected, 'btn-active': it.item_id == item.item_id}"
             title="Accéder à la partie {{ $index + 1 }} de l'exercice">
             {{ $index + 1 }}

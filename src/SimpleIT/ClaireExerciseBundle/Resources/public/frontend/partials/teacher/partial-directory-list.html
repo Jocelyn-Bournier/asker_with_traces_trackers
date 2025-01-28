@@ -32,14 +32,14 @@
                     <span class="glyphicon  glyphicon-cloud-upload"></span>
                   </button>
                   <form ng-if="directory.frameworkId != null && directory.frameworkId != '' && test" id="comper-profile-explorer"
-                        action="https://comper.projet.liris.cnrs.fr/sites/profile-engine/test/"
+                        action="https://compervm-dev.liris.cnrs.fr/cpe/"
                         target="_blank"
                         method="post"  style="display:none;">
                     <input type="hidden" id="comper-jwt-input" name="token" />
                   </form>
 
                   <form ng-if="directory.frameworkId != null && directory.frameworkId != '' && !test" id="comper-profile-explorer"
-                        action="https://comper.projet.liris.cnrs.fr/sites/profile-engine/"
+                        action="https://compervm-dev.liris.cnrs.fr/cpe/"
                         target="_blank"
                         method="post"  style="display:none;">
                     <input type="hidden" id="comper-jwt-input" name="token" />

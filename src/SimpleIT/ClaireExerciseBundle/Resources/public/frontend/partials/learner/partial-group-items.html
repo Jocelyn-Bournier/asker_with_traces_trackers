@@ -20,7 +20,8 @@
                   ng-if="!item.corrected" style="margin: 6px"
                   ng-repeat="object in item.content.objects track by $index"
                   ui-draggable="true" drag="object"
-                  on-drop-success="dropSuccessHandler($event,$index,item.content.objects)"
+                  ng-mousedown="saveDragGrouping()"
+                  on-drop-success="dropSuccessHandler($event,$index,item.content.objects);saveDropGrouping(object,'fromPanel')"
                 >
                 <div ng-if="object.object_type == 'text'"
                       class="etiquette txt-etiquette">
@@ -81,7 +82,8 @@
                     <div ng-if="!item.corrected"
                           ng-repeat="object in group.objects track by $index"
                           ui-draggable="true" drag="object"
-                          on-drop-success="dropSuccessHandler($event,$index,group.objects)"
+                          ng-mousedown="saveDragGrouping()"
+                          on-drop-success="setDropGroupingSrc(object);dropSuccessHandler($event,$index,group.objects);saveDropGrouping(object,'fromResponse')"
                           title="Déposez les objets ici">
                         <div ng-if="object.object_type == 'text'"
                               class="etiquette txt-etiquette">

@@ -48,18 +48,21 @@ class ProfileService
      * @param string $token the profile to edit
      */
     public function setRole($token){
-        $header = array();
-        $header[] = 'Content-Type: application/json';
-        $header[] = 'Response-Type: application/json';
-        $header[] = 'Comper-origin: asker';
-        $header[] = 'Authorization: Bearer '.$token;
-
         $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $this->teacherManagerEndpoint);
-        curl_setopt($curl, CURLOPT_PUT, true);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
-
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $this->teacherManagerEndpoint,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'PUT',
+            CURLOPT_HTTPHEADER => array(
+                'Authorization: Bearer '.$token,
+                'Accept: application/json'
+            ),
+        ));
         return curl_exec($curl);
     }
 
@@ -70,18 +73,21 @@ class ProfileService
      */
     public function requestProfile($token)
     {
-        $header = array();
-        $header[] = 'Content-Type: application/json';
-        $header[] = 'Response-Type: application/json';
-        $header[] = 'Comper-origin: asker';
-        $header[] = 'Authorization: Bearer '.$token;
-
         $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $this->profileEndpoint);
-        curl_setopt($curl, CURLOPT_POST, false);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
-
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $this->profileEndpoint,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+            CURLOPT_HTTPHEADER => array(
+                'Authorization: Bearer '.$token,
+                'Accept: application/json'
+            ),
+        ));
         return curl_exec($curl);
     }
 
@@ -92,18 +98,21 @@ class ProfileService
      */
     public function updateProfile($token)
     {
-        $header = array();
-        $header[] = 'Content-Type: application/json';
-        $header[] = 'Response-Type: application/json';
-        $header[] = 'Comper-origin: asker';
-        $header[] = 'Authorization: Bearer '.$token;
-
         $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $this->profileEndpoint.'?update=true');
-        curl_setopt($curl, CURLOPT_POST, false);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
-
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $this->profileEndpoint.'?update=true',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+            CURLOPT_HTTPHEADER => array(
+                'Authorization: Bearer '.$token,
+                'Accept: application/json'
+            ),
+        ));
         return curl_exec($curl);
     }
 
@@ -114,18 +123,21 @@ class ProfileService
      */
     public function createProfile($token)
     {
-        $header = array();
-        $header[] = 'Content-Type: application/json';
-        $header[] = 'Response-Type: application/json';
-        $header[] = 'Comper-origin: asker';
-        $header[] = 'Authorization: Bearer '.$token;
-
         $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $this->profileCreateEndpoint);
-        curl_setopt($curl, CURLOPT_POST, false);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
-
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $this->profileCreateEndpoint,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+            CURLOPT_HTTPHEADER => array(
+                'Authorization: Bearer '.$token,
+                'Accept: application/json'
+            ),
+        ));
         return curl_exec($curl);
 
     }
@@ -137,20 +149,21 @@ class ProfileService
      */
     public function createGroup($token)
     {
-        $header = array();
-        $header[] = 'Content-Type: application/json';
-        $header[] = 'Response-Type: application/json';
-        $header[] = 'Comper-origin: asker';
-        $header[] = 'Authorization: Bearer '.$token;
-
         $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $this->groupCreateEndpoint);
-        curl_setopt($curl, CURLOPT_PUT, true);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
-
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
-
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $this->groupCreateEndpoint,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'PUT',
+            CURLOPT_HTTPHEADER => array(
+                'Authorization: Bearer '.$token,
+                'Accept: application/json'
+            ),
+        ));
 		// debug curl php
 		//curl_setopt($curl, CURLOPT_VERBOSE, true);
 		//$streamVerboseHandle = fopen('/tmp/debugcurl', 'w+');
@@ -219,18 +232,21 @@ class ProfileService
      */
     public function addFrameworkTeacher($token)
     {
-        $header = array();
-        $header[] = 'Content-Type: application/json';
-        $header[] = 'Response-Type: application/json';
-        $header[] = 'Comper-origin: asker';
-        $header[] = 'Authorization: Bearer '.$token;
-
         $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $this->profileEndpoint);
-        curl_setopt($curl, CURLOPT_POST, false);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
-
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $this->profileEndpoint,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'PUT',
+            CURLOPT_HTTPHEADER => array(
+                'Authorization: Bearer '.$token,
+                'Accept: application/json'
+            ),
+        ));
         $response = curl_exec($curl);
     }
 

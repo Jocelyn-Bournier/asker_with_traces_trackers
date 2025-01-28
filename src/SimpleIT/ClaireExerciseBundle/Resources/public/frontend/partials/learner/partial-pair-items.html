@@ -56,7 +56,8 @@
                             <!--not corrected-->
                             <div ng-if="!item.corrected"
                                  ui-draggable="true" drag="drop[$index]"
-                                 on-drop-success="dropSuccessHandlerField($event,$index)">
+                                 ng-mousedown="saveDragPairing()"
+                                 on-drop-success="setDroppedItemPairing($index, drop[$index]);dropSuccessHandlerField($event,$index);saveDropPairingFromResponse()">
                                 <div ng-if="drop[$index].object_type == 'text'"
                                      class="etiquette txt-etiquette">
                                     <div ng-bind-html="to_trusted(drop[$index].text)"></div>
@@ -129,7 +130,8 @@
                     <div ng-if="!item.corrected" style="margin: 6px"
                          ng-repeat="mobilePart in item.content.mobile_parts track by $index"
                          ui-draggable="true" drag="mobilePart"
-                         on-drop-success="dropSuccessHandler($event,$index,item.content.mobile_parts)"
+                         ng-mousedown="saveDragPairing()"
+                         on-drop-success="dropSuccessHandler($event,$index,item.content.mobile_parts);saveDropPairingFromPanel(mobilePart)"
                         >
                         <div ng-if="mobilePart.object_type == 'text'"
                              class="etiquette txt-etiquette">

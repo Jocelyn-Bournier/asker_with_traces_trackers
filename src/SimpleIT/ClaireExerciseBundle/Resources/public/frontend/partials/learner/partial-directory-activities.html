@@ -18,8 +18,11 @@
     </div>
 </div>
 <accordion>
+    <!--            ng-init="sub.isOpen = false"
+                    ng-click="saveTraceOnAccordionToggle(sub)" -->
     <accordion-group class="panel panel-primary"
-                     ng-repeat="sub in directory.subs  track by $index " ng-if="sub.is_visible">
+                    ng-repeat="sub in directory.subs  track by $index" 
+                    ng-if="sub.is_visible">
         <accordion-heading class="panel-heading">
             <div class="row" title="Voir les exercices générés pour ce modèle">
                 <div class="col-xs-3 col-sm-1">

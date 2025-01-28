@@ -29,6 +29,21 @@ class TraceController extends AbstractController
 {
 
     /**
+     * Get the current user's id
+     *
+     * @throws InsufficientAuthenticationException
+     * @return int
+     */
+    protected function getUserId()
+    {
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_USER')) {
+            return $this->get('security.token_storage')->getToken()->getUser()->getId();
+        } else {
+            throw new InsufficientAuthenticationException();
+        }
+    }
+
+    /**
      * Save a trace
      * @param Request $request
      * @return JsonResponse

@@ -38,7 +38,7 @@ class RecommendationController extends BaseController
      */
     function requestRecommendationsAction($directoryId = null, $fwid, $objectives) {
         $comperApi = $this->getComperApi();
-        $recommEngineUrl = $comperApi . "recommandations/generate/";
+        $recommEngineUrl = $comperApi . "recommandations/generate";
         $objectives = json_decode($objectives);
         return $this->saveObjectivesOrRequestRecommendations($recommEngineUrl, $fwid, $objectives, $directoryId);
     }
@@ -49,7 +49,7 @@ class RecommendationController extends BaseController
      */
     function obtainRecommendationsAction($directoryId = null, $fwid) {
         $comperApi = $this->getComperApi();
-        $recommEngineUrl = $comperApi . "recommandations/retrieve/";
+        $recommEngineUrl = $comperApi . "recommandations/retrieve";
         return $this->getObjectivesOrRecommendations($recommEngineUrl, $fwid, $directoryId);
     }
 
@@ -59,7 +59,7 @@ class RecommendationController extends BaseController
      */
     function retrieveClassObjectivesAction($directoryId = null, $fwid) {
         $comperApi = $this->getComperApi();
-        $recommEngineUrl = $comperApi . "recommandations/classObjectives/";
+        $recommEngineUrl = $comperApi . "recommandations/classObjectives";
         return $this->getObjectivesOrRecommendations($recommEngineUrl, $fwid, $directoryId);
     }
 
@@ -69,7 +69,7 @@ class RecommendationController extends BaseController
      */
     function retrieveObjectivesAction($directoryId = null, $fwid) {
         $comperApi = $this->getComperApi();
-        $recommEngineUrl = $comperApi . "recommandations/objectives/";
+        $recommEngineUrl = $comperApi . "recommandations/objectives";
         return $this->getObjectivesOrRecommendations($recommEngineUrl, $fwid, $directoryId);
     }
 
@@ -79,7 +79,7 @@ class RecommendationController extends BaseController
      */
     function retrieveGenerationObjectivesAction($directoryId = null, $fwid) {
         $comperApi = $this->getComperApi();
-        $recommEngineUrl = $comperApi . "recommandations/generationObjectives/";
+        $recommEngineUrl = $comperApi . "recommandations/generationObjectives";
         return $this->getObjectivesOrRecommendations($recommEngineUrl, $fwid, $directoryId);
     }
 
@@ -149,7 +149,7 @@ class RecommendationController extends BaseController
      */
     function saveObjectivesAction($directoryId = null, $fwid, $objectives) {
         $comperApi = $this->getComperApi();
-        $recommEngineUrl = $comperApi . "recommandations/saveObjectives/";
+        $recommEngineUrl = $comperApi . "recommandations/saveObjectives";
         return $this->saveObjectivesOrRequestRecommendations($recommEngineUrl, $fwid, $objectives, $directoryId);
     }
 
@@ -221,7 +221,7 @@ class RecommendationController extends BaseController
      */
     function performRecommendationAction($directoryId = null, $fwid, $recommendation) {
         $comperApi = $this->getComperApi();
-        $recommEngineUrl = $comperApi . "recommandations/perform/";
+        $recommEngineUrl = $comperApi . "recommandations/perform";
 
         $jwtEncoder = $this->container->get('app.jwtService');
         $user       = $this->get('security.token_storage')->getToken()->getUser();
@@ -320,9 +320,9 @@ class RecommendationController extends BaseController
     private function getComperApi(){
         $kernel = $this->get('kernel');
         $devMode = $kernel->isDebug();
-        $comperApi = "https://comper.projet.liris.cnrs.fr/sites/profile-engine/api/";
+        $comperApi = "https://compervm-dev.liris.cnrs.fr/cpe/api/old/";
         if ($devMode){
-            $comperApi = "https://comper.projet.liris.cnrs.fr/sites/profile-engine/test/api/";
+            $comperApi = "https://compervm-dev.liris.cnrs.fr/cpe/api/old/";
         }
         return $comperApi;
     }

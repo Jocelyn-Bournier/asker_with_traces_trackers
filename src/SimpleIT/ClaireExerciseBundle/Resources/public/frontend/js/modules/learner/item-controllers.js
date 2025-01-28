@@ -6,9 +6,11 @@ attemptControllers.controller('attemptController', ['$scope', '$state', 'Attempt
         $scope.imageUrl = BASE_CONFIG.urls.images.uploads;
         $scope.documentUrl = BASE_CONFIG.urls.documents.uploads;
         $scope.imageExoUrl = BASE_CONFIG.urls.images.exercise;
-        $scope.navBarUrl = BASE_CONFIG.urls.partials.learner + '/fragment-nav-bar.html?v='+buildVersion;
+        $scope.navBarUrl = BASE_CONFIG.urls.partials.learner + '/fragment-nav-bar.html?v=' + buildVersion;
 
         $scope.validable = false;
+
+        $scope.inExerciseTraces = [];
 
         console.log('loading attempt...');
         // retrieve attempt
@@ -79,6 +81,75 @@ attemptControllers.controller('attemptController', ['$scope', '$state', 'Attempt
                 });
         };
 
+        $scope.saveTracesInExercise = function () {
+            if ($scope.inExerciseTraces.length > 0) {
+                for (i = 0 ; i < $scope.inExerciseTraces.length; i++){
+                    let trace = $scope.inExerciseTraces[i];
+                    $scope.saveTrace(trace.actionType, trace.content, trace.context, trace.dd, trace.df);
+                }
+                $scope.inExerciseTraces = [];
+            }
+        }
+
+        $scope.saveTraceReturn = function () {
+            $scope.saveTracesInExercise();
+            let actionType = "return";
+            let nbSteps = $scope.items.length;
+            let currStep = $scope.items.indexOf($scope.item) + 1;
+            let content = JSON.stringify(
+                {"nb_steps":nbSteps, "curr_step":currStep});
+            let context = JSON.stringify({"exercise_item_id":$scope.item.item_id});
+            let date = new Date().toISOString();
+            $scope.saveTrace(actionType, content, context, date, date);
+        }
+
+        $scope.saveTraceValidate = function () {
+            $scope.saveTracesInExercise();
+            let actionType = "validate";
+            let nbSteps = $scope.items.length;
+            let currStep = $scope.items.indexOf($scope.item) + 1;
+            let content = JSON.stringify(
+                {"nb_steps":nbSteps, "curr_step":currStep});
+            let context = JSON.stringify({"exercise_item_id":$scope.item.item_id});
+            let date = new Date().toISOString();
+            $scope.saveTrace(actionType, content, context, date, date);
+        }
+
+        $scope.saveTraceTryAgain = function () {
+            console.log($scope.items, $scope.item);
+            $scope.saveTracesInExercise();
+            let actionType = "try_again";
+            let nbSteps = $scope.items.length;
+            // the object change when correction is applied 
+            // so we have to search manually the item
+            let currStep = -1;
+            for (i = 0; i < $scope.items.length; i++){
+                if ($scope.items[i].item_id == $scope.item.item_id){
+                    currStep = i + 1;
+                    break;
+                }
+            }
+            let content = JSON.stringify(
+                {"nb_steps":nbSteps, "curr_step":currStep});
+            let context = JSON.stringify({"exercise_item_id":$scope.item.item_id});
+            let date = new Date().toISOString();
+            $scope.saveTrace(actionType, content, context, date, date);
+        }
+
+        $scope.saveTraceStep = function (step) {
+            console.log($scope.items, $scope.item, step);
+            $scope.saveTracesInExercise();
+            let actionType = "select_step";
+            let selectedStep = step;
+            let nbSteps = $scope.items.length;
+            let currStep = $scope.items.indexOf($scope.item) + 1;
+            let content = JSON.stringify(
+                {"nb_steps":nbSteps, "curr_step":currStep,"selected_step":selectedStep});
+            let context = JSON.stringify({"exercise_item_id":$scope.item.item_id});
+            let date = new Date().toISOString();
+            $scope.saveTrace(actionType, content, context, date, date);
+        }
+
         $scope.seeDocument = function (resource){
             if (typeof resource.source !== 'undefined'){
                 window.open(BASE_CONFIG.urls.documents.uploads + resource.source);
@@ -144,6 +215,74 @@ itemControllers.controller('pairItemsController', ['$scope', 'Answer', '$routePa
             $scope.drop[fieldNumber] = $data;
         };
 
+        $scope.saveDragPairing = function () {
+            $scope.pairingDD = new Date().toISOString();
+        };
+
+        $scope.setDroppedItemPairing = function (index, item) {
+            $scope.dropPairingSrcIndexFrom = index;
+            $scope.dropPairingItemID = item.id;
+        };
+
+        $scope.saveDropPairingFromResponse = function () {
+            let destID = $scope.dropPairingItemID;
+            let src = $scope.dropPairingSrcIndexFrom + 1;
+            let dest = 0;
+            for (i = 0; i < $scope.drop.length; i++){
+                //define dest, if not find in drop, dest = 0 because panel = 0
+                if ($scope.drop[i] != null){
+                    if ($scope.drop[i].id == destID){
+                        dest = i + 1;
+                        break;
+                    }
+                }
+            }
+            
+            let responseElement = -1;
+            if (dest != 0) {
+                responseElement = $scope.item['content']['fix_parts'][dest - 1].origin_resource;
+            }
+            
+            if (src != dest){
+                $scope.inExerciseTraces.push(
+                {actionType: "place_element_pairing", 
+                 dd:$scope.pairingDD, 
+                 df:new Date().toISOString(), 
+                 content: JSON.stringify({"elt_proposition" : destID, "elt_response" : responseElement, "src_pairing" : src, "dest_pairing" : dest, "nb_responses" : $scope.item['content'].fix_parts.length}), 
+                 context : JSON.stringify({"exercise_item_id":$scope.item.item_id})});
+            }
+        };
+
+        $scope.saveDropPairingFromPanel = function (item) {
+            let destID = item.id;
+            let src = 0;
+            let dest = 0;
+            for (i = 0; i < $scope.drop.length; i++){
+                //define dest, if not find in drop, dest = 0 because panel = 0
+                if ($scope.drop[i] != null){
+                    if ($scope.drop[i].id == destID){
+                        dest = i + 1;
+                        break;
+                    }
+                }
+            }
+            
+            let responseElement = -1;
+            if (dest != 0) {
+                responseElement = $scope.item['content']['fix_parts'][dest - 1].origin_resource;
+            }
+
+            if (src != dest){
+                $scope.inExerciseTraces.push(
+                {actionType: "place_element_pairing", 
+                 dd:$scope.pairingDD, 
+                 df:new Date().toISOString(), 
+                 content: JSON.stringify({"elt_proposition" : destID, "elt_response" : responseElement, "src_pairing" : src, "dest_pairing" : dest, "nb_responses" : $scope.item['content'].fix_parts.length}), 
+                 context : JSON.stringify({"exercise_itemID":$scope.item.item_id})});
+            }
+        };
+
+
         $scope.dropSuccessHandler = function ($event, index, array) {
             array.splice(index, 1);
             if ($scope.item['content'].mobile_parts.length == 0) {
@@ -158,6 +297,7 @@ itemControllers.controller('pairItemsController', ['$scope', 'Answer', '$routePa
         // init answer array
         $scope.drop = [];
         $scope.solution = [];
+        $scope.dropPairingSrc = "none";
         for (i = 0; i < $scope.item['content'].mobile_parts.length; ++i) {
             $scope.drop[i] = null;
             $scope.solution[i] = null;
@@ -167,6 +307,14 @@ itemControllers.controller('pairItemsController', ['$scope', 'Answer', '$routePa
             $scope.fillLearnerAnswers();
             $scope.displayCorrection($scope.item);
         }
+
+        /*document.getElementById('toSortable').addEventListener('mousedown', function (e) {
+            console.log('mousedown');
+        });
+
+        document.getElementById('toSortable').addEventListener('mouseup', function (e) {
+            console.log('mouseup');
+        });*/
 
     }]);
 
@@ -510,6 +658,14 @@ itemControllers.controller('multipleChoiceController', ['$scope', 'Answer', '$ro
             if (!$scope.item.corrected) {
                 $scope.tick[index] = !$scope.tick[index];
             }
+            let isChecked = $scope.tick[index];
+            let element = $scope.item['content'].propositions[index];
+            let date = new Date().toISOString();
+            $scope.inExerciseTraces.push(
+                {actionType: "select_answer_qcm", 
+                 dd:date, df:date, 
+                 content: JSON.stringify({"position":index+1, "nb_positions": $scope.tick.length, "is_checked":isChecked}), 
+                 context: JSON.stringify({"exercise_item_id":$scope.item.item_id})});
         };
 
         // init answer array
@@ -641,6 +797,50 @@ itemControllers.controller('groupItemsController', ['$scope', 'Answer', '$routeP
             }
         };
 
+        $scope.saveDragGrouping = function () {
+            $scope.groupingDD = new Date().toISOString();
+        };
+
+        $scope.setDropGroupingSrc = function (item) {
+            for (i = 0; i < $scope.groups.length; i++){
+                for (j = 0; j < $scope.groups[i].objects.length; j++){
+                    if ($scope.groups[i].objects[j].origin_resource == item.origin_resource){
+                        $scope.dropGroupingSrc = "gr"+(i+1)+"_"+$scope.groups[i].name;
+                        break;
+                    }
+                }
+            }
+        }
+
+        $scope.saveDropGrouping = function (item,zoneSrc) {            
+            let src = "gr0_panel";
+            if (zoneSrc == "fromResponse"){
+                src = $scope.dropGroupingSrc
+            }
+            
+            let dest = "gr0_panel";
+            for (i = 0; i < $scope.groups.length; i++){
+                for (i = 0; i < $scope.groups.length; i++){
+                    for (j = 0; j < $scope.groups[i].objects.length; j++){
+                        if ($scope.groups[i].objects[j].origin_resource == item.origin_resource){
+                            dest = "gr"+(i+1)+"_"+$scope.groups[i].name;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (src == dest){
+                return;
+            }
+            
+            $scope.inExerciseTraces.push(
+                {actionType: "place_element_grouping", 
+                 dd:$scope.groupingDD, df:new Date().toISOString(), 
+                 content: JSON.stringify({"elt" : item.origin_resource, "src" : src, "dest" : dest, "nb_groups" : $scope.groups.length}), 
+                 context: JSON.stringify({"exercise_item_id":$scope.item.item_id})});
+        };
+
         // drag and drop
         $scope.onDropList = function ($event, $data, array) {
             array.push($data);
@@ -655,6 +855,7 @@ itemControllers.controller('groupItemsController', ['$scope', 'Answer', '$routeP
         // init groups and solution
         $scope.groups = [];
         $scope.solutions = [];
+        $scope.dropGroupingSrc = "none";
         $scope.dgn = $scope.item['content'].display_group_names;
         for (i = 0; i < $scope.item['content'].groups.length; ++i) {
             $scope.groups[i] = {objects: []};

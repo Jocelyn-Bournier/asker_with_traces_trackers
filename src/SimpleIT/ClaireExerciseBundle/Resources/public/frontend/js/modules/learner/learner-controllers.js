@@ -75,6 +75,18 @@ learnerControllers.controller('directoryModelListController', ['$scope', '$state
          */
         $scope._selectTab = function (tab) {
             console.log($scope.directory);
+            /*
+                save trace
+            */
+            actionType = "select_tab";
+            content = JSON.stringify({"tab_name" : tab});
+            context = JSON.stringify({});
+            date = new Date().toISOString();
+            $scope.saveTrace(actionType, content, context, date, date);
+            /*
+                 save trace
+            */
+
             if (tab === "management") {
                 let profileAlreadyComputed = document.getElementById('olm-target-loader').classList.contains('hidden');
                 if (!profileAlreadyComputed) {
@@ -795,13 +807,38 @@ learnerControllers.controller('learnerController', ['$scope', 'User', 'AttemptBy
                 function (exercise) {
                     $scope.tryExercise(exercise);
                 });
-
-            //save trace
-            actionType = "generateExercise";
-            content = {"test":"try model"};
-            context = {"test":"learner"};
-            $scope.saveTrace(actionType, content, context);
         };
 
-    }]);
+        $scope.saveTraceOnAccordionToggle = function (dir) {
+            if (dir.isOpen) {
+                //save only when opening a directory
+                $scope.saveTraceDirectory(dir);
+            }
+        };
+        
+        $scope.saveTraceDirectory = function (dir) {
+            actionType = "select_directory";
+            content = JSON.stringify({"directory_name": dir.name});
+            context = JSON.stringify({});
+            date = new Date().toISOString();
+            $scope.saveTrace(actionType, content, context, date, date);
+        }
+        
+        $scope.saveTraceClass = function (dir) {
+            actionType = "select_class";
+            content = JSON.stringify({"class_name": dir.name});
+            context = JSON.stringify({});
+            date = new Date().toISOString();
+            $scope.saveTrace(actionType, content, context, date, date);
+        }
 
+        $scope.saveTraceGenerateExercise = function (model) {
+            actionType = "generate_exercise";
+            content = JSON.stringify({"from" : "directory"});
+            context = JSON.stringify({});
+            date = new Date().toISOString();
+            $scope.saveTrace(actionType, content, context, date, date);
+        }
+        
+    }]);
+    

@@ -1,13 +1,13 @@
 imports:
     - { resource: comper_secrets.yml }
 parameters:
-    comper_lrs_endpoint: 134.214.142.4:8080/trax/ws/xapi/statements
+    comper_lrs_endpoint: https://compervm-dev.liris.cnrs.fr/trax/api/gateway/clients/default/stores/default/xapi/statements
     comper_jwt_key_path: jwtRS256.key
-    comper_api_url: https://comper.projet.liris.cnrs.fr/sites/profile-engine/api/
-    comper_profile_endpoint: https://comper.projet.liris.cnrs.fr/sites/profile-engine/api/profile/to-olm/index.php
-    comper_profile_create_endpoint: https://comper.projet.liris.cnrs.fr/sites/profile-engine/api/profile/create/index.php
-    comper_group_create_endpoint: https://comper.projet.liris.cnrs.fr/sites/profile-engine/api/group/create/index.php
-    comper_teacher_manager_endpoint: https://comper.projet.liris.cnrs.fr/sites/profile-engine/api/profile/addTeacher/index.php
+    comper_api_url: https://compervm-dev.liris.cnrs.fr/cpe/api/old/
+    comper_profile_endpoint: https://compervm-dev.liris.cnrs.fr/cpe/api/old/profile/to-olm
+    comper_profile_create_endpoint: https://compervm-dev.liris.cnrs.fr/cpe/api/old/profile/create
+    comper_group_create_endpoint: https://compervm-dev.liris.cnrs.fr/cpe/api/old/group/create
+    comper_teacher_manager_endpoint: https://compervm-dev.liris.cnrs.fr/cpe/api/old/profile/addTeacher
 services:
     app.jwtService:
         class:     SimpleIT\ClaireExerciseBundle\Service\JwtService

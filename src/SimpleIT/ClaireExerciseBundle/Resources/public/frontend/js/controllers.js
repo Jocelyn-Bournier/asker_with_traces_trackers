@@ -185,18 +185,18 @@ mainAppControllers.controller('mainUserController', ['$scope', '$sce', '$routePa
         }
 
         // used to save students actions in the database 
-        $scope.saveTrace = function (actionType, content, context) {
+        $scope.saveTrace = function (actionType, content, context, dateDebut, dateFin) {
             $http.post('/api/trace/save', {
-                user_id: 1,
+                user_id: BASE_CONFIG.currentUserId,
                 type: actionType,
-                dd: new Date().toISOString(),
-                df: new Date().toISOString(),
+                dd: dateDebut,
+                df: dateFin,
                 content: content,
                 context: context
             }).then(function (response) {
-                console.log("Trace envoyée avec succès", response.data);
+                console.log("Trace envoyée avec succès : ", actionType);
             }).catch(function (error) {
-                console.error("Erreur lors de l'envoi du trace", error);
+                console.error("Erreur lors de l'envoi de la trace", error);
             });
         };
 

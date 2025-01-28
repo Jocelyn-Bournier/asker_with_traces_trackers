@@ -14,7 +14,7 @@ class TraceService
         $this->em = $entityManager;
     }
 
-    public function saveTrace(int $user_id, string $type, \DateTime $dd, \DateTime $df, array $content, array $context)
+    public function saveTrace(int $user_id, string $type, \DateTime $dd, \DateTime $df, string $content, string $context)
     {
         $trace = new Trace($user_id, $type, $dd, $df, $content, $context);
         $this->em->persist($trace);
