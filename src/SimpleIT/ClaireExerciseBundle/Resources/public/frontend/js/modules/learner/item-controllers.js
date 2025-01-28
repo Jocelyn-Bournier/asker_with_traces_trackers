@@ -820,12 +820,10 @@ itemControllers.controller('groupItemsController', ['$scope', 'Answer', '$routeP
             
             let dest = "gr0_panel";
             for (i = 0; i < $scope.groups.length; i++){
-                for (i = 0; i < $scope.groups.length; i++){
-                    for (j = 0; j < $scope.groups[i].objects.length; j++){
-                        if ($scope.groups[i].objects[j].origin_resource == item.origin_resource){
-                            dest = "gr"+(i+1)+"_"+$scope.groups[i].name;
-                            break;
-                        }
+                for (j = 0; j < $scope.groups[i].objects.length; j++){
+                    if ($scope.groups[i].objects[j].origin_resource == item.origin_resource){
+                        dest = "gr"+(i+1)+"_"+$scope.groups[i].name;
+                        break;
                     }
                 }
             }
